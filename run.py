@@ -62,6 +62,22 @@ CHART_WHEEL_CLI = os.path.join(REPO_ROOT, "Chart_wheel", "cli.js")
 WHEEL_THEMES = ("light", "dark")
 
 
+def suffixed(filename: str, suffix: str) -> str:
+    """Insert ``_<suffix>`` after the base name (before the first dot) so every
+    artifact in a run folder carries the birth date and can never collide with a
+    same-named file from another run. Idempotent.
+
+        chart.json            -> chart_1990-07-13.json
+        l4_reading.en.txt     -> l4_reading_1990-07-13.en.txt
+        chart_wheel.light.svg -> chart_wheel_1990-07-13.light.svg
+    """
+    base, dot, rest = filename.partition(".")
+    tag = f"_{suffix}"
+    if base.endswith(tag):
+        return filename
+    return f"{base}{tag}{dot}{rest}"
+
+
 # ===========================================================================
 # §1  Interactive input
 # ===========================================================================
@@ -169,10 +185,13 @@ def geocode(place_query: str) -> dict:
 # §5  Run id & directory
 # ===========================================================================
 
-def mint_run_id(now_utc: datetime) -> str:
-    """YYYYMMDD-HHMMSS_<3 random lowercase alnum> — sortable + collision-safe."""
+def mint_run_id(now_utc: datetime, birth_date: str) -> str:
+    """YYYYMMDD-HHMMSS_<3 random lowercase alnum>_<birthdate> — sortable,
+    collision-safe, and self-identifying. The trailing birthdate (YYYY-MM-DD)
+    makes every run folder name say whose chart it is at a glance, so two runs
+    are never indistinguishable by title."""
     suffix = "".join(random.choices(string.ascii_lowercase + string.digits, k=3))
-    return now_utc.strftime("%Y%m%d-%H%M%S") + "_" + suffix
+    return now_utc.strftime("%Y%m%d-%H%M%S") + "_" + suffix + "_" + birth_date
 
 
 # ===========================================================================
@@ -183,7 +202,7 @@ class WheelError(RuntimeError):
     """The chart-wheel render failed (Node missing, gate violation, or crash)."""
 
 
-def render_chart_wheels(chart_path: str, run_dir: str) -> list[str]:
+def render_chart_wheels(chart_path: str, run_dir: str, suffix: str) -> list[str]:
     """Render the chart wheel for each theme into run_dir, gated by §8 invariants.
 
     Pure function of chart.json (no LLM, no network). Returns the written SVG
@@ -209,7 +228,7 @@ def render_chart_wheels(chart_path: str, run_dir: str) -> list[str]:
 
     written: list[str] = []
     for theme in WHEEL_THEMES:
-        out_path = os.path.join(run_dir, f"chart_wheel.{theme}.svg")
+        out_path = os.path.join(run_dir, suffixed(f"chart_wheel.{theme}.svg", suffix))
         # --check runs the §8 invariant gate and writes the SVG only if it passes;
         # exit 1 on any violation.
         proc = subprocess.run(
@@ -258,6 +277,9 @@ def main() -> int:
 
     # --- 1. collect input (§1) ---
     inp = collect_input()
+    # Every artifact in this run is suffixed with the birth date (§5), so a file
+    # pulled out of its run folder is never confused with another run's.
+    suffix = inp["birth_date"]
 
     # --- 2. geocode (§2) ---
     geo = geocode(inp["place_query"])
@@ -265,7 +287,7 @@ def main() -> int:
     # --- 3. mint run_id, create runs/<run_id>/ (§5). No file under the run dir is
     #        written before this point (invariant 1). ---
     now_utc = datetime.now(timezone.utc)
-    run_id = mint_run_id(now_utc)
+    run_id = mint_run_id(now_utc, inp["birth_date"])
     run_dir = os.path.join(RUNS_DIR, run_id)
     os.makedirs(run_dir, exist_ok=True)
     print(f"\nrun_id = {run_id}\nrun_dir = {run_dir}\n")
@@ -299,7 +321,7 @@ def main() -> int:
             "models": models or {},
             "artifacts": list(artifacts),
         }
-        _write_json(os.path.join(run_dir, "run_meta.json"), meta)
+        _write_json(os.path.join(run_dir, suffixed("run_meta.json", suffix)), meta)
 
     # --- 4. L1 chart -> chart.json ---
     from compute_chart import compute_chart, BirthData
@@ -311,9 +333,9 @@ def main() -> int:
         time_precision="exact",
     )
     chart = compute_chart(bd)
-    chart_path = os.path.join(run_dir, "chart.json")
+    chart_path = os.path.join(run_dir, suffixed("chart.json", suffix))
     _write_json(chart_path, chart)
-    artifact("chart.json")
+    artifact(os.path.basename(chart_path))
     resolved_tz = (chart.get("meta") or {}).get("timezone")
     print(f"[L1] chart computed (timezone={resolved_tz})")
 
@@ -322,7 +344,7 @@ def main() -> int:
     # here (before the costly L4 call) so a Node/render failure aborts cheaply.
     print("[wheel] rendering chart wheel (light + dark)...")
     try:
-        wheel_paths = render_chart_wheels(chart_path, run_dir)
+        wheel_paths = render_chart_wheels(chart_path, run_dir, suffix)
     except WheelError as err:
         print(f"\n[wheel] render failed: {err}", file=sys.stderr)
         write_meta("wheel_render_error", resolved_tz=resolved_tz)
@@ -341,8 +363,9 @@ def main() -> int:
     # Invariant 2: assert the kept-count contract on write.
     assert personal_payload["kept_count"] == len(result.kept), \
         "kept_count != len(result.kept)"
-    _write_json(os.path.join(run_dir, "personal_principles.json"), personal_payload)
-    artifact("personal_principles.json")
+    pp_name = suffixed("personal_principles.json", suffix)
+    _write_json(os.path.join(run_dir, pp_name), personal_payload)
+    artifact(pp_name)
     print(f"[L2/L3] grounded {len(result.kept)} personal principles "
           f"({len(result.drops)} dropped)")
 
@@ -390,10 +413,12 @@ def main() -> int:
         return 1
 
     # errors == [] : now (and only now) write l4_output.json (invariant 3).
-    _write_json(os.path.join(run_dir, "l4_output.json"), output)
-    _write_json(os.path.join(run_dir, "l4_routing_report.json"), report)
-    artifact("l4_output.json", "l4_routing_report.json")
-    reading_paths = write_readable(output, run_dir)
+    l4_name = suffixed("l4_output.json", suffix)
+    report_name = suffixed("l4_routing_report.json", suffix)
+    _write_json(os.path.join(run_dir, l4_name), output)
+    _write_json(os.path.join(run_dir, report_name), report)
+    artifact(l4_name, report_name)
+    reading_paths = write_readable(output, run_dir, stem=suffixed("l4_reading", suffix))
     for p in reading_paths:
         artifact(os.path.basename(p))
     print(f"[L4] {len(output['sections'])} sections; "
@@ -407,6 +432,7 @@ def main() -> int:
         distill_paths = distill(
             output, run_dir,
             model=args.distill_model or DISTILL_DEFAULT,
+            suffix=suffix,
         )
     except (RuntimeError, ValueError) as err:
         # A distiller failure is a run failure — treated like any other stage error.
@@ -420,10 +446,10 @@ def main() -> int:
     # --- 8. manifest + summary + the next human step ---
     # List run_meta.json among the artifacts before writing, so the manifest
     # records itself.
-    artifact("run_meta.json")
+    artifact(suffixed("run_meta.json", suffix))
     write_meta("complete", models=models, resolved_tz=resolved_tz)
 
-    scoresheet = os.path.join("runs", run_id, "scoresheet.csv")
+    scoresheet = os.path.join("runs", run_id, suffixed("scoresheet.csv", suffix))
     print("\n" + "=" * 70)
     print(f"RUN COMPLETE — {run_dir}")
     print("Artifacts:")

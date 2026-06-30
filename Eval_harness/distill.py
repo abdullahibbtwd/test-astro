@@ -326,12 +326,28 @@ def _write_csv(path: str, statements: list[dict]) -> None:
 # Public entry point — pipeline stage L5
 # ---------------------------------------------------------------------------
 
-def distill(l4_output: dict, out_dir: str, *, model: str = DEFAULT_MODEL) -> list[str]:
+def _suffixed(filename: str, suffix: str | None) -> str:
+    """Insert ``_<suffix>`` after the base name (before the first dot), so the L5
+    outputs match the rest of a run folder's birth-date-suffixed artifacts.
+    ``suffix=None`` (standalone default) leaves names unchanged. Idempotent."""
+    if not suffix:
+        return filename
+    base, dot, rest = filename.partition(".")
+    tag = f"_{suffix}"
+    if base.endswith(tag):
+        return filename
+    return f"{base}{tag}{dot}{rest}"
+
+
+def distill(l4_output: dict, out_dir: str, *, model: str = DEFAULT_MODEL,
+            suffix: str | None = None) -> list[str]:
     """Distil the locked final reading into clean statements.
 
     Writes ``statements.json``, ``statements.txt`` and ``scoresheet.csv`` into
-    ``out_dir`` and returns the written paths. Reads only the English text
-    (``text_en``) of each section; never emits Turkish (§7 invariant 6).
+    ``out_dir`` and returns the written paths. When ``suffix`` is given (e.g. the
+    birth date, as the orchestrator passes), it is inserted into each filename
+    (``statements_1990-07-13.json``, …) so artifacts never collide across runs.
+    Reads only the English text (``text_en``); never emits Turkish (§7 inv. 6).
     """
     sections = l4_output.get("sections") or []
     if not sections:
@@ -350,9 +366,9 @@ def distill(l4_output: dict, out_dir: str, *, model: str = DEFAULT_MODEL) -> lis
     _log(f"{len(statements)} statements after dedup + validation")
 
     run_id = _run_id(l4_output, out_dir)
-    json_path = os.path.join(out_dir, "statements.json")
-    txt_path = os.path.join(out_dir, "statements.txt")
-    csv_path = os.path.join(out_dir, "scoresheet.csv")
+    json_path = os.path.join(out_dir, _suffixed("statements.json", suffix))
+    txt_path = os.path.join(out_dir, _suffixed("statements.txt", suffix))
+    csv_path = os.path.join(out_dir, _suffixed("scoresheet.csv", suffix))
 
     _write_json(json_path, run_id, statements)
     _write_txt(txt_path, statements)
@@ -376,18 +392,22 @@ def main(argv: list[str] | None = None) -> int:
                     help="output directory (the run folder) for statements.* / scoresheet.csv")
     ap.add_argument("--model", default=DEFAULT_MODEL,
                     help=f"distiller model (default {DEFAULT_MODEL})")
+    ap.add_argument("--suffix", default=None,
+                    help="insert this token (e.g. the birth date) into each output "
+                         "filename, matching the orchestrator's run-folder naming")
     args = ap.parse_args(argv)
 
     with open(args.l4, encoding="utf-8") as fh:
         l4_output = json.load(fh)
 
-    paths = distill(l4_output, args.out, model=args.model)
+    paths = distill(l4_output, args.out, model=args.model, suffix=args.suffix)
     print("Wrote:")
     for p in paths:
         print(f"  {p}")
+    csv_path = paths[-1]   # distill returns [statements.json, statements.txt, scoresheet.csv]
     print(
-        "\nNext: fill in the `score` column (0–10) in scoresheet.csv, then run:\n"
-        f"  python score_report.py {os.path.join(args.out, 'scoresheet.csv')}"
+        f"\nNext: fill in the `score` column (0–10) in {os.path.basename(csv_path)}, "
+        f"then run:\n  python score_report.py {csv_path}"
     )
     return 0
 
