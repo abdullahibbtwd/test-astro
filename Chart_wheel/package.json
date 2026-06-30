@@ -1,0 +1,16 @@
+{
+  "name": "chart-wheel",
+  "version": "1.0.0",
+  "description": "Deterministic SVG natal-chart-wheel renderer (CHART_WHEEL_SPEC.md). Pure function of chart.json.",
+  "type": "module",
+  "main": "src/render.js",
+  "bin": {
+    "chart-wheel": "cli.js"
+  },
+  "scripts": {
+    "render": "node cli.js",
+    "check": "node cli.js --check",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}

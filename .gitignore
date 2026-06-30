@@ -1,0 +1,61 @@
+# --- Python ---
+.venv/
+*/.venv/
+__pycache__/
+*/__pycache__/
+*.pyc
+.pytest_cache/
+*/.pytest_cache/
+
+# --- Node ---
+node_modules/
+*/node_modules/
+
+# --- Personal run outputs (real birth data + readings) ---
+runs/
+
+# --- Source corpus / extraction inputs (large; copyright-sensitive) ---
+TXT/
+extracted/
+chapters/
+
+# --- Tooling / local config ---
+.claude/
+*/.claude/
+.agents/
+
+# --- Generated wheel samples at the module root (run.py writes into runs/) ---
+Chart_wheel/wheel.svg
+Chart_wheel/wheel-light.svg
+Chart_wheel/wheel-dark.svg
+
+# --- Personal readings / charts scattered in module folders (privacy) ---
+Interpretation_layer/NIa/
+Interpretation_layer/Radul/
+Interpretation_layer/test/*.pdf
+**/personal_principles.json
+# Generated charts contain real birth data
+**/chart.json
+
+# --- Generated reading artifacts (not source) ---
+Interpretation_layer/l4_output.json
+Interpretation_layer/l4_routing_report.json
+Interpretation_layer/l4_reading.*.txt
+Interpretation_layer/test/l4_output.json
+Interpretation_layer/test/l4_reading.*.txt
+
+# --- Generated reports / rejected sets / checksums / scratch ---
+**/grounding_report.json
+**/backfill_report.json
+**/reclassify_report.json
+**/*.rejected.json
+**/*.sha256
+*.zip
+**/err.txt
+d_layer/out.json
+d_layer/test/out.json
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+**/validation_report.json

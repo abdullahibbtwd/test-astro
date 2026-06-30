@@ -1,0 +1,638 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "grounding.schema.json",
+  "title": "Principle grounding additions (about + requires)",
+  "$defs": {
+    "about": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "about.schema.json",
+      "title": "About",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "factor_type",
+        "extraction_confidence",
+        "extraction_source"
+      ],
+      "properties": {
+        "factor_type": {
+          "enum": [
+            "planet_in_sign",
+            "planet_in_house",
+            "planet_in_sign_and_house",
+            "aspect",
+            "dignity",
+            "node",
+            "ascendant",
+            "house_ruler",
+            "house_domain",
+            "house_lord_relative",
+            "general",
+            "unclassified"
+          ]
+        },
+        "point": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mercury",
+            "Venus",
+            "Mars",
+            "Jupiter",
+            "Saturn",
+            "Uranus",
+            "Neptune",
+            "Pluto",
+            "North Node",
+            "South Node"
+          ]
+        },
+        "sign": {
+          "enum": [
+            "Aries",
+            "Taurus",
+            "Gemini",
+            "Cancer",
+            "Leo",
+            "Virgo",
+            "Libra",
+            "Scorpio",
+            "Sagittarius",
+            "Capricorn",
+            "Aquarius",
+            "Pisces"
+          ]
+        },
+        "house": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "house_system": {
+          "enum": [
+            "placidus",
+            "whole_sign"
+          ]
+        },
+        "aspect": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "target",
+            "type"
+          ],
+          "properties": {
+            "source": {
+              "enum": [
+                "Sun",
+                "Moon",
+                "Mercury",
+                "Venus",
+                "Mars",
+                "Jupiter",
+                "Saturn",
+                "Uranus",
+                "Neptune",
+                "Pluto",
+                "North Node",
+                "South Node"
+              ]
+            },
+            "target": {
+              "enum": [
+                "Sun",
+                "Moon",
+                "Mercury",
+                "Venus",
+                "Mars",
+                "Jupiter",
+                "Saturn",
+                "Uranus",
+                "Neptune",
+                "Pluto",
+                "North Node",
+                "South Node"
+              ]
+            },
+            "type": {
+              "enum": [
+                "conjunction",
+                "sextile",
+                "square",
+                "trine",
+                "opposition"
+              ]
+            }
+          }
+        },
+        "dignity": {
+          "enum": [
+            "domicile",
+            "detriment",
+            "exaltation",
+            "fall",
+            "triplicity",
+            "bound",
+            "face"
+          ]
+        },
+        "dignity_ruler": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mercury",
+            "Venus",
+            "Mars",
+            "Jupiter",
+            "Saturn",
+            "Uranus",
+            "Neptune",
+            "Pluto",
+            "North Node",
+            "South Node"
+          ]
+        },
+        "ascendant_sign": {
+          "enum": [
+            "Aries",
+            "Taurus",
+            "Gemini",
+            "Cancer",
+            "Leo",
+            "Virgo",
+            "Libra",
+            "Scorpio",
+            "Sagittarius",
+            "Capricorn",
+            "Aquarius",
+            "Pisces"
+          ]
+        },
+        "subject_house": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "subject_house_system": {
+          "enum": [
+            "placidus",
+            "whole_sign"
+          ]
+        },
+        "placement_house": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "placement_house_system": {
+          "enum": [
+            "placidus",
+            "whole_sign"
+          ]
+        },
+        "generational": {
+          "type": "boolean"
+        },
+        "unclassified_reason": {
+          "enum": [
+            "no_subject_in_text",
+            "multi_subject_unsplittable",
+            "dependency_unsatisfiable",
+            "non_configurational"
+          ]
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewed_at": {
+          "type": "string",
+          "minLength": 1
+        },
+        "extraction_confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "extraction_source": {
+          "enum": [
+            "deterministic",
+            "llm",
+            "manual"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "house"
+            ]
+          },
+          "then": {
+            "required": [
+              "house_system"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "planet_in_sign"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "point",
+              "sign"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "planet_in_house"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "point",
+              "house",
+              "house_system"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "planet_in_sign_and_house"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "point",
+              "sign",
+              "house",
+              "house_system"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "aspect"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "aspect"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "dignity"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "point",
+              "dignity"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "node"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "point"
+            ],
+            "anyOf": [
+              {
+                "required": [
+                  "sign"
+                ]
+              },
+              {
+                "required": [
+                  "house"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "ascendant"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "ascendant_sign"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "house_ruler"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "point",
+              "house",
+              "house_system"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "house_domain"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "anyOf": [
+              {
+                "required": [
+                  "point"
+                ]
+              },
+              {
+                "required": [
+                  "house",
+                  "house_system"
+                ]
+              }
+            ],
+            "not": {
+              "required": [
+                "sign"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "house_lord_relative"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "subject_house",
+              "subject_house_system",
+              "placement_house",
+              "placement_house_system"
+            ],
+            "not": {
+              "required": [
+                "point"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "factor_type": {
+                "const": "unclassified"
+              }
+            },
+            "required": [
+              "factor_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "unclassified_reason"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "extraction_source": {
+                "const": "manual"
+              }
+            },
+            "required": [
+              "extraction_source"
+            ]
+          },
+          "then": {
+            "required": [
+              "reviewer",
+              "reviewed_at"
+            ]
+          }
+        }
+      ]
+    },
+    "requires": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "requires.schema.json",
+      "title": "Requires",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "point_sign",
+              "point_house",
+              "point_aspects",
+              "point_dignity",
+              "sign_element",
+              "ascendant",
+              "house_ruler",
+              "native_gender",
+              "birth_time",
+              "other"
+            ]
+          },
+          "point": {
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mercury",
+              "Venus",
+              "Mars",
+              "Jupiter",
+              "Saturn",
+              "Uranus",
+              "Neptune",
+              "Pluto",
+              "North Node",
+              "South Node"
+            ]
+          }
+        }
+      }
+    },
+    "aspectSubject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "target",
+        "type"
+      ],
+      "properties": {
+        "source": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mercury",
+            "Venus",
+            "Mars",
+            "Jupiter",
+            "Saturn",
+            "Uranus",
+            "Neptune",
+            "Pluto",
+            "North Node",
+            "South Node"
+          ]
+        },
+        "target": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mercury",
+            "Venus",
+            "Mars",
+            "Jupiter",
+            "Saturn",
+            "Uranus",
+            "Neptune",
+            "Pluto",
+            "North Node",
+            "South Node"
+          ]
+        },
+        "type": {
+          "enum": [
+            "conjunction",
+            "sextile",
+            "square",
+            "trine",
+            "opposition"
+          ]
+        }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "point_sign",
+            "point_house",
+            "point_aspects",
+            "point_dignity",
+            "sign_element",
+            "ascendant",
+            "house_ruler",
+            "native_gender",
+            "birth_time",
+            "other"
+          ]
+        },
+        "point": {
+          "enum": [
+            "Sun",
+            "Moon",
+            "Mercury",
+            "Venus",
+            "Mars",
+            "Jupiter",
+            "Saturn",
+            "Uranus",
+            "Neptune",
+            "Pluto",
+            "North Node",
+            "South Node"
+          ]
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "about": {
+      "$ref": "#/$defs/about"
+    },
+    "requires": {
+      "$ref": "#/$defs/requires"
+    }
+  }
+}

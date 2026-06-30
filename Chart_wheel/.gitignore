@@ -1,0 +1,6 @@
+# scratch / generated inspection artifacts
+glyph-sheet.svg
+oracle_positions.json
+wheel-oracle.svg
+*.png
+node_modules/

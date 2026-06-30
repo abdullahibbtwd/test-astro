@@ -1,0 +1,68 @@
+{
+  "_comment": "Editable rule config for reclassify.py (RECLASSIFY_SPEC.md §6). Signal lists and templates are DATA, not code: add procedures / angle-phrasings / clean templates here without touching logic. Matching is case-insensitive over a hyphen-normalized blob of principle_id + rule + judgment. No counts, no targets.",
+
+  "recapture_templates": [
+    {
+      "rule_id": "planet_sign_function",
+      "id_regex": "^planet-sign-function-(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto|north-node|south-node)$",
+      "target": "house_domain",
+      "point_from_group": 1,
+      "note": "the SIGN of {planet} signifies... -> house_domain on the point; NEVER planet_in_sign (no specific sign)."
+    },
+    {
+      "rule_id": "planet_house_domain",
+      "id_regex": "^(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)-house-[a-z-]*(domain|signification)",
+      "target": "house_domain",
+      "point_from_group": 1,
+      "note": "general planet-house significations (no specific house)."
+    },
+    {
+      "rule_id": "ordinal_house_significations",
+      "id_regex": "^(first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth)-house-significations$",
+      "house_from_group": 1,
+      "target": "house_domain",
+      "note": "general house meaning (no planet / occupancy)."
+    }
+  ],
+
+  "dependency_signals": [
+    "native gender", "sex of the native", "sex of native",
+    "male native", "female native", "gender differentiation",
+    "differs by gender", "by the gender"
+  ],
+
+  "procedure_signals": [
+    "hilaj", "hyleg", "hileg", "alcocoden", "kadukhudah", "kadkhudah",
+    "mubtazz", "almuten", "length of life", "longevity", "years of life",
+    "survive infancy", "infant survival", "infant mortality",
+    "triplicity ladder", "triplicity-lord survival",
+    "sequential hierarchy of testimony", "step-wise", "step wise",
+    "directing the hilaj", "distance to malefic", "life and affliction"
+  ],
+
+  "config_signals": [
+    "element-emphasis", "element emphasis", "elemental balance",
+    "element balance", "modal balance", "balance as chart foundation",
+    "generational not personal", "generational-not-personal",
+    "amplified by conjunction", "grand-trine-element", "ascending-sign-amplification",
+    "asc-ruler", "ascendant-ruler", "ruler-sign-position", "ruler-house-position",
+    "asc-conjunction", "asc-opposition", "asc-square", "asc-any-aspect",
+    "any-aspect", "any aspect", "any planet", "any planet within",
+    "mc-aspect", "mc-sign-ruler", "mc-tenth", "mc-development",
+    "asc-dsc-mc-ic", "asc-traditional-vs-modern", "asc-modifiability", "asc-sun",
+    "sign-on-cusp", "sign on cusp", "empty-house", "empty house",
+    "sign-position-priority", "house-placement", "cusp-conjunction",
+    "gains in importance", "more important when", "weighting", "proportionally",
+    "overall chart", "strongly represented", "chart emphasis",
+    "positive-negative-expression"
+  ],
+
+  "element_violation": {
+    "single_planet_id_regex": "^(sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto)-element-[a-z-]+$",
+    "_note": "An `element` record with no concrete element value cannot be reconciled (no fixed element by nature). Route a single-planet significations id ({planet}-element-{trait}) to house_domain on the point; anything relational/multi-factor (comparison, compatibility, conjunction, lord-of-year, an angle, a second point, a house number) to general. Driven by the rule 'factor_type==element and element absent', not a hardcoded id list."
+  },
+
+  "fixed_subject_guard_id_regex": "^asc-(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)-",
+
+  "_fixed_subject_guard_note": "Records naming a SPECIFIC rising sign (e.g. asc-scorpio-mars-primary-ruler) assert a fixed ascendant. They are NOT general angle-rules and must never be widened to general by route 4 — they stay unclassified (the LLM/owner can later type them `ascendant`). This protects the keystone false-ascendant behavior."
+}
