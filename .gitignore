@@ -13,6 +13,7 @@ node_modules/
 
 # --- Personal run outputs (real birth data + readings) ---
 runs/
+synastry_run/
 
 # --- Source corpus / extraction inputs (large; copyright-sensitive) ---
 TXT/

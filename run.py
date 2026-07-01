@@ -202,11 +202,13 @@ class WheelError(RuntimeError):
     """The chart-wheel render failed (Node missing, gate violation, or crash)."""
 
 
-def render_chart_wheels(chart_path: str, run_dir: str, suffix: str) -> list[str]:
+def render_chart_wheels(chart_path: str, run_dir: str, suffix: str,
+                        stem: str = "chart_wheel") -> list[str]:
     """Render the chart wheel for each theme into run_dir, gated by §8 invariants.
 
     Pure function of chart.json (no LLM, no network). Returns the written SVG
-    paths. Raises WheelError on a missing Node runtime, an invariant-gate
+    paths. ``stem`` names the output file (e.g. "chart_wheel_a" for a synastry
+    person). Raises WheelError on a missing Node runtime, an invariant-gate
     violation, or any renderer crash — fail loud, like any other stage.
     """
     import shutil
@@ -228,7 +230,7 @@ def render_chart_wheels(chart_path: str, run_dir: str, suffix: str) -> list[str]
 
     written: list[str] = []
     for theme in WHEEL_THEMES:
-        out_path = os.path.join(run_dir, suffixed(f"chart_wheel.{theme}.svg", suffix))
+        out_path = os.path.join(run_dir, suffixed(f"{stem}.{theme}.svg", suffix))
         # --check runs the §8 invariant gate and writes the SVG only if it passes;
         # exit 1 on any violation.
         proc = subprocess.run(
