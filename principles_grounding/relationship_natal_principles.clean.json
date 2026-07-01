@@ -1,0 +1,3075 @@
+[
+ {
+  "principle_id": "opposition-house-aspect-meaning",
+  "domain": "relationship",
+  "topic_tags": [
+   "opposition",
+   "seventh house",
+   "aspect meaning",
+   "house correspondence"
+  ],
+  "rule": "The opposition, as a seventh-house aspect, signifies confrontation and partnership, the self as experienced through encounter with others, and the tension between one's internal world and external reality. The opposition-seventh-house correspondence is identified as the most consistently reliable of these linkages because both share second-harmonic symbolism.",
+  "conditions": [
+   "opposition aspect"
+  ],
+  "judgment": "Opposition = seventh-house symbolism: self-other confrontation, partnership, conflict between inner and outer world.",
+  "attribution_in_text": null,
+  "notes": "Explicitly identified as the most reliable house-aspect correspondence due to shared second-harmonic basis.",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "basics",
+   "factor_type": "general",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "air-element-significations",
+  "domain": "relationship",
+  "topic_tags": [
+   "air element",
+   "Gemini",
+   "Libra",
+   "Aquarius",
+   "element meanings",
+   "mind",
+   "communication"
+  ],
+  "rule": "The Air element corresponds to mental perception, ideation, and interpersonal communication. Strong Air emphasis in a chart indicates a primarily intellectual mode of engaging with experience, an orientation toward abstract thought, sociability, verbalization, and the need for rational perspective and relational awareness.",
+  "conditions": "Significant planetary placement in Air signs (Gemini, Libra, Aquarius)",
+  "judgment": "The individual operates chiefly through the mind: rationalizing, communicating, seeking understanding and objectivity, with a marked need for social connection and conceptual clarity",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "basics",
+   "factor_type": "general",
+   "relational_role": "social",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "active-passive-element-polarity",
+  "domain": "relationship",
+  "topic_tags": [
+   "fire element",
+   "air element",
+   "water element",
+   "earth element",
+   "active",
+   "passive",
+   "polarity",
+   "compatibility"
+  ],
+  "rule": "The four elements divide into two functional polarities: Fire and Air are active and self-expressive, directing energy outward without strong inhibition; Water and Earth are receptive and self-containing, conserving energy inward before acting. This polarity governs both individual interpretive emphasis and chart-comparison compatibility assessments.",
+  "conditions": "Element grouping of a sign or planet placement",
+  "judgment": "Fire and Air placements indicate outward, uninhibited energy expression (Fire through direct action, Air through social and verbal channels); Water and Earth placements indicate reserved, internally processed expression that builds toward a stable foundation before acting outwardly. Signs sharing the same element, or belonging to the same polarity group, are considered mutually compatible",
+  "attribution_in_text": null,
+  "notes": "Compatibility between same-polarity signs (e.g., Earth and Water together) is stated as a general tendency; individual chart factors can modify this",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "basics",
+   "factor_type": "general",
+   "relational_role": "general",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "venus-element-affection-reception",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "element",
+   "fire",
+   "earth",
+   "air",
+   "water",
+   "love",
+   "affection",
+   "relationships"
+  ],
+  "rule": "The element of Venus's sign governs both the manner in which affection and appreciation are expressed outwardly and the kinds of shared experience that satisfy the need for closeness and feeling valued. It describes the give-and-take dynamic in intimate and social relationships.",
+  "conditions": [
+   "Venus sign",
+   "element of Venus sign (fire, earth, air, or water)"
+  ],
+  "judgment": "Fire Venus: affection expressed energetically and directly, closeness felt through shared vigorous activity and mutual enthusiasm. Earth Venus: affection expressed tangibly and reliably, closeness felt through commitment, shared responsibility, and sensual pleasure. Air Venus: affection expressed through intellectual exchange and companionship, closeness felt through verbal sharing and social compatibility. Water Venus: affection expressed with emotional sympathy, closeness felt through deep emotional merging.",
+  "attribution_in_text": null,
+  "notes": "The text distinguishes Venus's function by gender: for women it is connected to feminine self-image and is described as a more direct sexual indicator; for men it describes romantic attraction and aesthetic preference, with Mars being the more specifically sexual indicator.",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_domain",
+   "point": "Venus",
+   "relational_role": "affection",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-gender-differentiation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "gender",
+   "women",
+   "men",
+   "sexual indicators",
+   "attraction",
+   "Mars"
+  ],
+  "rule": "Venus functions differently in charts depending on the native's gender. In a woman's chart it is linked to feminine self-concept and governs how she gives and receives in romantic and sexual relationships, serving as a primary sexual indicator. In a man's chart Venus describes the type of woman he finds romantically and aesthetically attractive and his ideals regarding love, but it is not primarily a sexual indicator; Mars holds that role for men.",
+  "conditions": [
+   "Venus sign",
+   "Mars sign",
+   "natal gender of native"
+  ],
+  "judgment": "For women: Venus sign reveals the qualities she needs to experience to feel feminine and describes her approach to intimate relationships. For men: Venus sign describes the romantic ideal and aesthetic attraction type, while Mars governs sexual drive and expression.",
+  "attribution_in_text": null,
+  "notes": "The text adds a footnote distinguishing Venus from the Moon in a man's chart: the Moon describes the type of woman who attracts through companionship needs such as security, nurturing, and responsiveness, whereas Venus addresses erotic and romantic attraction.",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "unclassified",
+   "relational_role": "romance",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "mars-element-assertion-physical-energy",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "element",
+   "fire",
+   "earth",
+   "air",
+   "water",
+   "assertion",
+   "physical energy",
+   "sexual drive"
+  ],
+  "rule": "The element of Mars's sign indicates the mode through which the native asserts personal will and seeks physical excitement, as well as the specific method employed to pursue desires. It describes the style of aggression, initiative, and physical self-expression.",
+  "conditions": [
+   "Mars sign",
+   "element of Mars sign (fire, earth, air, or water)"
+  ],
+  "judgment": "Fire Mars: asserts through direct physical action and initiative, energy stimulated by dynamic movement. Earth Mars: asserts through patient concrete achievement, energy stimulated by hard work and duty. Air Mars: asserts through ideas and active communication, energy stimulated by mental challenges and social engagement. Water Mars: asserts through emotional subtlety and persistence, energy stimulated by deep yearning and emotional intensity.",
+  "attribution_in_text": null,
+  "notes": "The text distinguishes Mars's role by gender: in a man's chart Mars governs masculine self-projection and sexual giving; in a woman's chart Mars represents an internalized masculine image and is a key indicator of the type of man she finds physically attractive.",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_domain",
+   "point": "Mars",
+   "relational_role": "desire",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "mars-gender-differentiation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "gender",
+   "women",
+   "men",
+   "sexual indicators",
+   "attraction",
+   "male image"
+  ],
+  "rule": "Mars operates differently by gender. In a man's chart it governs forceful self-projection, sexual assertiveness, and masculine identity. In a woman's chart it functions as an internalized masculine archetype and, together with the sign it occupies and its aspects, describes the kind of man she finds physically stimulating.",
+  "conditions": [
+   "Mars sign",
+   "Mars aspects",
+   "natal gender of native"
+  ],
+  "judgment": "For men: Mars sign and aspects describe how masculine energy, leadership, and sexuality are expressed. For women: Mars sign and aspects reveal the physical and energetic qualities she finds attractive in male partners.",
+  "attribution_in_text": null,
+  "notes": "The text notes that in women Venus and Mars combine more inseparably as components of sexuality than is typically the case for men.",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "unclassified",
+   "relational_role": "attraction",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "planet-sign-function-venus",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "sign placement",
+   "affection",
+   "values",
+   "relationships",
+   "pleasure"
+  ],
+  "rule": "The zodiac sign of Venus describes how a person expresses affection, the conditions under which they feel valued or appreciated, and the manner in which they give of themselves in close relationships.",
+  "conditions": [
+   "Venus's sign position"
+  ],
+  "judgment": "Indicates the quality of emotional generosity, aesthetic taste, and relational style, including potential impediments to intimacy.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_domain",
+   "point": "Venus",
+   "relational_role": "affection",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "planet-sign-function-mars",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "sign placement",
+   "assertion",
+   "desire",
+   "physical energy",
+   "initiative"
+  ],
+  "rule": "The zodiac sign of Mars describes the manner in which a person asserts themselves, pursues desires, and expends physical and sexual energy.",
+  "conditions": [
+   "Mars's sign position"
+  ],
+  "judgment": "Indicates the characteristic quality of initiative, the style of competitive or decisive action, and factors that either support or obstruct the fulfillment of desires.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_domain",
+   "point": "Mars",
+   "relational_role": "desire",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "moon-sign-aquarius-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Moon",
+   "Aquarius",
+   "independence",
+   "detachment",
+   "social orientation"
+  ],
+  "rule": "When the Moon occupies Aquarius, emotional reactions are unpredictable and characterized by objective detachment. Security depends on intellectual and expressive freedom, and on social interaction. The need for emotional independence may produce distance from one's own inner feelings and insensitivity toward others.",
+  "conditions": [
+   "Moon in Aquarius"
+  ],
+  "judgment": "Detached, socially-oriented emotional nature; security through freedom and group interaction; risk of alienation from personal emotional depth.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Moon",
+   "sign": "Aquarius",
+   "relational_role": "social",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-sign-aries-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Aries",
+   "affection",
+   "directness",
+   "relationships"
+  ],
+  "rule": "When Venus occupies Aries, affection is expressed directly and impulsively. The early stages of relationships are especially enjoyed. Forceful self-assertion can make sustained intimacy difficult to achieve.",
+  "conditions": [
+   "Venus in Aries"
+  ],
+  "judgment": "Enthusiastic, initiative-driven affection; pleasure in new emotional beginnings; risk of insufficient patience for relationship depth.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Aries",
+   "relational_role": "affection",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-sign-taurus-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Taurus",
+   "sensuality",
+   "possessiveness",
+   "physical pleasure"
+  ],
+  "rule": "When Venus occupies Taurus, affection is expressed through physical warmth and steadiness. Deep pleasure arises from the senses and from material beauty. Possessiveness or reluctance to release emotional control can restrict the natural giving of affection.",
+  "conditions": [
+   "Venus in Taurus"
+  ],
+  "judgment": "Stable, sensory-anchored affection; appreciation of physical and material beauty; risk of emotional stinginess or possessive attachment.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Taurus",
+   "relational_role": "affection",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-sign-gemini-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Gemini",
+   "verbal affection",
+   "variety",
+   "mental rapport"
+  ],
+  "rule": "When Venus occupies Gemini, affection is communicated verbally and lightly. Mental rapport and variety are highly valued. The constant need for new stimulation can prevent the formation of lasting relational depth.",
+  "conditions": [
+   "Venus in Gemini"
+  ],
+  "judgment": "Playful, intellectually-oriented affection; valuing of wit and conversational connection; risk of superficiality in relationships.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Gemini",
+   "relational_role": "affection",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "venus-sign-cancer-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Cancer",
+   "nurturing affection",
+   "protection",
+   "family"
+  ],
+  "rule": "When Venus occupies Cancer, affection is expressed through nurturing and protective behaviors within close-knit groups. Moodiness, timidity, or self-protectiveness can impede the free flow of affection.",
+  "conditions": [
+   "Venus in Cancer"
+  ],
+  "judgment": "Tenderly protective, family-oriented affection; comfort through mutual nurturing; risk of emotional withdrawal or excessive dependency.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Cancer",
+   "relational_role": "affection",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-sign-leo-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Leo",
+   "dramatic affection",
+   "generosity",
+   "recognition"
+  ],
+  "rule": "When Venus occupies Leo, affection is expressed warmly and dramatically, shaped by pride and the desire for recognition. Giving is generous and gracious but the need to occupy a central role may obstruct genuine emotional mutuality.",
+  "conditions": [
+   "Venus in Leo"
+  ],
+  "judgment": "Expansive, pride-colored affection; loyalty and generosity in love; risk of dominating the emotional life of partners.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Leo",
+   "relational_role": "affection",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-sign-virgo-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Virgo",
+   "modest affection",
+   "service",
+   "practicality"
+  ],
+  "rule": "When Venus occupies Virgo, affection is given modestly and helpfully. Emotional satisfaction arises from being of practical use. Over-helpfulness, petty criticism, or natural reserve can impede the expression of passion and spontaneous intimacy.",
+  "conditions": [
+   "Venus in Virgo"
+  ],
+  "judgment": "Service-oriented, modest affection; emotional contentment through practical contribution; risk of inhibited passion.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Virgo",
+   "relational_role": "affection",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "venus-sign-libra-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Libra",
+   "harmonious affection",
+   "balance",
+   "cooperation"
+  ],
+  "rule": "When Venus occupies Libra, affection is expressed considerately and with a strong orientation toward fairness and peace. Deep need for relational harmony may lead to avoidance of difficult emotional exchanges, thereby narrowing the scope of true intimacy.",
+  "conditions": [
+   "Venus in Libra"
+  ],
+  "judgment": "Gracious, balance-seeking affection; need for cooperative equality in relationships; risk of emotional avoidance of conflict reducing relational depth.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Libra",
+   "relational_role": "partnership",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-sign-scorpio-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Scorpio",
+   "intense affection",
+   "passion",
+   "transformation"
+  ],
+  "rule": "When Venus occupies Scorpio, affection is expressed with consuming intensity and emotional depth. Close bonds carry a transformative quality. Secrecy and difficulty trusting others can obstruct relational openness.",
+  "conditions": [
+   "Venus in Scorpio"
+  ],
+  "judgment": "Passionately-bonded, transformatively-oriented affection; potential for profound intimate exchange; risk of relational closure through distrust.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Scorpio",
+   "relational_role": "intimacy",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-sign-sagittarius-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Sagittarius",
+   "freedom in love",
+   "idealism",
+   "honesty"
+  ],
+  "rule": "When Venus occupies Sagittarius, affection is generous and freedom-loving. Philosophical compatibility is important in close bonds. Restlessness and the drive for exploration can interfere with sustained relational commitment; bluntness may inadvertently disregard others' feelings.",
+  "conditions": [
+   "Venus in Sagittarius"
+  ],
+  "judgment": "Idealistic, freedom-valuing affection; need for shared philosophical basis in relationships; risk of inconsistency in commitment and tactless honesty.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Sagittarius",
+   "relational_role": "affection",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-sign-capricorn-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Capricorn",
+   "cautious affection",
+   "duty",
+   "commitment"
+  ],
+  "rule": "When Venus occupies Capricorn, affection is expressed cautiously and formally. The native requires assurance of commitment before revealing deeper feelings. Suspicion, aloofness, or emotional reserve can prevent close relational development.",
+  "conditions": [
+   "Venus in Capricorn"
+  ],
+  "judgment": "Reserved, duty-conscious affection; capable of lasting loyalty when secure; risk of emotional inaccessibility through guardedness.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Capricorn",
+   "relational_role": "affection",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "venus-sign-aquarius-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Aquarius",
+   "unconventional affection",
+   "freedom",
+   "social love"
+  ],
+  "rule": "When Venus occupies Aquarius, affection is expressed freely and unconventionally. Intellectual and idealistic exchange with a partner is valued. Detachment and the need to socialize broadly can cause others to perceive the native as emotionally unavailable.",
+  "conditions": [
+   "Venus in Aquarius"
+  ],
+  "judgment": "Experimental, socially-expansive affection; values intellectual freedom in bonds; risk of emotional distance perceived as coldness.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Aquarius",
+   "relational_role": "affection",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "venus-sign-pisces-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Pisces",
+   "compassionate affection",
+   "idealization",
+   "selfless giving"
+  ],
+  "rule": "When Venus occupies Pisces, affection is compassionate, empathic, and romantically idealistic. Capacity for selfless giving is high. Escapism, confusion, or poor discrimination in choosing partners can undermine the ability to form stable relationships.",
+  "conditions": [
+   "Venus in Pisces"
+  ],
+  "judgment": "Transcendently empathic, selflessly-giving affection; tendency to idealize partners; risk of relational instability from vague desires and insufficient discernment.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Venus",
+   "sign": "Pisces",
+   "relational_role": "romance",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "mars-sign-aries-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Aries",
+   "assertion",
+   "initiative",
+   "physical energy"
+  ],
+  "rule": "When Mars occupies Aries, self-assertion is direct, competitive, and impulsive. Initiative is strong and physical energy is expressed confidently. Recklessness may undermine sustained success.",
+  "conditions": [
+   "Mars in Aries"
+  ],
+  "judgment": "Bold, pioneering assertion; high physical and sexual drive; risk of impulsive action leading to setbacks.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Mars",
+   "sign": "Aries",
+   "relational_role": "desire",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-sign-gemini-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Gemini",
+   "verbal assertion",
+   "adaptability",
+   "diverse skills"
+  ],
+  "rule": "When Mars occupies Gemini, assertion is expressed through communication, mental agility, and a variety of specialized abilities. Desired objectives shift frequently, leading to uncertainty and susceptibility to distraction. Physical and sexual drive responds to mental stimulation.",
+  "conditions": [
+   "Mars in Gemini"
+  ],
+  "judgment": "Versatile, mentally-animated assertion; action through communication and skill variety; risk of unfocused effort from changing desires.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Mars",
+   "sign": "Gemini",
+   "relational_role": "desire",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "mars-sign-leo-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Leo",
+   "dramatic assertion",
+   "pride",
+   "recognition"
+  ],
+  "rule": "When Mars occupies Leo, assertion is dramatic and pride-driven. Creative initiative is strong and confident. Recognition and appreciation are needed to sustain physical and sexual vitality. Excessive dominance can alienate others.",
+  "conditions": [
+   "Mars in Leo"
+  ],
+  "judgment": "Radiantly expressive, recognition-seeking assertion; abundant vitality and creative drive; risk of pushing or dominating others.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Mars",
+   "sign": "Leo",
+   "relational_role": "desire",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-sign-libra-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Libra",
+   "cooperative assertion",
+   "balance",
+   "relationships"
+  ],
+  "rule": "When Mars occupies Libra, assertion is tactful and socially oriented, directed toward fairness and harmonization. Physical energy is strongly influenced by the quality of close relationships. Indecisiveness while weighing options can delay decisive action.",
+  "conditions": [
+   "Mars in Libra"
+  ],
+  "judgment": "Relationally-calibrated, diplomatically-directed assertion; drive toward balanced outcomes; risk of hesitation impairing timely action.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Mars",
+   "sign": "Libra",
+   "relational_role": "partnership",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "mars-sign-scorpio-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Scorpio",
+   "intense assertion",
+   "endurance",
+   "transformation"
+  ],
+  "rule": "When Mars occupies Scorpio, assertion is powerful, magnetic, and driven by deep compulsions. Capacity for endurance is great. The need for total control and secretiveness can limit freedom of expression and hinder the channeling of emotional power toward effective action.",
+  "conditions": [
+   "Mars in Scorpio"
+  ],
+  "judgment": "Intensely driven, transformative assertion; strong endurance and depth of desire; risk of self-blocking through excessive secretiveness and control-orientation.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Mars",
+   "sign": "Scorpio",
+   "relational_role": "desire",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-sign-capricorn-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Capricorn",
+   "disciplined assertion",
+   "ambition",
+   "long-term goals"
+  ],
+  "rule": "When Mars occupies Capricorn, assertion is cautious, authoritative, and accompanied by calculated planning. Desires are pursued persistently through established channels. Sexual drive is controlled but strong and physically-grounded.",
+  "conditions": [
+   "Mars in Capricorn"
+  ],
+  "judgment": "Strategically-planned, authority-seeking assertion; patient and steady pursuit of material achievement; disciplined but earthy physical drive.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Mars",
+   "sign": "Capricorn",
+   "relational_role": "desire",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "mars-sign-aquarius-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Aquarius",
+   "independent assertion",
+   "innovation",
+   "rebellion"
+  ],
+  "rule": "When Mars occupies Aquarius, assertion is individualistic and intellectually motivated. The drive to reform and innovate is strong. Rebelliousness may obstruct goal attainment unless channeled constructively. Detachment can diminish the expression of passionate desire.",
+  "conditions": [
+   "Mars in Aquarius"
+  ],
+  "judgment": "Independently-motivated, reforming assertion; innovation-driven initiative; risk of counterproductive rebellion or emotional detachment undermining passionate pursuit.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Mars",
+   "sign": "Aquarius",
+   "relational_role": "desire",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-sign-pisces-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Pisces",
+   "subtle assertion",
+   "compassion",
+   "intuitive drive"
+  ],
+  "rule": "When Mars occupies Pisces, assertion is gentle, empathic, and guided by intuition, inspiration, or an inner vision. Self-assertion and decisiveness are hampered by emotional vulnerability. Physical drive is shaped by mood and inner emotional states.",
+  "conditions": [
+   "Mars in Pisces"
+  ],
+  "judgment": "Subtly-motivated, compassion-infused assertion; desire pursued through intuitive means; risk of weakened decisiveness from vulnerability.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Mars",
+   "sign": "Pisces",
+   "relational_role": "desire",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "saturn-sign-libra-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Saturn",
+   "Libra",
+   "effort through relationship",
+   "fairness",
+   "commitment"
+  ],
+  "rule": "When Saturn occupies Libra, identity and security are established through responsible, fair, and committed relational conduct. Disciplined maintenance of relational obligations can bring deep satisfaction. Fear of partnership can impede achievement and limit intimacy.",
+  "conditions": [
+   "Saturn in Libra"
+  ],
+  "judgment": "Relationally-principled, fairness-based discipline; satisfaction through honored commitments; risk of limited intimacy from fear of partnership.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Saturn",
+   "sign": "Libra",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "saturn-sign-aquarius-delineation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Saturn",
+   "Aquarius",
+   "effort through social purpose",
+   "intellectual discipline",
+   "group organization"
+  ],
+  "rule": "When Saturn occupies Aquarius, security is established through disciplined intellectual achievement and directed participation in group or social goals. Maintaining important social bonds and guiding collective effort is a characteristic means of stabilizing purpose. Eccentricity or mental rigidity can each obstruct tangible achievement.",
+  "conditions": [
+   "Saturn in Aquarius"
+  ],
+  "judgment": "Socially-purposive, intellectually-structured discipline; achievement through organized group effort; risk of counterproductive eccentricity or social insecurity.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Saturn",
+   "sign": "Aquarius",
+   "relational_role": "social",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "asc-opposition-descendant-planet",
+  "domain": "relationship",
+  "topic_tags": [
+   "Ascendant",
+   "opposition",
+   "Descendant",
+   "seventh house",
+   "relationships",
+   "inner division"
+  ],
+  "rule": "A planet within 6 degrees of the Descendant (opposition to the Ascendant) colors the personality strongly, particularly in the context of one-to-one relationships. It may also produce an alternation between two contrasting behavioral modes, one aligned with the Ascendant and one with the opposing planet's nature.",
+  "conditions": "A planet within 6 degrees of the Descendant degree (opposition aspect to Ascendant).",
+  "judgment": "Either the native exhibits a strong relational coloration from that planet's energy, or an internal oscillation between opposite modes of being arises, experienced as inner division. Ranked as the second most powerful aspect to the Ascendant.",
+  "attribution_in_text": null,
+  "notes": "Not all charts with this configuration show the inner division pattern; some simply show the planetary coloration in relationships without conflict.",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "general",
+   "relational_role": "partnership",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "asc-cancer-moon-introversion-override",
+  "domain": "relationship",
+  "topic_tags": [
+   "Cancer ascendant",
+   "Moon",
+   "ascendant ruler",
+   "introversion",
+   "extroversion"
+  ],
+  "rule": "Cancer Ascendant typically produces strong introversion, but when the Moon (chart ruler) occupies a sign with pronounced outward orientation (e.g., Leo or other extroverted signs), more socially expressive tendencies can become dominant.",
+  "conditions": "Cancer Ascendant; Moon in Leo or similarly extroverted signs.",
+  "judgment": "The Moon's sign placement overrides or substantially reduces the default introverted Cancer Ascendant tendency, producing more outward social expression.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_sign",
+   "point": "Moon",
+   "sign": "Leo",
+   "relational_role": "social",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-yin-polarity",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "polarity",
+   "Yin",
+   "attraction"
+  ],
+  "rule": "Venus is classified as a Yin (negative polarity) planet, meaning its mode of operation is receptive and attractive rather than projective. It draws circumstances, people, and objects toward the native rather than impelling the native toward them.",
+  "conditions": [
+   "Venus"
+  ],
+  "judgment": "The native plays a passive role; things and people are attracted to them rather than being actively pursued",
+  "attribution_in_text": null,
+  "notes": "Author distinguishes 'negative' polarity from difficulty or malefic quality",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "basics",
+   "factor_type": "general",
+   "relational_role": "attraction",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-core-significations",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "love",
+   "beauty",
+   "creativity",
+   "attraction",
+   "social"
+  ],
+  "rule": "Venus signifies: the power of attraction between complementary entities, love as a unifying emotion, beauty, creativity (combining external elements into an aesthetically superior whole), social pleasure, parties, and the formation of relationships.",
+  "conditions": [
+   "Venus"
+  ],
+  "judgment": "Matters governed by Venus include love affairs, friendships, social occasions, artistic creation, and the appreciation of beauty",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "basics",
+   "factor_type": "general",
+   "relational_role": "romance",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-mars-balance",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Mars",
+   "ego",
+   "relationship",
+   "balance"
+  ],
+  "rule": "Venus requires the presence of Mars (ego drive, self-assertion) to function correctly. When the balance between the two is upset, love energy can become confused with the desire to control or manipulate.",
+  "conditions": [
+   "Venus",
+   "Mars",
+   "balance of planetary energies"
+  ],
+  "judgment": "Healthy love relationships require both receptive attraction (Venus) and self-defined individuality (Mars); excess of either produces dysfunction",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "basics",
+   "factor_type": "general",
+   "relational_role": "intimacy",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "house-triplicity-air-social-intellectual",
+  "domain": "relationship",
+  "topic_tags": [
+   "air houses",
+   "3rd house",
+   "7th house",
+   "11th house",
+   "house triplicity",
+   "social emphasis",
+   "intellectual emphasis",
+   "relationship"
+  ],
+  "rule": "Houses 3, 7, and 11 form a group associated with social interaction and conceptual activity. Planets in this group describe energies expressed through relationship, communication, and the exchange of ideas. A strong emphasis on this group indicates the native's life is organized around interpersonal connection and intellectual engagement.",
+  "conditions": [
+   "concentration of natal planets in houses 3, 7, or 11"
+  ],
+  "judgment": "The native's primary arena is mental and social; associations, verbal exchange, and conceptual frameworks dominate life experience.",
+  "attribution_in_text": null,
+  "notes": "Traditional label 'Trinity of Relationship' noted as a conventional old term.",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "basics",
+   "factor_type": "general",
+   "relational_role": "social",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "eighth-house-significations",
+  "domain": "relationship",
+  "topic_tags": [
+   "8th house",
+   "sexuality",
+   "shared resources",
+   "transformation",
+   "occult",
+   "emotional security",
+   "power"
+  ],
+  "rule": "The eighth house governs the drive for deep emotional and psychological security, pursued through merger with another (sexuality), the acquisition of power or influence over others, shared financial arrangements, and investigation of hidden or transformative processes. It also pertains to the release and regeneration of energy across all forms, including healing and occult study.",
+  "conditions": [
+   "planets in the 8th house",
+   "8th house cusp sign",
+   "emphasis by planetary concentration"
+  ],
+  "judgment": "The native seeks ultimate security through union, transformation, or power; inner emotional conflicts are prominent until psychological freedom from compulsion and desire is achieved.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_domain",
+   "house": 8,
+   "house_system": "placidus",
+   "relational_role": "intimacy",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "fifth-house-significations",
+  "domain": "relationship",
+  "topic_tags": [
+   "5th house",
+   "children",
+   "creativity",
+   "love affairs",
+   "risk",
+   "identity security",
+   "play"
+  ],
+  "rule": "The fifth house governs the native's search for confirmation and security of identity through creative output, love relationships, offspring, and public recognition. All fifth-house domains share the characteristic of risk; the capacity to take risks is identified as the mechanism through which a secure, flexible identity is developed.",
+  "conditions": [
+   "planets in the 5th house",
+   "5th house cusp sign",
+   "emphasis by planetary concentration"
+  ],
+  "judgment": "The native seeks validation of selfhood through creative and pleasurable pursuits; risk-taking across fifth-house domains strengthens rather than undermines a stable sense of identity.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_domain",
+   "house": 5,
+   "house_system": "placidus",
+   "relational_role": "romance",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "seventh-house-significations",
+  "domain": "relationship",
+  "topic_tags": [
+   "7th house",
+   "partnership",
+   "one-to-one relationship",
+   "marriage",
+   "social structures",
+   "intellectual development"
+  ],
+  "rule": "The seventh house governs one-to-one relationships as the foundational unit of social structure. The quality of the native's primary partnerships has pervasive downstream effects on health, finances, sexuality, children, professional success, and intellectual development.",
+  "conditions": [
+   "planets in the 7th house",
+   "Descendant sign",
+   "emphasis by planetary concentration"
+  ],
+  "judgment": "The house describes how the native engages in close partnership and with what orientation; the effects of that partnership quality radiate into virtually all other life domains.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_domain",
+   "house": 7,
+   "house_system": "placidus",
+   "relational_role": "partnership",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "eleventh-house-significations",
+  "domain": "relationship",
+  "topic_tags": [
+   "11th house",
+   "groups",
+   "friends",
+   "intellectual security",
+   "collective",
+   "social ideals",
+   "purpose"
+  ],
+  "rule": "The eleventh house governs the native's pursuit of intellectual and social security through affiliation with like-minded groups and engagement with large-scale conceptual systems (political, metaphysical, scientific). The most effective resolution of eleventh-house drives involves developing a clear individual purpose that simultaneously serves collective needs.",
+  "conditions": [
+   "planets in the 11th house",
+   "11th house cusp sign",
+   "emphasis by planetary concentration"
+  ],
+  "judgment": "The native seeks security through intellectual belonging and group affiliation; sustainable fulfillment requires harmonizing personal purpose with social contribution.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_domain",
+   "house": 11,
+   "house_system": "placidus",
+   "relational_role": "friendship",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "venus-house-pleasure-domain",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "house placement",
+   "pleasure",
+   "affection",
+   "appreciation",
+   "happiness"
+  ],
+  "rule": "The house containing natal Venus indicates where the native seeks pleasure, contentment, and emotional warmth. This domain is where affection is most naturally given and received and where a felt sense of being appreciated most readily develops.",
+  "conditions": [
+   "natal Venus's house position"
+  ],
+  "judgment": "That house's sphere is the native's primary arena for enjoyment, aesthetic engagement, and reciprocal affection.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_domain",
+   "point": "Venus",
+   "relational_role": "affection",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "asc-dsc-mc-ic-conjunction-dominance",
+  "domain": "relationship",
+  "topic_tags": [
+   "Ascendant",
+   "Descendant",
+   "MC",
+   "IC",
+   "angle conjunction",
+   "dominant planet",
+   "angular emphasis"
+  ],
+  "rule": "A planet conjunct an angular axis point (Ascendant, Descendant, MC, or IC) within the 6-degree orb becomes a prominently influential factor in the native's overall life orientation and may function as a dominant or defining significator, regardless of which house it technically occupies.",
+  "conditions": [
+   "planet within 6 degrees of ASC, DSC, MC, or IC"
+  ],
+  "judgment": "Such a planet's themes are pervasively important to the native's identity, relationships, vocation, or foundations and should not be minimized by virtue of its nominal placement in a non-angular house.",
+  "attribution_in_text": "Gauquelin (cited in footnote)",
+  "notes": "Rule is presented as a correction to the traditional strict-boundary interpretation of house placement.",
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "general",
+   "relational_role": "general",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "opposition-projection-relationship-challenge",
+  "domain": "relationship",
+  "topic_tags": [
+   "opposition",
+   "180 degrees",
+   "harmonious elements",
+   "projection",
+   "relationships",
+   "objectivity"
+  ],
+  "rule": "The 180-degree aspect commonly links planets in signs of compatible elements. Despite elemental harmony, the opposing directions of the two energies create overstimulation and a sense of being pulled between contradictory tendencies. The primary arena where this is experienced is close personal relationships. A marked tendency arises to project one pole of the opposition onto others rather than owning both sides, leading to difficulty in distinguishing one's own qualities from those attributed to partners. Opposite signs share fundamental similarities and are complementary, yet their opposition is real and cannot be ignored.",
+  "conditions": "Two planets within orb of the 180-degree angle; typically in signs of the same elemental polarity (compatible elements)",
+  "judgment": "Chronic tension between two life dimensions most acutely felt in one-to-one relationships; tendency toward projection of one planet's qualities onto others; difficulty achieving objectivity about both energies simultaneously.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "unclassified",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-aspects-challenging-not-absence-of-love",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "challenging aspects",
+   "love",
+   "relationships",
+   "blocks",
+   "affection"
+  ],
+  "rule": "Challenging aspects involving Venus do not indicate that the individual is incapable of love or will not be loved. Instead, they indicate habitual patterns of blocking the expression of affection or inhibiting the receipt of affection from others. Identifying and working to remove such blocks can substantially improve relational and emotional satisfaction.",
+  "conditions": "Venus in square, opposition, quincunx, or other challenging aspect with another planet",
+  "judgment": "Not an absence of love capacity, but a tendency toward habitual self-restriction in the expression and reception of affection; amenable to improvement through deliberate awareness and effort.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "modern",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "unclassified",
+   "relational_role": "affection",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "house-significations-5th",
+  "domain": "relationship",
+  "topic_tags": [
+   "5th house",
+   "children",
+   "love",
+   "gifts",
+   "messengers",
+   "pleasure",
+   "triplicity of ascendant"
+  ],
+  "rule": "The fifth house succeeds the IC angle and is classified as a place of love by virtue of belonging to the same triplicity as the Ascendant and being the place of the Ascendant's joy-triplicity. It signifies children, pleasures, trusted relationships, envoys, gifts, honor, friendships, and the produce of real estate.",
+  "conditions": [
+   "planets in 5th house",
+   "lord of 5th"
+  ],
+  "judgment": "Judges children, pleasures, and matters requiring trust or goodwill.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "basics",
+   "factor_type": "general",
+   "relational_role": "romance",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "house-significations-7th",
+  "domain": "relationship",
+  "topic_tags": [
+   "7th house",
+   "DC",
+   "marriage",
+   "opponents",
+   "open enemies",
+   "fugitives",
+   "lost things",
+   "travel"
+  ],
+  "rule": "The seventh house, the western angle, is in opposition to the Ascendant and therefore adversarial to it. It signifies marriage and its circumstances, open conflicts, transactions between two parties, fugitives, stolen or lost objects, foreign journeys, and losses.",
+  "conditions": [
+   "planets in 7th house",
+   "lord of 7th"
+  ],
+  "judgment": "Planets here are in opposition to the Ascendant's interests; judges adversaries, partnerships, and lost property.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "basics",
+   "factor_type": "general",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "saturn-in-venus-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Saturn",
+   "Venus domicile",
+   "women",
+   "relationships"
+  ],
+  "rule": "Saturn in a Venus domicile inclines the native toward unions with aged, impoverished, or socially disgraced women, resulting in public disgrace and dishonor.",
+  "conditions": [
+   "Saturn in Venus domicile"
+  ],
+  "judgment": "Problematic relationships with low-status or elderly women; social dishonor.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Saturn",
+   "dignity": "domicile",
+   "dignity_ruler": "Venus",
+   "relational_role": "romance",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "saturn-in-moon-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Saturn",
+   "Moon domicile",
+   "health",
+   "mother",
+   "women"
+  ],
+  "rule": "Saturn in a lunar domicile brings scandal with women and associates; illness originates from phlegmatic and splenic conditions, affecting the lower body. The mother shares similar health vulnerabilities, and the native harms the mother's financial resources.",
+  "conditions": [
+   "Saturn in Moon domicile"
+  ],
+  "judgment": "Social scandal, chronic illness of lower body, maternal harm and financial damage to mother.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Saturn",
+   "dignity": "domicile",
+   "dignity_ruler": "Moon",
+   "relational_role": "social",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-in-own-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "own domicile",
+   "Aries",
+   "Scorpio",
+   "sect",
+   "benefic aspect"
+  ],
+  "rule": "Mars in his own domicile generally produces a soldier, boastful character, geometric aptitude, honor, and marital status. In Aries without benefic aspect the native risks falling from a high position. In Scorpio the native is bold and wealthy; nocturnal births improve outcomes, but diurnal births produce malice.",
+  "conditions": [
+   "Mars in own domicile",
+   "sign: Aries or Scorpio",
+   "benefic aspect present or absent",
+   "diurnal or nocturnal sect"
+  ],
+  "judgment": "Aries unaspected by benefic: risk of downfall. Scorpio: boldness and wealth; better at night.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Mars",
+   "dignity": "domicile",
+   "relational_role": "marriage",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "mars-in-venus-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Venus domicile",
+   "Libra",
+   "Taurus",
+   "sexuality",
+   "women"
+  ],
+  "rule": "Mars in a Venus domicile produces sexual misconduct including relations with relatives, and negative consequences from women. In Libra: danger from bladed instruments and fire in concealed locations. In Taurus: many male children but persistent sexual immorality.",
+  "conditions": [
+   "Mars in Venus domicile",
+   "sign: Libra or Taurus"
+  ],
+  "judgment": "Sexual transgression and harm from women; sign-specific dangers vary.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Mars",
+   "dignity": "domicile",
+   "dignity_ruler": "Venus",
+   "relational_role": "intimacy",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "sun-in-jupiter-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Sun",
+   "Jupiter domicile",
+   "sect",
+   "princes",
+   "arrogance"
+  ],
+  "rule": "The Sun in a Jupiter domicile produces integrity, wisdom, and access to rulers. However, a diurnal chart may lead to arrogance and inappropriate intimacies with the spouses of others. The native may be distrusted within his own household.",
+  "conditions": [
+   "Sun in Jupiter domicile",
+   "diurnal or nocturnal sect"
+  ],
+  "judgment": "Wisdom and noble connections, but potential arrogance and domestic mistrust; day chart amplifies social misconduct.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Sun",
+   "dignity": "domicile",
+   "dignity_ruler": "Jupiter",
+   "relational_role": "romance",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "sun-in-venus-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Sun",
+   "Venus domicile",
+   "women",
+   "dreams",
+   "journeys"
+  ],
+  "rule": "The Sun in a Venus domicile brings fortune through women, deep-minded engagement with complex subjects, skill in dream interpretation, social recognition, and success in foreign travels.",
+  "conditions": [
+   "Sun in Venus domicile"
+  ],
+  "judgment": "Wealth and reputation through women, dream interpretation, and beneficial travels.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Sun",
+   "dignity": "domicile",
+   "dignity_ruler": "Venus",
+   "relational_role": "social",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-in-saturn-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Saturn domicile",
+   "sect",
+   "women",
+   "marriage"
+  ],
+  "rule": "Venus in a Saturn domicile inclines the native toward aged or low-status women, with resulting public slander, though all undertakings are ultimately completed. Nocturnal chart intensifies bad marriages and brings witnessing of wives' deaths.",
+  "conditions": [
+   "Venus in Saturn domicile",
+   "diurnal or nocturnal sect"
+  ],
+  "judgment": "Attraction to undesirable women, slander, eventual success; night chart worsens marital outcomes.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "domicile",
+   "dignity_ruler": "Saturn",
+   "relational_role": "marriage",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-in-jupiter-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Jupiter domicile",
+   "sect",
+   "women",
+   "wealth"
+  ],
+  "rule": "Venus in a Jupiter domicile yields prosperity and exaltation, with wealth derived from women or feminine occupations such as institutional management. Nocturnal birth reduces these benefits.",
+  "conditions": [
+   "Venus in Jupiter domicile",
+   "diurnal or nocturnal sect"
+  ],
+  "judgment": "Fortune and exaltation through women or female-associated work; diminished at night.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "domicile",
+   "dignity_ruler": "Jupiter",
+   "relational_role": "attraction",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-in-mars-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Mars domicile",
+   "marriage",
+   "jealousy",
+   "enemies"
+  ],
+  "rule": "Venus in a Mars domicile produces enemies, scandals, an unpleasant marriage outcome, and potentially murderous jealousy toward the spouse.",
+  "conditions": [
+   "Venus in Mars domicile"
+  ],
+  "judgment": "Scandal, marital strife, and extreme jealousy potentially resulting in spousal harm.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "domicile",
+   "dignity_ruler": "Mars",
+   "relational_role": "marriage",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-in-sun-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Sun domicile",
+   "pleasures",
+   "reputation",
+   "women"
+  ],
+  "rule": "Venus in a solar domicile produces happiness, good living, attraction to immoral women, love of entertainment, and public criticism, while allowing the native to generally attain what he desires.",
+  "conditions": [
+   "Venus in Sun domicile"
+  ],
+  "judgment": "Joy and fulfillment of desires, but association with immoral women and bad reputation.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "domicile",
+   "dignity_ruler": "Sun",
+   "relational_role": "desire",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-in-own-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "own domicile",
+   "women",
+   "fortune"
+  ],
+  "rule": "Venus in her own domicile brings many pleasures and love of unwise women, which leads to some harm, but ultimately the native prospers and pursues virtuous ends.",
+  "conditions": [
+   "Venus in own domicile"
+  ],
+  "judgment": "Many joys but harm through foolish women; overall fortune and pursuit of good.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "domicile",
+   "relational_role": "romance",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-in-mercury-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Mercury domicile",
+   "faith",
+   "artisans",
+   "sexuality"
+  ],
+  "rule": "Venus in a Mercury domicile associates the native with devout persons and women in service roles, and with artistic crafts linked to women. The native has strong sexual desire.",
+  "conditions": [
+   "Venus in Mercury domicile"
+  ],
+  "judgment": "Association with pious and artistic communities; heightened sexuality.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "domicile",
+   "dignity_ruler": "Mercury",
+   "relational_role": "desire",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "venus-in-moon-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Moon domicile",
+   "marriage",
+   "love",
+   "misconduct"
+  ],
+  "rule": "Venus in a lunar domicile gives love of women and a joyful but errant marital life, associated with desire-driven errors or unconventional attachments and inclination toward improper activity.",
+  "conditions": [
+   "Venus in Moon domicile"
+  ],
+  "judgment": "Joyful but troubled love life driven by desire; tendency toward misconduct.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "domicile",
+   "dignity_ruler": "Moon",
+   "relational_role": "romance",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mercury-in-venus-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mercury",
+   "Venus domicile",
+   "arts",
+   "friends",
+   "sexuality"
+  ],
+  "rule": "Mercury in a Venus domicile produces sexual desire, laziness, skill in theatrical or artistic performance, many close friendships, love of music and entertainment, imitation of classical works, and interest in mathematics and the liberal arts.",
+  "conditions": [
+   "Mercury in Venus domicile"
+  ],
+  "judgment": "Artistic and amorous character with broad friendships; mathematical and literary interests.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Mercury",
+   "dignity": "domicile",
+   "dignity_ruler": "Venus",
+   "relational_role": "social",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "moon-in-jupiter-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Moon",
+   "Jupiter domicile",
+   "greatness",
+   "fortune",
+   "inappropriate relations"
+  ],
+  "rule": "The Moon in a Jupiter domicile elevates the native to fame and good fortune among people, but also inclines toward illicit sexual relations with an unsuitable or related person.",
+  "conditions": [
+   "Moon in Jupiter domicile"
+  ],
+  "judgment": "Fame and prosperity combined with inappropriate sexual liaison with a relative or neighbor.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Moon",
+   "dignity": "domicile",
+   "dignity_ruler": "Jupiter",
+   "relational_role": "intimacy",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "moon-in-venus-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Moon",
+   "Venus domicile",
+   "love",
+   "marriage",
+   "sexuality"
+  ],
+  "rule": "The Moon in a Venus domicile inclines the native toward love of women, a joyful and agreeable marriage, and a good overall life.",
+  "conditions": [
+   "Moon in Venus domicile"
+  ],
+  "judgment": "Loving character, harmonious marriage, good life.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Moon",
+   "dignity": "domicile",
+   "dignity_ruler": "Venus",
+   "relational_role": "marriage",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "moon-in-mercury-domicile-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Moon",
+   "Mercury domicile",
+   "intelligence",
+   "desire",
+   "faith",
+   "works"
+  ],
+  "rule": "The Moon in a Mercury domicile sharpens the native's perception, produces purity of character, good faith, desire for women and youths, and generally knowledgeable conduct.",
+  "conditions": [
+   "Moon in Mercury domicile"
+  ],
+  "judgment": "Sharp senses, moral character, sexual desire for both genders, knowledge in profession.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Moon",
+   "dignity": "domicile",
+   "dignity_ruler": "Mercury",
+   "relational_role": "desire",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "lord-asc-in-7th-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "lord of ascendant",
+   "7th house",
+   "women",
+   "marriage",
+   "wealth"
+  ],
+  "rule": "The lord of the Ascendant in the seventh house brings the native wealth through women and through acts of patronage or favoritism.",
+  "conditions": [
+   "lord of Ascendant in 7th house"
+  ],
+  "judgment": "Gains through women and through receiving favors.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "house_lord_relative",
+   "subject_house": 1,
+   "subject_house_system": "whole_sign",
+   "placement_house": 7,
+   "placement_house_system": "whole_sign",
+   "relational_role": "partnership",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "lord-5th-in-twelve-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "lord of 5th house",
+   "house placement",
+   "children",
+   "marriage",
+   "inheritance"
+  ],
+  "rule": "The fifth house lord's position in each house governs children and their condition: 1st—fortune from children and friends; 2nd—siblings on foreign journey and wealth from children; 3rd—fortune from women; 4th—wealthy long-lived father who sees grandchildren; 5th—children are thriving and renowned; 6th—children weakened and of poor vitality; 7th—native marries an older or higher-status spouse and gains wealth; 8th—children die in the native's lifetime, but native achieves near-princely status; 9th—no children born in native land; 10th—children sluggish with difficult lives, native avoids princely harm; 11th—children gain fortune from rulers; 12th—enmity between native and children.",
+  "conditions": [
+   "lord of 5th house in each of the 12 houses"
+  ],
+  "judgment": "Each placement specifies children's vitality, number, and relational outcomes.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "unclassified",
+   "relational_role": "marriage",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "lord-7th-in-twelve-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "lord of 7th house",
+   "house placement",
+   "marriage",
+   "women",
+   "enemies",
+   "enmity"
+  ],
+  "rule": "The seventh house lord's position governs marital and partnership outcomes: 1st—frequent disputes, effectiveness through women; 2nd—contention over women's affairs financially; 3rd—enmity with siblings; 4th—enmity with father and brothers; 5th—enmity with children; 6th—harm through women and servants; 7th—good marriage and understanding of spouses; 8th—native marries and spouse dies, inheriting her property; 9th—spouse of noble lineage or ruling stock; 10th—fortunate spouse of long life and high status; 11th—good marriage and virtuous spouses; 12th—marriage from disreputable persons, perpetual marital unhappiness.",
+  "conditions": [
+   "lord of 7th house in each of the 12 houses"
+  ],
+  "judgment": "Each placement defines the quality of marriage and the nature of partnerships and enmities.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "unclassified",
+   "relational_role": "marriage",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "lord-10th-in-twelve-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "lord of 10th house",
+   "house placement",
+   "career",
+   "princes",
+   "authority"
+  ],
+  "rule": "The tenth house lord's position governs career and authority: 1st—fame from rulers; 2nd—wealth accumulated through a ruler's patronage; 3rd—good name for siblings; 4th—father known for goodness; 5th—illness and misfortune for children; 7th—marriage among the noble retinue of princes; 8th—native's good treatment benefits wives; 10th—stable rulership or authority; 11th—authority attained in youth; 12th—perpetual conflict with rulers.",
+  "conditions": [
+   "lord of 10th house in each of the 12 houses"
+  ],
+  "judgment": "Each placement defines the native's career standing, authority, and relationship with rulers.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": "Statements for 6th and 9th house placements appear missing from the source text.",
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "unclassified",
+   "relational_role": "marriage",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "lord-11th-in-twelve-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "lord of 11th house",
+   "house placement",
+   "friends",
+   "children",
+   "faith"
+  ],
+  "rule": "The eleventh house lord's position governs friends, hope, and good fortune: 1st—good social conduct and many friends; 2nd—benefits from friends; 3rd—brothers and sisters well regarded; 4th—paternal loss and harm; 5th—good domestic life and benefit to children; 6th—attraction to lowly or immoral women; 7th—benefits the native, wives, and children; 8th—loss of neighbors and friends; 9th—foreign or distant marriages; 10th—native's friends gain from him; 11th—honor, wealth, and exaltation; 12th—misfortune and poor quality of life.",
+  "conditions": [
+   "lord of 11th house in each of the 12 houses"
+  ],
+  "judgment": "Each placement specifies friendship quality, social well-being, and related outcomes.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "unclassified",
+   "relational_role": "social",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "jupiter-in-saturn-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Jupiter",
+   "Saturn bounds",
+   "captivity",
+   "enemies",
+   "women",
+   "benefic aspect",
+   "transit"
+  ],
+  "rule": "Jupiter in Saturn's bounds at birth brings headache, capture by hostile forces with monetary ransom, discovery of diverse resources, inability of enemies to overpower the native, and secret dealings with women. The native rejoices in wife and children. Jupiter transiting Saturn's bounds later in life prompts scrutiny of his wealth. Benefic aspect releases from stated harms; a benefic in its own domicile opens the native's services publicly and reveals truth from great men.",
+  "conditions": [
+   "Jupiter in Saturn's bounds natally",
+   "Jupiter transiting Saturn's bounds",
+   "benefic aspect",
+   "benefic in own domicile"
+  ],
+  "judgment": "Headache, ransom, resourcefulness, family joy; transit triggers wealth review; benefic aspect brings release and public service.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Jupiter",
+   "dignity": "bound",
+   "dignity_ruler": "Saturn",
+   "relational_role": "companionship",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "jupiter-in-venus-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Jupiter",
+   "Venus bounds",
+   "marriage",
+   "wealth",
+   "religion",
+   "slaves"
+  ],
+  "rule": "Jupiter in Venus's bounds creates a handsome, dignified, and honest native who takes a virtuous wife, achieves high service status, gains from commerce, oversees slaves, is spoken of well by others, accumulates great wealth through management of estates, and adopts a religious role late in life.",
+  "conditions": [
+   "Jupiter in Venus's bounds"
+  ],
+  "judgment": "Beauty, virtue, excellent marriage, wealth from estate management, religious conclusion of life.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Jupiter",
+   "dignity": "bound",
+   "dignity_ruler": "Venus",
+   "relational_role": "marriage",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "mars-in-jupiter-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Jupiter bounds",
+   "wealth",
+   "madness",
+   "infertility",
+   "benefic aspect",
+   "malefic aspect"
+  ],
+  "rule": "Mars in Jupiter's bounds brings wealth to the native's hands alongside suffering, illness, and mental disturbance. The wife fails to conceive. Many foreign journeys deplete all resources. Unjust slander leads to scandal and quarrels. Benefic aspects bring exaltation; malefic aspects bring humiliation.",
+  "conditions": [
+   "Mars in Jupiter's bounds",
+   "benefic or malefic aspect"
+  ],
+  "judgment": "Wealth with suffering and infertility; travel depletes resources; benefic aspect yields exaltation, malefic yields humiliation.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Mars",
+   "dignity": "bound",
+   "dignity_ruler": "Jupiter",
+   "relational_role": "intimacy",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-in-venus-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Venus bounds",
+   "women",
+   "fornication",
+   "marriage",
+   "transit",
+   "domicile of Venus"
+  ],
+  "rule": "Mars in Venus's bounds produces a harmful romantic life characterized by sinful or illicit unions, patronage of prostitutes, inability to maintain steady faith, insanity driven by women, and foreign captivity. Children born in this period die young. Foreign journeys are numerous and the native marries someone incompatible. Mars transiting Venus's bounds later stimulates desire to access what belongs to the native. If Mars is also in a Venus domicile, good and evil outcomes are intermingled.",
+  "conditions": [
+   "Mars in Venus's bounds natally",
+   "Mars transiting Venus's bounds",
+   "Mars also in Venus domicile"
+  ],
+  "judgment": "Immoral love life, infertility, captivity, foreign travel, incompatible marriage; mixed if Mars in Venus domicile.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Mars",
+   "dignity": "bound",
+   "dignity_ruler": "Venus",
+   "relational_role": "romance",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-in-mercury-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "Mercury bounds",
+   "office",
+   "enemies",
+   "benefic aspect"
+  ],
+  "rule": "Mars in Mercury's bounds places the native in a commissioned or executive official role shared with others. He faces constant accusation from enemies concerning his conduct, derives financial benefit from his office, is perpetually in conflict with spouse and children, and is eventually sidelined by others. Benefic aspect to Mars releases these evils.",
+  "conditions": [
+   "Mars in Mercury's bounds",
+   "benefic aspect"
+  ],
+  "judgment": "Official appointment with constant accusations, domestic conflict, and eventual replacement; benefic aspect brings release.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Mars",
+   "dignity": "bound",
+   "dignity_ruler": "Mercury",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-in-own-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "own bounds",
+   "women",
+   "children",
+   "religious",
+   "transit"
+  ],
+  "rule": "Venus in her own bounds at birth brings the native joy from women and children, civic advisory status, authority over servants, association with priests or religious persons, near-episcopal influence, advancement in every location, benefit to parents, strong healthy children, and popular esteem when Venus transits her own bounds.",
+  "conditions": [
+   "Venus in own bounds natally",
+   "Venus transiting own bounds"
+  ],
+  "judgment": "Joy, civic and religious authority, good parents, strong children; transit activates popular recognition.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "bound",
+   "relational_role": "affection",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-in-saturn-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Saturn bounds",
+   "marriage",
+   "old women",
+   "benefic and malefic aspect",
+   "transit"
+  ],
+  "rule": "Venus in Saturn's bounds inclines the native toward a quarrelsome, proud, and difficult wife; he remains unmarried for long periods before eventually taking an older or lower-status spouse. Venus transiting Saturn's bounds later brings moral purification. Mixed benefic and malefic aspects produce mixed good and evil outcomes.",
+  "conditions": [
+   "Venus in Saturn's bounds natally",
+   "Venus transiting Saturn's bounds",
+   "mixed aspect"
+  ],
+  "judgment": "Difficult marriage, long spouselesness, eventual low-status older wife; transit brings purification; mixed aspects yield mixed fortune.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "bound",
+   "dignity_ruler": "Saturn",
+   "relational_role": "marriage",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-in-jupiter-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Jupiter bounds",
+   "wisdom",
+   "inheritance",
+   "marriage",
+   "religion",
+   "renown"
+  ],
+  "rule": "Venus in Jupiter's bounds produces a wise, universally joyful native with courageous character, fame, oversight of inherited property and multifaceted estates, involvement in religious administration, access to princes, a virtuous and wise wife, and a praiseworthy career ending.",
+  "conditions": [
+   "Venus in Jupiter's bounds"
+  ],
+  "judgment": "Wisdom, fame, estate management, religious responsibility, excellent marriage, praiseworthy career conclusion.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "bound",
+   "dignity_ruler": "Jupiter",
+   "relational_role": "marriage",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-in-mars-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Mars bounds",
+   "fornication",
+   "iron",
+   "sons",
+   "women",
+   "transit",
+   "domicile of Venus"
+  ],
+  "rule": "Venus in Mars's bounds makes the native prone to fornication and to instruction in sexual immorality, suffering pain from slave women and legal disputes from women, headache from sons' rustic character, danger from bladed instruments, fortune from dishonest acquisition, and ultimately a death caused by a woman. Venus transiting Mars's bounds stimulates a desire for moral cleansing. If Venus is also in her own domicile, outcomes are a mixture of good and evil.",
+  "conditions": [
+   "Venus in Mars's bounds natally",
+   "Venus transiting Mars's bounds",
+   "Venus also in own domicile"
+  ],
+  "judgment": "Immoral life, danger from iron and women, death through a woman; transit brings desire for moral reform; domicile placement mixes outcomes.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "bound",
+   "dignity_ruler": "Mars",
+   "relational_role": "intimacy",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-in-mercury-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Mercury bounds",
+   "wife",
+   "office",
+   "slaves",
+   "honor",
+   "common sign",
+   "malefic aspect"
+  ],
+  "rule": "Venus in Mercury's bounds brings joy from spouse and offspring, an excellent marriage, delight in entertainment, wealth and office from rulers, authority over servants, high honor, judicial and administrative roles, public obedience, protective power against those who harm the native, and a dignified long life. In a common sign, great dignity and longevity in joy result. Malefic aspect reduces these benefits.",
+  "conditions": [
+   "Venus in Mercury's bounds",
+   "common sign placement",
+   "malefic aspect"
+  ],
+  "judgment": "Excellent marriage, wealth, administrative authority, protective power; common sign adds longevity; malefic aspect diminishes.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Venus",
+   "dignity": "bound",
+   "dignity_ruler": "Mercury",
+   "relational_role": "marriage",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "mercury-in-saturn-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mercury",
+   "Saturn bounds",
+   "brothers",
+   "marriage",
+   "fertility",
+   "foreign journey",
+   "lawsuit",
+   "transit"
+  ],
+  "rule": "Mercury in Saturn's bounds brings joy through personal virtue, enmity with siblings and sibling deaths, delayed spousal pregnancy, lesser fortune from women, prolonged foreign journeys leading to wealth followed by harm, a kinsman's public lawsuit in which the native prevails, hidden-place illness, and a life ultimately passing in joy. Mercury transiting Saturn's bounds stimulates desire for moral purification.",
+  "conditions": [
+   "Mercury in Saturn's bounds natally",
+   "Mercury transiting Saturn's bounds"
+  ],
+  "judgment": "Virtue-based joy, sibling enmity, delayed fertility, travel wealth then harm, lawsuit victory, eventual joy.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Mercury",
+   "dignity": "bound",
+   "dignity_ruler": "Saturn",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mercury-in-mars-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mercury",
+   "Mars bounds",
+   "desire",
+   "discord",
+   "women",
+   "offspring",
+   "domicile of Mercury",
+   "transit"
+  ],
+  "rule": "Mercury in Mars's bounds produces strong desires from which pain and discord constantly arise, poor professional conduct, headache and harm from women, anger, and sexual misconduct with the native's own offspring. If Mercury is simultaneously in his own domicile, these effects are reduced. Mercury transiting Mars's bounds creates a constant desire for moral purification.",
+  "conditions": [
+   "Mercury in Mars's bounds natally",
+   "Mercury also in own domicile",
+   "Mercury transiting Mars's bounds"
+  ],
+  "judgment": "Desire-driven pain, harmful relations, anger, family sexual misconduct; domicile reduces severity; transit stimulates desire for purity.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Mercury",
+   "dignity": "bound",
+   "dignity_ruler": "Mars",
+   "relational_role": "desire",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "moon-in-saturn-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Moon",
+   "Saturn bounds",
+   "marriage",
+   "years of Saturn",
+   "women",
+   "children",
+   "wealth"
+  ],
+  "rule": "The Moon in Saturn's bounds delays marriage until Saturn's years have passed. Whatever resources the native acquires are destroyed until Saturn completes his zodiacal cycle (approximately thirty years), after which substantial wealth arrives, the native rejoices in spouse and children, and the wife's life passes appropriately.",
+  "conditions": [
+   "Moon in Saturn's bounds",
+   "Saturn's years elapsed",
+   "Saturn's zodiacal cycle completed"
+  ],
+  "judgment": "Delayed marriage, early resource destruction, recovery of wealth and family joy after approximately thirty years.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": "Footnote notes the 30-year cycle and a possible 27-year variant tied to Capricorn's years in the releasing technique.",
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Moon",
+   "dignity": "bound",
+   "dignity_ruler": "Saturn",
+   "relational_role": "marriage",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "moon-in-venus-bounds-natal",
+  "domain": "relationship",
+  "topic_tags": [
+   "Moon",
+   "Venus bounds",
+   "marriage",
+   "fornication",
+   "children",
+   "princes",
+   "wealth"
+  ],
+  "rule": "The Moon in Venus's bounds leads the native into marriage arising from a prior illicit union, with eventual separation from that spouse. The native fathers children by two women and takes a spouse unlike himself. Substantial wealth is gained without legal dispute, and honor from rulers is received.",
+  "conditions": [
+   "Moon in Venus's bounds"
+  ],
+  "judgment": "Marriage following fornication with separation, two-woman children, mismatched spouse, effortless wealth, royal honor.",
+  "attribution_in_text": "Māshā'allāh",
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "dignity",
+   "point": "Moon",
+   "dignity": "bound",
+   "dignity_ruler": "Venus",
+   "relational_role": "romance",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-asc-pleasure-ornament",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "Ascendant",
+   "1st house",
+   "joy",
+   "beauty",
+   "pleasure"
+  ],
+  "rule": "Venus in the 1st house indicates delight, the ability to act according to one's own wishes, enjoyment of food, clothing, jewelry, and fragrance, moral uprightness, and bodily pleasure.",
+  "conditions": {
+   "planet": "Venus",
+   "house": 1
+  },
+  "judgment": "Joy, self-gratification, adornment, good character, and physical enjoyment.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Venus",
+   "house": 1,
+   "house_system": "whole_sign",
+   "relational_role": "affection",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-3rd-loss-control",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "3rd house",
+   "friends",
+   "injustice",
+   "excess"
+  ],
+  "rule": "Venus in the 3rd house may indicate lack of self-discipline, distress arising from wrongful acts or injustices, and accumulation of friends who act contrary to religious or moral standards.",
+  "conditions": {
+   "planet": "Venus",
+   "house": 3
+  },
+  "judgment": "Intemperance; sorrow from immoral acts; friends of dubious character.",
+  "attribution_in_text": null,
+  "notes": "Translator reads the Latin as 'against God,' suggesting friends who oppose divine law.",
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Venus",
+   "house": 3,
+   "house_system": "whole_sign",
+   "relational_role": "friendship",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "venus-7th-marriage-success",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "7th house",
+   "marriage",
+   "women",
+   "partnership"
+  ],
+  "rule": "Venus in the 7th house brings marriage, happiness relating to women, and favorable outcomes in all partnership matters; whatever the querent seeks in this sphere is easily accomplished.",
+  "conditions": {
+   "planet": "Venus",
+   "house": 7
+  },
+  "judgment": "Successful marriage and partnerships; easy attainment of desired outcomes.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Venus",
+   "house": 7,
+   "house_system": "whole_sign",
+   "relational_role": "marriage",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-11th-friends-happiness",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "11th house",
+   "friends",
+   "happiness",
+   "trust"
+  ],
+  "rule": "Venus in the 11th house produces friendship, happiness, the enjoyment of good things, and trusting relations with companions.",
+  "conditions": {
+   "planet": "Venus",
+   "house": 11
+  },
+  "judgment": "Strong friendships, happiness, and fortunate associations.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Venus",
+   "house": 11,
+   "house_system": "whole_sign",
+   "relational_role": "friendship",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "venus-12th-enmity-women",
+  "domain": "relationship",
+  "topic_tags": [
+   "Venus",
+   "12th house",
+   "enemies",
+   "women",
+   "tribulation"
+  ],
+  "rule": "Venus in the 12th house generates severe hostility from women, and especially from persons of low standing.",
+  "conditions": {
+   "planet": "Venus",
+   "house": 12
+  },
+  "judgment": "Serious enmity and tribulation from women and base individuals.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Venus",
+   "house": 12,
+   "house_system": "whole_sign",
+   "relational_role": "social",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mercury-3rd-siblings-friends",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mercury",
+   "3rd house",
+   "siblings",
+   "friends",
+   "multitude"
+  ],
+  "rule": "Mercury in the 3rd house indicates many brothers and sisters, and a large circle of friends and prominent acquaintances.",
+  "conditions": {
+   "planet": "Mercury",
+   "house": 3
+  },
+  "judgment": "Numerous siblings and a wide, distinguished social network.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Mercury",
+   "house": 3,
+   "house_system": "whole_sign",
+   "relational_role": "friendship",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "mercury-7th-contention-luxury",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mercury",
+   "7th house",
+   "women",
+   "dispute",
+   "luxury"
+  ],
+  "rule": "Mercury in the 7th house brings contention involving women and a surplus of luxury or indulgence.",
+  "conditions": {
+   "planet": "Mercury",
+   "house": 7
+  },
+  "judgment": "Disputes with women; excessive luxury.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Mercury",
+   "house": 7,
+   "house_system": "whole_sign",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "moon-3rd-fortune-nobility",
+  "domain": "relationship",
+  "topic_tags": [
+   "Moon",
+   "3rd house",
+   "wealth",
+   "kings",
+   "travel",
+   "friends",
+   "love"
+  ],
+  "rule": "The Moon in the 3rd house brings fortune from wealthy persons and elevation through rulers, the accomplishment of aims, foreign travel, the acquisition of friends, trust, association with nobles, and an increase of affection.",
+  "conditions": {
+   "planet": "Moon",
+   "house": 3
+  },
+  "judgment": "Good fortune through powerful patrons; aims fulfilled; travel; expanded friendships.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Moon",
+   "house": 3,
+   "house_system": "whole_sign",
+   "relational_role": "friendship",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "moon-7th-marriage-women",
+  "domain": "relationship",
+  "topic_tags": [
+   "Moon",
+   "7th house",
+   "women",
+   "marriage",
+   "benefit"
+  ],
+  "rule": "The Moon in the 7th house indicates a favorable condition regarding women and marriage, with material benefit arising from them.",
+  "conditions": {
+   "planet": "Moon",
+   "house": 7
+  },
+  "judgment": "Good circumstances with women and marriage; benefit therefrom.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Moon",
+   "house": 7,
+   "house_system": "whole_sign",
+   "relational_role": "marriage",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "saturn-7th-wife-land-harm",
+  "domain": "relationship",
+  "topic_tags": [
+   "Saturn",
+   "7th house",
+   "wife",
+   "land",
+   "evil outcome"
+  ],
+  "rule": "Saturn in the 7th house brings harm to the spouse and to real property, with a malign conclusion to the overall matter.",
+  "conditions": {
+   "planet": "Saturn",
+   "house": 7
+  },
+  "judgment": "Spouse and land damaged; evil end to affairs.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Saturn",
+   "house": 7,
+   "house_system": "whole_sign",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "jupiter-7th-marriage-enemies-overcome",
+  "domain": "relationship",
+  "topic_tags": [
+   "Jupiter",
+   "7th house",
+   "marriage",
+   "women",
+   "enemies",
+   "partnership"
+  ],
+  "rule": "Jupiter in the 7th house brings joy in marriage and with women, and enables the native to gain the upper hand over all opponents.",
+  "conditions": {
+   "planet": "Jupiter",
+   "house": 7
+  },
+  "judgment": "Happy marriage; enemies overcome.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Jupiter",
+   "house": 7,
+   "house_system": "whole_sign",
+   "relational_role": "marriage",
+   "polarity": "harmonious"
+  }
+ },
+ {
+  "principle_id": "mars-3rd-sign-ruler-variation",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "3rd house",
+   "siblings",
+   "sign ruler",
+   "Venus",
+   "Jupiter",
+   "Saturn",
+   "Mercury",
+   "Moon",
+   "Sun",
+   "variation by domicile"
+  ],
+  "rule": "Mars in the 3rd house by default signifies enmity among siblings and mutual hatred leading to harm. However, the outcome is modified by the planetary ruler of the occupied sign: Venus's sign = joy from brothers and sisters; Jupiter's sign = substantial gain from commerce; Saturn's sign = digging up graves and walls, searching for stolen goods; Mercury's sign = elevation through divination and writing, but also false testimony and consequent dangers; Moon's sign = breaking down walls, theft, and harmful robbery in commerce; Sun's sign = highway cutting and plundering of settlements. This variation by domicile lord is described as a peculiar property of Mars among all planets.",
+  "conditions": {
+   "planet": "Mars",
+   "house": 3,
+   "sign_ruler": {
+    "Venus": "joy with siblings",
+    "Jupiter": "commercial wealth",
+    "Saturn": "grave-digging, seeking stolen goods",
+    "Mercury": "elevation via divination/writing; false testimony and danger",
+    "Moon": "wall-breaking, theft, harmful robbery",
+    "Sun": "highway robbery, village plunder"
+   }
+  },
+  "judgment": "Baseline = sibling enmity and harm; modified significantly by domicile ruler of occupied sign.",
+  "attribution_in_text": null,
+  "notes": "The text explicitly designates this sign-ruler sensitivity as unique to Mars.",
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Mars",
+   "house": 3,
+   "house_system": "whole_sign",
+   "relational_role": "social",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-5th-daughters-fornication",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "5th house",
+   "children",
+   "daughters",
+   "fornication",
+   "defect",
+   "livelihood"
+  ],
+  "rule": "Mars in the 5th house brings many daughters born outside marriage, along with defects associated with such circumstances, and a scarcity of joy or benefit from them. Despite this, the native's own livelihood or sustenance is fully adequate.",
+  "conditions": {
+   "planet": "Mars",
+   "house": 5
+  },
+  "judgment": "Illegitimate daughters, defects, little joy from children; personal livelihood sound.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Mars",
+   "house": 5,
+   "house_system": "whole_sign",
+   "relational_role": "intimacy",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-7th-injustice-contention-harm",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "7th house",
+   "business",
+   "contention",
+   "injustice",
+   "sexual misconduct",
+   "harm"
+  ],
+  "rule": "Mars in the 7th house produces commercial dealings accompanied by conflict, sexual conduct marked by injustice, harm resulting from these acts, general disorder, and severe ongoing contention.",
+  "conditions": {
+   "planet": "Mars",
+   "house": 7
+  },
+  "judgment": "Commercial conflict, sexual injustice, harm, disorder, and contention.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Mars",
+   "house": 7,
+   "house_system": "whole_sign",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "mars-11th-enmity-friends-loss",
+  "domain": "relationship",
+  "topic_tags": [
+   "Mars",
+   "11th house",
+   "enemies",
+   "friends",
+   "loss of substance",
+   "trust"
+  ],
+  "rule": "Mars in the 11th house reduces benefit, turns friends into enemies, causes loss of material resources, and removes confidence in the native's own hopes.",
+  "conditions": {
+   "planet": "Mars",
+   "house": 11
+  },
+  "judgment": "Little benefit; friends become enemies; loss of wealth and hope.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "planet_in_house",
+   "point": "Mars",
+   "house": 11,
+   "house_system": "whole_sign",
+   "relational_role": "friendship",
+   "polarity": "dynamic"
+  }
+ },
+ {
+  "principle_id": "north-node-7th-women",
+  "domain": "relationship",
+  "topic_tags": [
+   "North Node",
+   "7th house",
+   "women",
+   "association",
+   "increase"
+  ],
+  "rule": "The North Node in the 7th house increases involvement and association with women.",
+  "conditions": {
+   "point": "North Node",
+   "house": 7
+  },
+  "judgment": "Increased association with women.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "node",
+   "point": "North Node",
+   "house": 7,
+   "house_system": "whole_sign",
+   "relational_role": "social",
+   "polarity": "neutral"
+  }
+ },
+ {
+  "principle_id": "south-node-7th-enemies-scorn",
+  "domain": "relationship",
+  "topic_tags": [
+   "South Node",
+   "7th house",
+   "enemies",
+   "strength",
+   "scorn"
+  ],
+  "rule": "The South Node in the 7th house strengthens enemies and brings about scorn; damage to the partnership domain is implied.",
+  "conditions": {
+   "point": "South Node",
+   "house": 7
+  },
+  "judgment": "Enemies strengthened; scorn and contempt for the native.",
+  "attribution_in_text": null,
+  "notes": "The source text at this point is partially unclear about what exactly is destroyed; a parallel text mentions difficulties between men and women generally.",
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "natal_relational",
+   "applies_to": "each",
+   "source_domain": "natal",
+   "factor_type": "node",
+   "point": "South Node",
+   "house": 7,
+   "house_system": "whole_sign",
+   "relational_role": "partnership",
+   "polarity": "dynamic"
+  }
+ }
+]

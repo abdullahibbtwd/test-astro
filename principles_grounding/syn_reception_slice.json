@@ -1,0 +1,496 @@
+[
+ {
+  "principle_id": "syn-reception-general",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception"
+  ],
+  "rule": "When a planet of {RECEIVED} occupies a sign in the dignity of a planet of {RECEIVER}, {RECEIVER} receives {RECEIVED}: {RECEIVER} tends to welcome, accommodate, and support {RECEIVED} in the matters signified by the received planet, easing cooperation even between otherwise dissimilar charts.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "A supportive, welcoming current runs from {RECEIVER} toward {RECEIVED}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "any"
+  }
+ },
+ {
+  "principle_id": "syn-reception-grade-domicile",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "domicile"
+  ],
+  "rule": "When {RECEIVED}'s planet sits in a sign {RECEIVER}'s planet rules by domicile, {RECEIVER} receives {RECEIVED} into home ground - the strongest welcome; {RECEIVER} takes natural responsibility for {RECEIVED} and offers durable support in the received planet's affairs.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Strong, stable welcome and care from {RECEIVER} to {RECEIVED}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "domicile"
+  }
+ },
+ {
+  "principle_id": "syn-reception-grade-exaltation",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "exaltation"
+  ],
+  "rule": "When {RECEIVED}'s planet sits in the exaltation of {RECEIVER}'s planet, {RECEIVER} esteems and elevates {RECEIVED}: {RECEIVER} admires and encourages {RECEIVED} in the received planet's affairs, though the regard can be idealized.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVER} honors and lifts up {RECEIVED}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "exaltation"
+  }
+ },
+ {
+  "principle_id": "syn-reception-grade-triplicity",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "triplicity"
+  ],
+  "rule": "When {RECEIVED}'s planet falls in the triplicity of {RECEIVER}'s planet, {RECEIVER} offers {RECEIVED} steady, companionable support grounded in shared temperament and values.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Comfortable, values-based support from {RECEIVER}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "triplicity"
+  }
+ },
+ {
+  "principle_id": "syn-reception-grade-bound",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "bound"
+  ],
+  "rule": "When {RECEIVED}'s planet falls in the bounds of {RECEIVER}'s planet, {RECEIVER} lends {RECEIVED} limited, situational assistance in the received planet's affairs - real but minor.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Minor, conditional help from {RECEIVER}.",
+  "attribution_in_text": null,
+  "notes": "minor grade; low weight",
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "bound"
+  }
+ },
+ {
+  "principle_id": "syn-reception-grade-face",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "face"
+  ],
+  "rule": "When {RECEIVED}'s planet falls in the face of {RECEIVER}'s planet, {RECEIVER} shows {RECEIVED} only faint, surface-level goodwill in the received planet's affairs - the weakest reception.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Faint, superficial goodwill from {RECEIVER}.",
+  "attribution_in_text": null,
+  "notes": "weakest grade; do not overweight",
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "face"
+  }
+ },
+ {
+  "principle_id": "syn-reception-mutual",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "mutual"
+  ],
+  "rule": "When each person's planet occupies a sign the other's planet rules, the two mutually receive: {RECEIVER} and {RECEIVED} accommodate and support one another reciprocally, a strong sign of workable give-and-take.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Reciprocal welcome and mutual accommodation.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "any",
+   "mutual": true
+  }
+ },
+ {
+  "principle_id": "syn-reception-mutual-domicile-exaltation",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "mutual",
+   "domicile",
+   "exaltation"
+  ],
+  "rule": "When two planets, one from each chart, each sit in the other's domicile or exaltation, the reception is mutual and strong: {RECEIVER} and {RECEIVED} each feel understood and cared for by the other in these matters and readily meet each other's needs.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Strong, balanced mutual reception - a major supportive contact.",
+  "attribution_in_text": null,
+  "notes": "strict mutual reception (both at domicile/exaltation)",
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "any",
+   "mutual": true
+  }
+ },
+ {
+  "principle_id": "syn-reception-venus-mars-mutual",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "mutual",
+   "Venus",
+   "Mars"
+  ],
+  "rule": "When {RECEIVER}'s Venus and {RECEIVED}'s Mars each occupy the other's dignity, affection and desire are mutually received: attraction is reciprocated and the affectionate and erotic registers align.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Reciprocated attraction and desire.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "mutual": true,
+   "receiver_point": "Venus",
+   "received_point": "Mars"
+  }
+ },
+ {
+  "principle_id": "syn-reception-receiver-benefic",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "benefic"
+  ],
+  "rule": "When the receiving planet of {RECEIVER} is a benefic, the welcome extended to {RECEIVED} is warm, generous, and protective in the received planet's affairs.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Warm, generous support from {RECEIVER}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "receiver_class": "benefic"
+  }
+ },
+ {
+  "principle_id": "syn-reception-receiver-malefic",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "malefic"
+  ],
+  "rule": "When the receiving planet of {RECEIVER} is a malefic, {RECEIVER} still receives {RECEIVED}, but the support is demanding or disciplinary - help given through challenge, structure, or pressure.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Support from {RECEIVER} arrives through demand or discipline.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "receiver_class": "malefic"
+  }
+ },
+ {
+  "principle_id": "syn-reception-receiver-luminary",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "luminary"
+  ],
+  "rule": "When the receiving planet of {RECEIVER} is a luminary, the welcome touches {RECEIVER}'s core identity or emotional life: {RECEIVER} receives {RECEIVED} into central, personally significant ground.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVER} welcomes {RECEIVED} at the level of identity or feeling.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "receiver_class": "luminary"
+  }
+ },
+ {
+  "principle_id": "syn-reception-receiver-debilitated",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "debility"
+  ],
+  "rule": "When {RECEIVER}'s receiving planet is itself in detriment or fall, the welcome to {RECEIVED} is willing but under-resourced: {RECEIVER} wishes to support {RECEIVED} but is hampered in the received planet's affairs.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Willing but weakened support from {RECEIVER}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "receiver_debilitated": true
+  }
+ },
+ {
+  "principle_id": "syn-reception-received-ascendant-ruler",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "ascendant ruler"
+  ],
+  "rule": "When the received planet is {RECEIVED}'s ascendant ruler, {RECEIVER} receives {RECEIVED}'s very selfhood and vitality - {RECEIVER} supports who {RECEIVED} fundamentally is.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVER} affirms {RECEIVED}'s core self.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "received_role": "ascendant_ruler"
+  }
+ },
+ {
+  "principle_id": "syn-reception-received-seventh-ruler",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "seventh ruler"
+  ],
+  "rule": "When the received planet is {RECEIVED}'s seventh-house ruler, the reception bears directly on partnership: {RECEIVER} accommodates {RECEIVED}'s relational needs and expectations of a partner.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Reception falls squarely on partnership matters.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "received_role": "seventh_ruler"
+  }
+ },
+ {
+  "principle_id": "syn-reception-venus-receives",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "Venus"
+  ],
+  "rule": "When {RECEIVER}'s Venus is the receiving planet, {RECEIVER} meets {RECEIVED} with affection, esteem, and a wish to please in the received planet's affairs.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVER} extends affection and esteem to {RECEIVED}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "receiver_point": "Venus"
+  }
+ },
+ {
+  "principle_id": "syn-reception-mars-receives",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "Mars"
+  ],
+  "rule": "When {RECEIVER}'s Mars is the receiving planet, {RECEIVER} energizes and defends {RECEIVED} in the received planet's affairs, though the support can be forceful or contentious.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVER} energizes and protects {RECEIVED}, sometimes forcefully.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "receiver_point": "Mars"
+  }
+ },
+ {
+  "principle_id": "syn-reception-saturn-receives",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "Saturn"
+  ],
+  "rule": "When {RECEIVER}'s Saturn is the receiving planet, {RECEIVER} offers {RECEIVED} structure, commitment, and duty - a sober, lasting form of care that can also feel restrictive.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVER} supports {RECEIVED} through commitment and structure.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "receiver_point": "Saturn"
+  }
+ },
+ {
+  "principle_id": "syn-reception-jupiter-receives",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "Jupiter"
+  ],
+  "rule": "When {RECEIVER}'s Jupiter is the receiving planet, {RECEIVER} is generous and expansive toward {RECEIVED}, offering encouragement, opportunity, and faith in the received planet's affairs.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVER} encourages and expands {RECEIVED}'s prospects.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "receiver_point": "Jupiter"
+  }
+ },
+ {
+  "principle_id": "syn-reception-moon-received",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "Moon"
+  ],
+  "rule": "When {RECEIVED}'s Moon is the received planet, it is {RECEIVED}'s emotional nature and needs that are welcomed: {RECEIVER} provides {RECEIVED} a sense of emotional safety and belonging.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVED} feels emotionally held by {RECEIVER}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "received_point": "Moon"
+  }
+ },
+ {
+  "principle_id": "syn-reception-sun-received",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "Sun"
+  ],
+  "rule": "When {RECEIVED}'s Sun is the received planet, {RECEIVED}'s identity and creative will are welcomed: {RECEIVER} affirms and makes room for {RECEIVED}'s self-expression.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVER} affirms {RECEIVED}'s identity and will.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "received_point": "Sun"
+  }
+ },
+ {
+  "principle_id": "syn-reception-domicile-benefic",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "domicile",
+   "benefic"
+  ],
+  "rule": "When a benefic of {RECEIVER} receives {RECEIVED}'s planet into its own domicile, the welcome is both strong and kind - reliable, warm, protective support in the received planet's affairs.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "Reliable and warm support from {RECEIVER}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "domicile",
+   "receiver_class": "benefic"
+  }
+ },
+ {
+  "principle_id": "syn-reception-exaltation-luminary",
+  "domain": "relationship",
+  "topic_tags": [
+   "synastry",
+   "reception",
+   "exaltation",
+   "luminary"
+  ],
+  "rule": "When a luminary of {RECEIVER} receives {RECEIVED}'s planet by exaltation, {RECEIVER} holds {RECEIVED} in high personal regard, elevating {RECEIVED} within {RECEIVER}'s sense of self or emotional world.",
+  "conditions": [
+   "cross-chart reception between a significator of each person"
+  ],
+  "judgment": "{RECEIVER} deeply esteems {RECEIVED}.",
+  "attribution_in_text": null,
+  "notes": null,
+  "tradition": "traditional",
+  "synastry": {
+   "interaction": "reception",
+   "grade": "exaltation",
+   "receiver_class": "luminary"
+  }
+ }
+]

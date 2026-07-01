@@ -38,6 +38,17 @@ Interpretation_layer/test/*.pdf
 # Generated charts contain real birth data
 **/chart.json
 
+# --- Synastry personal outputs / generated artifacts (privacy; not source) ---
+**/personal_relationship_principles.json
+**/relationship_grounding_report.json
+**/relationship_natal_extract_report.json
+**/relationship_reading.json
+**/relationship_reading_routing.json
+**/relationship_reading.*.txt
+**/relationship_statements.json
+principles_grounding/relationship_extracted/
+principles_grounding/relationships_chunks/
+
 # --- Generated reading artifacts (not source) ---
 Interpretation_layer/l4_output.json
 Interpretation_layer/l4_routing_report.json
