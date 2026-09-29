@@ -10,10 +10,17 @@ section: the same principle reaching one section by two paths is merged into one
 carrier (passing an identical principle twice to a section call is pointless),
 and the strongest texture wins (a primary path overrides a classical one).
 
-The locked house-system rule (§3.0): domain placement is governed by
-``placidus`` records; ``whole_sign`` house records still route to the same
-domain section but read as ``texture: classical``. Occupancy/rulership cross-
-routing uses the ``placidus`` sector (§3.0).
+House policy (§3.0, locked): every house in the reading is **Placidus**. The
+grounding gate has already verified each house claim against the Placidus
+placement, so a record's declared ``house_system`` is provenance only — the
+router never branches on it and no record is "classical texture" merely for
+coming from a whole-sign book. ``texture: classical`` remains for dignities and
+house-lord-relative material (classical apparatus by construction).
+Occupancy/rulership cross-routing uses the ``placidus`` sector and BOTH the
+traditional ruler and the modern co-ruler of each cusp (§3.0).
+
+Movement 2 is one section per house. The two luminaries additionally feed a
+short dedicated "by house" note each (``sun_house`` / ``moon_house``).
 
 ``route(kept, chart)`` returns a ``RoutingResult``: the per-section carriers in
 canonical order, plus a drop log for records the rules cannot home (§3.2).
@@ -29,10 +36,14 @@ from l4_sections import (
     CHART_SHAPE,
     CORE_IDENTITY,
     HOUSE_DOMAIN,
-    IDENTITY_BODY,
+    IDENTITY,
     INNER_DRIVES,
+    LUMINARY_HOUSE_SECTION,
+    PLANETS,
     POINT_HOME,
+    SECTION_HOUSE,
     SECTION_ORDER,
+    STATUS_VOCATION,
     RoutedPrinciple,
 )
 
@@ -41,15 +52,16 @@ from l4_sections import (
 _INHERENTLY_CLASSICAL = {"dignity", "house_lord_relative"}
 
 # Personal planets — for the aspect "both endpoints personal -> inner_drives"
-# rule (§3.1.6) and the general personal-point rung (§3.1.11).
+# rule (§3.1.6).
 _PERSONAL = {"Sun", "Moon", "Mercury", "Venus", "Mars"}
 
 # --- §3.1.11 general sub-routing tag vocabularies (lower-case, exact-tag match
 # unless noted). The ladder is first-match-wins; default is chart_shape. ---
 _TAG_CHART_RULER = {"ascendant ruler", "chart ruler", "ruling planet"}
 _TAG_MC = {"midheaven", "mc", "mc ruler", "midheaven ruler"}
-_TAG_GENERATIONAL = {"uranus", "neptune", "pluto", "generational"}
-_TAG_PERSONAL = {"sun", "moon", "mercury", "venus", "mars"}
+# Any of the ten planets named as a tag (outer planets included: modern
+# astrology reads Uranus / Neptune / Pluto as personal factors by house).
+_TAG_PLANETS = {p.lower(): p for p in PLANETS}
 _LORD_OF_HOUSE_RE = re.compile(r"lord of\s+(\d+)\s*(?:st|nd|rd|th)?\s+house")
 
 
@@ -62,11 +74,19 @@ def _point_index(chart: dict) -> dict[str, dict]:
 
 
 def chart_ruler(chart: dict) -> Optional[str]:
-    """The Ascendant ruler = the placidus 1st-house ruler (§3.0). Resolved from
-    ``sector_rulers``; the locked placidus rule governs the spine."""
+    """The Ascendant ruler = the placidus 1st-house (traditional) ruler (§3.0).
+    Resolved from ``sector_rulers``; the locked placidus rule governs the spine."""
     rulers = (chart.get("sector_rulers") or {}).get("placidus") or {}
     block = rulers.get("1")
     return block.get("ruler") if block else None
+
+
+def chart_rulers(chart: dict) -> set[str]:
+    """Every chart ruler: the traditional 1st-house ruler plus its modern
+    co-ruler when the rising sign has one (Pluto / Uranus / Neptune)."""
+    rulers = (chart.get("sector_rulers") or {}).get("placidus") or {}
+    block = rulers.get("1") or {}
+    return {r for r in (block.get("ruler"), block.get("modern_ruler")) if r}
 
 
 def house_of(point: str, pts: dict[str, dict]) -> Optional[int]:
@@ -78,11 +98,12 @@ def house_of(point: str, pts: dict[str, dict]) -> Optional[int]:
 
 
 def houses_ruled(point: str, chart: dict) -> list[int]:
-    """Houses this point rules under placidus (§3.0)."""
+    """Houses this point rules under placidus (§3.0) — as traditional ruler OR
+    as the modern co-ruler of the cusp sign."""
     rulers = (chart.get("sector_rulers") or {}).get("placidus") or {}
     out: list[int] = []
     for h_str, block in rulers.items():
-        if block.get("ruler") == point:
+        if point in (block.get("ruler"), block.get("modern_ruler")):
             try:
                 out.append(int(h_str))
             except (TypeError, ValueError):
@@ -92,22 +113,34 @@ def houses_ruled(point: str, chart: dict) -> list[int]:
 
 def section_for_point(point: str, chart: dict) -> set[str]:
     """Movement-1 home(s) of a point (§3.0). A point can have more than one
-    home: the chart ruler is a personal planet and belongs to BOTH
-    ``core_identity`` (spine) and its personal-planet home."""
+    home: a chart ruler (traditional ruler or modern co-ruler of the Ascendant)
+    belongs to BOTH ``core_identity`` (spine) and its own planet home."""
     homes: set[str] = set()
     base = POINT_HOME.get(point)
     if base:
         homes.add(base)
-    if point and point == chart_ruler(chart):
+    if point and point in chart_rulers(chart):
         homes.add(CORE_IDENTITY)
     return homes
 
 
 def domain_section_for_house(house: Optional[int]) -> Optional[str]:
-    """Movement-2 home of a house number (§3.0)."""
+    """Movement-2 home of a house number (§3.0): one section per house."""
     if house is None:
         return None
     return HOUSE_DOMAIN.get(int(house))
+
+
+def section_houses(chart: dict) -> dict[str, int]:
+    """House number carried by each section in the output (§6 ``house``): the
+    house sections' own number, and the luminary notes' actual Placidus house."""
+    pts = _point_index(chart)
+    out: dict[str, int] = dict(SECTION_HOUSE)
+    for point, sec in LUMINARY_HOUSE_SECTION.items():
+        h = house_of(point, pts)
+        if h is not None:
+            out[sec] = int(h)
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -247,14 +280,20 @@ def _route_by_factor_type(r: _Router, rec: dict) -> bool:
         point_homes(about.get("point"), "planet_in_sign -> point home")
         return True
 
-    # 2 & 3. planet_in_house / planet_in_sign_and_house -> point home AND domain
+    # 2 & 3. planet_in_house / planet_in_sign_and_house -> point home AND domain.
+    #    A luminary's house record feeds its short "by house" note instead of
+    #    core_identity (which reads the luminaries by sign).
     if ft in ("planet_in_house", "planet_in_sign_and_house"):
-        point_homes(about.get("point"), f"{ft} -> point home")
-        hs = about.get("house_system")
+        point = about.get("point")
+        lum = LUMINARY_HOUSE_SECTION.get(point)
+        if lum:
+            r.emit(lum, rec, classical=False,
+                   reason=f"{ft} -> {lum} (luminary by house)")
+        if not lum or ft == "planet_in_sign_and_house":
+            point_homes(point, f"{ft} -> point home")
         dom = domain_section_for_house(about.get("house"))
-        is_ws = hs == "whole_sign"
-        r.emit(dom, rec, classical=is_ws,
-               reason=f"{ft} -> domain h{about.get('house')} ({hs})")
+        r.emit(dom, rec, classical=False,
+               reason=f"{ft} -> domain h{about.get('house')}")
         return True
 
     # 4. dignity -> section_for_point(point), classical
@@ -266,10 +305,9 @@ def _route_by_factor_type(r: _Router, rec: dict) -> bool:
     if ft == "node":
         point_homes(about.get("point"), "node -> point home")
         if "house" in about:
-            hs = about.get("house_system")
             dom = domain_section_for_house(about.get("house"))
-            r.emit(dom, rec, classical=hs == "whole_sign",
-                   reason=f"node -> domain h{about.get('house')} ({hs})")
+            r.emit(dom, rec, classical=False,
+                   reason=f"node -> domain h{about.get('house')}")
         return True
 
     # 6. aspect -> for each endpoint: point home AND its placidus-house domain;
@@ -295,16 +333,15 @@ def _route_by_factor_type(r: _Router, rec: dict) -> bool:
     if ft == "ascendant":
         r.emit(CORE_IDENTITY, rec, classical=False,
                reason="ascendant -> core_identity")
-        r.emit(IDENTITY_BODY, rec, classical=False,
-               reason="ascendant -> identity_body (H1)")
+        r.emit(IDENTITY, rec, classical=False,
+               reason="ascendant -> identity (H1)")
         return True
 
     # 8. house_ruler -> domain AND point home
     if ft == "house_ruler":
-        hs = about.get("house_system")
         dom = domain_section_for_house(about.get("house"))
-        r.emit(dom, rec, classical=hs == "whole_sign",
-               reason=f"house_ruler -> domain h{about.get('house')} ({hs})")
+        r.emit(dom, rec, classical=False,
+               reason=f"house_ruler -> domain h{about.get('house')}")
         point_homes(about.get("point"), "house_ruler -> point home")
         return True
 
@@ -316,10 +353,17 @@ def _route_by_factor_type(r: _Router, rec: dict) -> bool:
                         "house_domain(point) -> point home")
             return True
         if "house" in about:
-            hs = about.get("house_system")
-            dom = domain_section_for_house(about.get("house"))
-            r.emit(dom, rec, classical=hs == "whole_sign",
-                   reason=f"house_domain(house) -> domain h{about.get('house')} ({hs})")
+            h = about.get("house")
+            dom = domain_section_for_house(h)
+            r.emit(dom, rec, classical=False,
+                   reason=f"house_domain(house) -> domain h{h}")
+            # The house's meaning also grounds the short note of any luminary
+            # sitting in it (§3.1.9).
+            for lum_point, lum_sec in LUMINARY_HOUSE_SECTION.items():
+                if house_of(lum_point, r.pts) == h:
+                    r.emit(lum_sec, rec, classical=False,
+                           reason=f"house_domain(house) -> {lum_sec} "
+                                  f"({lum_point} occupies h{h})")
             return True
         return False  # neither key present -> fallback
 
@@ -355,8 +399,8 @@ def _route_general(r: _Router, rec: dict) -> None:
 
     # rung 2 — Midheaven / MC material -> vocation_public
     if tags & _TAG_MC:
-        r.emit("vocation_public", rec, classical=False,
-               reason="general(tags: MC) -> vocation_public")
+        r.emit(STATUS_VOCATION, rec, classical=False,
+               reason="general(tags: MC) -> status_vocation (H10)")
         return
 
     # rung 3 — a specific house lord ("lord of Nth house") -> that domain
@@ -372,21 +416,20 @@ def _route_general(r: _Router, rec: dict) -> None:
                    reason=f"general(tags: lord of {h}) -> domain h{h}")
         return
 
-    # rung 4 — generational / outer-planet material -> chart_shape, low-salience
-    if tags & _TAG_GENERATIONAL or any("generational" in t for t in tags):
-        r.emit(CHART_SHAPE, rec, classical=False, low_salience=True,
-               reason="general(tags: generational) -> chart_shape (backdrop)")
-        return
-
-    # rung 5 — a specific personal point/luminary (no house). "Specific" = one
-    # or two named points; naming three+ signals class-level methodology, which
-    # falls through to the default bucket.
-    personal = sorted({t.capitalize() for t in (tags & _TAG_PERSONAL)})
-    if 1 <= len(personal) <= 2:
-        for p in personal:
+    # rung 4 — one or two specific planets named (any of the ten; the outer
+    # planets are personal factors in the modern reading, never mere backdrop)
+    # -> each planet's Movement-1 home AND the house it occupies / rules, so
+    # e.g. "Pluto" material lands in the section of the house Pluto sits in.
+    # Naming three or more planets signals class-level methodology, which falls
+    # through to the default bucket.
+    named = sorted({_TAG_PLANETS[t] for t in tags if t in _TAG_PLANETS})
+    if 1 <= len(named) <= 2:
+        for p in named:
             for sec in section_for_point(p, chart):
                 r.emit(sec, rec, classical=False,
                        reason=f"general(tags: {p}) -> point home")
+            _emit_point_domains(r, rec, p, classical=False,
+                                tag=f"general(tags: {p})")
         return
 
     # default — interpretive methodology / whole-chart weighting -> chart_shape.
@@ -396,22 +439,28 @@ def _route_general(r: _Router, rec: dict) -> None:
            reason="general(default) -> chart_shape")
 
 
+def _emit_point_domains(r: _Router, rec: dict, point: str, *,
+                        classical: bool, tag: str) -> None:
+    """Route ``rec`` to the section of the house ``point`` occupies (placidus)
+    and of every house it rules (traditional ruler or modern co-ruler)."""
+    occ = domain_section_for_house(house_of(point, r.pts))
+    r.emit(occ, rec, classical=classical,
+           reason=f"{tag} occupancy: {point} occupies domain")
+    for h in houses_ruled(point, r.chart):
+        r.emit(domain_section_for_house(h), rec, classical=classical,
+               reason=f"{tag} rulership: {point} rules h{h} domain")
+
+
 def _route_occupancy(r: _Router, rec: dict) -> None:
     """§3.0 point-occupancy & rulership: for each subject point of the record,
-    also route it to the domain of the house it occupies (placidus) and to the
-    domain of every house it rules. Inherently-classical records stay classical;
-    everything else is placidus-primary."""
+    also route it to the section of the house it occupies (placidus) and to the
+    section of every house it rules. Inherently-classical records stay classical;
+    everything else is primary."""
     about = rec.get("about") or {}
     ft = about.get("factor_type")
     classical = ft in _INHERENTLY_CLASSICAL
     for p in _subject_points(about):
-        occ = domain_section_for_house(house_of(p, r.pts))
-        r.emit(occ, rec, classical=classical,
-               reason=f"occupancy: {p} occupies domain")
-        for h in houses_ruled(p, r.chart):
-            dom = domain_section_for_house(h)
-            r.emit(dom, rec, classical=classical,
-                   reason=f"rulership: {p} rules h{h} domain")
+        _emit_point_domains(r, rec, p, classical=classical, tag="chart")
 
 
 # ---------------------------------------------------------------------------

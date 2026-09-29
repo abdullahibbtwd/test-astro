@@ -49,11 +49,17 @@ from run import (  # noqa: E402
     suffixed, WheelError, _write_json,
 )
 
-# Relationship corpus: the analogue of all_principles.grounded.json (§2). ~888
-# records with domain="relationship"; ground_relationship filters to this pair.
+# Relationship corpus: the analogue of all_principles.grounded.json (§2). The
+# TAGGED corpus — every record carries `synastry.contexts` — is required for the
+# reading-type fork; grounding's E6 invariant hard-fails on an untagged corpus.
 REL_CORPUS_PATH = os.path.join(REPO_ROOT, "principles_grounding",
-                               "combined_relationship_principles.clean.json")
+                               "combined_relationship_principles_tagged.json")
 SYN_RUNS_DIR = os.path.join(REPO_ROOT, "synastry_run")
+
+# Person B's default display label depends on the reading type — "partnerin"
+# (your partner) must not import a romantic frame into professional/general.
+_B_DEFAULT = {"personal": "partnerin", "professional": "iş ortağın",
+              "general": "diğer kişi"}
 
 
 def _collect_person(who: str) -> dict:
@@ -86,25 +92,57 @@ def main() -> int:
     ap = argparse.ArgumentParser(
         description="Interactive synastry (two-chart) relationship pipeline.")
     ap.add_argument("--model", default=None, help="S3 section-call model")
-    ap.add_argument("--synthesis-model", default=None, help="S3 synthesis/statements model")
+    ap.add_argument("--synthesis-model", default=None, help="S3 synthesis model")
+    ap.add_argument("--translation-model", default=None,
+                    help="S3 English translation model (default: the cheap model, "
+                         "gpt-6-luna; 'same' = the synthesis model)")
+    ap.add_argument("--statements-model", default=None,
+                    help="S3 statements-extraction model (default: the cheap model, "
+                         "gpt-6-luna; 'same' = the synthesis model)")
     ap.add_argument("--max-tokens", type=int, default=None, help="S3 per-section budget")
     ap.add_argument("--synthesis-max-tokens", type=int, default=None,
                     help="S3 synthesis output budget")
+    ap.add_argument("--reading-type", choices=["general", "personal", "professional"],
+                    default=None, help="relationship reading focus; prompt if omitted")
     args = ap.parse_args()
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("ANTHROPIC_API_KEY is not set — the S3 relationship reading makes real "
-              "Anthropic calls and needs it. Export it and retry.", file=sys.stderr)
+    import llm_client
+    from s3_generate import DEFAULT_MODEL as _S3_DEFAULT
+    from s3_generate import DEFAULT_STATEMENTS_MODEL as _STATEMENTS_DEFAULT
+    from s3_generate import DEFAULT_TRANSLATION_MODEL as _TRANSLATION_DEFAULT
+    _synth = args.synthesis_model or args.model or _S3_DEFAULT
+    _statements = (_synth if args.statements_model == "same"
+                   else args.statements_model or _STATEMENTS_DEFAULT)
+    _translation = (_synth if args.translation_model == "same"
+                    else args.translation_model or _TRANSLATION_DEFAULT)
+    _missing = llm_client.missing_key_message(
+        [args.model or _S3_DEFAULT, _synth, _statements, _translation],
+        "the S3 relationship reading")
+    if _missing:
+        print(_missing, file=sys.stderr)
         return 1
     if not os.path.exists(REL_CORPUS_PATH):
         print(f"Missing relationship corpus: {REL_CORPUS_PATH}", file=sys.stderr)
         return 1
 
+    # --- reading-type fork: ground once (type-agnostic), fork in S3. Resolve the
+    #     type up front (it drives person B's default label below). ---
+    reading_type = args.reading_type
+    if reading_type is None:
+        print("\nWhich relationship reading?\n"
+              "  [1] General        — the connection as a whole\n"
+              "  [2] Personal focus — romantic / life partnership\n"
+              "  [3] Professional   — business / working partnership")
+        reading_type = {"1": "general", "2": "personal", "3": "professional",
+                        "": "general"}.get(
+                            run._prompt("Choose [1/2/3] (default 1): ").strip(), "general")
+    print(f"reading_type = {reading_type}")
+
     # --- 1. collect both people's input (§1) ---
     person_a = _collect_person("Person A")
     person_b = _collect_person("Person B")
     label_a = _optional_label("Person A", "sen")
-    label_b = _optional_label("Person B", "partnerin")
+    label_b = _optional_label("Person B", _B_DEFAULT[reading_type])
 
     bd_a = person_a["input"]["birth_date"]
     bd_b = person_b["input"]["birth_date"]
@@ -147,6 +185,9 @@ def main() -> int:
         meta = {
             "run_id": run_id,
             "reading": "relationship",
+            # Closure-captured (resolved before any write_meta call), so every run —
+            # including the error-path ones — records which type was attempted (§5a).
+            "reading_type": reading_type,
             "created_utc": now_utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "status": status,
             "person_a": {**person_meta(person_a), "label": label_a,
@@ -194,6 +235,19 @@ def main() -> int:
 
     with open(REL_CORPUS_PATH, encoding="utf-8") as fh:
         corpus = json.load(fh)
+    # E6 safety net (GROUND_RELATIONSHIP_CONTEXTS.md §2): the reading-type fork
+    # depends on every record carrying a valid `synastry.contexts`. grounding's
+    # CLI enforces this, but ground_relationship() (called in-process) does not —
+    # so guard here rather than let an untagged corpus silently mis-filter in S3.
+    _VALID_CONTEXTS = {"universal", "personal", "professional"}
+    for rec in corpus:
+        ctx = (rec.get("synastry") or {}).get("contexts")
+        if not (isinstance(ctx, list) and ctx and set(ctx) <= _VALID_CONTEXTS):
+            print(f"[L2/L3] untagged corpus — {rec.get('principle_id', '?')} has invalid "
+                  f"synastry.contexts ({ctx!r}). Tag the corpus before grounding "
+                  f"(expected {os.path.basename(REL_CORPUS_PATH)}).", file=sys.stderr)
+            write_meta("untagged_corpus", tz_a=tz_a, tz_b=tz_b)
+            return 1
     result = ground_relationship(corpus, chart_a, chart_b)
     payload = result.payload()
     # Carry the chart basenames as provenance (precision gate / traceability, §9).
@@ -213,9 +267,13 @@ def main() -> int:
     gr_name = suffixed("relationship_grounding_report.json", suffix)
     _write_json(os.path.join(run_dir, gr_name), drop_report)
     artifact(gr_name)
+    # Surface the per-context split (§5b) so a thin professional slice is visible
+    # before the expensive S3 call.
+    ctx = counts.get("contexts", {}).get("synastry", {})
     print(f"[L2/L3] grounded: person_a={counts['person_a']} person_b={counts['person_b']} "
           f"synastry={counts['synastry']} framing={counts['framing']} "
-          f"({counts['dropped']} dropped)")
+          f"({counts['dropped']} dropped) | context split synastry {ctx} | "
+          f"reading_type={reading_type}")
 
     # Both times are exact (fixed precision), so house overlays are trusted (§9).
     houses_valid = (tz_a is not None and tz_b is not None
@@ -243,11 +301,18 @@ def main() -> int:
         read_kwargs["model"] = section_model
     if args.synthesis_model is not None:
         read_kwargs["synthesis_model"] = args.synthesis_model
+    if args.statements_model is not None:
+        read_kwargs["statements_model"] = (
+            None if args.statements_model == "same" else args.statements_model)
+    if args.translation_model is not None:
+        read_kwargs["translation_model"] = (
+            None if args.translation_model == "same" else args.translation_model)
 
-    print("[S3] generating relationship reading (real Anthropic calls — takes a while)...")
+    print("[S3] generating relationship reading (real model calls — takes a while)...")
     try:
         output, statements_doc, report, errors = read_relationship(
-            payload, label_a=label_a, label_b=label_b,
+            payload, reading_type=reading_type,
+            label_a=label_a, label_b=label_b,
             houses_valid=houses_valid, precision_detail=precision_detail,
             **read_kwargs)
     except RuntimeError as err:
@@ -259,7 +324,9 @@ def main() -> int:
     from s3_generate import DEFAULT_MODEL as S3_DEFAULT
     resolved_section = section_model or S3_DEFAULT
     models = {"section": resolved_section,
-              "synthesis": args.synthesis_model or resolved_section}
+              "synthesis": args.synthesis_model or resolved_section,
+              "statements": _statements,
+              "translation": _translation}
 
     # The routing report is a QA artifact even on a violation — write it either way.
     report_name = suffixed("relationship_reading_routing.json", suffix)
@@ -297,7 +364,7 @@ def main() -> int:
 
     print("\n" + "=" * 70)
     print(f"SYNASTRY RUN COMPLETE — {run_dir}")
-    print(f"  {label_a} ({bd_a})  x  {label_b} ({bd_b})")
+    print(f"  {label_a} ({bd_a})  x  {label_b} ({bd_b})  [{reading_type}]")
     print("Artifacts:")
     for a in artifacts:
         print(f"  - {a}")

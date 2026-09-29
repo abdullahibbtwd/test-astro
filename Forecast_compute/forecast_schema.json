@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astrology.app/Forecast_compute/forecast_schema.json",
+  "title": "Forecast",
+  "description": "PREDICTIVE forecast object emitted by compute_forecast() (SPEC §11). Cross-service twin of forecast_types.py. It is a dated EVENT LIST, not a snapshot. Every Event carries all keys (null where the concept does not apply to that family); the grounding block's kind is drawn from the corpus requires.kind vocabulary so grounding can match by structure. Domain values (sign/aspect/element/grounding-kind) are foreign keys and use enum.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["meta", "window", "events", "counts"],
+  "properties": {
+    "meta": { "$ref": "#/$defs/Meta" },
+    "window": { "$ref": "#/$defs/Window" },
+    "events": { "type": "array", "items": { "$ref": "#/$defs/Event" } },
+    "counts": { "$ref": "#/$defs/Counts" },
+    "rulers": { "$ref": "#/$defs/Rulers" }
+  },
+  "$defs": {
+    "Sign": {
+      "enum": ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+               "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
+    },
+    "Element": { "enum": ["fire", "earth", "air", "water"] },
+    "AspectType": {
+      "enum": ["conjunction", "sextile", "square", "trine", "opposition"]
+    },
+    "Horizon": { "enum": ["day", "month", "year"] },
+    "Precision": { "enum": ["exact", "approximate", "unknown"] },
+    "Family": {
+      "enum": ["transit_aspect", "ingress_sign", "ingress_house",
+               "lunation", "eclipse", "profection"]
+    },
+    "Phase": { "enum": ["applying", "separating", "perfecting"] },
+    "SpeedClass": { "enum": ["fast", "slow"] },
+    "Segment": { "enum": ["early", "mid", "late", "q1", "q2", "q3", "q4"] },
+    "GroundingKind": {
+      "enum": ["point_aspects", "point_house", "point_sign", "point_dignity",
+               "sign_element", "ascendant", "house_ruler", "birth_time",
+               "native_gender", "other"]
+    },
+
+    "Bodies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transiting", "natal"],
+      "properties": {
+        "transiting": { "type": ["string", "null"] },
+        "natal": { "type": ["string", "null"] }
+      }
+    },
+
+    "Dignity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sign", "sign_ruler", "in_domicile", "in_detriment",
+                   "in_exaltation", "in_fall"],
+      "properties": {
+        "sign": { "anyOf": [{ "$ref": "#/$defs/Sign" }, { "type": "null" }] },
+        "sign_ruler": { "type": "string" },
+        "in_domicile": { "type": "boolean" },
+        "in_detriment": { "type": "boolean" },
+        "in_exaltation": { "type": "boolean" },
+        "in_fall": { "type": "boolean" }
+      }
+    },
+
+    "DignityPair": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transiting", "natal"],
+      "properties": {
+        "transiting": { "anyOf": [{ "$ref": "#/$defs/Dignity" }, { "type": "null" }] },
+        "natal": { "anyOf": [{ "$ref": "#/$defs/Dignity" }, { "type": "null" }] }
+      }
+    },
+
+    "Grounding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "topic_tags"],
+      "properties": {
+        "kind": { "$ref": "#/$defs/GroundingKind" },
+        "topic_tags": { "type": "array", "items": { "type": "string" } },
+        "transiting_point": { "type": "string" },
+        "natal_point": { "type": "string" },
+        "point": { "type": "string" },
+        "aspect": { "$ref": "#/$defs/AspectType" },
+        "phase": { "$ref": "#/$defs/Phase" },
+        "cycle_stage": { "type": "integer", "minimum": 1, "maximum": 8 },
+        "house_placidus": { "type": ["integer", "null"], "minimum": 1, "maximum": 12 },
+        "house_wholesign": { "type": ["integer", "null"], "minimum": 1, "maximum": 12 },
+        "sign": { "$ref": "#/$defs/Sign" },
+        "element": { "$ref": "#/$defs/Element" },
+        "angle": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "comment": "Invariant 8: an 'other' grounding must carry at least one topic_tag.",
+          "if": { "properties": { "kind": { "const": "other" } } },
+          "then": { "properties": { "topic_tags": { "minItems": 1 } } }
+        }
+      ]
+    },
+
+    "Event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "family", "datetime", "standing", "bodies",
+                   "aspect", "phase", "cycle_stage", "speed_class",
+                   "house_placidus", "house_wholesign", "sign", "dignity",
+                   "segment", "grounding"],
+      "properties": {
+        "event_id": { "type": "string" },
+        "family": { "$ref": "#/$defs/Family" },
+        "datetime": { "type": "string" },
+        "standing": { "type": "boolean" },
+        "bodies": { "$ref": "#/$defs/Bodies" },
+        "aspect": {
+          "anyOf": [{ "$ref": "#/$defs/AspectType" }, { "type": "null" }]
+        },
+        "phase": { "anyOf": [{ "$ref": "#/$defs/Phase" }, { "type": "null" }] },
+        "cycle_stage": { "type": ["integer", "null"], "minimum": 1, "maximum": 8 },
+        "speed_class": {
+          "anyOf": [{ "$ref": "#/$defs/SpeedClass" }, { "type": "null" }]
+        },
+        "house_placidus": { "type": ["integer", "null"], "minimum": 1, "maximum": 12 },
+        "house_wholesign": { "type": ["integer", "null"], "minimum": 1, "maximum": 12 },
+        "sign": { "anyOf": [{ "$ref": "#/$defs/Sign" }, { "type": "null" }] },
+        "dignity": {
+          "anyOf": [{ "$ref": "#/$defs/DignityPair" }, { "type": "null" }]
+        },
+        "segment": {
+          "anyOf": [{ "$ref": "#/$defs/Segment" }, { "type": "null" }]
+        },
+        "grounding": { "$ref": "#/$defs/Grounding" }
+      }
+    },
+
+    "Window": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end", "tz"],
+      "properties": {
+        "start": { "type": "string" },
+        "end": { "type": "string" },
+        "tz": { "type": "string" }
+      }
+    },
+
+    "ConfigFlags": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enable_profections", "enable_lots_targets"],
+      "properties": {
+        "enable_profections": { "type": "boolean" },
+        "enable_lots_targets": { "type": "boolean" }
+      }
+    },
+
+    "Meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["natal_ref", "target_date", "horizon", "generated_at",
+                   "run_id", "precision_tier", "degraded", "suppressed_families",
+                   "ephemeris", "config"],
+      "properties": {
+        "natal_ref": { "type": "string" },
+        "target_date": { "type": "string" },
+        "horizon": { "$ref": "#/$defs/Horizon" },
+        "generated_at": { "type": "string" },
+        "run_id": { "type": "string" },
+        "precision_tier": { "$ref": "#/$defs/Precision" },
+        "degraded": { "type": "boolean" },
+        "suppressed_families": { "type": "array", "items": { "type": "string" } },
+        "ephemeris": { "type": "string" },
+        "config": { "$ref": "#/$defs/ConfigFlags" }
+      }
+    },
+
+    "Counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by_family", "by_segment"],
+      "properties": {
+        "by_family": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "by_segment": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+
+    "Rulers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["planetary_day", "planetary_hour"],
+      "properties": {
+        "planetary_day": { "type": ["string", "null"] },
+        "planetary_hour": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

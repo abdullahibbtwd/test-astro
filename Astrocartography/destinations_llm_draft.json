@@ -1,0 +1,4318 @@
+{
+ "batches": {
+  "americas": {
+   "model": "gemini-3.7-flash",
+   "prompt_sha": "c680fd0f3f8c4cc8",
+   "rows": [
+    {
+     "appeal": 1,
+     "country": "AR",
+     "geonames_names": [
+      "Buenos Aires",
+      "Ciudad Autonoma de Buenos Aires"
+     ],
+     "kind": "city",
+     "lat": -34.6,
+     "lon": -58.38,
+     "name": "Buenos Aires",
+     "name_tr": "Buenos Aires",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "MX",
+     "geonames_names": [
+      "Cancun",
+      "Cancún"
+     ],
+     "kind": "resort",
+     "lat": 21.16,
+     "lon": -86.85,
+     "name": "Cancun",
+     "name_tr": "Cancun",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "CU",
+     "geonames_names": [
+      "La Habana",
+      "Havana"
+     ],
+     "kind": "city",
+     "lat": 23.11,
+     "lon": -82.37,
+     "name": "Havana",
+     "name_tr": "Havana",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "US",
+     "geonames_names": [
+      "Las Vegas"
+     ],
+     "kind": "city",
+     "lat": 36.17,
+     "lon": -115.14,
+     "name": "Las Vegas",
+     "name_tr": "Las Vegas",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "US",
+     "geonames_names": [
+      "Los Angeles",
+      "City of Los Angeles"
+     ],
+     "kind": "city",
+     "lat": 34.05,
+     "lon": -118.24,
+     "name": "Los Angeles",
+     "name_tr": "Los Angeles",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "PE",
+     "geonames_names": [
+      "Machu Picchu",
+      "Aguas Calientes"
+     ],
+     "kind": "region",
+     "lat": -13.16,
+     "lon": -72.54,
+     "name": "Machu Picchu",
+     "name_tr": "Machu Picchu",
+     "radius_km": 15
+    },
+    {
+     "appeal": 1,
+     "country": "US",
+     "geonames_names": [
+      "Miami",
+      "City of Miami"
+     ],
+     "kind": "city",
+     "lat": 25.76,
+     "lon": -80.19,
+     "name": "Miami",
+     "name_tr": "Miami",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "US",
+     "geonames_names": [
+      "New York",
+      "New York City",
+      "Manhattan"
+     ],
+     "kind": "city",
+     "lat": 40.71,
+     "lon": -74.01,
+     "name": "New York City",
+     "name_tr": "New York",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "CA",
+     "geonames_names": [
+      "Niagara Falls"
+     ],
+     "kind": "resort",
+     "lat": 43.09,
+     "lon": -79.08,
+     "name": "Niagara Falls",
+     "name_tr": "Niagara Selaleleri",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "DO",
+     "geonames_names": [
+      "Punta Cana"
+     ],
+     "kind": "resort",
+     "lat": 18.58,
+     "lon": -68.4,
+     "name": "Punta Cana",
+     "name_tr": "Punta Cana",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "BR",
+     "geonames_names": [
+      "Rio de Janeiro"
+     ],
+     "kind": "city",
+     "lat": -22.91,
+     "lon": -43.17,
+     "name": "Rio de Janeiro",
+     "name_tr": "Rio de Janeiro",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "US",
+     "geonames_names": [
+      "San Francisco",
+      "City and County of San Francisco"
+     ],
+     "kind": "city",
+     "lat": 37.77,
+     "lon": -122.42,
+     "name": "San Francisco",
+     "name_tr": "San Francisco",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "CA",
+     "geonames_names": [
+      "Toronto",
+      "City of Toronto"
+     ],
+     "kind": "city",
+     "lat": 43.65,
+     "lon": -79.38,
+     "name": "Toronto",
+     "name_tr": "Toronto",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "US",
+     "geonames_names": [
+      "Aspen"
+     ],
+     "kind": "resort",
+     "lat": 39.19,
+     "lon": -106.82,
+     "name": "Aspen",
+     "name_tr": "Aspen",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "BS",
+     "geonames_names": [
+      "Nassau",
+      "New Providence District"
+     ],
+     "kind": "region",
+     "lat": 25.03,
+     "lon": -77.4,
+     "name": "Bahamas",
+     "name_tr": "Bahamalar",
+     "radius_km": 200
+    },
+    {
+     "appeal": 2,
+     "country": "CA",
+     "geonames_names": [
+      "Banff",
+      "Banff National Park"
+     ],
+     "kind": "resort",
+     "lat": 51.18,
+     "lon": -115.57,
+     "name": "Banff",
+     "name_tr": "Banff",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "BB",
+     "geonames_names": [
+      "Bridgetown",
+      "Barbados"
+     ],
+     "kind": "region",
+     "lat": 13.19,
+     "lon": -59.54,
+     "name": "Barbados",
+     "name_tr": "Barbados",
+     "radius_km": 25
+    },
+    {
+     "appeal": 2,
+     "country": "CO",
+     "geonames_names": [
+      "Bogota",
+      "Bogotá",
+      "Santafe de Bogota"
+     ],
+     "kind": "city",
+     "lat": 4.71,
+     "lon": -74.07,
+     "name": "Bogota",
+     "name_tr": "Bogota",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "US",
+     "geonames_names": [
+      "Boston",
+      "City of Boston"
+     ],
+     "kind": "city",
+     "lat": 42.36,
+     "lon": -71.06,
+     "name": "Boston",
+     "name_tr": "Boston",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CO",
+     "geonames_names": [
+      "Cartagena",
+      "Cartagena de Indias"
+     ],
+     "kind": "city",
+     "lat": 10.4,
+     "lon": -75.51,
+     "name": "Cartagena",
+     "name_tr": "Cartagena",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "US",
+     "geonames_names": [
+      "Chicago",
+      "City of Chicago"
+     ],
+     "kind": "city",
+     "lat": 41.88,
+     "lon": -87.63,
+     "name": "Chicago",
+     "name_tr": "Chicago",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PE",
+     "geonames_names": [
+      "Cusco",
+      "Cuzco"
+     ],
+     "kind": "city",
+     "lat": -13.53,
+     "lon": -71.97,
+     "name": "Cusco",
+     "name_tr": "Cusco",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "EC",
+     "geonames_names": [
+      "Galapagos Islands",
+      "Puerto Ayora",
+      "Archipielago de Colon"
+     ],
+     "kind": "region",
+     "lat": -0.74,
+     "lon": -90.31,
+     "name": "Galapagos Islands",
+     "name_tr": "Galapagos Adalari",
+     "radius_km": 150
+    },
+    {
+     "appeal": 2,
+     "country": "US",
+     "geonames_names": [
+      "Grand Canyon",
+      "Grand Canyon Village"
+     ],
+     "kind": "region",
+     "lat": 36.06,
+     "lon": -112.14,
+     "name": "Grand Canyon",
+     "name_tr": "Buyuk Kanyon",
+     "radius_km": 80
+    },
+    {
+     "appeal": 2,
+     "country": "US",
+     "geonames_names": [
+      "Honolulu",
+      "Oahu"
+     ],
+     "kind": "city",
+     "lat": 21.31,
+     "lon": -157.86,
+     "name": "Honolulu",
+     "name_tr": "Honolulu",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AR",
+     "geonames_names": [
+      "Puerto Iguazu",
+      "Cataratas del Iguazu",
+      "Foz do Iguacu"
+     ],
+     "kind": "region",
+     "lat": -25.69,
+     "lon": -54.44,
+     "name": "Iguazu Falls",
+     "name_tr": "Iguazu Selaleleri",
+     "radius_km": 20
+    },
+    {
+     "appeal": 2,
+     "country": "PE",
+     "geonames_names": [
+      "Lima"
+     ],
+     "kind": "city",
+     "lat": -12.05,
+     "lon": -77.04,
+     "name": "Lima",
+     "name_tr": "Lima",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CO",
+     "geonames_names": [
+      "Medellin",
+      "Medellín"
+     ],
+     "kind": "city",
+     "lat": 6.24,
+     "lon": -75.58,
+     "name": "Medellin",
+     "name_tr": "Medellin",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "MX",
+     "geonames_names": [
+      "Ciudad de Mexico",
+      "Mexico City"
+     ],
+     "kind": "city",
+     "lat": 19.43,
+     "lon": -99.13,
+     "name": "Mexico City",
+     "name_tr": "Meksiko",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CA",
+     "geonames_names": [
+      "Montreal",
+      "Montréal"
+     ],
+     "kind": "city",
+     "lat": 45.5,
+     "lon": -73.57,
+     "name": "Montreal",
+     "name_tr": "Montreal",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "US",
+     "geonames_names": [
+      "New Orleans"
+     ],
+     "kind": "city",
+     "lat": 29.95,
+     "lon": -90.07,
+     "name": "New Orleans",
+     "name_tr": "New Orleans",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "US",
+     "geonames_names": [
+      "Orlando",
+      "City of Orlando"
+     ],
+     "kind": "city",
+     "lat": 28.54,
+     "lon": -81.38,
+     "name": "Orlando",
+     "name_tr": "Orlando",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PA",
+     "geonames_names": [
+      "Panama",
+      "Ciudad de Panama"
+     ],
+     "kind": "city",
+     "lat": 8.98,
+     "lon": -79.52,
+     "name": "Panama City",
+     "name_tr": "Panama Sehri",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AR",
+     "geonames_names": [
+      "El Calafate",
+      "Patagonia"
+     ],
+     "kind": "region",
+     "lat": -50.34,
+     "lon": -72.26,
+     "name": "Patagonia",
+     "name_tr": "Patagonya",
+     "radius_km": 250
+    },
+    {
+     "appeal": 2,
+     "country": "MX",
+     "geonames_names": [
+      "Playa del Carmen"
+     ],
+     "kind": "resort",
+     "lat": 20.63,
+     "lon": -87.07,
+     "name": "Playa del Carmen",
+     "name_tr": "Playa del Carmen",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CA",
+     "geonames_names": [
+      "Quebec",
+      "Ville de Quebec"
+     ],
+     "kind": "city",
+     "lat": 46.81,
+     "lon": -71.21,
+     "name": "Quebec City",
+     "name_tr": "Quebec",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CR",
+     "geonames_names": [
+      "San Jose",
+      "San José"
+     ],
+     "kind": "city",
+     "lat": 9.93,
+     "lon": -84.08,
+     "name": "San Jose",
+     "name_tr": "San Jose",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PR",
+     "geonames_names": [
+      "San Juan",
+      "Municipio de San Juan"
+     ],
+     "kind": "city",
+     "lat": 18.47,
+     "lon": -66.11,
+     "name": "San Juan",
+     "name_tr": "San Juan",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CL",
+     "geonames_names": [
+      "Santiago",
+      "Santiago de Chile"
+     ],
+     "kind": "city",
+     "lat": -33.45,
+     "lon": -70.67,
+     "name": "Santiago",
+     "name_tr": "Santiago",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "BR",
+     "geonames_names": [
+      "Sao Paulo",
+      "São Paulo"
+     ],
+     "kind": "city",
+     "lat": -23.55,
+     "lon": -46.63,
+     "name": "Sao Paulo",
+     "name_tr": "Sao Paulo",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "US",
+     "geonames_names": [
+      "Seattle"
+     ],
+     "kind": "city",
+     "lat": 47.61,
+     "lon": -122.33,
+     "name": "Seattle",
+     "name_tr": "Seattle",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "MX",
+     "geonames_names": [
+      "Tulum"
+     ],
+     "kind": "resort",
+     "lat": 20.21,
+     "lon": -87.46,
+     "name": "Tulum",
+     "name_tr": "Tulum",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CA",
+     "geonames_names": [
+      "Vancouver"
+     ],
+     "kind": "city",
+     "lat": 49.28,
+     "lon": -123.12,
+     "name": "Vancouver",
+     "name_tr": "Vancouver",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CU",
+     "geonames_names": [
+      "Varadero"
+     ],
+     "kind": "resort",
+     "lat": 23.15,
+     "lon": -81.25,
+     "name": "Varadero",
+     "name_tr": "Varadero",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "US",
+     "geonames_names": [
+      "Washington",
+      "District of Columbia"
+     ],
+     "kind": "city",
+     "lat": 38.91,
+     "lon": -77.04,
+     "name": "Washington, D.C.",
+     "name_tr": "Washington",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "AR",
+     "geonames_names": [
+      "San Carlos de Bariloche",
+      "Bariloche"
+     ],
+     "kind": "resort",
+     "lat": -41.13,
+     "lon": -71.31,
+     "name": "Bariloche",
+     "name_tr": "Bariloche",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "CW",
+     "geonames_names": [
+      "Willemstad",
+      "Curacao"
+     ],
+     "kind": "region",
+     "lat": 12.17,
+     "lon": -68.99,
+     "name": "Curacao",
+     "name_tr": "Curacao",
+     "radius_km": 30
+    },
+    {
+     "appeal": 3,
+     "country": "UY",
+     "geonames_names": [
+      "Montevideo"
+     ],
+     "kind": "city",
+     "lat": -34.9,
+     "lon": -56.16,
+     "name": "Montevideo",
+     "name_tr": "Montevideo",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "US",
+     "geonames_names": [
+      "Napa",
+      "Napa County"
+     ],
+     "kind": "region",
+     "lat": 38.3,
+     "lon": -122.29,
+     "name": "Napa Valley",
+     "name_tr": "Napa Vadisi",
+     "radius_km": 40
+    },
+    {
+     "appeal": 3,
+     "country": "MX",
+     "geonames_names": [
+      "Oaxaca",
+      "Oaxaca de Juarez"
+     ],
+     "kind": "city",
+     "lat": 17.06,
+     "lon": -96.72,
+     "name": "Oaxaca",
+     "name_tr": "Oaxaca",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "CL",
+     "geonames_names": [
+      "San Pedro de Atacama",
+      "Atacama"
+     ],
+     "kind": "region",
+     "lat": -22.91,
+     "lon": -68.2,
+     "name": "San Pedro de Atacama",
+     "name_tr": "Atacama Colu",
+     "radius_km": 60
+    },
+    {
+     "appeal": 3,
+     "country": "AR",
+     "geonames_names": [
+      "Ushuaia"
+     ],
+     "kind": "city",
+     "lat": -54.8,
+     "lon": -68.3,
+     "name": "Ushuaia",
+     "name_tr": "Ushuaia",
+     "radius_km": 0
+    }
+   ],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "input_tokens": 444,
+    "output_tokens": 5307
+   }
+  },
+  "asia": {
+   "model": "gemini-3.7-flash",
+   "prompt_sha": "53b21cdc6b757a58",
+   "rows": [
+    {
+     "appeal": 1,
+     "country": "IN",
+     "geonames_names": [
+      "Agra"
+     ],
+     "kind": "city",
+     "lat": 27.18,
+     "lon": 78.01,
+     "name": "Agra",
+     "name_tr": "Agra",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "ID",
+     "geonames_names": [
+      "Bali",
+      "Denpasar"
+     ],
+     "kind": "region",
+     "lat": -8.41,
+     "lon": 115.19,
+     "name": "Bali",
+     "name_tr": "Bali",
+     "radius_km": 50
+    },
+    {
+     "appeal": 1,
+     "country": "TH",
+     "geonames_names": [
+      "Bangkok",
+      "Krung Thep"
+     ],
+     "kind": "city",
+     "lat": 13.75,
+     "lon": 100.52,
+     "name": "Bangkok",
+     "name_tr": "Bangkok",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "CN",
+     "geonames_names": [
+      "Beijing"
+     ],
+     "kind": "city",
+     "lat": 39.9,
+     "lon": 116.41,
+     "name": "Beijing",
+     "name_tr": "Pekin",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "HK",
+     "geonames_names": [
+      "Hong Kong"
+     ],
+     "kind": "city",
+     "lat": 22.32,
+     "lon": 114.17,
+     "name": "Hong Kong",
+     "name_tr": "Hong Kong",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "NP",
+     "geonames_names": [
+      "Kathmandu"
+     ],
+     "kind": "city",
+     "lat": 27.72,
+     "lon": 85.32,
+     "name": "Kathmandu",
+     "name_tr": "Katmandu",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "MY",
+     "geonames_names": [
+      "Kuala Lumpur"
+     ],
+     "kind": "city",
+     "lat": 3.14,
+     "lon": 101.69,
+     "name": "Kuala Lumpur",
+     "name_tr": "Kuala Lumpur",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "JP",
+     "geonames_names": [
+      "Kyoto",
+      "Kyoto-shi"
+     ],
+     "kind": "city",
+     "lat": 35.01,
+     "lon": 135.77,
+     "name": "Kyoto",
+     "name_tr": "Kyoto",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "MV",
+     "geonames_names": [
+      "Maldives",
+      "Male"
+     ],
+     "kind": "region",
+     "lat": 3.2,
+     "lon": 73.22,
+     "name": "Maldives",
+     "name_tr": "Maldivler",
+     "radius_km": 250
+    },
+    {
+     "appeal": 1,
+     "country": "TH",
+     "geonames_names": [
+      "Phuket",
+      "Changwat Phuket"
+     ],
+     "kind": "region",
+     "lat": 7.88,
+     "lon": 98.39,
+     "name": "Phuket",
+     "name_tr": "Phuket",
+     "radius_km": 30
+    },
+    {
+     "appeal": 1,
+     "country": "KR",
+     "geonames_names": [
+      "Seoul",
+      "Seoul-teukbyeolsi"
+     ],
+     "kind": "city",
+     "lat": 37.57,
+     "lon": 126.98,
+     "name": "Seoul",
+     "name_tr": "Seul",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "CN",
+     "geonames_names": [
+      "Shanghai"
+     ],
+     "kind": "city",
+     "lat": 31.23,
+     "lon": 121.47,
+     "name": "Shanghai",
+     "name_tr": "Şanghay",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "KH",
+     "geonames_names": [
+      "Siem Reap",
+      "Krong Siem Reap"
+     ],
+     "kind": "city",
+     "lat": 13.36,
+     "lon": 103.86,
+     "name": "Siem Reap",
+     "name_tr": "Siem Reap",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "SG",
+     "geonames_names": [
+      "Singapore"
+     ],
+     "kind": "city",
+     "lat": 1.35,
+     "lon": 103.82,
+     "name": "Singapore",
+     "name_tr": "Singapur",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "JP",
+     "geonames_names": [
+      "Tokyo"
+     ],
+     "kind": "city",
+     "lat": 35.68,
+     "lon": 139.65,
+     "name": "Tokyo",
+     "name_tr": "Tokyo",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PH",
+     "geonames_names": [
+      "Boracay Island",
+      "Boracay",
+      "Malay"
+     ],
+     "kind": "resort",
+     "lat": 11.97,
+     "lon": 121.92,
+     "name": "Boracay",
+     "name_tr": "Boracay",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "KR",
+     "geonames_names": [
+      "Busan",
+      "Pusan"
+     ],
+     "kind": "city",
+     "lat": 35.18,
+     "lon": 129.08,
+     "name": "Busan",
+     "name_tr": "Busan",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PH",
+     "geonames_names": [
+      "Cebu City",
+      "Cebu"
+     ],
+     "kind": "city",
+     "lat": 10.32,
+     "lon": 123.89,
+     "name": "Cebu",
+     "name_tr": "Cebu",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "TH",
+     "geonames_names": [
+      "Chiang Mai"
+     ],
+     "kind": "city",
+     "lat": 18.79,
+     "lon": 98.98,
+     "name": "Chiang Mai",
+     "name_tr": "Chiang Mai",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "LK",
+     "geonames_names": [
+      "Colombo"
+     ],
+     "kind": "city",
+     "lat": 6.93,
+     "lon": 79.86,
+     "name": "Colombo",
+     "name_tr": "Kolombo",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "VN",
+     "geonames_names": [
+      "Da Nang",
+      "Thanh pho Da Nang"
+     ],
+     "kind": "city",
+     "lat": 16.05,
+     "lon": 108.2,
+     "name": "Da Nang",
+     "name_tr": "Da Nang",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IN",
+     "geonames_names": [
+      "Delhi",
+      "New Delhi"
+     ],
+     "kind": "city",
+     "lat": 28.61,
+     "lon": 77.21,
+     "name": "Delhi",
+     "name_tr": "Delhi",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PH",
+     "geonames_names": [
+      "El Nido"
+     ],
+     "kind": "resort",
+     "lat": 11.2,
+     "lon": 119.42,
+     "name": "El Nido",
+     "name_tr": "El Nido",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IN",
+     "geonames_names": [
+      "Goa",
+      "Panaji"
+     ],
+     "kind": "region",
+     "lat": 15.3,
+     "lon": 74.12,
+     "name": "Goa",
+     "name_tr": "Goa",
+     "radius_km": 40
+    },
+    {
+     "appeal": 2,
+     "country": "CN",
+     "geonames_names": [
+      "Guilin"
+     ],
+     "kind": "city",
+     "lat": 25.27,
+     "lon": 110.29,
+     "name": "Guilin",
+     "name_tr": "Guilin",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "VN",
+     "geonames_names": [
+      "Vinh Ha Long",
+      "Ha Long"
+     ],
+     "kind": "region",
+     "lat": 20.91,
+     "lon": 107.18,
+     "name": "Ha Long Bay",
+     "name_tr": "Ha Long Körfezi",
+     "radius_km": 30
+    },
+    {
+     "appeal": 2,
+     "country": "VN",
+     "geonames_names": [
+      "Hanoi",
+      "Ha Noi"
+     ],
+     "kind": "city",
+     "lat": 21.03,
+     "lon": 105.85,
+     "name": "Hanoi",
+     "name_tr": "Hanoi",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "JP",
+     "geonames_names": [
+      "Hiroshima"
+     ],
+     "kind": "city",
+     "lat": 34.39,
+     "lon": 132.46,
+     "name": "Hiroshima",
+     "name_tr": "Hiroşima",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "VN",
+     "geonames_names": [
+      "Ho Chi Minh City",
+      "Saigon"
+     ],
+     "kind": "city",
+     "lat": 10.82,
+     "lon": 106.63,
+     "name": "Ho Chi Minh City",
+     "name_tr": "Ho Chi Minh Kenti",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "VN",
+     "geonames_names": [
+      "Hoi An"
+     ],
+     "kind": "city",
+     "lat": 15.88,
+     "lon": 108.33,
+     "name": "Hoi An",
+     "name_tr": "Hoi An",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IN",
+     "geonames_names": [
+      "Jaipur"
+     ],
+     "kind": "city",
+     "lat": 26.91,
+     "lon": 75.79,
+     "name": "Jaipur",
+     "name_tr": "Jaipur",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ID",
+     "geonames_names": [
+      "Jakarta",
+      "Daerah Khusus Ibukota Jakarta"
+     ],
+     "kind": "city",
+     "lat": -6.21,
+     "lon": 106.85,
+     "name": "Jakarta",
+     "name_tr": "Cakarta",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "KR",
+     "geonames_names": [
+      "Jeju-do",
+      "Jeju-si"
+     ],
+     "kind": "region",
+     "lat": 33.49,
+     "lon": 126.53,
+     "name": "Jeju",
+     "name_tr": "Jeju",
+     "radius_km": 35
+    },
+    {
+     "appeal": 2,
+     "country": "TH",
+     "geonames_names": [
+      "Ko Samui",
+      "Surat Thani"
+     ],
+     "kind": "resort",
+     "lat": 9.51,
+     "lon": 100.01,
+     "name": "Koh Samui",
+     "name_tr": "Koh Samui",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "TH",
+     "geonames_names": [
+      "Krabi",
+      "Ao Nang"
+     ],
+     "kind": "resort",
+     "lat": 8.08,
+     "lon": 98.91,
+     "name": "Krabi",
+     "name_tr": "Krabi",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "MY",
+     "geonames_names": [
+      "Langkawi",
+      "Kuah"
+     ],
+     "kind": "resort",
+     "lat": 6.35,
+     "lon": 99.8,
+     "name": "Langkawi",
+     "name_tr": "Langkawi",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ID",
+     "geonames_names": [
+      "Pulau Lombok",
+      "Mataram"
+     ],
+     "kind": "region",
+     "lat": -8.58,
+     "lon": 116.32,
+     "name": "Lombok",
+     "name_tr": "Lombok",
+     "radius_km": 40
+    },
+    {
+     "appeal": 2,
+     "country": "LA",
+     "geonames_names": [
+      "Luang Prabang",
+      "Louangphabang"
+     ],
+     "kind": "city",
+     "lat": 19.89,
+     "lon": 102.13,
+     "name": "Luang Prabang",
+     "name_tr": "Luang Prabang",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "MO",
+     "geonames_names": [
+      "Macau",
+      "Macao"
+     ],
+     "kind": "city",
+     "lat": 22.2,
+     "lon": 113.54,
+     "name": "Macau",
+     "name_tr": "Makao",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PH",
+     "geonames_names": [
+      "Manila",
+      "City of Manila"
+     ],
+     "kind": "city",
+     "lat": 14.6,
+     "lon": 120.98,
+     "name": "Manila",
+     "name_tr": "Manila",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IN",
+     "geonames_names": [
+      "Mumbai",
+      "Bombay"
+     ],
+     "kind": "city",
+     "lat": 19.08,
+     "lon": 72.88,
+     "name": "Mumbai",
+     "name_tr": "Mumbai",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "JP",
+     "geonames_names": [
+      "Nara-shi",
+      "Nara"
+     ],
+     "kind": "city",
+     "lat": 34.68,
+     "lon": 135.8,
+     "name": "Nara",
+     "name_tr": "Nara",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "JP",
+     "geonames_names": [
+      "Niseko",
+      "Niseko-cho"
+     ],
+     "kind": "resort",
+     "lat": 42.8,
+     "lon": 140.68,
+     "name": "Niseko",
+     "name_tr": "Niseko",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "JP",
+     "geonames_names": [
+      "Osaka",
+      "Osaka-shi"
+     ],
+     "kind": "city",
+     "lat": 34.69,
+     "lon": 135.5,
+     "name": "Osaka",
+     "name_tr": "Osaka",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "TH",
+     "geonames_names": [
+      "Pattaya",
+      "Phatthaya"
+     ],
+     "kind": "resort",
+     "lat": 12.93,
+     "lon": 100.88,
+     "name": "Pattaya",
+     "name_tr": "Pattaya",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "MY",
+     "geonames_names": [
+      "Penang",
+      "George Town"
+     ],
+     "kind": "region",
+     "lat": 5.41,
+     "lon": 100.33,
+     "name": "Penang",
+     "name_tr": "Penang",
+     "radius_km": 20
+    },
+    {
+     "appeal": 2,
+     "country": "VN",
+     "geonames_names": [
+      "Phu Quoc",
+      "Dao Phu Quoc"
+     ],
+     "kind": "resort",
+     "lat": 10.23,
+     "lon": 103.96,
+     "name": "Phu Quoc",
+     "name_tr": "Phu Quoc",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "NP",
+     "geonames_names": [
+      "Pokhara"
+     ],
+     "kind": "city",
+     "lat": 28.21,
+     "lon": 83.99,
+     "name": "Pokhara",
+     "name_tr": "Pokhara",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "JP",
+     "geonames_names": [
+      "Sapporo",
+      "Sapporo-shi"
+     ],
+     "kind": "city",
+     "lat": 43.06,
+     "lon": 141.35,
+     "name": "Sapporo",
+     "name_tr": "Sapporo",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "TW",
+     "geonames_names": [
+      "Taipei"
+     ],
+     "kind": "city",
+     "lat": 25.03,
+     "lon": 121.57,
+     "name": "Taipei",
+     "name_tr": "Taipei",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IN",
+     "geonames_names": [
+      "Varanasi",
+      "Benares"
+     ],
+     "kind": "city",
+     "lat": 25.32,
+     "lon": 82.97,
+     "name": "Varanasi",
+     "name_tr": "Varanasi",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CN",
+     "geonames_names": [
+      "Xi'an",
+      "Xian"
+     ],
+     "kind": "city",
+     "lat": 34.34,
+     "lon": 108.94,
+     "name": "Xi'an",
+     "name_tr": "Şian",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ID",
+     "geonames_names": [
+      "Yogyakarta",
+      "Jogja"
+     ],
+     "kind": "city",
+     "lat": -7.79,
+     "lon": 110.37,
+     "name": "Yogyakarta",
+     "name_tr": "Yogyakarta",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "MM",
+     "geonames_names": [
+      "Bagan",
+      "Nyaung-U"
+     ],
+     "kind": "region",
+     "lat": 21.17,
+     "lon": 94.86,
+     "name": "Bagan",
+     "name_tr": "Bagan",
+     "radius_km": 15
+    },
+    {
+     "appeal": 3,
+     "country": "CN",
+     "geonames_names": [
+      "Chengdu"
+     ],
+     "kind": "city",
+     "lat": 30.57,
+     "lon": 104.07,
+     "name": "Chengdu",
+     "name_tr": "Çengdu",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "LK",
+     "geonames_names": [
+      "Ella"
+     ],
+     "kind": "resort",
+     "lat": 6.87,
+     "lon": 81.05,
+     "name": "Ella",
+     "name_tr": "Ella",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "LK",
+     "geonames_names": [
+      "Galle"
+     ],
+     "kind": "city",
+     "lat": 6.05,
+     "lon": 80.22,
+     "name": "Galle",
+     "name_tr": "Galle",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "JP",
+     "geonames_names": [
+      "Hakone",
+      "Hakone-machi"
+     ],
+     "kind": "resort",
+     "lat": 35.23,
+     "lon": 139.11,
+     "name": "Hakone",
+     "name_tr": "Hakone",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "LK",
+     "geonames_names": [
+      "Kandy",
+      "Maha Nuwara"
+     ],
+     "kind": "city",
+     "lat": 7.29,
+     "lon": 80.64,
+     "name": "Kandy",
+     "name_tr": "Kandy",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "IN",
+     "geonames_names": [
+      "Kochi",
+      "Cochin"
+     ],
+     "kind": "city",
+     "lat": 9.93,
+     "lon": 76.27,
+     "name": "Kochi",
+     "name_tr": "Koçi",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "JP",
+     "geonames_names": [
+      "Okinawa-ken",
+      "Naha"
+     ],
+     "kind": "region",
+     "lat": 26.33,
+     "lon": 127.8,
+     "name": "Okinawa",
+     "name_tr": "Okinawa",
+     "radius_km": 60
+    },
+    {
+     "appeal": 3,
+     "country": "IN",
+     "geonames_names": [
+      "Rishikesh"
+     ],
+     "kind": "city",
+     "lat": 30.09,
+     "lon": 78.27,
+     "name": "Rishikesh",
+     "name_tr": "Rişikeş",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "VN",
+     "geonames_names": [
+      "Sa Pa",
+      "Sapa"
+     ],
+     "kind": "resort",
+     "lat": 22.34,
+     "lon": 103.84,
+     "name": "Sapa",
+     "name_tr": "Sapa",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "PH",
+     "geonames_names": [
+      "Siargao Island",
+      "General Luna"
+     ],
+     "kind": "resort",
+     "lat": 9.86,
+     "lon": 126.05,
+     "name": "Siargao",
+     "name_tr": "Siargao",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "IN",
+     "geonames_names": [
+      "Udaipur"
+     ],
+     "kind": "city",
+     "lat": 24.58,
+     "lon": 73.71,
+     "name": "Udaipur",
+     "name_tr": "Udaipur",
+     "radius_km": 0
+    }
+   ],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "input_tokens": 457,
+    "output_tokens": 6570
+   }
+  },
+  "middle_east_africa_ca": {
+   "model": "gemini-3.7-flash",
+   "prompt_sha": "0bf60176f5adc0f7",
+   "rows": [
+    {
+     "appeal": 1,
+     "country": "EG",
+     "geonames_names": [
+      "Al Qahirah",
+      "Cairo"
+     ],
+     "kind": "city",
+     "lat": 30.04,
+     "lon": 31.24,
+     "name": "Cairo",
+     "name_tr": "Kahire",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "ZA",
+     "geonames_names": [
+      "Cape Town",
+      "Kaapstad"
+     ],
+     "kind": "city",
+     "lat": -33.92,
+     "lon": 18.42,
+     "name": "Cape Town",
+     "name_tr": "Cape Town",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "AE",
+     "geonames_names": [
+      "Dubai",
+      "Dubayy"
+     ],
+     "kind": "city",
+     "lat": 25.2,
+     "lon": 55.27,
+     "name": "Dubai",
+     "name_tr": "Dubai",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "IL",
+     "geonames_names": [
+      "Jerusalem",
+      "Al Quds",
+      "Yerushalayim"
+     ],
+     "kind": "city",
+     "lat": 31.77,
+     "lon": 35.22,
+     "name": "Jerusalem",
+     "name_tr": "Kudüs",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "MV",
+     "geonames_names": [
+      "Maldives",
+      "Male"
+     ],
+     "kind": "region",
+     "lat": 3.2,
+     "lon": 73.22,
+     "name": "Maldives",
+     "name_tr": "Maldivler",
+     "radius_km": 300
+    },
+    {
+     "appeal": 1,
+     "country": "MA",
+     "geonames_names": [
+      "Marrakech",
+      "Marrakesh"
+     ],
+     "kind": "city",
+     "lat": 31.63,
+     "lon": -8.0,
+     "name": "Marrakech",
+     "name_tr": "Marakeş",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "MU",
+     "geonames_names": [
+      "Mauritius",
+      "Port Louis"
+     ],
+     "kind": "region",
+     "lat": -20.28,
+     "lon": 57.55,
+     "name": "Mauritius",
+     "name_tr": "Mauritius",
+     "radius_km": 35
+    },
+    {
+     "appeal": 1,
+     "country": "SA",
+     "geonames_names": [
+      "Makkah al Mukarramah",
+      "Mecca"
+     ],
+     "kind": "city",
+     "lat": 21.43,
+     "lon": 39.83,
+     "name": "Mecca",
+     "name_tr": "Mekke",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "SA",
+     "geonames_names": [
+      "Al Madinah al Munawwarah",
+      "Medina"
+     ],
+     "kind": "city",
+     "lat": 24.47,
+     "lon": 39.61,
+     "name": "Medina",
+     "name_tr": "Medine",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "JO",
+     "geonames_names": [
+      "Petra",
+      "Wadi Musa"
+     ],
+     "kind": "resort",
+     "lat": 30.33,
+     "lon": 35.44,
+     "name": "Petra",
+     "name_tr": "Petra",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "UZ",
+     "geonames_names": [
+      "Samarkand",
+      "Samarqand"
+     ],
+     "kind": "city",
+     "lat": 39.65,
+     "lon": 66.96,
+     "name": "Samarkand",
+     "name_tr": "Semerkant",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "SC",
+     "geonames_names": [
+      "Seychelles",
+      "Victoria"
+     ],
+     "kind": "region",
+     "lat": -4.68,
+     "lon": 55.49,
+     "name": "Seychelles",
+     "name_tr": "Seyşeller",
+     "radius_km": 150
+    },
+    {
+     "appeal": 1,
+     "country": "EG",
+     "geonames_names": [
+      "Sharm el-Sheikh",
+      "Sharm ash Shaykh"
+     ],
+     "kind": "resort",
+     "lat": 27.92,
+     "lon": 34.33,
+     "name": "Sharm El Sheikh",
+     "name_tr": "Şarm El Şeyh",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "TZ",
+     "geonames_names": [
+      "Zanzibar",
+      "Zanzibar City"
+     ],
+     "kind": "region",
+     "lat": -6.16,
+     "lon": 39.2,
+     "name": "Zanzibar",
+     "name_tr": "Zanzibar",
+     "radius_km": 50
+    },
+    {
+     "appeal": 2,
+     "country": "AE",
+     "geonames_names": [
+      "Abu Dhabi",
+      "Abu Zaby"
+     ],
+     "kind": "city",
+     "lat": 24.45,
+     "lon": 54.38,
+     "name": "Abu Dhabi",
+     "name_tr": "Abu Dabi",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "EG",
+     "geonames_names": [
+      "Al Iskandariyah",
+      "Alexandria"
+     ],
+     "kind": "city",
+     "lat": 31.2,
+     "lon": 29.92,
+     "name": "Alexandria",
+     "name_tr": "İskenderiye",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "KZ",
+     "geonames_names": [
+      "Almaty"
+     ],
+     "kind": "city",
+     "lat": 43.24,
+     "lon": 76.91,
+     "name": "Almaty",
+     "name_tr": "Almatı",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "JO",
+     "geonames_names": [
+      "Amman",
+      "‘Ammān"
+     ],
+     "kind": "city",
+     "lat": 31.95,
+     "lon": 35.93,
+     "name": "Amman",
+     "name_tr": "Amman",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AZ",
+     "geonames_names": [
+      "Baku",
+      "Bakı"
+     ],
+     "kind": "city",
+     "lat": 40.41,
+     "lon": 49.87,
+     "name": "Baku",
+     "name_tr": "Bakü",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "UZ",
+     "geonames_names": [
+      "Bukhara",
+      "Buxoro"
+     ],
+     "kind": "city",
+     "lat": 39.77,
+     "lon": 64.42,
+     "name": "Bukhara",
+     "name_tr": "Buhara",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "MA",
+     "geonames_names": [
+      "Casablanca",
+      "Ad Dar al Bayda"
+     ],
+     "kind": "city",
+     "lat": 33.57,
+     "lon": -7.59,
+     "name": "Casablanca",
+     "name_tr": "Kazablanka",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "QA",
+     "geonames_names": [
+      "Doha",
+      "Ad Dawhah"
+     ],
+     "kind": "city",
+     "lat": 25.29,
+     "lon": 51.53,
+     "name": "Doha",
+     "name_tr": "Doha",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "EG",
+     "geonames_names": [
+      "Hurghada",
+      "Al Ghardaqah"
+     ],
+     "kind": "resort",
+     "lat": 27.26,
+     "lon": 33.81,
+     "name": "Hurghada",
+     "name_tr": "Hurgada",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ZA",
+     "geonames_names": [
+      "Johannesburg"
+     ],
+     "kind": "city",
+     "lat": -26.2,
+     "lon": 28.04,
+     "name": "Johannesburg",
+     "name_tr": "Johannesburg",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "EG",
+     "geonames_names": [
+      "Luxor",
+      "Al Uqsur"
+     ],
+     "kind": "city",
+     "lat": 25.7,
+     "lon": 32.64,
+     "name": "Luxor",
+     "name_tr": "Luksor",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "OM",
+     "geonames_names": [
+      "Muscat",
+      "Masqat"
+     ],
+     "kind": "city",
+     "lat": 23.59,
+     "lon": 58.41,
+     "name": "Muscat",
+     "name_tr": "Maskat",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "SA",
+     "geonames_names": [
+      "Riyadh",
+      "Ar Riyad"
+     ],
+     "kind": "city",
+     "lat": 24.71,
+     "lon": 46.68,
+     "name": "Riyadh",
+     "name_tr": "Riyad",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "UZ",
+     "geonames_names": [
+      "Tashkent",
+      "Toshkent"
+     ],
+     "kind": "city",
+     "lat": 41.3,
+     "lon": 69.24,
+     "name": "Tashkent",
+     "name_tr": "Taşkent",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IL",
+     "geonames_names": [
+      "Tel Aviv",
+      "Tel Aviv-Yafo"
+     ],
+     "kind": "city",
+     "lat": 32.09,
+     "lon": 34.78,
+     "name": "Tel Aviv",
+     "name_tr": "Tel Aviv",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "TN",
+     "geonames_names": [
+      "Tunis"
+     ],
+     "kind": "city",
+     "lat": 36.8,
+     "lon": 10.18,
+     "name": "Tunis",
+     "name_tr": "Tunus",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "SA",
+     "geonames_names": [
+      "Al Ula",
+      "Al ‘Ulā"
+     ],
+     "kind": "city",
+     "lat": 26.62,
+     "lon": 37.92,
+     "name": "AlUla",
+     "name_tr": "El-Ula",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "MA",
+     "geonames_names": [
+      "Chefchaouene",
+      "Chefchaouen"
+     ],
+     "kind": "city",
+     "lat": 35.17,
+     "lon": -5.26,
+     "name": "Chefchaouen",
+     "name_tr": "Şafşavan",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "UZ",
+     "geonames_names": [
+      "Khiva",
+      "Xiva"
+     ],
+     "kind": "city",
+     "lat": 41.38,
+     "lon": 60.36,
+     "name": "Khiva",
+     "name_tr": "Hiva",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "OM",
+     "geonames_names": [
+      "Salalah",
+      "Salālah"
+     ],
+     "kind": "city",
+     "lat": 17.02,
+     "lon": 54.09,
+     "name": "Salalah",
+     "name_tr": "Salalah",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "JO",
+     "geonames_names": [
+      "Wadi Rum",
+      "Ramm"
+     ],
+     "kind": "region",
+     "lat": 29.57,
+     "lon": 35.42,
+     "name": "Wadi Rum",
+     "name_tr": "Vadi Rum",
+     "radius_km": 30
+    }
+   ],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "input_tokens": 464,
+    "output_tokens": 3601
+   }
+  },
+  "oceania": {
+   "model": "gemini-3.7-flash",
+   "prompt_sha": "e9d1e06cad350f25",
+   "rows": [
+    {
+     "appeal": 1,
+     "country": "PF",
+     "geonames_names": [
+      "Bora-Bora",
+      "Vaitape"
+     ],
+     "kind": "resort",
+     "lat": -16.5,
+     "lon": -151.74,
+     "name": "Bora Bora",
+     "name_tr": "Bora Bora",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "AU",
+     "geonames_names": [
+      "Great Barrier Reef",
+      "Cairns"
+     ],
+     "kind": "region",
+     "lat": -18.29,
+     "lon": 147.7,
+     "name": "Great Barrier Reef",
+     "name_tr": "Büyük Set Resifi",
+     "radius_km": 250
+    },
+    {
+     "appeal": 1,
+     "country": "AU",
+     "geonames_names": [
+      "Melbourne"
+     ],
+     "kind": "city",
+     "lat": -37.81,
+     "lon": 144.96,
+     "name": "Melbourne",
+     "name_tr": "Melbourne",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "AU",
+     "geonames_names": [
+      "Sydney"
+     ],
+     "kind": "city",
+     "lat": -33.87,
+     "lon": 151.21,
+     "name": "Sydney",
+     "name_tr": "Sidney",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "PF",
+     "geonames_names": [
+      "Tahiti",
+      "Papeete"
+     ],
+     "kind": "region",
+     "lat": -17.65,
+     "lon": -149.43,
+     "name": "Tahiti",
+     "name_tr": "Tahiti",
+     "radius_km": 40
+    },
+    {
+     "appeal": 2,
+     "country": "NZ",
+     "geonames_names": [
+      "Auckland",
+      "Tamaki Makaurau"
+     ],
+     "kind": "city",
+     "lat": -36.85,
+     "lon": 174.76,
+     "name": "Auckland",
+     "name_tr": "Auckland",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AU",
+     "geonames_names": [
+      "Brisbane"
+     ],
+     "kind": "city",
+     "lat": -27.47,
+     "lon": 153.03,
+     "name": "Brisbane",
+     "name_tr": "Brisbane",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AU",
+     "geonames_names": [
+      "Cairns"
+     ],
+     "kind": "city",
+     "lat": -16.92,
+     "lon": 145.78,
+     "name": "Cairns",
+     "name_tr": "Cairns",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "FJ",
+     "geonames_names": [
+      "Republic of Fiji",
+      "Suva",
+      "Nadi"
+     ],
+     "kind": "region",
+     "lat": -17.71,
+     "lon": 178.07,
+     "name": "Fiji",
+     "name_tr": "Fiji",
+     "radius_km": 150
+    },
+    {
+     "appeal": 2,
+     "country": "AU",
+     "geonames_names": [
+      "Gold Coast",
+      "Surfers Paradise"
+     ],
+     "kind": "city",
+     "lat": -28.0,
+     "lon": 153.43,
+     "name": "Gold Coast",
+     "name_tr": "Gold Coast",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AU",
+     "geonames_names": [
+      "Perth"
+     ],
+     "kind": "city",
+     "lat": -31.95,
+     "lon": 115.86,
+     "name": "Perth",
+     "name_tr": "Perth",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "NZ",
+     "geonames_names": [
+      "Queenstown"
+     ],
+     "kind": "resort",
+     "lat": -45.03,
+     "lon": 168.66,
+     "name": "Queenstown",
+     "name_tr": "Queenstown",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "NZ",
+     "geonames_names": [
+      "Rotorua"
+     ],
+     "kind": "resort",
+     "lat": -38.14,
+     "lon": 176.25,
+     "name": "Rotorua",
+     "name_tr": "Rotorua",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AU",
+     "geonames_names": [
+      "Tasmania",
+      "Hobart"
+     ],
+     "kind": "region",
+     "lat": -42.04,
+     "lon": 146.81,
+     "name": "Tasmania",
+     "name_tr": "Tazmanya",
+     "radius_km": 150
+    },
+    {
+     "appeal": 2,
+     "country": "NZ",
+     "geonames_names": [
+      "Wellington",
+      "Te Whanganui-a-Tara"
+     ],
+     "kind": "city",
+     "lat": -41.29,
+     "lon": 174.78,
+     "name": "Wellington",
+     "name_tr": "Wellington",
+     "radius_km": 0
+    }
+   ],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "input_tokens": 421,
+    "output_tokens": 1541
+   }
+  },
+  "south_east_europe": {
+   "model": "gemini-3.7-flash",
+   "prompt_sha": "682c9df94738d8fb",
+   "rows": [
+    {
+     "appeal": 1,
+     "country": "GR",
+     "geonames_names": [
+      "Athens",
+      "Athína"
+     ],
+     "kind": "city",
+     "lat": 37.98,
+     "lon": 23.73,
+     "name": "Athens",
+     "name_tr": "Atina",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "AZ",
+     "geonames_names": [
+      "Baku",
+      "Bakı"
+     ],
+     "kind": "city",
+     "lat": 40.41,
+     "lon": 49.87,
+     "name": "Baku",
+     "name_tr": "Bakü",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "HU",
+     "geonames_names": [
+      "Budapest"
+     ],
+     "kind": "city",
+     "lat": 47.5,
+     "lon": 19.04,
+     "name": "Budapest",
+     "name_tr": "Budapeşte",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "HR",
+     "geonames_names": [
+      "Dubrovnik"
+     ],
+     "kind": "city",
+     "lat": 42.65,
+     "lon": 18.09,
+     "name": "Dubrovnik",
+     "name_tr": "Dubrovnik",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "IT",
+     "geonames_names": [
+      "Firenze",
+      "Florence"
+     ],
+     "kind": "city",
+     "lat": 43.77,
+     "lon": 11.25,
+     "name": "Florence",
+     "name_tr": "Floransa",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "IT",
+     "geonames_names": [
+      "Milano",
+      "Milan"
+     ],
+     "kind": "city",
+     "lat": 45.46,
+     "lon": 9.19,
+     "name": "Milan",
+     "name_tr": "Milano",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "GR",
+     "geonames_names": [
+      "Mykonos",
+      "Mýkonos"
+     ],
+     "kind": "resort",
+     "lat": 37.45,
+     "lon": 25.33,
+     "name": "Mykonos",
+     "name_tr": "Mikonos",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "CZ",
+     "geonames_names": [
+      "Praha",
+      "Prague"
+     ],
+     "kind": "city",
+     "lat": 50.08,
+     "lon": 14.44,
+     "name": "Prague",
+     "name_tr": "Prag",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "GR",
+     "geonames_names": [
+      "Ródos",
+      "Rhodes"
+     ],
+     "kind": "resort",
+     "lat": 36.43,
+     "lon": 28.22,
+     "name": "Rhodes",
+     "name_tr": "Rodos",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "IT",
+     "geonames_names": [
+      "Roma",
+      "Rome"
+     ],
+     "kind": "city",
+     "lat": 41.9,
+     "lon": 12.5,
+     "name": "Rome",
+     "name_tr": "Roma",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "GR",
+     "geonames_names": [
+      "Thira",
+      "Santorini",
+      "Fira"
+     ],
+     "kind": "resort",
+     "lat": 36.39,
+     "lon": 25.46,
+     "name": "Santorini",
+     "name_tr": "Santorini",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "GE",
+     "geonames_names": [
+      "Tbilisi"
+     ],
+     "kind": "city",
+     "lat": 41.72,
+     "lon": 44.78,
+     "name": "Tbilisi",
+     "name_tr": "Tiflis",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "IT",
+     "geonames_names": [
+      "Venezia",
+      "Venice"
+     ],
+     "kind": "city",
+     "lat": 45.44,
+     "lon": 12.33,
+     "name": "Venice",
+     "name_tr": "Venedik",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "AT",
+     "geonames_names": [
+      "Wien",
+      "Vienna"
+     ],
+     "kind": "city",
+     "lat": 48.21,
+     "lon": 16.37,
+     "name": "Vienna",
+     "name_tr": "Viyana",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IT",
+     "geonames_names": [
+      "Costiera Amalfitana",
+      "Amalfi"
+     ],
+     "kind": "region",
+     "lat": 40.63,
+     "lon": 14.6,
+     "name": "Amalfi Coast",
+     "name_tr": "Amalfi Kıyısı",
+     "radius_km": 25
+    },
+    {
+     "appeal": 2,
+     "country": "BG",
+     "geonames_names": [
+      "Bansko"
+     ],
+     "kind": "resort",
+     "lat": 41.84,
+     "lon": 23.49,
+     "name": "Bansko",
+     "name_tr": "Bansko",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "GE",
+     "geonames_names": [
+      "Batumi"
+     ],
+     "kind": "city",
+     "lat": 41.64,
+     "lon": 41.64,
+     "name": "Batumi",
+     "name_tr": "Batum",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "RS",
+     "geonames_names": [
+      "Belgrade",
+      "Beograd"
+     ],
+     "kind": "city",
+     "lat": 44.82,
+     "lon": 20.46,
+     "name": "Belgrade",
+     "name_tr": "Belgrad",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "SI",
+     "geonames_names": [
+      "Bled"
+     ],
+     "kind": "resort",
+     "lat": 46.37,
+     "lon": 14.11,
+     "name": "Bled",
+     "name_tr": "Bled",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IT",
+     "geonames_names": [
+      "Bologna"
+     ],
+     "kind": "city",
+     "lat": 44.49,
+     "lon": 11.34,
+     "name": "Bologna",
+     "name_tr": "Bolonya",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "RO",
+     "geonames_names": [
+      "Brașov",
+      "Brasov"
+     ],
+     "kind": "city",
+     "lat": 45.65,
+     "lon": 25.6,
+     "name": "Brasov",
+     "name_tr": "Braşov",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "SK",
+     "geonames_names": [
+      "Bratislava"
+     ],
+     "kind": "city",
+     "lat": 48.15,
+     "lon": 17.11,
+     "name": "Bratislava",
+     "name_tr": "Bratislava",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "RO",
+     "geonames_names": [
+      "Bucharest",
+      "București"
+     ],
+     "kind": "city",
+     "lat": 44.43,
+     "lon": 26.1,
+     "name": "Bucharest",
+     "name_tr": "Bükreş",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ME",
+     "geonames_names": [
+      "Budva"
+     ],
+     "kind": "city",
+     "lat": 42.29,
+     "lon": 18.84,
+     "name": "Budva",
+     "name_tr": "Budva",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IT",
+     "geonames_names": [
+      "Capri",
+      "Isola di Capri"
+     ],
+     "kind": "resort",
+     "lat": 40.55,
+     "lon": 14.24,
+     "name": "Capri",
+     "name_tr": "Capri",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IT",
+     "geonames_names": [
+      "Cinque Terre",
+      "Monterosso al Mare"
+     ],
+     "kind": "region",
+     "lat": 44.13,
+     "lon": 9.68,
+     "name": "Cinque Terre",
+     "name_tr": "Cinque Terre",
+     "radius_km": 15
+    },
+    {
+     "appeal": 2,
+     "country": "IT",
+     "geonames_names": [
+      "Lago di Como",
+      "Como"
+     ],
+     "kind": "region",
+     "lat": 45.99,
+     "lon": 9.26,
+     "name": "Como Lake",
+     "name_tr": "Como Gölü",
+     "radius_km": 30
+    },
+    {
+     "appeal": 2,
+     "country": "GR",
+     "geonames_names": [
+      "Corfu",
+      "Kérkyra"
+     ],
+     "kind": "resort",
+     "lat": 39.62,
+     "lon": 19.92,
+     "name": "Corfu",
+     "name_tr": "Korfu",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "GR",
+     "geonames_names": [
+      "Crete",
+      "Kríti",
+      "Heraklion"
+     ],
+     "kind": "region",
+     "lat": 35.24,
+     "lon": 24.81,
+     "name": "Crete",
+     "name_tr": "Girit",
+     "radius_km": 120
+    },
+    {
+     "appeal": 2,
+     "country": "PL",
+     "geonames_names": [
+      "Gdańsk",
+      "Gdansk"
+     ],
+     "kind": "city",
+     "lat": 54.35,
+     "lon": 18.65,
+     "name": "Gdansk",
+     "name_tr": "Gdansk",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "GR",
+     "geonames_names": [
+      "Chalkidiki",
+      "Polygyros"
+     ],
+     "kind": "region",
+     "lat": 40.38,
+     "lon": 23.44,
+     "name": "Halkidiki",
+     "name_tr": "Halkidiki",
+     "radius_km": 45
+    },
+    {
+     "appeal": 2,
+     "country": "GR",
+     "geonames_names": [
+      "Kavála",
+      "Kavala"
+     ],
+     "kind": "city",
+     "lat": 40.94,
+     "lon": 24.41,
+     "name": "Kavala",
+     "name_tr": "Kavala",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "GR",
+     "geonames_names": [
+      "Kos",
+      "Kōs"
+     ],
+     "kind": "resort",
+     "lat": 36.89,
+     "lon": 27.29,
+     "name": "Kos",
+     "name_tr": "İstanköy",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ME",
+     "geonames_names": [
+      "Kotor"
+     ],
+     "kind": "city",
+     "lat": 42.42,
+     "lon": 18.77,
+     "name": "Kotor",
+     "name_tr": "Kotor",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PL",
+     "geonames_names": [
+      "Kraków",
+      "Krakow"
+     ],
+     "kind": "city",
+     "lat": 50.06,
+     "lon": 19.94,
+     "name": "Krakow",
+     "name_tr": "Krakov",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CY",
+     "geonames_names": [
+      "Kyrenia",
+      "Keryneia"
+     ],
+     "kind": "resort",
+     "lat": 35.34,
+     "lon": 33.32,
+     "name": "Kyrenia",
+     "name_tr": "Girne",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CY",
+     "geonames_names": [
+      "Larnaca",
+      "Lárnaka"
+     ],
+     "kind": "city",
+     "lat": 34.92,
+     "lon": 33.63,
+     "name": "Larnaca",
+     "name_tr": "Larnaka",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "GR",
+     "geonames_names": [
+      "Lesbos",
+      "Mytilene",
+      "Lésvos"
+     ],
+     "kind": "region",
+     "lat": 39.26,
+     "lon": 26.28,
+     "name": "Lesbos",
+     "name_tr": "Midilli",
+     "radius_km": 40
+    },
+    {
+     "appeal": 2,
+     "country": "SI",
+     "geonames_names": [
+      "Ljubljana"
+     ],
+     "kind": "city",
+     "lat": 46.05,
+     "lon": 14.51,
+     "name": "Ljubljana",
+     "name_tr": "Ljubljana",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "BA",
+     "geonames_names": [
+      "Mostar"
+     ],
+     "kind": "city",
+     "lat": 43.34,
+     "lon": 17.81,
+     "name": "Mostar",
+     "name_tr": "Mostar",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IT",
+     "geonames_names": [
+      "Napoli",
+      "Naples"
+     ],
+     "kind": "city",
+     "lat": 40.85,
+     "lon": 14.27,
+     "name": "Naples",
+     "name_tr": "Napoli",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "RS",
+     "geonames_names": [
+      "Novi Sad"
+     ],
+     "kind": "city",
+     "lat": 45.26,
+     "lon": 19.84,
+     "name": "Novi Sad",
+     "name_tr": "Novi Sad",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "MK",
+     "geonames_names": [
+      "Ohrid"
+     ],
+     "kind": "resort",
+     "lat": 41.11,
+     "lon": 20.8,
+     "name": "Ohrid",
+     "name_tr": "Ohri",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CY",
+     "geonames_names": [
+      "Paphos",
+      "Páfos"
+     ],
+     "kind": "city",
+     "lat": 34.78,
+     "lon": 32.42,
+     "name": "Paphos",
+     "name_tr": "Baf",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "BG",
+     "geonames_names": [
+      "Plovdiv"
+     ],
+     "kind": "city",
+     "lat": 42.14,
+     "lon": 24.75,
+     "name": "Plovdiv",
+     "name_tr": "Filibe",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PL",
+     "geonames_names": [
+      "Poznań",
+      "Poznan"
+     ],
+     "kind": "city",
+     "lat": 52.41,
+     "lon": 16.93,
+     "name": "Poznan",
+     "name_tr": "Poznan",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "LV",
+     "geonames_names": [
+      "Riga",
+      "Rīga"
+     ],
+     "kind": "city",
+     "lat": 56.95,
+     "lon": 24.11,
+     "name": "Riga",
+     "name_tr": "Riga",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "GR",
+     "geonames_names": [
+      "Samos",
+      "Sámos"
+     ],
+     "kind": "region",
+     "lat": 37.75,
+     "lon": 26.83,
+     "name": "Samos",
+     "name_tr": "Sisam",
+     "radius_km": 30
+    },
+    {
+     "appeal": 2,
+     "country": "BA",
+     "geonames_names": [
+      "Sarajevo"
+     ],
+     "kind": "city",
+     "lat": 43.86,
+     "lon": 18.41,
+     "name": "Sarajevo",
+     "name_tr": "Saraybosna",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IT",
+     "geonames_names": [
+      "Sicilia",
+      "Palermo"
+     ],
+     "kind": "region",
+     "lat": 37.6,
+     "lon": 14.02,
+     "name": "Sicily",
+     "name_tr": "Sicilya",
+     "radius_km": 120
+    },
+    {
+     "appeal": 2,
+     "country": "MK",
+     "geonames_names": [
+      "Skopje"
+     ],
+     "kind": "city",
+     "lat": 42.0,
+     "lon": 21.43,
+     "name": "Skopje",
+     "name_tr": "Üsküp",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "BG",
+     "geonames_names": [
+      "Sofia",
+      "Sofiya"
+     ],
+     "kind": "city",
+     "lat": 42.7,
+     "lon": 23.32,
+     "name": "Sofia",
+     "name_tr": "Sofya",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "HR",
+     "geonames_names": [
+      "Split"
+     ],
+     "kind": "city",
+     "lat": 43.51,
+     "lon": 16.44,
+     "name": "Split",
+     "name_tr": "Split",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "EE",
+     "geonames_names": [
+      "Tallinn"
+     ],
+     "kind": "city",
+     "lat": 59.44,
+     "lon": 24.75,
+     "name": "Tallinn",
+     "name_tr": "Tallinn",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "GR",
+     "geonames_names": [
+      "Thessaloníki",
+      "Thessaloniki"
+     ],
+     "kind": "city",
+     "lat": 40.64,
+     "lon": 22.94,
+     "name": "Thessaloniki",
+     "name_tr": "Selanik",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AL",
+     "geonames_names": [
+      "Tirana",
+      "Tiranë"
+     ],
+     "kind": "city",
+     "lat": 41.33,
+     "lon": 19.82,
+     "name": "Tirana",
+     "name_tr": "Tiran",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IT",
+     "geonames_names": [
+      "Toscana",
+      "Firenze"
+     ],
+     "kind": "region",
+     "lat": 43.42,
+     "lon": 11.15,
+     "name": "Tuscany",
+     "name_tr": "Toskana",
+     "radius_km": 90
+    },
+    {
+     "appeal": 2,
+     "country": "MT",
+     "geonames_names": [
+      "Valletta",
+      "Il-Belt Valletta"
+     ],
+     "kind": "city",
+     "lat": 35.9,
+     "lon": 14.51,
+     "name": "Valletta",
+     "name_tr": "Valletta",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "BG",
+     "geonames_names": [
+      "Varna"
+     ],
+     "kind": "city",
+     "lat": 43.21,
+     "lon": 27.91,
+     "name": "Varna",
+     "name_tr": "Varna",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "LT",
+     "geonames_names": [
+      "Vilnius"
+     ],
+     "kind": "city",
+     "lat": 54.69,
+     "lon": 25.28,
+     "name": "Vilnius",
+     "name_tr": "Vilnius",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PL",
+     "geonames_names": [
+      "Warszawa",
+      "Warsaw"
+     ],
+     "kind": "city",
+     "lat": 52.23,
+     "lon": 21.01,
+     "name": "Warsaw",
+     "name_tr": "Varşova",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PL",
+     "geonames_names": [
+      "Wrocław",
+      "Wroclaw"
+     ],
+     "kind": "city",
+     "lat": 51.11,
+     "lon": 17.04,
+     "name": "Wroclaw",
+     "name_tr": "Wroclaw",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AM",
+     "geonames_names": [
+      "Yerevan"
+     ],
+     "kind": "city",
+     "lat": 40.18,
+     "lon": 44.51,
+     "name": "Yerevan",
+     "name_tr": "Erivan",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "HR",
+     "geonames_names": [
+      "Zagreb"
+     ],
+     "kind": "city",
+     "lat": 45.81,
+     "lon": 15.98,
+     "name": "Zagreb",
+     "name_tr": "Zagreb",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "GR",
+     "geonames_names": [
+      "Zákynthos",
+      "Zakynthos"
+     ],
+     "kind": "resort",
+     "lat": 37.79,
+     "lon": 20.9,
+     "name": "Zakynthos",
+     "name_tr": "Zante",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "GE",
+     "geonames_names": [
+      "Stepantsminda",
+      "Kazbegi"
+     ],
+     "kind": "resort",
+     "lat": 42.66,
+     "lon": 44.64,
+     "name": "Kazbegi",
+     "name_tr": "Kazbegi",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "BG",
+     "geonames_names": [
+      "Pamporovo"
+     ],
+     "kind": "resort",
+     "lat": 41.66,
+     "lon": 24.7,
+     "name": "Pamporovo",
+     "name_tr": "Pamporovo",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "RO",
+     "geonames_names": [
+      "Sighișoara",
+      "Sighisoara"
+     ],
+     "kind": "city",
+     "lat": 46.22,
+     "lon": 24.79,
+     "name": "Sighisoara",
+     "name_tr": "Sighişoara",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "GR",
+     "geonames_names": [
+      "Symi",
+      "Sými"
+     ],
+     "kind": "resort",
+     "lat": 36.6,
+     "lon": 27.84,
+     "name": "Symi",
+     "name_tr": "Sömbeki",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "GR",
+     "geonames_names": [
+      "Thasos",
+      "Thásos",
+      "Limenas"
+     ],
+     "kind": "resort",
+     "lat": 40.78,
+     "lon": 24.71,
+     "name": "Thassos",
+     "name_tr": "Taşoz",
+     "radius_km": 0
+    }
+   ],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "input_tokens": 463,
+    "output_tokens": 7080
+   }
+  },
+  "west_north_europe": {
+   "model": "gemini-3.7-flash",
+   "prompt_sha": "f85e148a8cd66103",
+   "rows": [
+    {
+     "appeal": 1,
+     "country": "NL",
+     "geonames_names": [
+      "Amsterdam"
+     ],
+     "kind": "city",
+     "lat": 52.37,
+     "lon": 4.9,
+     "name": "Amsterdam",
+     "name_tr": "Amsterdam",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "ES",
+     "geonames_names": [
+      "Barcelona"
+     ],
+     "kind": "city",
+     "lat": 41.39,
+     "lon": 2.17,
+     "name": "Barcelona",
+     "name_tr": "Barselona",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "DE",
+     "geonames_names": [
+      "Berlin"
+     ],
+     "kind": "city",
+     "lat": 52.52,
+     "lon": 13.4,
+     "name": "Berlin",
+     "name_tr": "Berlin",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "BE",
+     "geonames_names": [
+      "Bruxelles",
+      "Brussel"
+     ],
+     "kind": "city",
+     "lat": 50.85,
+     "lon": 4.35,
+     "name": "Brussels",
+     "name_tr": "Brüksel",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "DK",
+     "geonames_names": [
+      "København"
+     ],
+     "kind": "city",
+     "lat": 55.68,
+     "lon": 12.57,
+     "name": "Copenhagen",
+     "name_tr": "Kopenhag",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "IE",
+     "geonames_names": [
+      "Dublin",
+      "Baile Átha Cliath"
+     ],
+     "kind": "city",
+     "lat": 53.35,
+     "lon": -6.26,
+     "name": "Dublin",
+     "name_tr": "Dublin",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "GB",
+     "geonames_names": [
+      "Edinburgh"
+     ],
+     "kind": "city",
+     "lat": 55.95,
+     "lon": -3.19,
+     "name": "Edinburgh",
+     "name_tr": "Edinburgh",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "ES",
+     "geonames_names": [
+      "Ibiza",
+      "Eivissa"
+     ],
+     "kind": "resort",
+     "lat": 38.91,
+     "lon": 1.43,
+     "name": "Ibiza",
+     "name_tr": "İbiza",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "PT",
+     "geonames_names": [
+      "Lisboa",
+      "Lisbon"
+     ],
+     "kind": "city",
+     "lat": 38.72,
+     "lon": -9.14,
+     "name": "Lisbon",
+     "name_tr": "Lizbon",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "GB",
+     "geonames_names": [
+      "London"
+     ],
+     "kind": "city",
+     "lat": 51.51,
+     "lon": -0.13,
+     "name": "London",
+     "name_tr": "Londra",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "ES",
+     "geonames_names": [
+      "Madrid"
+     ],
+     "kind": "city",
+     "lat": 40.42,
+     "lon": -3.7,
+     "name": "Madrid",
+     "name_tr": "Madrid",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "DE",
+     "geonames_names": [
+      "München"
+     ],
+     "kind": "city",
+     "lat": 48.14,
+     "lon": 11.58,
+     "name": "Munich",
+     "name_tr": "Münih",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "FR",
+     "geonames_names": [
+      "Nice"
+     ],
+     "kind": "city",
+     "lat": 43.7,
+     "lon": 7.27,
+     "name": "Nice",
+     "name_tr": "Nice",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "NO",
+     "geonames_names": [
+      "Oslo"
+     ],
+     "kind": "city",
+     "lat": 59.91,
+     "lon": 10.75,
+     "name": "Oslo",
+     "name_tr": "Oslo",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "FR",
+     "geonames_names": [
+      "Paris"
+     ],
+     "kind": "city",
+     "lat": 48.86,
+     "lon": 2.35,
+     "name": "Paris",
+     "name_tr": "Paris",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "SE",
+     "geonames_names": [
+      "Stockholm"
+     ],
+     "kind": "city",
+     "lat": 59.33,
+     "lon": 18.07,
+     "name": "Stockholm",
+     "name_tr": "Stokholm",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "AT",
+     "geonames_names": [
+      "Wien",
+      "Vienna"
+     ],
+     "kind": "city",
+     "lat": 48.21,
+     "lon": 16.37,
+     "name": "Vienna",
+     "name_tr": "Viyana",
+     "radius_km": 0
+    },
+    {
+     "appeal": 1,
+     "country": "CH",
+     "geonames_names": [
+      "Zürich",
+      "Zurich"
+     ],
+     "kind": "city",
+     "lat": 47.38,
+     "lon": 8.54,
+     "name": "Zurich",
+     "name_tr": "Zürih",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PT",
+     "geonames_names": [
+      "Algarve",
+      "Faro"
+     ],
+     "kind": "region",
+     "lat": 37.14,
+     "lon": -8.32,
+     "name": "Algarve",
+     "name_tr": "Algarve",
+     "radius_km": 60
+    },
+    {
+     "appeal": 2,
+     "country": "PT",
+     "geonames_names": [
+      "Açores",
+      "Ponta Delgada"
+     ],
+     "kind": "region",
+     "lat": 37.74,
+     "lon": -25.68,
+     "name": "Azores",
+     "name_tr": "Azor Adaları",
+     "radius_km": 200
+    },
+    {
+     "appeal": 2,
+     "country": "CH",
+     "geonames_names": [
+      "Basel",
+      "Bâle"
+     ],
+     "kind": "city",
+     "lat": 47.56,
+     "lon": 7.59,
+     "name": "Basel",
+     "name_tr": "Basel",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "FR",
+     "geonames_names": [
+      "Bordeaux"
+     ],
+     "kind": "city",
+     "lat": 44.84,
+     "lon": -0.58,
+     "name": "Bordeaux",
+     "name_tr": "Bordeaux",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "BE",
+     "geonames_names": [
+      "Brugge",
+      "Bruges"
+     ],
+     "kind": "city",
+     "lat": 51.21,
+     "lon": 3.22,
+     "name": "Bruges",
+     "name_tr": "Brugge",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ES",
+     "geonames_names": [
+      "Canarias",
+      "Santa Cruz de Tenerife",
+      "Las Palmas"
+     ],
+     "kind": "region",
+     "lat": 28.29,
+     "lon": -16.63,
+     "name": "Canary Islands",
+     "name_tr": "Kanarya Adaları",
+     "radius_km": 180
+    },
+    {
+     "appeal": 2,
+     "country": "FR",
+     "geonames_names": [
+      "Cannes"
+     ],
+     "kind": "resort",
+     "lat": 43.55,
+     "lon": 7.02,
+     "name": "Cannes",
+     "name_tr": "Cannes",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "FR",
+     "geonames_names": [
+      "Chamonix-Mont-Blanc"
+     ],
+     "kind": "resort",
+     "lat": 45.92,
+     "lon": 6.87,
+     "name": "Chamonix",
+     "name_tr": "Chamonix",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "DE",
+     "geonames_names": [
+      "Köln"
+     ],
+     "kind": "city",
+     "lat": 50.94,
+     "lon": 6.96,
+     "name": "Cologne",
+     "name_tr": "Köln",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ES",
+     "geonames_names": [
+      "Costa Brava",
+      "Girona"
+     ],
+     "kind": "region",
+     "lat": 41.98,
+     "lon": 3.12,
+     "name": "Costa Brava",
+     "name_tr": "Costa Brava",
+     "radius_km": 50
+    },
+    {
+     "appeal": 2,
+     "country": "ES",
+     "geonames_names": [
+      "Costa del Sol",
+      "Málaga"
+     ],
+     "kind": "region",
+     "lat": 36.54,
+     "lon": -4.63,
+     "name": "Costa del Sol",
+     "name_tr": "Costa del Sol",
+     "radius_km": 60
+    },
+    {
+     "appeal": 2,
+     "country": "FR",
+     "geonames_names": [
+      "Côte d'Azur",
+      "Nice"
+     ],
+     "kind": "region",
+     "lat": 43.6,
+     "lon": 7.1,
+     "name": "Cote d'Azur",
+     "name_tr": "Fransız Rivierası",
+     "radius_km": 50
+    },
+    {
+     "appeal": 2,
+     "country": "DE",
+     "geonames_names": [
+      "Frankfurt am Main"
+     ],
+     "kind": "city",
+     "lat": 50.11,
+     "lon": 8.68,
+     "name": "Frankfurt",
+     "name_tr": "Frankfurt",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CH",
+     "geonames_names": [
+      "Genève",
+      "Geneva"
+     ],
+     "kind": "city",
+     "lat": 46.2,
+     "lon": 6.14,
+     "name": "Geneva",
+     "name_tr": "Cenevre",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "BE",
+     "geonames_names": [
+      "Gent",
+      "Gand"
+     ],
+     "kind": "city",
+     "lat": 51.05,
+     "lon": 3.73,
+     "name": "Ghent",
+     "name_tr": "Gent",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ES",
+     "geonames_names": [
+      "Granada"
+     ],
+     "kind": "city",
+     "lat": 37.18,
+     "lon": -3.6,
+     "name": "Granada",
+     "name_tr": "Granada",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "DE",
+     "geonames_names": [
+      "Hamburg"
+     ],
+     "kind": "city",
+     "lat": 53.55,
+     "lon": 9.99,
+     "name": "Hamburg",
+     "name_tr": "Hamburg",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "FI",
+     "geonames_names": [
+      "Helsinki",
+      "Helsingfors"
+     ],
+     "kind": "city",
+     "lat": 60.17,
+     "lon": 24.94,
+     "name": "Helsinki",
+     "name_tr": "Helsinki",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AT",
+     "geonames_names": [
+      "Innsbruck"
+     ],
+     "kind": "city",
+     "lat": 47.27,
+     "lon": 11.4,
+     "name": "Innsbruck",
+     "name_tr": "Innsbruck",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CH",
+     "geonames_names": [
+      "Interlaken"
+     ],
+     "kind": "resort",
+     "lat": 46.69,
+     "lon": 7.86,
+     "name": "Interlaken",
+     "name_tr": "Interlaken",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "FI",
+     "geonames_names": [
+      "Lappi",
+      "Rovaniemi"
+     ],
+     "kind": "region",
+     "lat": 66.5,
+     "lon": 25.73,
+     "name": "Lapland",
+     "name_tr": "Laponya",
+     "radius_km": 150
+    },
+    {
+     "appeal": 2,
+     "country": "CH",
+     "geonames_names": [
+      "Luzern",
+      "Lucerne"
+     ],
+     "kind": "city",
+     "lat": 47.05,
+     "lon": 8.31,
+     "name": "Lucerne",
+     "name_tr": "Luzern",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "FR",
+     "geonames_names": [
+      "Lyon"
+     ],
+     "kind": "city",
+     "lat": 45.76,
+     "lon": 4.84,
+     "name": "Lyon",
+     "name_tr": "Lyon",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PT",
+     "geonames_names": [
+      "Madeira",
+      "Funchal"
+     ],
+     "kind": "region",
+     "lat": 32.76,
+     "lon": -16.96,
+     "name": "Madeira",
+     "name_tr": "Madeira",
+     "radius_km": 30
+    },
+    {
+     "appeal": 2,
+     "country": "ES",
+     "geonames_names": [
+      "Mallorca",
+      "Palma"
+     ],
+     "kind": "region",
+     "lat": 39.69,
+     "lon": 3.01,
+     "name": "Mallorca",
+     "name_tr": "Mayorka",
+     "radius_km": 50
+    },
+    {
+     "appeal": 2,
+     "country": "FR",
+     "geonames_names": [
+      "Marseille"
+     ],
+     "kind": "city",
+     "lat": 43.3,
+     "lon": 5.37,
+     "name": "Marseille",
+     "name_tr": "Marsilya",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "PT",
+     "geonames_names": [
+      "Porto",
+      "Oporto"
+     ],
+     "kind": "city",
+     "lat": 41.16,
+     "lon": -8.63,
+     "name": "Porto",
+     "name_tr": "Porto",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "IS",
+     "geonames_names": [
+      "Reykjavík"
+     ],
+     "kind": "city",
+     "lat": 64.15,
+     "lon": -21.94,
+     "name": "Reykjavik",
+     "name_tr": "Reykjavik",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "NL",
+     "geonames_names": [
+      "Rotterdam"
+     ],
+     "kind": "city",
+     "lat": 51.92,
+     "lon": 4.48,
+     "name": "Rotterdam",
+     "name_tr": "Rotterdam",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "FI",
+     "geonames_names": [
+      "Rovaniemi"
+     ],
+     "kind": "city",
+     "lat": 66.5,
+     "lon": 25.73,
+     "name": "Rovaniemi",
+     "name_tr": "Rovaniemi",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "AT",
+     "geonames_names": [
+      "Salzburg"
+     ],
+     "kind": "city",
+     "lat": 47.8,
+     "lon": 13.06,
+     "name": "Salzburg",
+     "name_tr": "Salzburg",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ES",
+     "geonames_names": [
+      "Donostia",
+      "San Sebastián"
+     ],
+     "kind": "city",
+     "lat": 43.32,
+     "lon": -1.98,
+     "name": "San Sebastian",
+     "name_tr": "San Sebastian",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ES",
+     "geonames_names": [
+      "Sevilla"
+     ],
+     "kind": "city",
+     "lat": 37.39,
+     "lon": -5.98,
+     "name": "Seville",
+     "name_tr": "Sevilla",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CH",
+     "geonames_names": [
+      "Sankt Moritz",
+      "St. Moritz"
+     ],
+     "kind": "resort",
+     "lat": 46.5,
+     "lon": 9.84,
+     "name": "St. Moritz",
+     "name_tr": "St. Moritz",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "FR",
+     "geonames_names": [
+      "Strasbourg"
+     ],
+     "kind": "city",
+     "lat": 48.57,
+     "lon": 7.75,
+     "name": "Strasbourg",
+     "name_tr": "Strazburg",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ES",
+     "geonames_names": [
+      "Tenerife",
+      "Santa Cruz de Tenerife"
+     ],
+     "kind": "resort",
+     "lat": 28.29,
+     "lon": -16.63,
+     "name": "Tenerife",
+     "name_tr": "Tenerife",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "NL",
+     "geonames_names": [
+      "'s-Gravenhage",
+      "Den Haag"
+     ],
+     "kind": "city",
+     "lat": 52.08,
+     "lon": 4.31,
+     "name": "The Hague",
+     "name_tr": "Lahey",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "NO",
+     "geonames_names": [
+      "Tromsø"
+     ],
+     "kind": "city",
+     "lat": 69.65,
+     "lon": 18.96,
+     "name": "Tromso",
+     "name_tr": "Tromso",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "ES",
+     "geonames_names": [
+      "Valencia",
+      "València"
+     ],
+     "kind": "city",
+     "lat": 39.47,
+     "lon": -0.38,
+     "name": "Valencia",
+     "name_tr": "Valensiya",
+     "radius_km": 0
+    },
+    {
+     "appeal": 2,
+     "country": "CH",
+     "geonames_names": [
+      "Zermatt"
+     ],
+     "kind": "resort",
+     "lat": 45.98,
+     "lon": 7.75,
+     "name": "Zermatt",
+     "name_tr": "Zermatt",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "BE",
+     "geonames_names": [
+      "Antwerpen",
+      "Anvers"
+     ],
+     "kind": "city",
+     "lat": 51.22,
+     "lon": 4.4,
+     "name": "Antwerp",
+     "name_tr": "Anvers",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "FR",
+     "geonames_names": [
+      "Avignon"
+     ],
+     "kind": "city",
+     "lat": 43.95,
+     "lon": 4.81,
+     "name": "Avignon",
+     "name_tr": "Avignon",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "NO",
+     "geonames_names": [
+      "Bergen"
+     ],
+     "kind": "city",
+     "lat": 60.39,
+     "lon": 5.32,
+     "name": "Bergen",
+     "name_tr": "Bergen",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "FR",
+     "geonames_names": [
+      "Biarritz"
+     ],
+     "kind": "resort",
+     "lat": 43.48,
+     "lon": -1.56,
+     "name": "Biarritz",
+     "name_tr": "Biarritz",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "DE",
+     "geonames_names": [
+      "Schwarzwald",
+      "Freiburg im Breisgau"
+     ],
+     "kind": "region",
+     "lat": 48.3,
+     "lon": 8.2,
+     "name": "Black Forest",
+     "name_tr": "Kara Orman",
+     "radius_km": 60
+    },
+    {
+     "appeal": 3,
+     "country": "FR",
+     "geonames_names": [
+      "Colmar"
+     ],
+     "kind": "city",
+     "lat": 48.08,
+     "lon": 7.36,
+     "name": "Colmar",
+     "name_tr": "Colmar",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "ES",
+     "geonames_names": [
+      "Córdoba"
+     ],
+     "kind": "city",
+     "lat": 37.89,
+     "lon": -4.78,
+     "name": "Cordoba",
+     "name_tr": "Kurtuba",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "FR",
+     "geonames_names": [
+      "Courchevel",
+      "Saint-Bon-Tarentaise"
+     ],
+     "kind": "resort",
+     "lat": 45.42,
+     "lon": 6.63,
+     "name": "Courchevel",
+     "name_tr": "Courchevel",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "AT",
+     "geonames_names": [
+      "Hallstatt"
+     ],
+     "kind": "resort",
+     "lat": 47.56,
+     "lon": 13.65,
+     "name": "Hallstatt",
+     "name_tr": "Hallstatt",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "AT",
+     "geonames_names": [
+      "Kitzbühel"
+     ],
+     "kind": "resort",
+     "lat": 47.45,
+     "lon": 12.39,
+     "name": "Kitzbuhel",
+     "name_tr": "Kitzbühel",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "NO",
+     "geonames_names": [
+      "Lofoten",
+      "Svolvær"
+     ],
+     "kind": "region",
+     "lat": 68.2,
+     "lon": 13.7,
+     "name": "Lofoten",
+     "name_tr": "Lofoten Adaları",
+     "radius_km": 80
+    },
+    {
+     "appeal": 3,
+     "country": "ES",
+     "geonames_names": [
+      "Menorca",
+      "Maó"
+     ],
+     "kind": "resort",
+     "lat": 39.95,
+     "lon": 4.1,
+     "name": "Menorca",
+     "name_tr": "Minorka",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "FR",
+     "geonames_names": [
+      "Le Mont-Saint-Michel"
+     ],
+     "kind": "resort",
+     "lat": 48.64,
+     "lon": -1.51,
+     "name": "Mont Saint-Michel",
+     "name_tr": "Mont Saint-Michel",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "PT",
+     "geonames_names": [
+      "Sintra"
+     ],
+     "kind": "city",
+     "lat": 38.8,
+     "lon": -9.38,
+     "name": "Sintra",
+     "name_tr": "Sintra",
+     "radius_km": 0
+    },
+    {
+     "appeal": 3,
+     "country": "ES",
+     "geonames_names": [
+      "Toledo"
+     ],
+     "kind": "city",
+     "lat": 39.86,
+     "lon": -4.02,
+     "name": "Toledo",
+     "name_tr": "Toledo",
+     "radius_km": 0
+    }
+   ],
+   "usage": {
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "input_tokens": 455,
+    "output_tokens": 7233
+   }
+  }
+ },
+ "note": "LLM-drafted travel destinations (spec 11 §2). Every row is reviewed: false. Regenerate with build_destinations.py --redraft."
+}

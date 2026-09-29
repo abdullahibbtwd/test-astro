@@ -894,10 +894,206 @@ def _residual_verdict(record: dict) -> dict:
     return _unclassified("no_subject_in_text")
 
 
+# ---------------------------------------------------------------------------
+# Tier 0 — the ACG corpus (ACG/ACG_06_CORPUS_DELTA_SPEC.md §8). Only records whose
+# principle_id starts with "acg-" take this branch; every other record is
+# untouched (no main-corpus id starts with "acg-"). The ACG factor types are
+# validated by the ACG-local vocab below and are deliberately NOT added to
+# grounding_vocab.FACTOR_TYPES (the main schema stays byte-identical). 100%
+# deterministic: an ACG record never reaches the LLM tier.
+# ---------------------------------------------------------------------------
+
+ACG_PLANETS: tuple[str, ...] = ("Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter",
+                                "Saturn", "Uranus", "Neptune", "Pluto")
+ACG_ANGLES: tuple[str, ...] = ("ASC", "DSC", "MC", "IC")
+ACG_FACTOR_TYPES: dict[str, tuple[str, ...]] = {
+    "planet_on_angle": ("planet", "angle"),
+    "acg_angle_frame": ("angle",),
+    "acg_planet_general": ("planet",),
+    "acg_method": ("slug",),
+    "acg_paran": ("planets",),
+    "acg_mundane": (),
+}
+ACG_SCOPE_FACTOR: dict[str, tuple[str, ...]] = {
+    # acg_scope -> the factor types it may carry. The fixed method id
+    # acg-method-crossings has scope "paran" but no planets: it is an acg_method.
+    "line": ("planet_on_angle",), "angle_frame": ("acg_angle_frame",),
+    "planet_general": ("acg_planet_general",), "method": ("acg_method",),
+    "ccg": ("acg_method",), "zenith": ("acg_method",),
+    "paran": ("acg_paran", "acg_method"), "mundane": ("acg_mundane",),
+}
+ACG_REQUIRE_KINDS: dict[str, tuple[str, ...]] = {
+    # kind -> required fields (value-bearing; evaluated by ground_acg, spec 03 gate 3)
+    "natal_point_sign": ("point", "sign"),
+    "natal_point_aspect": ("point", "other"),          # + optional "aspect"
+    "natal_point_retrograde": ("point",),
+    "natal_point_dignity": ("point", "dignity"),
+    "relocated_point_house": ("point", "house"),
+    "relocated_point_angular": ("point",),
+    "unsupported": ("text",),                          # -> requires_unsupported_kind
+}
+_ACG_DIGNITIES = ("domicile", "detriment", "exaltation", "fall")
+_ACG_ASPECTS = ("conjunction", "sextile", "square", "trine", "opposition")
+_ACG_P = "sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto"
+_ACG_A = "asc|dsc|mc|ic"
+_ACG_ID_RES: tuple[tuple[re.Pattern, str], ...] = (
+    (re.compile(rf"^acg-angle-({_ACG_A})$"), "acg_angle_frame"),
+    (re.compile(rf"^acg-general-({_ACG_P})-\d{{2}}$"), "acg_planet_general"),
+    (re.compile(rf"^acg-paran-({_ACG_P})-({_ACG_P})-\d{{2}}$"), "acg_paran"),
+    (re.compile(r"^acg-mundane-\d{2}$"), "acg_mundane"),
+    (re.compile(r"^acg-method-([a-z0-9]+(?:-[a-z0-9]+)*)$"), "acg_method"),
+    (re.compile(r"^acg-((?:zenith|ccg)-\d{2})$"), "acg_method"),
+    (re.compile(rf"^acg-({_ACG_P})-({_ACG_A})-\d{{2}}$"), "planet_on_angle"),
+)
+
+
+def tier0_acg(record: dict) -> dict:
+    """``about`` for an ``acg-*`` record, derived from the id alone. Raises
+    ValueError on an id that matches no ACG pattern (a build bug, never guessed)."""
+    pid = str(record.get("principle_id") or "")
+    for rx, ft in _ACG_ID_RES:
+        m = rx.match(pid)
+        if not m:
+            continue
+        about: dict[str, Any] = {"factor_type": ft}
+        if ft == "planet_on_angle":
+            about.update(planet=m.group(1).capitalize(), angle=m.group(2).upper())
+        elif ft == "acg_angle_frame":
+            about["angle"] = m.group(1).upper()
+        elif ft == "acg_planet_general":
+            about["planet"] = m.group(1).capitalize()
+        elif ft == "acg_method":
+            about["slug"] = m.group(1)
+        elif ft == "acg_paran":
+            about["planets"] = sorted([m.group(1).capitalize(), m.group(2).capitalize()])
+        about["extraction_confidence"] = "high"
+        about["extraction_source"] = "deterministic"
+        return about
+    raise ValueError(f"ACG id matches no ACG pattern: {pid!r}")
+
+
+def _acg_unsupported(cond: Any) -> dict:
+    if isinstance(cond, dict) and set(cond) == {"text"}:
+        text = str(cond["text"])
+    else:
+        text = json.dumps(cond, ensure_ascii=False, sort_keys=True)
+    return {"kind": "unsupported", "text": text}
+
+
+def acg_requires(record: dict) -> list[dict]:
+    """Value-bearing ``requires`` (exploration report §13 C6) from the record's
+    structured ``conditions`` list. No condition -> []. A stated condition that
+    cannot be mapped becomes {"kind": "unsupported", "text": ...}, so grounding
+    drops the record as requires_unsupported_kind rather than guessing."""
+    conds = record.get("conditions") or []
+    if isinstance(conds, dict):
+        conds = [conds]
+    if not isinstance(conds, list):
+        conds = [{"text": str(conds)}]
+    out: list[dict] = []
+    for c in conds:
+        req: Optional[dict] = None
+        if isinstance(c, dict) and len(c) == 1:
+            (kind, v), = c.items()
+            v = v if isinstance(v, dict) else {}
+            pt, other = v.get("point"), v.get("other")
+            pt_ok = pt in ACG_PLANETS
+            if kind == "natal_sign" and pt_ok and v.get("sign") in SIGNS:
+                req = {"kind": "natal_point_sign", "point": pt, "sign": v["sign"]}
+            elif kind == "natal_aspect" and pt_ok and other in ACG_PLANETS and other != pt:
+                req = {"kind": "natal_point_aspect", "point": pt, "other": other}
+                if v.get("aspect") in _ACG_ASPECTS:
+                    req["aspect"] = v["aspect"]
+                elif v.get("aspect"):
+                    req = None                       # an off-vocab aspect is not guessed
+            elif kind == "natal_retrograde" and pt_ok:
+                req = {"kind": "natal_point_retrograde", "point": pt}
+            elif kind == "natal_dignity" and pt_ok and v.get("dignity") in _ACG_DIGNITIES:
+                req = {"kind": "natal_point_dignity", "point": pt, "dignity": v["dignity"]}
+            elif kind == "relocated_house" and pt_ok and isinstance(v.get("house"), int) \
+                    and 1 <= v["house"] <= 12:
+                req = {"kind": "relocated_point_house", "point": pt, "house": v["house"]}
+            elif kind == "relocated_angular" and pt_ok:
+                req = {"kind": "relocated_point_angular", "point": pt}
+        out.append(req if req is not None else _acg_unsupported(c))
+    return out
+
+
+def validate_acg_about(about: Any, scope: Any = None) -> tuple[bool, list[str]]:
+    errs: list[str] = []
+    if not isinstance(about, dict):
+        return False, ["about must be an object"]
+    ft = about.get("factor_type")
+    if ft not in ACG_FACTOR_TYPES:
+        return False, [f"factor_type off-vocabulary: {ft!r}"]
+    allowed = set(ACG_FACTOR_TYPES[ft]) | {"factor_type", "extraction_confidence",
+                                           "extraction_source"}
+    for k in about:
+        if k not in allowed:
+            errs.append(f"unknown field: {k}")
+    for k in ACG_FACTOR_TYPES[ft]:
+        if about.get(k) in (None, "", []):
+            errs.append(f"missing {k}")
+    if "planet" in about and about["planet"] not in ACG_PLANETS:
+        errs.append(f"planet off-vocabulary: {about['planet']!r}")
+    if "angle" in about and about["angle"] not in ACG_ANGLES:
+        errs.append(f"angle off-vocabulary: {about['angle']!r}")
+    if "planets" in about:
+        ps = about["planets"]
+        if not (isinstance(ps, list) and len(ps) == 2 and all(p in ACG_PLANETS for p in ps)
+                and ps == sorted(ps) and ps[0] != ps[1]):
+            errs.append(f"planets must be 2 distinct sorted planets: {ps!r}")
+    if about.get("extraction_source") != "deterministic" or \
+            about.get("extraction_confidence") != "high":
+        errs.append("ACG about must be deterministic/high")
+    if scope is not None and ft not in ACG_SCOPE_FACTOR.get(scope, ()):
+        errs.append(f"acg_scope {scope!r} inconsistent with factor_type {ft!r}")
+    return (not errs, errs)
+
+
+def validate_acg_requires(reqs: Any) -> tuple[bool, list[str]]:
+    errs: list[str] = []
+    if not isinstance(reqs, list):
+        return False, ["requires must be a list"]
+    for i, r in enumerate(reqs):
+        if not isinstance(r, dict) or r.get("kind") not in ACG_REQUIRE_KINDS:
+            errs.append(f"requires[{i}] kind off-vocabulary: {r!r}")
+            continue
+        need = ACG_REQUIRE_KINDS[r["kind"]]
+        extra = {"aspect"} if r["kind"] == "natal_point_aspect" else set()
+        for k in r:
+            if k != "kind" and k not in need and k not in extra:
+                errs.append(f"requires[{i}] unknown field: {k}")
+        for k in need:
+            if r.get(k) in (None, ""):
+                errs.append(f"requires[{i}] missing {k}")
+        for k in ("point", "other"):
+            if k in r and r[k] not in ACG_PLANETS:
+                errs.append(f"requires[{i}].{k} off-vocabulary: {r[k]!r}")
+    return (not errs, errs)
+
+
+def _ground_acg_record(record: dict) -> dict:
+    about = tier0_acg(record)
+    ok, errs = validate_acg_about(about, record.get("acg_scope"))
+    if not ok:
+        raise ValueError(f"{record.get('principle_id')}: invalid ACG about: {errs}")
+    requires = acg_requires(record)
+    rok, rerrs = validate_acg_requires(requires)
+    if not rok:
+        raise ValueError(f"{record.get('principle_id')}: invalid ACG requires: {rerrs}")
+    out = dict(record)
+    out["about"] = about
+    out["requires"] = requires
+    return out
+
+
 def ground_record(record: dict, extractor: Extractor) -> dict:
     """Return a copy of the record with `about` + `requires` added. Original
     fields (incl. `conditions`) are untouched. Tier-1 capture is LOCKED — if it
     fires, neither the LLM nor an unclassified verdict can override it."""
+    if str(record.get("principle_id") or "").startswith("acg-"):
+        return _ground_acg_record(record)            # Tier 0 — ACG corpus only
     locked = tier1_deterministic(record)            # Tier 1 — mandatory, frozen
     if locked is not None:
         about = locked

@@ -4,7 +4,7 @@
 **Implements:** the reading-generation stage (e.g. `read_relationship.py`), consuming grounded output, producing the couple's reading.
 **Input:** `personal_relationship_principles.json` (from `ground_relationship.py`, now clean across all four interaction types) + the two `chart.json` files.
 **Output:** `relationship_reading.tr.txt` (primary), `relationship_reading.en.txt`, `relationship_statements.json` (for S4/eval), `relationship_reading_routing.json`.
-**Model:** `claude-sonnet-4-6` for section and synthesis calls (matches natal).
+**Model:** `claude-sonnet-5` for section and synthesis calls (matches natal).
 
 This spec folds in the section routing and the noise floor — there is **no separate ranking artifact**. S3 prepares its own inputs.
 
@@ -85,7 +85,7 @@ Mirror L4: **7 parallel section calls + 1 synthesis call** (the per-person opene
 - **Prompt caching:** cache one block across all calls = the two charts' summary + the `_CONTRACT` (mask rules, attribution rule, stance from `framing[]`, tone). Only the per-section record list varies.
 - **Section call** receives: the section's capped, ordered `bound_statement`s (+ the `bound` role data so it gets person attribution right) and writes that section's prose.
 - **Synthesis call** receives the seven section drafts and produces the final woven reading: resolves cross-section repetition, writes the per-person opener, and adds a short honest overall characterization (see §6 — qualitative, never a score).
-- **Language:** author in **Turkish** (the quality target). Produce English by a faithful translation pass over the final Turkish, preserving every claim 1:1 so the eval statements map across both.
+- **Language:** author in **Turkish** (the quality target). Produce English by a faithful translation pass over the final Turkish, preserving every claim 1:1 so the eval statements map across both. *(Implemented 2026-09-24: synthesis emits `text_tr` only; one bounded translation call per section runs in parallel on the cheap translation model — `--translation-model`, falling back to the synthesis model — exactly as the natal pipeline does.)*
 
 ---
 

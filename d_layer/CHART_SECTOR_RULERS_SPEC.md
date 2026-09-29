@@ -29,9 +29,11 @@ has never applied them to *cusps*. This spec closes that inconsistency.
 
 - **In:** a new top-level `sector_rulers` block, computed for **both** house
   systems already present (`placidus`, `whole_sign`).
-- **Out:** no change to any existing field, no new house system, no modern
-  (outer-planet) rulership scheme, no time-precision handling (exact-time charts
-  only for now — see §8).
+- **Out:** no change to any existing field, no new house system, no time-precision
+  handling (exact-time charts only for now — see §8).
+- **Addendum (2026-09-21):** each block ALSO carries the modern co-ruler of the cusp
+  sign — see §11. This is additive; `ruler` and every dignity stay on the
+  traditional map.
 
 ---
 
@@ -273,3 +275,29 @@ values from the same chart once implemented; do not hand-author them.)
 - [ ] All five adversarial tests pass; reference fixture matches §9 table exactly.
 - [ ] No existing field changed; no ephemeris call added.
 - [ ] Extension-point guard comment present for future time-precision work.
+
+
+---
+
+## 11. Addendum — modern co-ruler (added 2026-09-21)
+
+The reading moved to a modern-astrology basis (Placidus houses, ten planets). Each
+`sector_rulers.<system>.<house>` block now also carries the **modern** ruler of the
+cusp sign, so the interpretation layer can name "Mars (co-ruled by Pluto)" as fact:
+
+```json
+{
+  "sign_on_cusp": "Scorpio",
+  "ruler": "Mars",            "ruler_sign": "Aries",          "ruler_sector": 6,
+  "modern_ruler": "Pluto",    "modern_ruler_sign": "Scorpio", "modern_ruler_sector": 1
+}
+```
+
+- `modern_ruler` = `MODERN_DOMICILE[sign_on_cusp]`: Pluto for Scorpio, Uranus for
+  Aquarius, Neptune for Pisces, otherwise identical to `ruler`.
+- `modern_ruler_sign` / `modern_ruler_sector` follow the same self-containment rule
+  as `ruler_sign` / `ruler_sector` (§4).
+- §3 still holds for `ruler`: the traditional map is the ONE map dignities use.
+  `MODERN_DOMICILE` feeds nothing else — it is a co-ruler annotation, not a second
+  dignity scheme.
+- Types: `chart_types.ModernRuler`, schema `$defs.ModernRuler`.

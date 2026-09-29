@@ -99,6 +99,15 @@ DOMICILE = [
 ]
 # Detriment = ruler of the opposite sign (derived below).
 
+# Modern (outer-planet) rulership. Identical to DOMICILE except for the three
+# signs modern astrology assigns to the outer planets. It is ADDITIVE: it feeds
+# only `sector_rulers[*].modern_ruler` (a co-ruler the reading may name); every
+# dignity classification and the canonical `ruler` still use DOMICILE.
+MODERN_DOMICILE = list(DOMICILE)
+MODERN_DOMICILE[7] = "Pluto"      # Scorpio
+MODERN_DOMICILE[10] = "Uranus"    # Aquarius
+MODERN_DOMICILE[11] = "Neptune"   # Pisces
+
 # Exaltation: sign index -> (planet, exact degree).  Fall = opposite sign.
 EXALTATION = {
     0: ("Sun", 19), 1: ("Moon", 3), 5: ("Mercury", 15), 11: ("Venus", 27),
@@ -379,6 +388,12 @@ def compute_sector_rulers(cusps_by_system: dict, bodies: list) -> dict:
     `cusps_by_system` maps system name ("placidus"/"whole_sign") to its 12 cusp
     longitudes. `ruler_sector` is reported in the block's own system, keeping each
     block internally consistent in a single house system (§4 self-containment).
+
+    Each block also carries the MODERN co-ruler of the cusp sign
+    (`modern_ruler`, `modern_ruler_sign`, `modern_ruler_sector`): Pluto for
+    Scorpio, Uranus for Aquarius, Neptune for Pisces, and the same planet as
+    `ruler` for the other nine signs. Additive fact for the modern-astrology
+    reading; it never touches dignities or the canonical `ruler`.
     """
     by_name = {b["name"]: b for b in bodies}
     out: dict = {}
@@ -394,11 +409,16 @@ def compute_sector_rulers(cusps_by_system: dict, bodies: list) -> dict:
             sign_idx = _sign_index(cusps[i])
             ruler = DOMICILE[sign_idx]               # canonical map — do NOT redefine
             ruler_body = by_name[ruler]
+            modern = MODERN_DOMICILE[sign_idx]
+            modern_body = by_name[modern]
             block[str(i + 1)] = {
                 "sign_on_cusp": SIGNS[sign_idx],
                 "ruler": ruler,
                 "ruler_sign": ruler_body["sign"],
                 "ruler_sector": ruler_body["sector"][system],
+                "modern_ruler": modern,
+                "modern_ruler_sign": modern_body["sign"],
+                "modern_ruler_sector": modern_body["sector"][system],
             }
         out[system] = block
     return out
@@ -676,13 +696,25 @@ def _bucket_datetimes(bd: BirthData, tzname):
 # ---------------------------------------------------------------------------
 # PUBLIC ENTRY POINT
 # ---------------------------------------------------------------------------
-def compute_chart(bd: BirthData) -> Chart:
+def compute_chart(bd: BirthData, *, utc_override: Optional[datetime] = None) -> Chart:
     """
     Build the full chart object for one birth. This is the only function the
     rest of the pipeline should call. Output is JSON-serializable.
+
+    ``utc_override`` (exact precision only) fixes the UTC instant instead of
+    converting ``bd``'s local wall-clock time with the timezone of ``bd``'s
+    coordinates. It is how the ACG layer builds a RELOCATED chart: the same birth
+    instant seen from another place (ACG index D7). The timezone is still resolved
+    from the coordinates for ``meta.timezone``, but it never touches the instant.
+    Default (None) behaviour is unchanged.
     """
     if bd.time_precision not in ("exact", "approximate", "unknown"):
         raise ValueError(f"bad time_precision: {bd.time_precision}")
+    if utc_override is not None:
+        if bd.time_precision != "exact":
+            raise ValueError("utc_override requires time_precision='exact'")
+        if utc_override.utcoffset() is None:
+            raise ValueError("utc_override must be timezone-aware (UTC)")
 
     tzname = resolve_timezone(bd.latitude, bd.longitude)
     has_time = bd.time_precision != "unknown"
@@ -699,7 +731,8 @@ def compute_chart(bd: BirthData) -> Chart:
 
     # ---- determine the instant(s) to compute ----
     if bd.time_precision == "exact":
-        dt_utc = local_to_utc(bd.year, bd.month, bd.day, bd.hour, bd.minute, tzname)
+        dt_utc = (utc_override.astimezone(timezone.utc) if utc_override is not None
+                  else local_to_utc(bd.year, bd.month, bd.day, bd.hour, bd.minute, tzname))
         meta["utc"] = dt_utc.isoformat()
         pieces = _compute_at(dt_utc, bd.latitude, bd.longitude, has_time=True)
         confidence = "exact"

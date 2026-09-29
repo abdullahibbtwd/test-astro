@@ -30,7 +30,7 @@ import anthropic
 # ----------------------------------------------------------------------------
 # Config - edit these if needed
 # ----------------------------------------------------------------------------
-MODEL = "claude-sonnet-4-6"   # solid quality/cost for a batch job.
+MODEL = "claude-sonnet-5"   # solid quality/cost for a batch job.
                               # Use "claude-opus-4-8" for highest quality.
 MAX_TOKENS = 16000            # generous, so dense chapters don't get truncated
 CHAPTERS_DIR = "chapters"

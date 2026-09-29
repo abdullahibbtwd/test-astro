@@ -55,6 +55,7 @@ You should not need to make astrology calls to maintain this. They are fixed:
 | Node type | **Mean** node | The traditional choice; smoother and standard for this material. |
 | Triplicity scheme | **Dorothean** | This is the scheme Sahl/Dorotheus use. |
 | Bounds/terms | **Egyptian** | The traditional default. |
+| Modern co-rulers | `sector_rulers[*].modern_ruler` (Pluto/Uranus/Neptune for Scorpio/Aquarius/Pisces) | Added 2026-09-21 for the modern-astrology reading (Placidus houses, ten planets). Additive annotation only; dignities and `ruler` stay traditional. See CHART_SECTOR_RULERS_SPEC.md §11. |
 | Faces/decans | **Chaldean order** | Standard. |
 | Sect | Computed geometrically (Sun above/below horizon) | Gates a large part of the Sahl material (sect light, benefic/malefic of sect). Cheap to compute, unlocks thin dataset coverage. |
 | Lots | **Fortune + Spirit**, sect-sensitive | The Arabic-astrology differentiator. Fortune's formula swaps day/night by sect. Easy to extend to more lots. |

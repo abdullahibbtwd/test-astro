@@ -60,7 +60,7 @@ def validate(output: dict,
 
         # §7.6 — section keys are locked.
         if key not in SECTION_ORDER:
-            errors.append(f"{loc}: key {key!r} is not one of the twelve §2 keys")
+            errors.append(f"{loc}: key {key!r} is not one of the §2 section keys")
         else:
             seen_keys.append(key)
             if MOVEMENT[key] != sec.get("movement"):
@@ -68,6 +68,11 @@ def validate(output: dict,
                     f"{loc} ({key}): movement should be {MOVEMENT[key]}, got "
                     f"{sec.get('movement')}"
                 )
+
+        # §6 — optional `house` (house sections and the luminary notes).
+        house = sec.get("house")
+        if house is not None and not (isinstance(house, int) and 1 <= house <= 12):
+            errors.append(f"{loc} ({key}): house must be an int 1..12, got {house!r}")
 
         text_tr = sec.get("text_tr")
         if not isinstance(text_tr, str) or not text_tr.strip():

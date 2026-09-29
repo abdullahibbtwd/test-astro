@@ -36,6 +36,10 @@ Sign = Literal[
 ]
 # Planet is the set used for *dignity rulers* — the classical seven only.
 Planet = Literal["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"]
+# ModernRuler adds the outer planets: the modern co-rulers of Scorpio / Aquarius /
+# Pisces. Used ONLY by SectorRuler.modern_ruler, never by dignities.
+ModernRuler = Literal["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn",
+                      "Uranus", "Neptune", "Pluto"]
 AspectType = Literal["conjunction", "sextile", "square", "trine", "opposition"]
 Scheme = Literal["modern", "whole_sign"]
 Precision = Literal["exact", "approximate", "unknown"]
@@ -142,6 +146,11 @@ class SectorRuler(TypedDict):
     ruler: Planet           # planet FK (domicile ruler of sign_on_cusp)
     ruler_sign: Sign        # sign FK — the ruler's own point.sign
     ruler_sector: int       # 1..12, in this block's house system
+    # Modern co-ruler of sign_on_cusp (Pluto/Uranus/Neptune for Scorpio/Aquarius/
+    # Pisces; equal to `ruler` for the other nine signs). Additive.
+    modern_ruler: ModernRuler
+    modern_ruler_sign: Sign
+    modern_ruler_sector: int    # 1..12, in this block's house system
 
 
 class SectorRulers(TypedDict):

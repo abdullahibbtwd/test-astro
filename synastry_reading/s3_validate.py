@@ -26,7 +26,7 @@ import re
 from typing import Optional
 
 from s3_prompts import CONTEXT_BANNED_PATTERNS, HARD_BANNED_TERMS
-from s3_sections import MOVEMENT, SECTION_ORDER
+from s3_profiles import get_profile
 
 SCHEMA_VERSION = "s3.v1"
 
@@ -110,6 +110,12 @@ def validate(output: dict,
             f"{output.get('schema_version')!r}"
         )
 
+    # Section keys/movement are validated against the reading's own profile
+    # (PROFILES §7.3: the reading's structure must match its type).
+    profile = get_profile(output.get("reading_type", "general"))
+    section_order = profile.section_order
+    movement = profile.movement
+
     sections = output.get("sections")
     if not isinstance(sections, list) or not sections:
         errors.append("sections must be a non-empty list")
@@ -119,13 +125,14 @@ def validate(output: dict,
     for idx, sec in enumerate(sections):
         loc = f"sections[{idx}]"
         key = sec.get("key")
-        if key not in SECTION_ORDER:
-            errors.append(f"{loc}: key {key!r} is not one of the §3 keys")
+        if key not in section_order:
+            errors.append(
+                f"{loc}: key {key!r} is not a {profile.reading_type} section key")
         else:
             seen.append(key)
-            if MOVEMENT[key] != sec.get("movement"):
+            if movement[key] != sec.get("movement"):
                 errors.append(
-                    f"{loc} ({key}): movement should be {MOVEMENT[key]}, got "
+                    f"{loc} ({key}): movement should be {movement[key]}, got "
                     f"{sec.get('movement')}"
                 )
 

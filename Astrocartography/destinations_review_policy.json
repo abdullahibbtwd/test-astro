@@ -1,0 +1,6 @@
+{
+ "approve_policy_allowed": true,
+ "decided_by": "Radul",
+ "date": "2026-09-28",
+ "note": "Approve every destination the viability policy allows (not excluded by policy or by a review 'exclude'). Individual exclusions can still be recorded in destinations_review_decisions.csv (exclude=true)."
+}

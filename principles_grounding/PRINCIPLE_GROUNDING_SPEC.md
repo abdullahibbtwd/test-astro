@@ -630,3 +630,17 @@ reconcilable-`factor_type`-with-null-required-field records must be zero.**
       reconciliation.
 - [ ] No change to existing principle fields (`rule`/`judgment`/etc.); `about`/`requires`
       additive. Original `conditions` preserved for provenance.
+
+---
+
+## Addendum — house policy (2026-09-21)
+
+The natal reading is **Placidus-only**. `ground()` takes `house_policy` (default
+`"placidus"`): gate B verifies **every** house claim — `house_system`,
+`subject_house_system`, `placement_house_system` — against the chart's Placidus sector
+and Placidus rulers, whatever system the record declares. A whole-sign record therefore
+survives only when its house is also the planet's Placidus house; the record's declared
+system stays in `about` as provenance, and `kept_payload()["house_policy"]` /
+`report()["house_policy"]` record the system actually used. Bundle labels name the
+verified system ("Sun in placidus house 9"). `house_policy=None` restores per-record
+verification (§4 as written above; the test at §7.8 exercises that mode).

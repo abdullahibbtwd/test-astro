@@ -22,8 +22,9 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from s3_generate import SectionDraft
+from s3_profiles import GENERAL, PERSONAL, PROFESSIONAL, get_profile
 from s3_routing import SECTION_CAP, below_floor, route, route_sections
-from s3_sections import AXIS_ORDER, WHAT_EACH_BRINGS
+from s3_sections import WHAT_EACH_BRINGS
 from s3_validate import (
     find_mask_violations,
     find_score_violations,
@@ -112,7 +113,21 @@ def test_air_compatibility_feeds_communication():
 def test_mask_hard_terms():
     assert find_mask_violations("bu bir domicile durumu")
     assert find_mask_violations("a strong reception here")
+
+
+def test_mask_tradition_framing_caught():
+    # naming the tradition/apparatus IS a leak
     assert find_mask_violations("this is classical astrology")
+    assert find_mask_violations("geleneksel astrolojide bu böyledir")
+    assert find_mask_violations("klasik yaklaşımda")
+    assert find_mask_violations("in the traditional view")
+
+
+def test_mask_allows_tradition_adjective_as_content():
+    # bare tradition adjectives describing the couple are legitimate content
+    assert not find_mask_violations("paylaştığınız geleneksel değerler sizi bağlar")
+    assert not find_mask_violations("geleneksel bir bağlılık anlayışınız var")
+    assert not find_mask_violations("you are a modern couple with traditional values")
 
 
 def test_mask_allows_ordinary_romantic_english():
@@ -171,24 +186,28 @@ class FakeGenerator:
         return stmts
 
 
-def test_end_to_end_with_fake_generator():
+def test_end_to_end_all_three_profiles():
     if not os.path.exists(_INPUT):
         print("  (skipped end-to-end: grounded input not found)")
         return
     from read_relationship import read_relationship
     payload = json.load(open(_INPUT, encoding="utf-8"))
-    routing = route(payload)
-    gen = FakeGenerator(routing.non_empty())
-    output, statements_doc, report, errors = read_relationship(
-        payload, generator=gen, houses_valid=True)
-    assert not errors, f"unexpected contract errors: {errors}"
-    assert output["schema_version"] == "s3.v1"
-    # opener + 7 axes, all non-empty bilingual
-    keys = [s["key"] for s in output["sections"]]
-    assert WHAT_EACH_BRINGS in keys
-    for s in output["sections"]:
-        assert s["text_tr"] and s["text_en"] and s["source_ids"]
-    assert statements_doc["statements"], "expected some statements"
+    for rtype, profile in [("general", GENERAL), ("personal", PERSONAL),
+                           ("professional", PROFESSIONAL)]:
+        routing = route(payload, profile)
+        gen = FakeGenerator(routing.non_empty())
+        output, statements_doc, report, errors = read_relationship(
+            payload, generator=gen, reading_type=rtype, houses_valid=True)
+        assert not errors, f"[{rtype}] unexpected contract errors: {errors}"
+        assert output["reading_type"] == rtype
+        keys = [s["key"] for s in output["sections"]]
+        assert WHAT_EACH_BRINGS in keys
+        # emitted keys must all belong to this profile (§7.3 consistency)
+        for k in keys:
+            assert k in profile.section_order, f"[{rtype}] stray key {k}"
+        for s in output["sections"]:
+            assert s["text_tr"] and s["text_en"] and s["source_ids"]
+        assert report["reading_type"] == rtype
 
 
 def test_cap_and_attribution_on_real_input():
@@ -196,21 +215,92 @@ def test_cap_and_attribution_on_real_input():
         print("  (skipped real-input checks: input not found)")
         return
     payload = json.load(open(_INPUT, encoding="utf-8"))
-    res = route(payload)
-    # §4.3 cap
-    for sec in AXIS_ORDER:
-        assert len(res.sections[sec]) <= SECTION_CAP, f"{sec} over cap"
-    # §10.2 attribution: the Mercury-in-10th contact reads B's Mercury -> A's
-    # public life, never the reverse.
-    merc = [r for recs in res.sections.values() for r in recs
+    # §4.3 cap holds under a personal reading
+    per = route(payload, PERSONAL)
+    for sec in PERSONAL.axis_keys:
+        assert len(per.sections[sec]) <= SECTION_CAP, f"{sec} over cap"
+    # §10.2 attribution: the Mercury-in-10th contact (career -> professional
+    # context) reads B's Mercury -> A's public life. Check it in a general
+    # reading (admits all) and confirm it is professional-eligible, personal-not.
+    gen = route(payload, GENERAL)
+    merc = [r for recs in gen.sections.values() for r in recs
             if "mercury-in-10th" in r.record_id]
-    assert merc, "expected the Mercury-in-10th overlay in routing"
+    assert merc, "expected the Mercury-in-10th overlay in the general routing"
     b = merc[0].bound
     assert b.get("mover_person") == "B" and b.get("home_person") == "A", \
         f"attribution wrong: {b}"
+    # §7.1 eligibility: this professional-tagged record is absent from personal.
+    per_ids = {r.record_id for recs in per.sections.values() for r in recs}
+    assert not any("mercury-in-10th" in i for i in per_ids)
     # §4.1 floor actually fired
-    reasons = {d["reason"] for d in res.floor_drops}
+    reasons = {d["reason"] for d in gen.floor_drops}
     assert "reception_face_grade" in reasons
+
+
+# ---------------------------------------------------------------------------
+# Profile fork (SYNASTRY_READING_PROFILES.md)
+# ---------------------------------------------------------------------------
+
+def test_context_filter_eligibility():
+    # §2 / §7.1: personal excludes professional-only; professional excludes
+    # personal-only; general admits everything.
+    from s3_profiles import admits
+    prof_only = {"synastry": {"contexts": ["professional"]}}
+    pers_only = {"synastry": {"contexts": ["personal"]}}
+    universal = {"synastry": {"contexts": ["universal"]}}
+    assert not admits(PERSONAL.admitted_contexts, prof_only)
+    assert admits(PERSONAL.admitted_contexts, pers_only)
+    assert not admits(PROFESSIONAL.admitted_contexts, pers_only)
+    assert admits(PROFESSIONAL.admitted_contexts, prof_only)
+    for p in (GENERAL, PERSONAL, PROFESSIONAL):
+        assert admits(p.admitted_contexts, universal)
+
+
+def test_profile_key_sets_disjoint_semantics():
+    # each profile exposes exactly its 8 keys, opener first
+    for p in (GENERAL, PERSONAL, PROFESSIONAL):
+        assert p.section_order[0] == WHAT_EACH_BRINGS
+        assert len(p.axis_keys) == 7
+        assert len(p.section_order) == 8
+    # professional has its bespoke keys
+    assert "roles_leadership" in PROFESSIONAL.axis_keys
+    assert "shared_goals" in PROFESSIONAL.axis_keys
+
+
+def test_professional_routing():
+    # a Saturn aspect routes to reliability; Mars-Saturn to conflict_style
+    r = _rec("aspect", {"p1_point": "Saturn", "p2_point": "Mercury",
+                        "aspect": "trine"})
+    secs = {s for s, _ in PROFESSIONAL.route(r)}
+    assert "reliability" in secs and "decision_making" in secs
+    # a 10th-house overlay routes to roles_leadership
+    ov = _rec("house_overlay", {"mover_point": "Sun", "home_house": 10})
+    assert "roles_leadership" in {s for s, _ in PROFESSIONAL.route(ov)}
+
+
+def test_professional_reading_rejects_personal_key():
+    # §7.3: a personal-only key must not validate under a professional reading
+    bad = {
+        "schema_version": "s3.v1", "reading_type": "professional",
+        "sections": [
+            {"key": "attraction", "movement": 1, "text_tr": "x", "text_en": "y",
+             "source_ids": ["z"]},
+        ],
+    }
+    errors = validate(bad)
+    assert any("attraction" in e for e in errors), errors
+
+
+def test_context_filter_reduces_professional_pool():
+    if not os.path.exists(_INPUT):
+        print("  (skipped: input not found)")
+        return
+    payload = json.load(open(_INPUT, encoding="utf-8"))
+    gen_res = route(payload, GENERAL)
+    pro_res = route(payload, PROFESSIONAL)
+    # professional drops the personal-only records via the context filter
+    assert len(pro_res.context_drops) > 0
+    assert len(gen_res.context_drops) == 0
 
 
 # ---------------------------------------------------------------------------
@@ -237,3 +327,49 @@ def _run():
 
 if __name__ == "__main__":
     sys.exit(1 if _run() else 0)
+
+
+# ---------------------------------------------------------------------------
+# §5 split: Turkish synthesis + per-section translation on the cheap model
+# ---------------------------------------------------------------------------
+
+def test_synthesis_is_turkish_only_then_translated(monkeypatch):
+    import llm_client
+    from s3_generate import LLMGenerator, SYNTHESIS_SCHEMA, TRANSLATION_SCHEMA, SectionDraft
+    from s3_profiles import get_profile
+    gen = LLMGenerator("CONTRACT", get_profile("general"), model="gemini-3.7-flash",
+                       translation_model="gpt-6-luna")
+    calls = []
+
+    def fake_call(model, system, user, *, temperature, max_tokens, label, schema=None):
+        calls.append((model, label))
+        if schema is SYNTHESIS_SCHEMA:
+            assert "text_en" not in json.dumps(schema)
+            return {"sections": [{"key": "a", "text_tr": "Sıcak bir bağ."},
+                                 {"key": "b", "text_tr": "Gerilim de var."}]}
+        assert schema is TRANSLATION_SCHEMA and model == "gpt-6-luna"
+        return {"key": "x", "text_en": "EN"}
+    monkeypatch.setattr(gen, "_call_json", fake_call)
+    out = gen.synthesize([SectionDraft("a", "d1"), SectionDraft("b", "d2")])
+    assert out == [{"key": "a", "text_tr": "Sıcak bir bağ.", "text_en": "EN"},
+                   {"key": "b", "text_tr": "Gerilim de var.", "text_en": "EN"}]
+    assert calls[0] == ("gemini-3.7-flash", "synthesis")
+    assert sorted(c[1] for c in calls[1:]) == ["translate[a]", "translate[b]"]
+
+
+def test_translation_falls_back_to_synthesis_model(monkeypatch):
+    import llm_client
+    from s3_generate import LLMGenerator
+    from s3_profiles import get_profile
+    gen = LLMGenerator("CONTRACT", get_profile("general"), model="gemini-3.7-flash",
+                       translation_model="gpt-6-luna")
+    seen = []
+
+    def fake_call(model, system, user, **kw):
+        seen.append(model)
+        if model == "gpt-6-luna":
+            raise llm_client.ProviderQuotaError("no credits")
+        return {"key": "a", "text_en": "EN"}
+    monkeypatch.setattr(gen, "_call_json", fake_call)
+    assert gen.translate("a", "Merhaba.") == "EN"
+    assert seen == ["gpt-6-luna", "gemini-3.7-flash"] and gen.fallbacks == 1

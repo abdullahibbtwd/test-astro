@@ -65,7 +65,7 @@ import anthropic
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-DEFAULT_MODEL = "claude-sonnet-4-6"   # matches extract_principles.py
+DEFAULT_MODEL = "claude-sonnet-5"   # matches extract_principles.py
 MAX_TOKENS = 16000
 DOMAIN = "relationship"
 TRADITION = "modern"                  # Sakoian & Acker is a modern text

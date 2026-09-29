@@ -8,7 +8,7 @@ Three call kinds:
     prose. It never sees raw chart positions (§2) — grounding is the bound facts.
   - synthesis (§5): weaves the eight drafts into one voice, resolves cross-section
     repetition, writes an honest qualitative overall (no score, §6), and emits
-    BOTH Turkish and a faithful English (§5).
+    Turkish; a separate faithful translation pass produces the English (§5).
   - statements (§11): breaks the final reading into atomic self-scorable
     statements, each tagged with the grounded record id(s) it rests on (for S4).
 
@@ -25,15 +25,19 @@ from __future__ import annotations
 import json
 from typing import Iterable, Optional
 
-from s3_sections import MOVEMENT, SECTION_THEME, RoutedRecord
+from s3_sections import RoutedRecord
 
 # ---------------------------------------------------------------------------
 # The tradition mask (§8). Two tiers so the validator does not false-positive on
 # ordinary romantic English.
 # ---------------------------------------------------------------------------
 
-# HARD-BANNED: unambiguous classical machinery + tradition names. These have no
-# ordinary-language collision, so a hit is always a mask leak (§10.3).
+# HARD-BANNED: unambiguous classical machinery + tradition-name transliterations
+# that never occur in ordinary romantic prose. A hit is always a mask leak
+# (§10.3). NOTE: "classical" / "traditional" / "modern" (and Turkish
+# "klasik" / "geleneksel") are DELIBERATELY NOT here — as bare adjectives they are
+# legitimate romantic content ("traditional values", "geleneksel değerler",
+# "modern couple"). They are banned only as tradition-FRAMING below.
 HARD_BANNED_TERMS = [
     # reception machinery
     "reception", "receptions",
@@ -46,10 +50,20 @@ HARD_BANNED_TERMS = [
     "dignity", "dignities",
     "house cusp", "house cusps",
     "diurnal", "nocturnal",
-    "ptolemaic", "hellenistic",
-    # tradition labels (mirrors the natal L4 ban)
-    "classical", "traditional", "klasik", "geleneksel",
+    # tradition-name transliterations (no ordinary-language collision)
+    "ptolemaic", "hellenistic", "ptolemaik", "helenistik",
 ]
+
+# Framing nouns: when a tradition adjective sits directly in front of one of
+# these, it is naming the astrological tradition/apparatus (a mask leak) rather
+# than describing the couple. This is what scopes "geleneksel astroloji" (leak)
+# apart from "geleneksel değerler" (ordinary content).
+_TRADITION_ADJ = r"(?:classical|traditional|modern|hellenistic|ptolemaic|klasik|geleneksel|helenistik|ptolemaik)"
+_FRAMING_NOUN_EN = (r"(?:astrolog\w*|tradition\w*|view\w*|approach\w*|doctrine\w*|"
+                    r"technique\w*|teaching\w*|school\w*|method\w*|apparatus\w*|"
+                    r"interpretation\w*|delineation\w*)")
+_FRAMING_NOUN_TR = (r"(?:astroloji\w*|gelenek\w*|görüş\w*|öğreti\w*|yaklaşım\w*|"
+                    r"ekol\w*|yöntem\w*|teknik\w*|okul\w*|yorumlama\w*)")
 
 # CONTEXT-BANNED: technical only in these phrasings. Bare "fall"/"face"/"bound"/
 # "receive" are ordinary romantic words ("fall in love", "face a challenge",
@@ -65,6 +79,12 @@ CONTEXT_BANNED_PATTERNS = [
     r"\bapplying\s+aspect\b",
     r"\bseparating\s+aspect\b",
     r"\bmutual\s+reception\b",
+    # tradition-as-framing leaks (English + Turkish), scoped to framing nouns so
+    # ordinary "traditional values" / "geleneksel değerler" pass.
+    _TRADITION_ADJ + r"\s+" + _FRAMING_NOUN_EN,
+    _TRADITION_ADJ + r"\s+" + _FRAMING_NOUN_TR,
+    # "in the classical/traditional tradition/view" style
+    r"\bin\s+the\s+" + _TRADITION_ADJ + r"\b",
     # "your 10th house" / "the 7th house" style leaks (English)
     r"\b\d+(?:st|nd|rd|th)\s+house\b",
     # Turkish ordinal-house leak: "10. ev" / "7. evinde"
@@ -91,11 +111,21 @@ def _labels_line(label_a: str, label_b: str) -> str:
 
 
 def build_contract(framing: Optional[Iterable[dict]] = None,
-                   *, label_a: str = "sen", label_b: str = "partnerin") -> str:
+                   *, reading_stance: str = "",
+                   label_a: str = "sen", label_b: str = "partnerin") -> str:
     """The shared, cacheable contract block (§5). Encodes the mask, the
-    attribution rule, the qualitative-only rule, the interpretive stance drawn
-    from ``framing`` (stance only — never content), and the person labels."""
+    attribution rule, the qualitative-only rule, the reading-type stance
+    (PROFILES §3 — how universal contacts are reframed), the interpretive stance
+    drawn from ``framing`` (stance only — never content), and the person labels."""
     stance_lines = ""
+    if reading_stance:
+        stance_lines += (
+            "\n\n" + reading_stance.strip()
+            + "\n\nREFRAMING RULE: a fact's bound_statement is a STARTING point, "
+            "not final copy. Render it in the terms of the reading type above. The "
+            "lens reframes; it never invents a fact the bound_statement does not "
+            "state, and the mask still binds."
+        )
     if framing:
         items = []
         for f in framing:
@@ -103,7 +133,7 @@ def build_contract(framing: Optional[Iterable[dict]] = None,
             if j:
                 items.append(f"- {j}")
         if items:
-            stance_lines = (
+            stance_lines += (
                 "\n\nINTERPRETIVE STANCE (shapes HOW you write — it is NOT content, "
                 "and none of it becomes a statement about this couple):\n"
                 + "\n".join(items)
@@ -159,12 +189,15 @@ def _records_block(routed: Iterable[RoutedRecord]) -> str:
 
 
 def build_section_user(section_key: str, routed: list[RoutedRecord],
-                       *, houses_valid: bool = True,
+                       *, theme: str, position: int, lens: str = "",
+                       degrade: bool = False,
                        label_a: str = "sen", label_b: str = "partnerin") -> str:
-    """User message for one axis call (§5). The opener has its own builder."""
-    degrade = ""
-    if not houses_valid and section_key in {"emotional", "values", "purpose"}:
-        degrade = (
+    """User message for one axis call (§5). ``theme`` and ``lens`` come from the
+    active profile; the opener has its own builder."""
+    lens_block = f"\n\nLENS FOR THIS SECTION: {lens}" if lens else ""
+    degrade_block = ""
+    if degrade:
+        degrade_block = (
             "\n\nNOTE: this couple's birth times are not both exact, so life-area "
             "detail that depends on home/house placements is unavailable. Write "
             "from the contact material you DO have, and where a house-based nuance "
@@ -172,17 +205,18 @@ def build_section_user(section_key: str, routed: list[RoutedRecord],
             "confirmed without exact birth times. Do not invent it."
         )
     return f"""\
-SECTION: {section_key}  (axis {MOVEMENT[section_key]})
-THEME: {SECTION_THEME[section_key]}
+SECTION: {section_key}  (axis {position})
+THEME: {theme}{lens_block}
 
 GROUNDED FACTS routed to this section (your ONLY allowed source of claims). Read
 `bound_statement` for the content and `bound` for who-acts-on-whom:
 {_records_block(routed)}
 
 Write the Turkish reading for THIS section only. Weave the facts into flowing
-romance-first prose addressed to the couple — do not list them. Every statement
-must rest on one of the facts above. Honor every rule of the contract, especially
-the mask (no technical vocabulary) and attribution (only from `bound`).{degrade}
+prose addressed to the couple — do not list them. Every statement must rest on
+one of the facts above. Honor every rule of the contract, especially the mask
+(no technical vocabulary), attribution (only from `bound`), and the reading-type
+stance/lens.{degrade_block}
 
 Return ONLY a JSON object of this exact shape, no prose around it:
 
@@ -190,7 +224,8 @@ Return ONLY a JSON object of this exact shape, no prose around it:
 """
 
 
-def build_opener_user(routed: list[RoutedRecord], *,
+def build_opener_user(routed: list[RoutedRecord], *, theme: str,
+                      opener_key: str = "what_each_brings",
                       label_a: str = "sen", label_b: str = "partnerin") -> str:
     """User message for the per-person opener (§3 section 0). One short paragraph
     per person describing their own capacity to partner — not a claim about the
@@ -198,8 +233,8 @@ def build_opener_user(routed: list[RoutedRecord], *,
     a_recs = [r for r in routed if r.person == "A"]
     b_recs = [r for r in routed if r.person == "B"]
     return f"""\
-SECTION: what_each_brings  (the opener)
-THEME: {SECTION_THEME['what_each_brings']}
+SECTION: {opener_key}  (the opener)
+THEME: {theme}
 
 Write TWO short paragraphs, one per person, describing the relational nature each
 brings on their own — how they love, need, and bond — as standing ground, NOT a
@@ -216,7 +251,7 @@ vocabulary) and every contract rule. Warm, plain Turkish.
 
 Return ONLY a JSON object of this exact shape:
 
-{{ "key": "what_each_brings", "text_tr": "<{label_a}'s paragraph>\\n\\n<{label_b}'s paragraph>" }}
+{{ "key": "{opener_key}", "text_tr": "<{label_a}'s paragraph>\\n\\n<{label_b}'s paragraph>" }}
 """
 
 
@@ -247,13 +282,9 @@ Do these jobs:
    number, percentage, or grade. If you write a summary line, it names the axes'
    texture, not a scalar.
 
-BILINGUAL OUTPUT: for each surviving section, produce the final reading in BOTH
-Turkish (`text_tr`) and English (`text_en`). They are two renderings of the SAME
-content — the English must match the Turkish 1:1 in every claim, tone, and
-warmth: nothing added, dropped, softened, or reinterpreted. Every contract rule
-(the mask, no-score, no-fatalism, attribution) applies to BOTH languages. Keep
-astrological proper nouns in standard English (Sun, Moon, Venus, Libra, …) — but
-the banned technical vocabulary stays banned in English too.
+OUTPUT: for each surviving section, produce the final reading in Turkish
+(`text_tr`) only. English is produced by a separate faithful translation pass,
+so do NOT write any English here.
 """
 
 
@@ -269,14 +300,45 @@ Return ONLY a JSON object of this exact shape:
 {{
   "sections": [
     {{ "key": "<one of the draft keys>",
-       "text_tr": "<the synthesized Turkish reading>",
-       "text_en": "<faithful English rendering of the same content>" }}
+       "text_tr": "<the synthesized Turkish reading>" }}
   ]
 }}
 
 - Keep the sections that survive synthesis, in the given order. Do not invent a
   section that was not in the drafts.
-- Both text_tr and text_en are required and non-empty for every section.
+- text_tr is required and non-empty for every section.
+"""
+
+
+# ---------------------------------------------------------------------------
+# Translation call (§5) — faithful English of one final Turkish section.
+# ---------------------------------------------------------------------------
+
+def build_translation_system(contract: str) -> str:
+    return contract + """\
+
+You are now the FAITHFUL TRANSLATION pass. You are given the final Turkish reading
+for ONE section. Render it in warm, natural English that matches the Turkish
+EXACTLY in meaning, tone, and warmth: nothing added, dropped, softened, or
+reinterpreted. Every contract rule (the mask, no-score, no-fatalism, attribution,
+the person labels) applies to the English too. Keep astrological proper nouns in
+standard English (Sun, Moon, Venus, Libra, …) — the banned technical vocabulary
+stays banned in English. Do NOT invent content the Turkish does not contain.
+"""
+
+
+def build_translation_user(section_key: str, text_tr: str) -> str:
+    return f"""\
+SECTION: {section_key}
+
+FINAL TURKISH READING (translate this faithfully, in full):
+{json.dumps(text_tr, ensure_ascii=False)}
+
+Return ONLY a JSON object of this exact shape, no prose around it:
+
+{{ "key": "{section_key}", "text_en": "<faithful English rendering>" }}
+
+- text_en is required and must be non-empty.
 """
 
 

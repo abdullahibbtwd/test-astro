@@ -23,7 +23,7 @@ a faithful pass in the same synthesis call (§5).
 Run
 ---
     python read_relationship.py                          # dry run: routing only
-    python read_relationship.py --model claude-sonnet-4-6  # real generation
+    python read_relationship.py --model gemini-3.7-flash  # real generation
 """
 
 from __future__ import annotations
@@ -36,8 +36,8 @@ import sys
 
 from s3_generate import DEFAULT_MODEL, make_generator
 from s3_prompts import build_contract
+from s3_profiles import DEFAULT_READING_TYPE, READING_TYPES, get_profile
 from s3_routing import route
-from s3_sections import MOVEMENT, SECTION_ORDER
 from s3_validate import SCHEMA_VERSION, clean_statements, validate
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
@@ -95,17 +95,18 @@ def _resolve_precision(payload: dict, search_root: str) -> tuple[bool, dict]:
 # Assembly (§6 / §11)
 # ---------------------------------------------------------------------------
 
-def _assemble(synth_sections: list[dict],
-              routed_ids: dict[str, set[str]], houses_valid: bool) -> dict:
+def _assemble(synth_sections: list[dict], routed_ids: dict[str, set[str]],
+              houses_valid: bool, profile) -> dict:
     by_key = {s.get("key"): s for s in synth_sections}
+    movement = profile.movement
     sections: list[dict] = []
-    for key in SECTION_ORDER:
+    for key in profile.section_order:
         s = by_key.get(key)
         if not s:
             continue
         sections.append({
             "key": key,
-            "movement": MOVEMENT[key],
+            "movement": movement[key],
             "text_tr": s.get("text_tr", ""),
             "text_en": s.get("text_en", ""),
             # Grounding trace: the record pool this section was built from
@@ -115,12 +116,13 @@ def _assemble(synth_sections: list[dict],
     return {
         "schema_version": SCHEMA_VERSION,
         "reading": "relationship",
+        "reading_type": profile.reading_type,
         "houses_valid": houses_valid,
         "sections": sections,
     }
 
 
-def _statements_doc(statements: list[dict]) -> dict:
+def _statements_doc(statements: list[dict], reading_type: str) -> dict:
     numbered = []
     for i, st in enumerate(statements, 1):
         numbered.append({
@@ -133,6 +135,7 @@ def _statements_doc(statements: list[dict]) -> dict:
     return {
         "schema_version": SCHEMA_VERSION,
         "reading": "relationship",
+        "reading_type": reading_type,
         "statements": numbered,
     }
 
@@ -142,36 +145,46 @@ def _statements_doc(statements: list[dict]) -> dict:
 # ---------------------------------------------------------------------------
 
 def read_relationship(payload: dict, *, generator=None,
+                      reading_type: str = "general",
                       model: str = DEFAULT_MODEL,
                       synthesis_model: str | None = None,
+                      statements_model: str | None = "default",
+                      translation_model: str | None = "default",
                       label_a: str = "sen", label_b: str = "partnerin",
                       houses_valid: bool | None = None,
                       precision_detail: dict | None = None,
                       **gen_kwargs):
-    """Run the full S3 pipeline. ``generator`` may be injected (tests); otherwise
+    """Run the full S3 pipeline for one ``reading_type`` (general / personal /
+    professional, PROFILES §1). ``generator`` may be injected (tests); otherwise
     the Anthropic runner is constructed. Returns (output, statements_doc, report,
     errors)."""
-    routing = route(payload, houses_valid=houses_valid)
+    profile = get_profile(reading_type)
+    routing = route(payload, profile, houses_valid=houses_valid)
     routed_by_section = routing.non_empty()
     routed_ids = routing.routed_ids()
     floored_ids = {d["record_id"] for d in routing.floor_drops}
 
     contract = build_contract(payload.get("framing"),
+                              reading_stance=profile.stance,
                               label_a=label_a, label_b=label_b)
+    if statements_model != "default":       # None = same as the synthesis model
+        gen_kwargs["statements_model"] = statements_model
+    if translation_model != "default":
+        gen_kwargs["translation_model"] = translation_model
     gen = generator or make_generator(
-        contract, model=model, synthesis_model=synthesis_model,
+        contract, profile, model=model, synthesis_model=synthesis_model,
         label_a=label_a, label_b=label_b, **gen_kwargs)
 
     drafts = gen.section_all(routed_by_section, houses_valid=routing.houses_valid)
     synth = gen.synthesize(drafts)
-    output = _assemble(synth, routed_ids, routing.houses_valid)
+    output = _assemble(synth, routed_ids, routing.houses_valid, profile)
 
     allowed = {k: sorted(v) for k, v in routed_ids.items()}
     raw_statements = gen.extract_statements(output["sections"], allowed)
     # Enforce §10.6 by cleaning: untraceable / mask- or score-leaking statements
     # are dropped, not allowed to sink the (already-validated) reading.
     statements, stmt_clean = clean_statements(raw_statements, routed_ids)
-    statements_doc = _statements_doc(statements)
+    statements_doc = _statements_doc(statements, profile.reading_type)
 
     errors = validate(output, statements_doc, routed_ids, floored_ids)
 
@@ -195,8 +208,19 @@ def main() -> None:
                     help="root to search for the two chart files (precision gate)")
     ap.add_argument("--model", default=DEFAULT_MODEL,
                     help=f"section-call model (default {DEFAULT_MODEL})")
+    ap.add_argument("--reading-type", choices=list(READING_TYPES),
+                    default=DEFAULT_READING_TYPE,
+                    help="[1] general (default) — the connection as a whole; "
+                         "[2] personal — romantic / life partnership; "
+                         "[3] professional — business / working partnership")
     ap.add_argument("--synthesis-model", default=None,
-                    help="synthesis/statements model (default: same as --model)")
+                    help="synthesis model (default: same as --model)")
+    ap.add_argument("--translation-model", default="default",
+                    help="English translation model (default: the cheap model, "
+                         "gpt-6-luna; 'same' = the synthesis model)")
+    ap.add_argument("--statements-model", default="default",
+                    help="statements-extraction model (default: the cheap model, "
+                         "gpt-6-luna; 'same' = the synthesis model)")
     ap.add_argument("--label-a", default="sen",
                     help="display label for person A (default: 'sen')")
     ap.add_argument("--label-b", default="partnerin",
@@ -211,21 +235,34 @@ def main() -> None:
 
     payload = _load_json(args.input)
     houses_valid, precision = _resolve_precision(payload, args.charts_root)
+    profile = get_profile(args.reading_type)
     print(f"loaded {len(payload.get('synastry') or [])} synastry records; "
-          f"houses_valid={houses_valid}")
+          f"reading_type={args.reading_type}; houses_valid={houses_valid}")
 
     out_json = os.path.join(args.out_dir, "relationship_reading.json")
     report_path = os.path.join(args.out_dir, "relationship_reading_routing.json")
     statements_path = os.path.join(args.out_dir, "relationship_statements.json")
+    run_meta_path = os.path.join(args.out_dir, "run_meta.json")
+
+    # Stamp reading_type + provenance so every run is self-describing (§1, §7.3).
+    run_meta = {
+        "reading": "relationship", "reading_type": args.reading_type,
+        "input": os.path.abspath(args.input), "houses_valid": houses_valid,
+        "precision": precision, "model": args.model,
+        "labels": {"A": args.label_a, "B": args.label_b},
+    }
+    with open(run_meta_path, "w", encoding="utf-8") as fh:
+        json.dump(run_meta, fh, ensure_ascii=False, indent=2)
 
     if args.dry_run:
-        routing = route(payload, houses_valid=houses_valid)
+        routing = route(payload, profile, houses_valid=houses_valid)
         report = routing.report()
         report["precision"] = precision
         with open(report_path, "w", encoding="utf-8") as fh:
             json.dump(report, fh, ensure_ascii=False, indent=2)
         print("section counts:", report["section_counts"])
-        print(f"floor drops: {len(report['floor_drops'])}  "
+        print(f"context drops: {len(report['context_drops'])}  "
+              f"floor drops: {len(report['floor_drops'])}  "
               f"overflow: {len(report['overflow_drops'])}  "
               f"unrouted: {len(report['unrouted'])}")
         print(f"dry run -> routing report {report_path}")
@@ -239,7 +276,12 @@ def main() -> None:
 
     try:
         output, statements_doc, report, errors = read_relationship(
-            payload, model=args.model, synthesis_model=args.synthesis_model,
+            payload, reading_type=args.reading_type,
+            model=args.model, synthesis_model=args.synthesis_model,
+            statements_model=(None if args.statements_model == "same"
+                              else args.statements_model),
+            translation_model=(None if args.translation_model == "same"
+                               else args.translation_model),
             label_a=args.label_a, label_b=args.label_b,
             houses_valid=houses_valid, precision_detail=precision, **gen_kwargs)
     except RuntimeError as err:
@@ -256,8 +298,17 @@ def main() -> None:
               f"cache_read={u['cache_read_input_tokens']:,} over {u['calls']} calls")
 
     if errors:
+        # Never discard an expensive generation: dump it (and the errors) to a
+        # .rejected file for inspection / a cheap fix, but do NOT ship it as the
+        # validated reading.
+        rejected_path = os.path.join(args.out_dir,
+                                     "relationship_reading.rejected.json")
+        with open(rejected_path, "w", encoding="utf-8") as fh:
+            json.dump({"errors": errors, "output": output,
+                       "statements": statements_doc}, fh,
+                      ensure_ascii=False, indent=2)
         print(f"\nCONTRACT VIOLATION - {len(errors)} error(s), NOT writing "
-              f"reading:", file=sys.stderr)
+              f"reading (rejected draft -> {rejected_path}):", file=sys.stderr)
         for e in errors[:40]:
             print("  -", e, file=sys.stderr)
         sys.exit(1)

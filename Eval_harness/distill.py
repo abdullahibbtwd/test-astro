@@ -19,7 +19,8 @@ Secondary path: runnable standalone to re-distil an existing run (§8):
 The score *readback* lives in ``score_report.py`` and runs after a human fills in
 the scores — it cannot be a stage of the automated run (the scores don't exist yet).
 
-Requires ANTHROPIC_API_KEY (one English Anthropic call; Sonnet is the default).
+One English model call (gpt-6-luna default — extraction-shaped work suits the cheap model);
+provider follows the model id via llm_client.
 """
 
 from __future__ import annotations
@@ -31,9 +32,22 @@ import os
 import re
 import sys
 
-DEFAULT_MODEL = "claude-sonnet-4-6"   # English, same family/setup as L4; Sonnet is fine
+import os as _os
+_ROOT = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+import llm_client  # provider-agnostic completion (Anthropic / Gemini)
+
+DEFAULT_MODEL = llm_client.DEFAULT_CHEAP_MODEL  # extraction-shaped English call: gpt-6-luna
 _MAX_TOKENS = 8192
 _STREAM_STALL_TIMEOUT_S = 120.0
+
+# Sampling parameters are removed on the Claude 5 / Opus 4.7+ family; sending `temperature`
+# there returns a 400. Only forward it to older models that still accept it.
+_NO_SAMPLING_PREFIXES = llm_client.NO_SAMPLING_PREFIXES
+
+
+_supports_temperature = llm_client.supports_temperature
 
 # Closed category enum (EVAL_HARNESS_SPEC.md §4). Reuses the 42-statement clustering
 # so the readback (score_report.py) reproduces those groupings automatically.
@@ -46,6 +60,30 @@ CATEGORIES = {
     "motivational",      # drives, ambitions, what moves them
     "shadow",            # self-sabotage / fear / pathology-framing claims
     "other",             # valid statement that fits none of the above
+}
+
+# Constrained-decoding schema (same house pattern as L4 l4_generate). Forcing the
+# output to this shape guarantees non-empty, valid JSON — without it the model can
+# (and did) return an empty/unparseable response that no retry recovers.
+STATEMENTS_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "properties": {
+        "statements": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "properties": {
+                    "text": {"type": "string"},
+                    "category": {"type": "string", "enum": sorted(CATEGORIES)},
+                    "source_sections": {"type": "array", "items": {"type": "string"}},
+                },
+                "required": ["text", "category", "source_sections"],
+            },
+        },
+    },
+    "required": ["statements"],
 }
 
 # Astrology-term blocklist (§7 invariant 1). A *light* guard: the prompt is what
@@ -145,7 +183,7 @@ OUTPUT: return JSON ONLY — no prose, no markdown fences — of exactly this sh
     {
       "text": "Tends to analyse a problem thoroughly before acting.",
       "category": "cognitive_style",
-      "source_sections": ["core_identity", "mind_communication"]
+      "source_sections": ["core_identity", "communication_learning"]
     }
   ]
 }
@@ -168,40 +206,37 @@ def _build_user(sections: list[dict]) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Anthropic call (one English call, retry once on parse failure, then fail loudly)
+# Model call (one English call, retry once on parse failure, then fail loudly)
 # ---------------------------------------------------------------------------
 
 def _call_model(system: str, user: str, model: str) -> dict:
-    import anthropic  # lazy: only needed when actually distilling
-    import httpx
-
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise RuntimeError(
-            "ANTHROPIC_API_KEY is not set — the distiller needs it for its one "
-            "English Anthropic call. Export it and retry."
-        )
-
-    client = anthropic.Anthropic(
-        timeout=httpx.Timeout(_STREAM_STALL_TIMEOUT_S, connect=15.0,
-                              write=60.0, pool=15.0)
-    )
+    llm_client.require_api_key(model, "the L5 distiller")
 
     def _once(extra_system: str) -> dict:
-        with client.messages.stream(
-            model=model,
-            max_tokens=_MAX_TOKENS,
-            temperature=0.2,           # extraction, not invention
-            system=system + extra_system,
-            messages=[{"role": "user", "content": user}],
-        ) as stream:
-            resp = stream.get_final_message()
-        text = "".join(
-            b.text for b in resp.content if getattr(b, "type", None) == "text"
-        )
+        # Constrained decoding: the API guarantees schema-conforming JSON, so
+        # an empty / prose / fenced response can't slip through.
+        resp = llm_client.complete(
+            model, system + extra_system, user, max_tokens=_MAX_TOKENS,
+            temperature=0.2 if _supports_temperature(model) else None,  # extraction, not invention
+            schema=STATEMENTS_SCHEMA, timeout_s=_STREAM_STALL_TIMEOUT_S,
+            label="distill")
+        text = resp.text
+        if not text.strip():
+            # Should be unreachable with constrained decoding; surface the reason
+            # rather than a cryptic "Expecting value" on an empty string.
+            raise RuntimeError(
+                f"distiller model returned no text (stop_reason={resp.stop_reason!r})")
         return _extract_json(text)
 
     try:
         return _once("")
+    except llm_client.ProviderQuotaError as err:
+        # The cheap model has no credits: the scoresheet is still needed, so run
+        # the one call on the main reading model instead of failing the run.
+        if model == llm_client.DEFAULT_MODEL:
+            raise
+        _log(f"{err} — falling back to {llm_client.DEFAULT_MODEL}")
+        return _call_model(system, user, llm_client.DEFAULT_MODEL)
     except json.JSONDecodeError:
         _log("first response was not parseable JSON — retrying once")
         return _once(

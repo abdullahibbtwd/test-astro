@@ -232,11 +232,23 @@ class RelResult:
     drops: list[RelDrop] = field(default_factory=list)
 
     def payload(self) -> dict:
+        def _ctx_split(bucket):
+            out = {"universal": 0, "personal": 0, "professional": 0}
+            for rec in bucket:
+                for c in (rec.get("synastry") or {}).get("contexts", []):
+                    if c in out:
+                        out[c] += 1
+            return out
         return {
             "reading": "relationship",
             "counts": {"person_a": len(self.person_a), "person_b": len(self.person_b),
                        "synastry": len(self.synastry), "framing": len(self.framing),
-                       "dropped": len(self.drops)},
+                       "dropped": len(self.drops),
+                       # per-context eligibility tallies (a record tagged both
+                       # personal+professional counts in both — not a partition).
+                       "contexts": {"synastry": _ctx_split(self.synastry),
+                                    "person_a": _ctx_split(self.person_a),
+                                    "person_b": _ctx_split(self.person_b)}},
             "person_a": self.person_a, "person_b": self.person_b,
             "synastry": self.synastry, "framing": self.framing,
         }
@@ -848,7 +860,8 @@ def main() -> None:
     here = os.path.dirname(os.path.abspath(__file__))
     ap = argparse.ArgumentParser(description="Two-chart (synastry) grounding gate.")
     ap.add_argument("--records",
-                    default=os.path.join(here, "combined_relationship_principles.clean.json"))
+                    default=os.path.join(here, "combined_relationship_principles_tagged.json"),
+                    help="tagged corpus (every record carries synastry.contexts)")
     ap.add_argument("--chart-a", dest="chart_a", required=True)
     ap.add_argument("--chart-b", dest="chart_b", required=True)
     ap.add_argument("--out",
@@ -860,6 +873,18 @@ def main() -> None:
 
     with open(args.records, encoding="utf-8") as fh:
         records = json.load(fh)
+
+    # E6 — fail fast on an untagged corpus. `synastry.contexts` is the contract
+    # S3's reading-type filter depends on; an untagged/partial corpus would let
+    # S3 silently mis-filter. Corpus-level property -> checked once at load.
+    _VALID_CONTEXTS = {"universal", "personal", "professional"}
+    for rec in records:
+        ctx = (rec.get("synastry") or {}).get("contexts")
+        if not (isinstance(ctx, list) and ctx and set(ctx) <= _VALID_CONTEXTS):
+            raise RelInvariantViolation(
+                f"{rec.get('principle_id', '?')}: missing or invalid synastry.contexts "
+                f"(got {ctx!r}); corpus must be tagged before grounding")
+
     with open(args.chart_a, encoding="utf-8") as fh:
         chart_a = json.load(fh)
     with open(args.chart_b, encoding="utf-8") as fh:

@@ -262,16 +262,28 @@ def main() -> int:
     # §7-optional: thread model/token knobs through to L4 if the user sets them.
     ap.add_argument("--model", default=None, help="L4 section-call model")
     ap.add_argument("--synthesis-model", default=None, help="L4 synthesis-call model")
+    ap.add_argument("--translation-model", default=None,
+                    help="L4 English translation + detox model (default: the cheap model, "
+                         "gpt-6-luna; 'same' = the synthesis model)")
     ap.add_argument("--max-tokens", type=int, default=None, help="L4 per-section budget")
     ap.add_argument("--synthesis-max-tokens", type=int, default=None,
                     help="L4 synthesis output budget")
     ap.add_argument("--distill-model", default=None, help="L5 distiller model")
     args = ap.parse_args()
 
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("ANTHROPIC_API_KEY is not set — L4 interpretation and L5 distillation "
-              "make real Anthropic calls and need it. Export it and retry.",
-              file=sys.stderr)
+    import llm_client
+    from l4_generate import DEFAULT_MODEL as _L4_DEFAULT
+    from l4_generate import DEFAULT_TRANSLATION_MODEL as _TRANSLATION_DEFAULT
+    from distill import DEFAULT_MODEL as _DISTILL_DEFAULT
+    _synth = args.synthesis_model or args.model or _L4_DEFAULT
+    _translation = (_synth if args.translation_model == "same"
+                    else args.translation_model or _TRANSLATION_DEFAULT)
+    _missing = llm_client.missing_key_message(
+        [args.model or _L4_DEFAULT, _synth, _translation,
+         args.distill_model or _DISTILL_DEFAULT],
+        "L4 interpretation / L5 distillation")
+    if _missing:
+        print(_missing, file=sys.stderr)
         return 1
     if not os.path.exists(CORPUS_PATH):
         print(f"Missing grounded corpus: {CORPUS_PATH}", file=sys.stderr)
@@ -360,7 +372,8 @@ def main() -> int:
 
     with open(CORPUS_PATH, encoding="utf-8") as fh:
         corpus = json.load(fh)
-    result = ground(corpus, chart, reading="natal")
+    # Placidus-only reading: every house claim is verified in Placidus (ground.py).
+    result = ground(corpus, chart, reading="natal", house_policy="placidus")
     personal_payload = result.kept_payload()
     # Invariant 2: assert the kept-count contract on write.
     assert personal_payload["kept_count"] == len(result.kept), \
@@ -386,8 +399,11 @@ def main() -> int:
         interpret_kwargs["model"] = args.model
     if args.synthesis_model is not None:
         interpret_kwargs["synthesis_model"] = args.synthesis_model
+    if args.translation_model is not None:
+        interpret_kwargs["translation_model"] = (
+            None if args.translation_model == "same" else args.translation_model)
 
-    print("[L4] interpreting (real Anthropic calls — this can take a while)...")
+    print("[L4] interpreting (real model calls — this can take a while)...")
     try:
         output, report, errors = interpret(chart, result.kept, **interpret_kwargs)
     except RuntimeError as err:
@@ -402,6 +418,7 @@ def main() -> int:
     models = {
         "section": section_model,
         "synthesis": args.synthesis_model or section_model,
+        "translation": _translation,
     }
 
     if errors:

@@ -1,0 +1,144 @@
+{
+  "fixtures": {
+    "exact_day": {
+      "events": 2,
+      "by_family": {
+        "transit_aspect": 2
+      },
+      "by_segment": {
+        "none": 2
+      },
+      "degraded": false,
+      "schema_ok": true
+    },
+    "exact_month": {
+      "events": 164,
+      "by_family": {
+        "transit_aspect": 157,
+        "ingress_house": 3,
+        "ingress_sign": 2,
+        "lunation": 2
+      },
+      "by_segment": {
+        "early": 60,
+        "mid": 57,
+        "late": 47
+      },
+      "degraded": false,
+      "schema_ok": true
+    },
+    "exact_year": {
+      "events": 55,
+      "by_family": {
+        "ingress_sign": 16,
+        "transit_aspect": 32,
+        "eclipse": 4,
+        "ingress_house": 3
+      },
+      "by_segment": {
+        "q1": 12,
+        "q2": 16,
+        "q3": 20,
+        "q4": 7
+      },
+      "degraded": false,
+      "schema_ok": true
+    },
+    "approx_month": {
+      "events": 171,
+      "by_family": {
+        "transit_aspect": 164,
+        "ingress_house": 3,
+        "ingress_sign": 2,
+        "lunation": 2
+      },
+      "by_segment": {
+        "early": 62,
+        "mid": 57,
+        "late": 52
+      },
+      "degraded": false,
+      "schema_ok": true
+    },
+    "unknown_month": {
+      "events": 117,
+      "by_family": {
+        "transit_aspect": 113,
+        "ingress_sign": 2,
+        "lunation": 2
+      },
+      "by_segment": {
+        "early": 43,
+        "mid": 40,
+        "late": 34
+      },
+      "degraded": true,
+      "schema_ok": true
+    },
+    "circumpolar_month": {
+      "events": 164,
+      "by_family": {
+        "transit_aspect": 158,
+        "ingress_house": 2,
+        "ingress_sign": 2,
+        "lunation": 2
+      },
+      "by_segment": {
+        "early": 59,
+        "mid": 54,
+        "late": 51
+      },
+      "degraded": false,
+      "schema_ok": true
+    },
+    "dst_month": {
+      "events": 184,
+      "by_family": {
+        "transit_aspect": 174,
+        "ingress_sign": 4,
+        "eclipse": 1,
+        "ingress_house": 4,
+        "lunation": 1
+      },
+      "by_segment": {
+        "early": 67,
+        "mid": 58,
+        "late": 59
+      },
+      "degraded": false,
+      "schema_ok": true
+    },
+    "triple_year": {
+      "events": 58,
+      "by_family": {
+        "transit_aspect": 35,
+        "ingress_sign": 13,
+        "ingress_house": 6,
+        "eclipse": 4
+      },
+      "by_segment": {
+        "q1": 14,
+        "q2": 21,
+        "q3": 6,
+        "q4": 17
+      },
+      "degraded": false,
+      "schema_ok": true
+    }
+  },
+  "invariants": {
+    "inv1_events_within_window": "PASS",
+    "inv2_year_excludes_moon": "PASS",
+    "inv3_day_no_separating": "PASS",
+    "inv4_phase_and_stage": "PASS",
+    "inv5_day_rulers": "PASS",
+    "inv6_low_precision": "PASS",
+    "inv7_determinism": "PASS",
+    "inv8_grounding_kinds": "PASS",
+    "inv9_counts": "PASS",
+    "inv10_retro_triple": "PASS",
+    "eclipse_in_year": "PASS",
+    "circumpolar_placidus_null": "PASS",
+    "schema_validate": "PASS"
+  }
+}

@@ -338,17 +338,20 @@ def route_sections(rec: dict) -> list[tuple[str, str]]:
 @dataclass
 class RoutingResult:
     sections: dict[str, list[RoutedRecord]]
+    section_order: list[str]                 # profile's [opener] + axes, in order
+    reading_type: str = "general"
     floor_drops: list[dict] = field(default_factory=list)
+    context_drops: list[dict] = field(default_factory=list)
     overflow_drops: list[dict] = field(default_factory=list)
     unrouted: list[dict] = field(default_factory=list)
     houses_valid: bool = True
     record_index: dict[str, dict] = field(default_factory=dict)
 
     def non_empty(self) -> dict[str, list[RoutedRecord]]:
-        """Sections with ≥1 record, in canonical order. Empty axes are omitted
-        (§4.3: never padded)."""
-        from s3_sections import SECTION_ORDER
-        return {k: self.sections[k] for k in SECTION_ORDER if self.sections.get(k)}
+        """Sections with ≥1 record, in the profile's canonical order. Empty axes
+        are omitted (§4.3: never padded)."""
+        return {k: self.sections[k]
+                for k in self.section_order if self.sections.get(k)}
 
     def routed_ids(self) -> dict[str, set[str]]:
         return {
@@ -357,16 +360,17 @@ class RoutingResult:
         }
 
     def report(self) -> dict:
-        from s3_sections import SECTION_ORDER
         return {
+            "reading_type": self.reading_type,
             "houses_valid": self.houses_valid,
             "section_counts": {
-                k: len(self.sections.get(k, [])) for k in SECTION_ORDER
+                k: len(self.sections.get(k, [])) for k in self.section_order
             },
             "sections": {
                 k: [r.as_report_dict() for r in self.sections.get(k, [])]
-                for k in SECTION_ORDER if self.sections.get(k)
+                for k in self.section_order if self.sections.get(k)
             },
+            "context_drops": self.context_drops,
             "floor_drops": self.floor_drops,
             "overflow_drops": self.overflow_drops,
             "unrouted": self.unrouted,
@@ -400,8 +404,10 @@ def _opener_weight(rec: dict) -> float:
     return w
 
 
-def _select_opener(person_recs: list[dict], person: str) -> list[RoutedRecord]:
-    ranked = sorted(person_recs, key=_opener_weight, reverse=True)
+def _select_opener(person_recs: list[dict], person: str,
+                   admit=None) -> list[RoutedRecord]:
+    pool = [r for r in person_recs if admit is None or admit(r)]
+    ranked = sorted(pool, key=_opener_weight, reverse=True)
     out: list[RoutedRecord] = []
     for rec in ranked[:OPENER_CAP_PER_PERSON]:
         pid = rec.get("principle_id", "<no-id>")
@@ -438,13 +444,20 @@ def _carrier(rec: dict, reasons: list[str], uid: str) -> RoutedRecord:
     )
 
 
-def route(payload: dict, *, houses_valid: Optional[bool] = None) -> RoutingResult:
-    """Apply the floor, route the surviving synastry records to the seven axes,
-    order and cap each, and build the opener from person material (§4).
+def route(payload: dict, profile=None, *,
+          houses_valid: Optional[bool] = None) -> RoutingResult:
+    """Filter by context (§2), apply the floor (§4.1), route the survivors to the
+    profile's axes (§4.2), order (profile emphasis, §4) and cap each (§4.3), and
+    build the opener from person material.
 
-    ``payload`` is the parsed ``personal_relationship_principles.json``. If
+    ``profile`` is an ``s3_profiles.Profile``; if omitted the GENERAL profile is
+    used (base-spec behaviour). ``payload`` is the parsed grounded file. If
     ``houses_valid`` is not given it is inferred from whether any house_overlay
     record survived grounding (they are absent when birth times are not exact)."""
+    if profile is None:                       # lazy import avoids an import cycle
+        from s3_profiles import GENERAL
+        profile = GENERAL
+
     synastry = payload.get("synastry") or []
     person_a = payload.get("person_a") or []
     person_b = payload.get("person_b") or []
@@ -452,8 +465,15 @@ def route(payload: dict, *, houses_valid: Optional[bool] = None) -> RoutingResul
     if houses_valid is None:
         houses_valid = any(_interaction(r) == "house_overlay" for r in synastry)
 
-    sections: dict[str, list[RoutedRecord]] = {k: [] for k in AXIS_ORDER}
+    admit_set = profile.admitted_contexts
+
+    def admit(rec: dict) -> bool:
+        ctx = set((_syn(rec).get("contexts")) or ["universal"])
+        return bool(ctx & admit_set)
+
+    sections: dict[str, list[RoutedRecord]] = {k: [] for k in profile.axis_keys}
     floor_drops: list[dict] = []
+    context_drops: list[dict] = []
     overflow_drops: list[dict] = []
     unrouted: list[dict] = []
     record_index: dict[str, dict] = {}
@@ -474,8 +494,19 @@ def route(payload: dict, *, houses_valid: Optional[bool] = None) -> RoutingResul
         record_index[uid] = {
             "principle_id": rec.get("principle_id", "<no-id>"),
             "interaction": _interaction(rec),
+            "contexts": _syn(rec).get("contexts"),
             "bound": _bound(rec),
         }
+        # 1) context eligibility filter (§2) — before the noise floor.
+        if not admit(rec):
+            context_drops.append({
+                "record_id": uid,
+                "interaction": _interaction(rec),
+                "contexts": _syn(rec).get("contexts"),
+                "reason": "context_ineligible",
+            })
+            continue
+        # 2) noise floor (§4.1).
         reason = below_floor(rec)
         if reason:
             floor_drops.append({
@@ -485,7 +516,8 @@ def route(payload: dict, *, houses_valid: Optional[bool] = None) -> RoutingResul
                 "reason": reason,
             })
             continue
-        placements = route_sections(rec)
+        # 3) route to the profile's axes (§4.2).
+        placements = profile.route(rec)
         if not placements:
             unrouted.append({
                 "record_id": uid,
@@ -493,16 +525,19 @@ def route(payload: dict, *, houses_valid: Optional[bool] = None) -> RoutingResul
                 "bound": _bound(rec),
             })
             continue
-        # A record can hit one section by two reasons; merge those reasons onto a
-        # single carrier per section (no point sending it twice to one call).
+        emph = profile.emphasis_delta(rec)
         per_section: dict[str, list[str]] = {}
         for sec, why in placements:
             per_section.setdefault(sec, []).append(why)
         for sec, reasons in per_section.items():
-            sections[sec].append(_carrier(rec, reasons, uid))
+            if sec not in sections:            # guard against a stray key
+                continue
+            carrier = _carrier(rec, reasons, uid)
+            carrier.weight = round(carrier.weight + emph, 4)
+            sections[sec].append(carrier)
 
     # Order by weight (strongest first) and cap; overflow -> report (§4.3).
-    for sec in AXIS_ORDER:
+    for sec in profile.axis_keys:
         recs = sorted(sections[sec], key=lambda r: r.weight, reverse=True)
         kept, overflow = recs[:SECTION_CAP], recs[SECTION_CAP:]
         sections[sec] = kept
@@ -512,13 +547,17 @@ def route(payload: dict, *, houses_valid: Optional[bool] = None) -> RoutingResul
                 "weight": round(r.weight, 3), "reason": "section_cap",
             })
 
-    # Opener (not floored/routed by content; capped per person).
-    opener = _select_opener(person_a, "A") + _select_opener(person_b, "B")
-    sections[WHAT_EACH_BRINGS] = opener
+    # Opener (context-filtered, not floored/routed by content; capped per person).
+    opener = (_select_opener(person_a, "A", admit)
+              + _select_opener(person_b, "B", admit))
+    sections[profile.opener_key] = opener
 
     return RoutingResult(
         sections=sections,
+        section_order=profile.section_order,
+        reading_type=profile.reading_type,
         floor_drops=floor_drops,
+        context_drops=context_drops,
         overflow_drops=overflow_drops,
         unrouted=unrouted,
         houses_valid=houses_valid,

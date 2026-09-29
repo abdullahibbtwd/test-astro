@@ -48,7 +48,7 @@ from pathlib import Path
 
 import anthropic
 
-DEFAULT_MODEL = "claude-sonnet-4-6"
+DEFAULT_MODEL = "claude-sonnet-5"
 MAX_TOKENS = 8000
 BATCH = 20                       # candidates per LLM classification call
 DOMAIN = "relationship"

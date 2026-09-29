@@ -1,0 +1,148 @@
+{
+ "version": "cal-notif-1",
+ "approved": true,
+ "approval_note": "Review delegated by Radul to Claude on 2026-09-29 ('fix the 3 problems yourself and continue'). Checked: every template renders every slot value (test_cal_scoring S5), TR genitive/dative forms agree with 'için' / 'açısından'. Radul may still revise wording; bump 'version' when strings change.",
+ "suggested_local_time": "09:00",
+ "templates": {
+  "period_start_favorable": {
+   "tr": "Yarın {goal_tr_gen} için önemli bir dönem başlıyor.",
+   "en": "Tomorrow an important period for your {goal_en} begins."
+  },
+  "period_start_challenging": {
+   "tr": "Yarın {goal_tr_gen} açısından daha dikkat isteyen bir dönem başlıyor.",
+   "en": "Tomorrow a more demanding period for your {goal_en} begins."
+  },
+  "favorable_window": {
+   "tr": "Önümüzdeki {n} gün {activity_tr_for} destekleyici.",
+   "en": "The next {n} days are supportive for {activity_en}."
+  },
+  "lunation_in_house_new": {
+   "tr": "Bugünkü yeni ay {area_tr} alanında.",
+   "en": "Today's new moon falls in your {area_en} area."
+  },
+  "lunation_in_house_full": {
+   "tr": "Bugünkü dolunay {area_tr} alanında.",
+   "en": "Today's full moon falls in your {area_en} area."
+  },
+  "eclipse_hit": {
+   "tr": "{n} gün sonra bir tutulma haritandaki önemli bir noktaya denk geliyor.",
+   "en": "In {n} days an eclipse touches a key point in your chart."
+  },
+  "station_on_point": {
+   "tr": "Yarın {planet_tr} haritandaki önemli bir noktada yön değiştiriyor.",
+   "en": "Tomorrow {planet_en} changes direction on a key point in your chart."
+  },
+  "retrograde_start": {
+   "tr": "Yarın Merkür retrosu başlıyor.",
+   "en": "Mercury retrograde begins tomorrow."
+  }
+ },
+ "slot_forms": {
+  "goal": {
+   "tr_gen": {
+    "love": "aşk hayatın",
+    "career": "kariyerin",
+    "business": "işlerin",
+    "money": "maddi durumun",
+    "family": "ailen",
+    "education": "eğitimin",
+    "creativity": "yaratıcılığın",
+    "spirituality": "ruhsal gelişimin",
+    "rest": "dinlenmen",
+    "travel": "seyahatlerin",
+    "relocation": "taşınma planların"
+   },
+   "en": {
+    "love": "love life",
+    "career": "career",
+    "business": "business",
+    "money": "finances",
+    "family": "family",
+    "education": "education",
+    "creativity": "creativity",
+    "spirituality": "spiritual growth",
+    "rest": "rest",
+    "travel": "travel",
+    "relocation": "relocation plans"
+   }
+  },
+  "activity": {
+   "tr_for": {
+    "love": "aşk için",
+    "meetings": "görüşme ve randevular için",
+    "business": "iş için",
+    "contract": "sözleşme imzalamak için",
+    "conversation": "önemli konuşmalar için",
+    "travel": "seyahat için",
+    "shopping": "alışveriş için",
+    "project_start": "yeni bir projeye başlamak için",
+    "interview": "iş görüşmeleri için",
+    "moving": "taşınmak için"
+   },
+   "en": {
+    "love": "love",
+    "meetings": "meetings and appointments",
+    "business": "business",
+    "contract": "signing a contract",
+    "conversation": "important conversations",
+    "travel": "travel",
+    "shopping": "shopping",
+    "project_start": "starting a project",
+    "interview": "job interviews",
+    "moving": "moving house"
+   }
+  },
+  "area": {
+   "tr": {
+    "1": "Kimlik",
+    "2": "Değerler ve Para",
+    "3": "İletişim, Öğrenim ve Kardeşler",
+    "4": "Aile ve Yuva",
+    "5": "Neşe, Sanatsal Yetenekler ve Çocuklar",
+    "6": "Sağlık, Rutin ve Evcil Hayvanlar",
+    "7": "Ortaklıklar",
+    "8": "Dönüşüm ve Yakınlık",
+    "9": "Uzak Seyahatler ve Felsefe",
+    "10": "Toplumsal Statü ve Meslek",
+    "11": "Arkadaşlıklar ve Gelecek",
+    "12": "Bilinçaltı ve Yalnızlık"
+   },
+   "en": {
+    "1": "Identity",
+    "2": "Values and Money",
+    "3": "Communication, Studying, Siblings",
+    "4": "Family and Home",
+    "5": "Joy, Artistic Talents and Kids",
+    "6": "Health, Routine, Pets",
+    "7": "Partnerships",
+    "8": "Transformation and Intimacy",
+    "9": "Distant Travels and Philosophy",
+    "10": "Social Status and Vocation",
+    "11": "Friendships and the Future",
+    "12": "Subconscious and Solitary"
+   }
+  },
+  "planet": {
+   "tr": {
+    "mercury": "Merkür",
+    "venus": "Venüs",
+    "mars": "Mars",
+    "jupiter": "Jüpiter",
+    "saturn": "Satürn",
+    "uranus": "Uranüs",
+    "neptune": "Neptün",
+    "pluto": "Plüton"
+   },
+   "en": {
+    "mercury": "Mercury",
+    "venus": "Venus",
+    "mars": "Mars",
+    "jupiter": "Jupiter",
+    "saturn": "Saturn",
+    "uranus": "Uranus",
+    "neptune": "Neptune",
+    "pluto": "Pluto"
+   }
+  }
+ }
+}

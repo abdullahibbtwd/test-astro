@@ -4,326 +4,793 @@
   "title": "Chart",
   "description": "LAYER 1 deterministic chart object emitted by compute_chart(). Cross-service twin of chart_types.py. Tier modeling: three named chart definitions (ExactChart / ApproximateChart / UnknownChart) combined with oneOf — chosen over conditional if/then because the absent-vs-null contract per tier is clearer and each tier sets additionalProperties:false to enforce that tier-absent keys cannot appear. Domain values (sign/planet/aspect/scheme/lot names) are foreign keys into all_principles.json and use enum; they are never renamed.",
   "oneOf": [
-    { "$ref": "#/$defs/ExactChart" },
-    { "$ref": "#/$defs/ApproximateChart" },
-    { "$ref": "#/$defs/UnknownChart" }
+    {
+      "$ref": "#/$defs/ExactChart"
+    },
+    {
+      "$ref": "#/$defs/ApproximateChart"
+    },
+    {
+      "$ref": "#/$defs/UnknownChart"
+    }
   ],
   "$defs": {
     "Sign": {
-      "enum": ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-               "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
+      "enum": [
+        "Aries",
+        "Taurus",
+        "Gemini",
+        "Cancer",
+        "Leo",
+        "Virgo",
+        "Libra",
+        "Scorpio",
+        "Sagittarius",
+        "Capricorn",
+        "Aquarius",
+        "Pisces"
+      ]
     },
     "Planet": {
-      "enum": ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"]
+      "enum": [
+        "Sun",
+        "Moon",
+        "Mercury",
+        "Venus",
+        "Mars",
+        "Jupiter",
+        "Saturn"
+      ]
+    },
+    "ModernRuler": {
+      "description": "Planet plus the modern co-rulers (outer planets). Only for SectorRuler.modern_ruler.",
+      "enum": [
+        "Sun",
+        "Moon",
+        "Mercury",
+        "Venus",
+        "Mars",
+        "Jupiter",
+        "Saturn",
+        "Uranus",
+        "Neptune",
+        "Pluto"
+      ]
     },
     "AspectType": {
-      "enum": ["conjunction", "sextile", "square", "trine", "opposition"]
+      "enum": [
+        "conjunction",
+        "sextile",
+        "square",
+        "trine",
+        "opposition"
+      ]
     },
     "Scheme": {
-      "enum": ["modern", "whole_sign"]
+      "enum": [
+        "modern",
+        "whole_sign"
+      ]
     },
     "Precision": {
-      "enum": ["exact", "approximate", "unknown"]
+      "enum": [
+        "exact",
+        "approximate",
+        "unknown"
+      ]
     },
-
     "Position": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["longitude", "sign", "sign_index", "degree_in_sign"],
+      "required": [
+        "longitude",
+        "sign",
+        "sign_index",
+        "degree_in_sign"
+      ],
       "properties": {
-        "longitude": { "type": "number" },
-        "sign": { "$ref": "#/$defs/Sign" },
-        "sign_index": { "type": "integer", "minimum": 0, "maximum": 11 },
-        "degree_in_sign": { "type": "number" }
+        "longitude": {
+          "type": "number"
+        },
+        "sign": {
+          "$ref": "#/$defs/Sign"
+        },
+        "sign_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        },
+        "degree_in_sign": {
+          "type": "number"
+        }
       }
     },
-
     "Sector": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["placidus", "whole_sign"],
+      "required": [
+        "placidus",
+        "whole_sign"
+      ],
       "properties": {
-        "placidus": { "type": ["integer", "null"], "minimum": 1, "maximum": 12 },
-        "whole_sign": { "type": "integer", "minimum": 1, "maximum": 12 }
+        "placidus": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 12
+        },
+        "whole_sign": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
       }
     },
-
     "TriplicityRulers": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["day", "night", "participating"],
+      "required": [
+        "day",
+        "night",
+        "participating"
+      ],
       "properties": {
-        "day": { "$ref": "#/$defs/Planet" },
-        "night": { "$ref": "#/$defs/Planet" },
-        "participating": { "$ref": "#/$defs/Planet" }
+        "day": {
+          "$ref": "#/$defs/Planet"
+        },
+        "night": {
+          "$ref": "#/$defs/Planet"
+        },
+        "participating": {
+          "$ref": "#/$defs/Planet"
+        }
       }
     },
-
     "Classifications": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sign_ruler", "in_domicile", "in_detriment", "in_exaltation",
-                   "in_fall", "triplicity_ruler", "triplicity_rulers_all",
-                   "in_triplicity", "bound_ruler", "in_own_bound", "face_ruler",
-                   "in_own_face"],
+      "required": [
+        "sign_ruler",
+        "in_domicile",
+        "in_detriment",
+        "in_exaltation",
+        "in_fall",
+        "triplicity_ruler",
+        "triplicity_rulers_all",
+        "in_triplicity",
+        "bound_ruler",
+        "in_own_bound",
+        "face_ruler",
+        "in_own_face"
+      ],
       "properties": {
-        "sign_ruler": { "$ref": "#/$defs/Planet" },
-        "in_domicile": { "type": "boolean" },
-        "in_detriment": { "type": "boolean" },
-        "in_exaltation": { "type": "boolean" },
-        "in_fall": { "type": "boolean" },
-        "triplicity_ruler": {
-          "anyOf": [{ "$ref": "#/$defs/Planet" }, { "type": "null" }]
+        "sign_ruler": {
+          "$ref": "#/$defs/Planet"
         },
-        "triplicity_rulers_all": { "$ref": "#/$defs/TriplicityRulers" },
-        "in_triplicity": { "type": ["boolean", "null"] },
-        "bound_ruler": { "$ref": "#/$defs/Planet" },
-        "in_own_bound": { "type": "boolean" },
-        "face_ruler": { "$ref": "#/$defs/Planet" },
-        "in_own_face": { "type": "boolean" }
+        "in_domicile": {
+          "type": "boolean"
+        },
+        "in_detriment": {
+          "type": "boolean"
+        },
+        "in_exaltation": {
+          "type": "boolean"
+        },
+        "in_fall": {
+          "type": "boolean"
+        },
+        "triplicity_ruler": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Planet"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "triplicity_rulers_all": {
+          "$ref": "#/$defs/TriplicityRulers"
+        },
+        "in_triplicity": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "bound_ruler": {
+          "$ref": "#/$defs/Planet"
+        },
+        "in_own_bound": {
+          "type": "boolean"
+        },
+        "face_ruler": {
+          "$ref": "#/$defs/Planet"
+        },
+        "in_own_face": {
+          "type": "boolean"
+        }
       }
     },
-
     "MoonRange": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["start", "end", "note"],
+      "required": [
+        "start",
+        "end",
+        "note"
+      ],
       "properties": {
-        "start": { "$ref": "#/$defs/Position" },
-        "end": { "$ref": "#/$defs/Position" },
-        "note": { "type": "string" }
+        "start": {
+          "$ref": "#/$defs/Position"
+        },
+        "end": {
+          "$ref": "#/$defs/Position"
+        },
+        "note": {
+          "type": "string"
+        }
       }
     },
-
     "PointTimed": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "traditional", "longitude", "sign", "sign_index",
-                   "degree_in_sign", "speed", "retrograde", "sector",
-                   "classifications"],
+      "required": [
+        "name",
+        "traditional",
+        "longitude",
+        "sign",
+        "sign_index",
+        "degree_in_sign",
+        "speed",
+        "retrograde",
+        "sector",
+        "classifications"
+      ],
       "properties": {
-        "name": { "type": "string" },
-        "traditional": { "type": "boolean" },
-        "longitude": { "type": "number" },
-        "sign": { "$ref": "#/$defs/Sign" },
-        "sign_index": { "type": "integer", "minimum": 0, "maximum": 11 },
-        "degree_in_sign": { "type": "number" },
-        "speed": { "type": "number" },
-        "retrograde": { "type": "boolean" },
-        "sector": { "$ref": "#/$defs/Sector" },
+        "name": {
+          "type": "string"
+        },
+        "traditional": {
+          "type": "boolean"
+        },
+        "longitude": {
+          "type": "number"
+        },
+        "sign": {
+          "$ref": "#/$defs/Sign"
+        },
+        "sign_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        },
+        "degree_in_sign": {
+          "type": "number"
+        },
+        "speed": {
+          "type": "number"
+        },
+        "retrograde": {
+          "type": "boolean"
+        },
+        "sector": {
+          "$ref": "#/$defs/Sector"
+        },
         "classifications": {
-          "anyOf": [{ "$ref": "#/$defs/Classifications" }, { "type": "null" }]
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Classifications"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
-
     "PointUntimed": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "traditional", "longitude", "sign", "sign_index",
-                   "degree_in_sign", "speed", "retrograde", "classifications"],
+      "required": [
+        "name",
+        "traditional",
+        "longitude",
+        "sign",
+        "sign_index",
+        "degree_in_sign",
+        "speed",
+        "retrograde",
+        "classifications"
+      ],
       "properties": {
-        "name": { "type": "string" },
-        "traditional": { "type": "boolean" },
-        "longitude": { "type": "number" },
-        "sign": { "$ref": "#/$defs/Sign" },
-        "sign_index": { "type": "integer", "minimum": 0, "maximum": 11 },
-        "degree_in_sign": { "type": "number" },
-        "speed": { "type": "number" },
-        "retrograde": { "type": "boolean" },
+        "name": {
+          "type": "string"
+        },
+        "traditional": {
+          "type": "boolean"
+        },
+        "longitude": {
+          "type": "number"
+        },
+        "sign": {
+          "$ref": "#/$defs/Sign"
+        },
+        "sign_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 11
+        },
+        "degree_in_sign": {
+          "type": "number"
+        },
+        "speed": {
+          "type": "number"
+        },
+        "retrograde": {
+          "type": "boolean"
+        },
         "classifications": {
-          "anyOf": [{ "$ref": "#/$defs/Classifications" }, { "type": "null" }]
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Classifications"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
-        "range": { "$ref": "#/$defs/MoonRange" }
-      }
-    },
-
-    "Relation": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["source", "target", "type", "scheme"],
-      "properties": {
-        "source": { "type": "string" },
-        "target": { "type": "string" },
-        "type": { "$ref": "#/$defs/AspectType" },
-        "scheme": { "$ref": "#/$defs/Scheme" },
-        "orb": { "type": "number" },
-        "applying": { "type": "boolean" }
-      }
-    },
-
-    "Axes": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["ascendant", "mc"],
-      "properties": {
-        "ascendant": { "$ref": "#/$defs/Position" },
-        "mc": { "$ref": "#/$defs/Position" }
-      }
-    },
-
-    "Sectors": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["placidus_cusps", "whole_sign_cusps"],
-      "properties": {
-        "placidus_cusps": {
-          "type": ["array", "null"],
-          "items": { "type": "number" }
-        },
-        "whole_sign_cusps": {
-          "type": "array",
-          "items": { "type": "number" }
+        "range": {
+          "$ref": "#/$defs/MoonRange"
         }
       }
     },
-
+    "Relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "target",
+        "type",
+        "scheme"
+      ],
+      "properties": {
+        "source": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/AspectType"
+        },
+        "scheme": {
+          "$ref": "#/$defs/Scheme"
+        },
+        "orb": {
+          "type": "number"
+        },
+        "applying": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Axes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ascendant",
+        "mc"
+      ],
+      "properties": {
+        "ascendant": {
+          "$ref": "#/$defs/Position"
+        },
+        "mc": {
+          "$ref": "#/$defs/Position"
+        }
+      }
+    },
+    "Sectors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "placidus_cusps",
+        "whole_sign_cusps"
+      ],
+      "properties": {
+        "placidus_cusps": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "number"
+          }
+        },
+        "whole_sign_cusps": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        }
+      }
+    },
     "DerivedPoints": {
       "type": "object",
       "description": "Open to additional named lots later; each value is a Position.",
-      "additionalProperties": { "$ref": "#/$defs/Position" },
-      "required": ["fortune", "spirit"],
+      "additionalProperties": {
+        "$ref": "#/$defs/Position"
+      },
+      "required": [
+        "fortune",
+        "spirit"
+      ],
       "properties": {
-        "fortune": { "$ref": "#/$defs/Position" },
-        "spirit": { "$ref": "#/$defs/Position" }
+        "fortune": {
+          "$ref": "#/$defs/Position"
+        },
+        "spirit": {
+          "$ref": "#/$defs/Position"
+        }
       }
     },
-
     "SectorRuler": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["sign_on_cusp", "ruler", "ruler_sign", "ruler_sector"],
+      "required": [
+        "sign_on_cusp",
+        "ruler",
+        "ruler_sign",
+        "ruler_sector",
+        "modern_ruler",
+        "modern_ruler_sign",
+        "modern_ruler_sector"
+      ],
       "properties": {
-        "sign_on_cusp": { "$ref": "#/$defs/Sign" },
-        "ruler": { "$ref": "#/$defs/Planet" },
-        "ruler_sign": { "$ref": "#/$defs/Sign" },
-        "ruler_sector": { "type": "integer", "minimum": 1, "maximum": 12 }
+        "sign_on_cusp": {
+          "$ref": "#/$defs/Sign"
+        },
+        "ruler": {
+          "$ref": "#/$defs/Planet"
+        },
+        "ruler_sign": {
+          "$ref": "#/$defs/Sign"
+        },
+        "ruler_sector": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "modern_ruler": {
+          "$ref": "#/$defs/ModernRuler"
+        },
+        "modern_ruler_sign": {
+          "$ref": "#/$defs/Sign"
+        },
+        "modern_ruler_sector": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
       }
     },
-
     "SectorRulerMap": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["1","2","3","4","5","6","7","8","9","10","11","12"],
+      "required": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12"
+      ],
       "patternProperties": {
-        "^(1[0-2]|[1-9])$": { "$ref": "#/$defs/SectorRuler" }
+        "^(1[0-2]|[1-9])$": {
+          "$ref": "#/$defs/SectorRuler"
+        }
       }
     },
-
     "SectorRulers": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["placidus", "whole_sign"],
+      "required": [
+        "placidus",
+        "whole_sign"
+      ],
       "properties": {
-        "placidus": { "$ref": "#/$defs/SectorRulerMap" },
-        "whole_sign": { "$ref": "#/$defs/SectorRulerMap" }
+        "placidus": {
+          "$ref": "#/$defs/SectorRulerMap"
+        },
+        "whole_sign": {
+          "$ref": "#/$defs/SectorRulerMap"
+        }
       }
     },
-
     "Meta": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["time_precision", "zodiac", "ephemeris", "pyswisseph_version",
-                   "house_systems", "node_type", "timezone", "utc"],
+      "required": [
+        "time_precision",
+        "zodiac",
+        "ephemeris",
+        "pyswisseph_version",
+        "house_systems",
+        "node_type",
+        "timezone",
+        "utc"
+      ],
       "properties": {
-        "time_precision": { "$ref": "#/$defs/Precision" },
-        "zodiac": { "type": "string" },
-        "ephemeris": { "type": "string" },
-        "pyswisseph_version": { "type": ["integer", "string"] },
-        "house_systems": { "type": "array", "items": { "type": "string" } },
-        "node_type": { "type": "string" },
-        "timezone": { "type": "string" },
-        "utc": { "type": "string" },
-        "approx_bucket": { "type": "string" },
-        "note": { "type": "string" }
+        "time_precision": {
+          "$ref": "#/$defs/Precision"
+        },
+        "zodiac": {
+          "type": "string"
+        },
+        "ephemeris": {
+          "type": "string"
+        },
+        "pyswisseph_version": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "house_systems": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "node_type": {
+          "type": "string"
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "utc": {
+          "type": "string"
+        },
+        "approx_bucket": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        }
       }
     },
-
     "UnstableFields": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "asc_sign": { "type": "boolean" },
-        "mc_sign": { "type": "boolean" },
-        "is_diurnal": { "type": "boolean" },
-        "moon_sign": { "type": "boolean" },
-        "house_placements": { "type": "array", "items": { "type": "string" } }
+        "asc_sign": {
+          "type": "boolean"
+        },
+        "mc_sign": {
+          "type": "boolean"
+        },
+        "is_diurnal": {
+          "type": "boolean"
+        },
+        "moon_sign": {
+          "type": "boolean"
+        },
+        "house_placements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
-
     "ExactChart": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["meta", "confidence", "points", "relations", "axes", "sectors",
-                   "sector_rulers", "is_diurnal", "derived_points", "planetary_day",
-                   "planetary_hour"],
+      "required": [
+        "meta",
+        "confidence",
+        "points",
+        "relations",
+        "axes",
+        "sectors",
+        "sector_rulers",
+        "is_diurnal",
+        "derived_points",
+        "planetary_day",
+        "planetary_hour"
+      ],
       "properties": {
         "meta": {
           "allOf": [
-            { "$ref": "#/$defs/Meta" },
-            { "properties": { "time_precision": { "const": "exact" } } }
+            {
+              "$ref": "#/$defs/Meta"
+            },
+            {
+              "properties": {
+                "time_precision": {
+                  "const": "exact"
+                }
+              }
+            }
           ]
         },
-        "confidence": { "const": "exact" },
-        "points": { "type": "array", "items": { "$ref": "#/$defs/PointTimed" } },
-        "relations": { "type": "array", "items": { "$ref": "#/$defs/Relation" } },
-        "axes": { "$ref": "#/$defs/Axes" },
-        "sectors": { "$ref": "#/$defs/Sectors" },
-        "sector_rulers": { "$ref": "#/$defs/SectorRulers" },
-        "is_diurnal": { "type": "boolean" },
-        "derived_points": { "$ref": "#/$defs/DerivedPoints" },
-        "planetary_day": { "type": ["string", "null"] },
-        "planetary_hour": { "type": ["string", "null"] }
+        "confidence": {
+          "const": "exact"
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PointTimed"
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Relation"
+          }
+        },
+        "axes": {
+          "$ref": "#/$defs/Axes"
+        },
+        "sectors": {
+          "$ref": "#/$defs/Sectors"
+        },
+        "sector_rulers": {
+          "$ref": "#/$defs/SectorRulers"
+        },
+        "is_diurnal": {
+          "type": "boolean"
+        },
+        "derived_points": {
+          "$ref": "#/$defs/DerivedPoints"
+        },
+        "planetary_day": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "planetary_hour": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
       }
     },
-
     "ApproximateChart": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["meta", "confidence", "points", "relations", "axes", "sectors",
-                   "sector_rulers", "is_diurnal", "derived_points", "planetary_day",
-                   "planetary_hour", "unstable_fields"],
+      "required": [
+        "meta",
+        "confidence",
+        "points",
+        "relations",
+        "axes",
+        "sectors",
+        "sector_rulers",
+        "is_diurnal",
+        "derived_points",
+        "planetary_day",
+        "planetary_hour",
+        "unstable_fields"
+      ],
       "properties": {
         "meta": {
           "allOf": [
-            { "$ref": "#/$defs/Meta" },
             {
-              "required": ["approx_bucket"],
-              "properties": { "time_precision": { "const": "approximate" } }
+              "$ref": "#/$defs/Meta"
+            },
+            {
+              "required": [
+                "approx_bucket"
+              ],
+              "properties": {
+                "time_precision": {
+                  "const": "approximate"
+                }
+              }
             }
           ]
         },
-        "confidence": { "const": "approximate" },
-        "points": { "type": "array", "items": { "$ref": "#/$defs/PointTimed" } },
-        "relations": { "type": "array", "items": { "$ref": "#/$defs/Relation" } },
-        "axes": { "$ref": "#/$defs/Axes" },
-        "sectors": { "$ref": "#/$defs/Sectors" },
-        "sector_rulers": { "$ref": "#/$defs/SectorRulers" },
-        "is_diurnal": { "type": "boolean" },
-        "derived_points": { "$ref": "#/$defs/DerivedPoints" },
-        "planetary_day": { "type": ["string", "null"] },
-        "planetary_hour": { "type": ["string", "null"] },
-        "unstable_fields": { "$ref": "#/$defs/UnstableFields" }
+        "confidence": {
+          "const": "approximate"
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PointTimed"
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Relation"
+          }
+        },
+        "axes": {
+          "$ref": "#/$defs/Axes"
+        },
+        "sectors": {
+          "$ref": "#/$defs/Sectors"
+        },
+        "sector_rulers": {
+          "$ref": "#/$defs/SectorRulers"
+        },
+        "is_diurnal": {
+          "type": "boolean"
+        },
+        "derived_points": {
+          "$ref": "#/$defs/DerivedPoints"
+        },
+        "planetary_day": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "planetary_hour": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unstable_fields": {
+          "$ref": "#/$defs/UnstableFields"
+        }
       }
     },
-
     "UnknownChart": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["meta", "confidence", "points", "relations"],
+      "required": [
+        "meta",
+        "confidence",
+        "points",
+        "relations"
+      ],
       "properties": {
         "meta": {
           "allOf": [
-            { "$ref": "#/$defs/Meta" },
             {
-              "required": ["note"],
-              "properties": { "time_precision": { "const": "unknown" } }
+              "$ref": "#/$defs/Meta"
+            },
+            {
+              "required": [
+                "note"
+              ],
+              "properties": {
+                "time_precision": {
+                  "const": "unknown"
+                }
+              }
             }
           ]
         },
-        "confidence": { "const": "unknown" },
-        "points": { "type": "array", "items": { "$ref": "#/$defs/PointUntimed" } },
-        "relations": { "type": "array", "items": { "$ref": "#/$defs/Relation" } }
+        "confidence": {
+          "const": "unknown"
+        },
+        "points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PointUntimed"
+          }
+        },
+        "relations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Relation"
+          }
+        }
       }
     }
   }

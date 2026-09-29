@@ -1,0 +1,2870 @@
+[
+ {
+  "iso_a2": "AD",
+  "iso_a3": "AND",
+  "name": "Andorra",
+  "name_tr": "Andorra",
+  "bbox": [
+   1.4065,
+   42.4287,
+   1.7651,
+   42.6494
+  ]
+ },
+ {
+  "iso_a2": "AE",
+  "iso_a3": "ARE",
+  "name": "United Arab Emirates",
+  "name_tr": "Birleşik Arap Emirlikleri",
+  "bbox": [
+   51.5693,
+   22.6209,
+   56.3836,
+   26.0748
+  ]
+ },
+ {
+  "iso_a2": "AF",
+  "iso_a3": "AFG",
+  "name": "Afghanistan",
+  "name_tr": "Afganistan",
+  "bbox": [
+   60.4868,
+   29.3866,
+   74.8923,
+   38.4737
+  ]
+ },
+ {
+  "iso_a2": "AG",
+  "iso_a3": "ATG",
+  "name": "Antigua and Barbuda",
+  "name_tr": "Antigua ve Barbuda",
+  "bbox": [
+   -62.3483,
+   16.932,
+   -61.6676,
+   17.7277
+  ]
+ },
+ {
+  "iso_a2": "AI",
+  "iso_a3": "AIA",
+  "name": "Anguilla",
+  "name_tr": "Anguilla",
+  "bbox": [
+   -63.4288,
+   18.1691,
+   -62.9257,
+   18.6013
+  ]
+ },
+ {
+  "iso_a2": "AL",
+  "iso_a3": "ALB",
+  "name": "Albania",
+  "name_tr": "Arnavutluk",
+  "bbox": [
+   19.272,
+   39.637,
+   21.0367,
+   42.6548
+  ]
+ },
+ {
+  "iso_a2": "AM",
+  "iso_a3": "ARM",
+  "name": "Armenia",
+  "name_tr": "Ermenistan",
+  "bbox": [
+   43.4363,
+   38.8637,
+   46.6026,
+   41.2905
+  ]
+ },
+ {
+  "iso_a2": "AO",
+  "iso_a3": "AGO",
+  "name": "Angola",
+  "name_tr": "Angola",
+  "bbox": [
+   11.6694,
+   -18.0314,
+   24.0617,
+   -4.3912
+  ]
+ },
+ {
+  "iso_a2": "AQ",
+  "iso_a3": "ATA",
+  "name": "Antarctica",
+  "name_tr": "Antarktika",
+  "bbox": [
+   -180.0,
+   -90.0,
+   180.0,
+   -60.5162
+  ]
+ },
+ {
+  "iso_a2": "AR",
+  "iso_a3": "ARG",
+  "name": "Argentina",
+  "name_tr": "Arjantin",
+  "bbox": [
+   -73.5727,
+   -55.052,
+   -53.6616,
+   -21.7869
+  ]
+ },
+ {
+  "iso_a2": "AS",
+  "iso_a3": "ASM",
+  "name": "American Samoa",
+  "name_tr": "Amerikan Samoası",
+  "bbox": [
+   -171.0865,
+   -14.5329,
+   -168.1605,
+   -11.0514
+  ]
+ },
+ {
+  "iso_a2": "AT",
+  "iso_a3": "AUT",
+  "name": "Austria",
+  "name_tr": "Avusturya",
+  "bbox": [
+   9.5212,
+   46.3786,
+   17.1483,
+   49.0098
+  ]
+ },
+ {
+  "iso_a2": "AU",
+  "iso_a3": "AUS",
+  "name": "Australia",
+  "name_tr": "Avustralya",
+  "bbox": [
+   96.8215,
+   -54.7504,
+   159.1065,
+   -9.2402
+  ]
+ },
+ {
+  "iso_a2": "AW",
+  "iso_a3": "ABW",
+  "name": "Aruba",
+  "name_tr": "Aruba",
+  "bbox": [
+   -70.0624,
+   12.4177,
+   -69.8768,
+   12.6321
+  ]
+ },
+ {
+  "iso_a2": "AX",
+  "iso_a3": "ALA",
+  "name": "Åland",
+  "name_tr": "Åland",
+  "bbox": [
+   19.5132,
+   59.9045,
+   21.0967,
+   60.4808
+  ]
+ },
+ {
+  "iso_a2": "AZ",
+  "iso_a3": "AZE",
+  "name": "Azerbaijan",
+  "name_tr": "Azerbaycan",
+  "bbox": [
+   44.7746,
+   38.3926,
+   50.6257,
+   41.8904
+  ]
+ },
+ {
+  "iso_a2": "BA",
+  "iso_a3": "BIH",
+  "name": "Bosnia and Herzegovina",
+  "name_tr": "Bosna-Hersek",
+  "bbox": [
+   15.7161,
+   42.5592,
+   19.6189,
+   45.2845
+  ]
+ },
+ {
+  "iso_a2": "BB",
+  "iso_a3": "BRB",
+  "name": "Barbados",
+  "name_tr": "Barbados",
+  "bbox": [
+   -59.6542,
+   13.0512,
+   -59.4269,
+   13.3445
+  ]
+ },
+ {
+  "iso_a2": "BD",
+  "iso_a3": "BGD",
+  "name": "Bangladesh",
+  "name_tr": "Bangladeş",
+  "bbox": [
+   88.0218,
+   20.7387,
+   92.6429,
+   26.6235
+  ]
+ },
+ {
+  "iso_a2": "BE",
+  "iso_a3": "BEL",
+  "name": "Belgium",
+  "name_tr": "Belçika",
+  "bbox": [
+   2.5218,
+   49.4952,
+   6.3745,
+   51.4962
+  ]
+ },
+ {
+  "iso_a2": "BF",
+  "iso_a3": "BFA",
+  "name": "Burkina Faso",
+  "name_tr": "Burkina Faso",
+  "bbox": [
+   -5.5226,
+   9.3919,
+   2.3902,
+   15.0799
+  ]
+ },
+ {
+  "iso_a2": "BG",
+  "iso_a3": "BGR",
+  "name": "Bulgaria",
+  "name_tr": "Bulgaristan",
+  "bbox": [
+   22.345,
+   41.2381,
+   28.6035,
+   44.2284
+  ]
+ },
+ {
+  "iso_a2": "BH",
+  "iso_a3": "BHR",
+  "name": "Bahrain",
+  "name_tr": "Bahreyn",
+  "bbox": [
+   50.3805,
+   25.5799,
+   50.8199,
+   26.2874
+  ]
+ },
+ {
+  "iso_a2": "BI",
+  "iso_a3": "BDI",
+  "name": "Burundi",
+  "name_tr": "Burundi",
+  "bbox": [
+   28.9869,
+   -4.4633,
+   30.834,
+   -2.3031
+  ]
+ },
+ {
+  "iso_a2": "BJ",
+  "iso_a3": "BEN",
+  "name": "Benin",
+  "name_tr": "Benin",
+  "bbox": [
+   0.7599,
+   6.2139,
+   3.8374,
+   12.3992
+  ]
+ },
+ {
+  "iso_a2": "BL",
+  "iso_a3": "BLM",
+  "name": "Saint Barthélemy",
+  "name_tr": "Saint Barthélemy",
+  "bbox": [
+   -62.8673,
+   17.882,
+   -62.7917,
+   17.9291
+  ]
+ },
+ {
+  "iso_a2": "BM",
+  "iso_a3": "BMU",
+  "name": "Bermuda",
+  "name_tr": "Bermuda",
+  "bbox": [
+   -64.886,
+   32.2481,
+   -64.6476,
+   32.3887
+  ]
+ },
+ {
+  "iso_a2": "BN",
+  "iso_a3": "BRN",
+  "name": "Brunei",
+  "name_tr": "Brunei",
+  "bbox": [
+   113.9988,
+   4.0167,
+   115.3607,
+   5.0572
+  ]
+ },
+ {
+  "iso_a2": "BO",
+  "iso_a3": "BOL",
+  "name": "Bolivia",
+  "name_tr": "Bolivya",
+  "bbox": [
+   -69.6665,
+   -22.8973,
+   -57.4657,
+   -9.6798
+  ]
+ },
+ {
+  "iso_a2": "BR",
+  "iso_a3": "BRA",
+  "name": "Brazil",
+  "name_tr": "Brezilya",
+  "bbox": [
+   -74.0185,
+   -33.7423,
+   -28.8771,
+   5.2672
+  ]
+ },
+ {
+  "iso_a2": "BS",
+  "iso_a3": "BHS",
+  "name": "The Bahamas",
+  "name_tr": "Bahamalar",
+  "bbox": [
+   -79.5943,
+   20.9124,
+   -72.7462,
+   26.9284
+  ]
+ },
+ {
+  "iso_a2": "BT",
+  "iso_a3": "BTN",
+  "name": "Bhutan",
+  "name_tr": "Bhutan",
+  "bbox": [
+   88.7301,
+   26.6961,
+   92.0888,
+   28.3584
+  ]
+ },
+ {
+  "iso_a2": "BW",
+  "iso_a3": "BWA",
+  "name": "Botswana",
+  "name_tr": "Botsvana",
+  "bbox": [
+   19.9783,
+   -26.8918,
+   29.3501,
+   -17.7818
+  ]
+ },
+ {
+  "iso_a2": "BY",
+  "iso_a3": "BLR",
+  "name": "Belarus",
+  "name_tr": "Beyaz Rusya",
+  "bbox": [
+   23.1656,
+   51.2352,
+   32.7195,
+   56.1568
+  ]
+ },
+ {
+  "iso_a2": "BZ",
+  "iso_a3": "BLZ",
+  "name": "Belize",
+  "name_tr": "Belize",
+  "bbox": [
+   -89.2365,
+   15.8797,
+   -87.7831,
+   18.4908
+  ]
+ },
+ {
+  "iso_a2": "CA",
+  "iso_a3": "CAN",
+  "name": "Canada",
+  "name_tr": "Kanada",
+  "bbox": [
+   -141.0056,
+   41.6691,
+   -52.6166,
+   83.1165
+  ]
+ },
+ {
+  "iso_a2": "CD",
+  "iso_a3": "COD",
+  "name": "Democratic Republic of the Congo",
+  "name_tr": "Demokratik Kongo Cumhuriyeti",
+  "bbox": [
+   12.2105,
+   -13.4584,
+   31.2804,
+   5.3753
+  ]
+ },
+ {
+  "iso_a2": "CF",
+  "iso_a3": "CAF",
+  "name": "Central African Republic",
+  "name_tr": "Orta Afrika Cumhuriyeti",
+  "bbox": [
+   14.3873,
+   2.2365,
+   27.4413,
+   11.0008
+  ]
+ },
+ {
+  "iso_a2": "CG",
+  "iso_a3": "COG",
+  "name": "Republic of the Congo",
+  "name_tr": "Kongo Cumhuriyeti",
+  "bbox": [
+   11.114,
+   -5.0196,
+   18.6424,
+   3.7083
+  ]
+ },
+ {
+  "iso_a2": "CH",
+  "iso_a3": "CHE",
+  "name": "Switzerland",
+  "name_tr": "İsviçre",
+  "bbox": [
+   5.9548,
+   45.8207,
+   10.4666,
+   47.8012
+  ]
+ },
+ {
+  "iso_a2": "CI",
+  "iso_a3": "CIV",
+  "name": "Ivory Coast",
+  "name_tr": "Fildişi Sahili",
+  "bbox": [
+   -8.6187,
+   4.3441,
+   -2.5063,
+   10.7265
+  ]
+ },
+ {
+  "iso_a2": "CK",
+  "iso_a3": "COK",
+  "name": "Cook Islands",
+  "name_tr": "Cook Adaları",
+  "bbox": [
+   -165.8245,
+   -21.9389,
+   -157.3128,
+   -8.9467
+  ]
+ },
+ {
+  "iso_a2": "CL",
+  "iso_a3": "CHL",
+  "name": "Chile",
+  "name_tr": "Şili",
+  "bbox": [
+   -109.4537,
+   -55.9185,
+   -66.4208,
+   -17.5066
+  ]
+ },
+ {
+  "iso_a2": "CM",
+  "iso_a3": "CMR",
+  "name": "Cameroon",
+  "name_tr": "Kamerun",
+  "bbox": [
+   8.5051,
+   1.6546,
+   16.2077,
+   13.0811
+  ]
+ },
+ {
+  "iso_a2": "CN",
+  "iso_a3": "CHN",
+  "name": "People's Republic of China",
+  "name_tr": "Çin Halk Cumhuriyeti",
+  "bbox": [
+   73.6023,
+   18.1693,
+   134.7726,
+   53.5694
+  ]
+ },
+ {
+  "iso_a2": "CO",
+  "iso_a3": "COL",
+  "name": "Colombia",
+  "name_tr": "Kolombiya",
+  "bbox": [
+   -81.7237,
+   -4.2365,
+   -66.8751,
+   15.8673
+  ]
+ },
+ {
+  "iso_a2": "CR",
+  "iso_a3": "CRI",
+  "name": "Costa Rica",
+  "name_tr": "Kosta Rika",
+  "bbox": [
+   -87.1177,
+   5.5151,
+   -82.5628,
+   11.2099
+  ]
+ },
+ {
+  "iso_a2": "CU",
+  "iso_a3": "CUB",
+  "name": "Cuba",
+  "name_tr": "Küba",
+  "bbox": [
+   -84.9496,
+   19.8278,
+   -74.1329,
+   23.2656
+  ]
+ },
+ {
+  "iso_a2": "CV",
+  "iso_a3": "CPV",
+  "name": "Cape Verde",
+  "name_tr": "Yeşil Burun Adaları",
+  "bbox": [
+   -25.3604,
+   14.8039,
+   -22.6666,
+   17.1966
+  ]
+ },
+ {
+  "iso_a2": "CW",
+  "iso_a3": "CUW",
+  "name": "Curaçao",
+  "name_tr": "Curaçao",
+  "bbox": [
+   -69.1717,
+   12.0413,
+   -68.7397,
+   12.3915
+  ]
+ },
+ {
+  "iso_a2": "CY",
+  "iso_a3": "CYP",
+  "name": "Cyprus",
+  "name_tr": "Kıbrıs Cumhuriyeti",
+  "bbox": [
+   32.2717,
+   34.625,
+   34.0991,
+   35.1994
+  ]
+ },
+ {
+  "iso_a2": "CZ",
+  "iso_a3": "CZE",
+  "name": "Czech Republic",
+  "name_tr": "Çek Cumhuriyeti",
+  "bbox": [
+   12.0761,
+   48.5579,
+   18.8374,
+   51.04
+  ]
+ },
+ {
+  "iso_a2": "DE",
+  "iso_a3": "DEU",
+  "name": "Germany",
+  "name_tr": "Almanya",
+  "bbox": [
+   5.8525,
+   47.2711,
+   15.0221,
+   55.0653
+  ]
+ },
+ {
+  "iso_a2": "DJ",
+  "iso_a3": "DJI",
+  "name": "Djibouti",
+  "name_tr": "Cibuti",
+  "bbox": [
+   41.7491,
+   10.9298,
+   43.4187,
+   12.7079
+  ]
+ },
+ {
+  "iso_a2": "DK",
+  "iso_a3": "DNK",
+  "name": "Denmark",
+  "name_tr": "Danimarka",
+  "bbox": [
+   8.094,
+   54.5686,
+   15.1514,
+   57.7512
+  ]
+ },
+ {
+  "iso_a2": "DM",
+  "iso_a3": "DMA",
+  "name": "Dominica",
+  "name_tr": "Dominika",
+  "bbox": [
+   -61.4889,
+   15.2018,
+   -61.2493,
+   15.6339
+  ]
+ },
+ {
+  "iso_a2": "DO",
+  "iso_a3": "DOM",
+  "name": "Dominican Republic",
+  "name_tr": "Dominik Cumhuriyeti",
+  "bbox": [
+   -72.0098,
+   17.5456,
+   -68.3286,
+   19.9377
+  ]
+ },
+ {
+  "iso_a2": "DZ",
+  "iso_a3": "DZA",
+  "name": "Algeria",
+  "name_tr": "Cezayir",
+  "bbox": [
+   -8.6824,
+   18.9756,
+   11.9689,
+   37.0939
+  ]
+ },
+ {
+  "iso_a2": "EC",
+  "iso_a3": "ECU",
+  "name": "Ecuador",
+  "name_tr": "Ekvador",
+  "bbox": [
+   -92.0116,
+   -5.0114,
+   -75.2273,
+   1.6644
+  ]
+ },
+ {
+  "iso_a2": "EE",
+  "iso_a3": "EST",
+  "name": "Estonia",
+  "name_tr": "Estonya",
+  "bbox": [
+   21.8324,
+   57.5158,
+   28.1865,
+   59.6709
+  ]
+ },
+ {
+  "iso_a2": "EG",
+  "iso_a3": "EGY",
+  "name": "Egypt",
+  "name_tr": "Mısır",
+  "bbox": [
+   24.6883,
+   21.9944,
+   36.8992,
+   31.6565
+  ]
+ },
+ {
+  "iso_a2": "ER",
+  "iso_a3": "ERI",
+  "name": "Eritrea",
+  "name_tr": "Eritre",
+  "bbox": [
+   36.4236,
+   12.36,
+   43.1239,
+   18.0048
+  ]
+ },
+ {
+  "iso_a2": "ES",
+  "iso_a3": "ESP",
+  "name": "Spain",
+  "name_tr": "İspanya",
+  "bbox": [
+   -18.1672,
+   27.6422,
+   4.3371,
+   43.7934
+  ]
+ },
+ {
+  "iso_a2": "ET",
+  "iso_a3": "ETH",
+  "name": "Ethiopia",
+  "name_tr": "Etiyopya",
+  "bbox": [
+   32.9898,
+   3.4033,
+   47.9792,
+   14.8795
+  ]
+ },
+ {
+  "iso_a2": "FI",
+  "iso_a3": "FIN",
+  "name": "Finland",
+  "name_tr": "Finlandiya",
+  "bbox": [
+   20.6232,
+   59.8112,
+   31.5695,
+   70.0753
+  ]
+ },
+ {
+  "iso_a2": "FJ",
+  "iso_a3": "FJI",
+  "name": "Fiji",
+  "name_tr": "Fiji",
+  "bbox": [
+   -180.0,
+   -21.7111,
+   180.0,
+   -12.4753
+  ]
+ },
+ {
+  "iso_a2": "FK",
+  "iso_a3": "FLK",
+  "name": "Falkland Islands",
+  "name_tr": "Falkland Adaları",
+  "bbox": [
+   -61.3182,
+   -52.4065,
+   -57.7343,
+   -51.0278
+  ]
+ },
+ {
+  "iso_a2": "FM",
+  "iso_a3": "FSM",
+  "name": "Federated States of Micronesia",
+  "name_tr": "Mikronezya",
+  "bbox": [
+   138.0638,
+   0.9182,
+   163.0466,
+   9.7756
+  ]
+ },
+ {
+  "iso_a2": "FO",
+  "iso_a3": "FRO",
+  "name": "Faroe Islands",
+  "name_tr": "Faroe Adaları",
+  "bbox": [
+   -7.6442,
+   61.3941,
+   -6.2758,
+   62.3989
+  ]
+ },
+ {
+  "iso_a2": "FR",
+  "iso_a3": "FRA",
+  "name": "France",
+  "name_tr": "Fransa",
+  "bbox": [
+   -109.2342,
+   -21.3708,
+   55.8545,
+   51.0875
+  ]
+ },
+ {
+  "iso_a2": "GA",
+  "iso_a3": "GAB",
+  "name": "Gabon",
+  "name_tr": "Gabon",
+  "bbox": [
+   8.6956,
+   -3.9369,
+   14.499,
+   2.3225
+  ]
+ },
+ {
+  "iso_a2": "GB",
+  "iso_a3": "GBR",
+  "name": "United Kingdom",
+  "name_tr": "Birleşik Krallık",
+  "bbox": [
+   -13.6913,
+   49.9096,
+   1.7712,
+   60.8479
+  ]
+ },
+ {
+  "iso_a2": "GD",
+  "iso_a3": "GRD",
+  "name": "Grenada",
+  "name_tr": "Grenada",
+  "bbox": [
+   -61.7905,
+   12.0028,
+   -61.4216,
+   12.5297
+  ]
+ },
+ {
+  "iso_a2": "GE",
+  "iso_a3": "GEO",
+  "name": "Georgia",
+  "name_tr": "Gürcistan",
+  "bbox": [
+   39.986,
+   41.0441,
+   46.6948,
+   43.5758
+  ]
+ },
+ {
+  "iso_a2": "GG",
+  "iso_a3": "GGY",
+  "name": "Guernsey",
+  "name_tr": "Guernsey",
+  "bbox": [
+   -2.6735,
+   49.4116,
+   -2.1703,
+   49.7314
+  ]
+ },
+ {
+  "iso_a2": "GH",
+  "iso_a3": "GHA",
+  "name": "Ghana",
+  "name_tr": "Gana",
+  "bbox": [
+   -3.2625,
+   4.7371,
+   1.188,
+   11.1629
+  ]
+ },
+ {
+  "iso_a2": "GI",
+  "iso_a3": "GIB",
+  "name": "Gibraltar",
+  "name_tr": "Cebelitarık",
+  "bbox": [
+   -5.3584,
+   36.1105,
+   -5.3388,
+   36.1411
+  ]
+ },
+ {
+  "iso_a2": "GL",
+  "iso_a3": "GRL",
+  "name": "Greenland",
+  "name_tr": "Grönland",
+  "bbox": [
+   -73.0572,
+   59.7926,
+   -11.3768,
+   83.6341
+  ]
+ },
+ {
+  "iso_a2": "GM",
+  "iso_a3": "GMB",
+  "name": "The Gambia",
+  "name_tr": "Gambiya",
+  "bbox": [
+   -16.8297,
+   13.065,
+   -13.8187,
+   13.82
+  ]
+ },
+ {
+  "iso_a2": "GN",
+  "iso_a3": "GIN",
+  "name": "Guinea",
+  "name_tr": "Gine",
+  "bbox": [
+   -15.0811,
+   7.1902,
+   -7.6624,
+   12.6734
+  ]
+ },
+ {
+  "iso_a2": "GQ",
+  "iso_a3": "GNQ",
+  "name": "Equatorial Guinea",
+  "name_tr": "Ekvator Ginesi",
+  "bbox": [
+   5.612,
+   -1.4757,
+   11.3363,
+   3.7724
+  ]
+ },
+ {
+  "iso_a2": "GR",
+  "iso_a3": "GRC",
+  "name": "Greece",
+  "name_tr": "Yunanistan",
+  "bbox": [
+   19.6265,
+   34.815,
+   28.2398,
+   41.7505
+  ]
+ },
+ {
+  "iso_a2": "GS",
+  "iso_a3": "SGS",
+  "name": "South Georgia and the South Sandwich Islands",
+  "name_tr": "Güney Georgia ve Güney Sandwich Adaları",
+  "bbox": [
+   -38.087,
+   -59.4728,
+   -26.2393,
+   -53.9724
+  ]
+ },
+ {
+  "iso_a2": "GT",
+  "iso_a3": "GTM",
+  "name": "Guatemala",
+  "name_tr": "Guatemala",
+  "bbox": [
+   -92.2463,
+   13.7314,
+   -88.2209,
+   17.816
+  ]
+ },
+ {
+  "iso_a2": "GU",
+  "iso_a3": "GUM",
+  "name": "Guam",
+  "name_tr": "Guam",
+  "bbox": [
+   144.6242,
+   13.241,
+   144.9522,
+   13.6541
+  ]
+ },
+ {
+  "iso_a2": "GW",
+  "iso_a3": "GNB",
+  "name": "Guinea-Bissau",
+  "name_tr": "Gine-Bissau",
+  "bbox": [
+   -16.7284,
+   10.9276,
+   -13.6607,
+   12.6794
+  ]
+ },
+ {
+  "iso_a2": "GY",
+  "iso_a3": "GUY",
+  "name": "Guyana",
+  "name_tr": "Guyana",
+  "bbox": [
+   -61.3967,
+   1.1858,
+   -56.4818,
+   8.558
+  ]
+ },
+ {
+  "iso_a2": "HK",
+  "iso_a3": "HKG",
+  "name": "Hong Kong",
+  "name_tr": "Hong Kong",
+  "bbox": [
+   113.8373,
+   22.1771,
+   114.4013,
+   22.5639
+  ]
+ },
+ {
+  "iso_a2": "HM",
+  "iso_a3": "HMD",
+  "name": "Heard Island and McDonald Islands",
+  "name_tr": "Heard Adası ve McDonald Adaları",
+  "bbox": [
+   73.236,
+   -53.1926,
+   73.8122,
+   -52.9616
+  ]
+ },
+ {
+  "iso_a2": "HN",
+  "iso_a3": "HND",
+  "name": "Honduras",
+  "name_tr": "Honduras",
+  "bbox": [
+   -89.3638,
+   12.9798,
+   -83.1304,
+   17.4186
+  ]
+ },
+ {
+  "iso_a2": "HR",
+  "iso_a3": "HRV",
+  "name": "Croatia",
+  "name_tr": "Hırvatistan",
+  "bbox": [
+   13.5015,
+   42.4163,
+   19.4078,
+   46.547
+  ]
+ },
+ {
+  "iso_a2": "HT",
+  "iso_a3": "HTI",
+  "name": "Haiti",
+  "name_tr": "Haiti",
+  "bbox": [
+   -74.4892,
+   18.0259,
+   -71.6391,
+   20.0898
+  ]
+ },
+ {
+  "iso_a2": "HU",
+  "iso_a3": "HUN",
+  "name": "Hungary",
+  "name_tr": "Macaristan",
+  "bbox": [
+   16.094,
+   45.7413,
+   22.8776,
+   48.5692
+  ]
+ },
+ {
+  "iso_a2": "ID",
+  "iso_a3": "IDN",
+  "name": "Indonesia",
+  "name_tr": "Endonezya",
+  "bbox": [
+   95.0127,
+   -10.9226,
+   140.9776,
+   5.9101
+  ]
+ },
+ {
+  "iso_a2": "IE",
+  "iso_a3": "IRL",
+  "name": "Ireland",
+  "name_tr": "İrlanda",
+  "bbox": [
+   -10.4782,
+   51.4457,
+   -5.9935,
+   55.3864
+  ]
+ },
+ {
+  "iso_a2": "IL",
+  "iso_a3": "ISR",
+  "name": "Israel",
+  "name_tr": "İsrail",
+  "bbox": [
+   34.2484,
+   29.4897,
+   35.6722,
+   33.2821
+  ]
+ },
+ {
+  "iso_a2": "IM",
+  "iso_a3": "IMN",
+  "name": "Isle of Man",
+  "name_tr": "Man Adası",
+  "bbox": [
+   -4.7902,
+   54.057,
+   -4.3119,
+   54.419
+  ]
+ },
+ {
+  "iso_a2": "IN",
+  "iso_a3": "IND",
+  "name": "India",
+  "name_tr": "Hindistan",
+  "bbox": [
+   68.1434,
+   6.7456,
+   97.3623,
+   33.2329
+  ]
+ },
+ {
+  "iso_a2": "IO",
+  "iso_a3": "IOT",
+  "name": "British Indian Ocean Territory",
+  "name_tr": "Britanya Hint Okyanusu Toprakları",
+  "bbox": [
+   71.261,
+   -7.4322,
+   72.4946,
+   -5.227
+  ]
+ },
+ {
+  "iso_a2": "IQ",
+  "iso_a3": "IRQ",
+  "name": "Iraq",
+  "name_tr": "Irak",
+  "bbox": [
+   38.7745,
+   29.0631,
+   48.5593,
+   37.3755
+  ]
+ },
+ {
+  "iso_a2": "IR",
+  "iso_a3": "IRN",
+  "name": "Iran",
+  "name_tr": "İran",
+  "bbox": [
+   44.0149,
+   25.0594,
+   63.3196,
+   39.7715
+  ]
+ },
+ {
+  "iso_a2": "IS",
+  "iso_a3": "ISL",
+  "name": "Iceland",
+  "name_tr": "İzlanda",
+  "bbox": [
+   -24.5399,
+   63.3967,
+   -13.5029,
+   66.5642
+  ]
+ },
+ {
+  "iso_a2": "IT",
+  "iso_a3": "ITA",
+  "name": "Italy",
+  "name_tr": "İtalya",
+  "bbox": [
+   6.6027,
+   35.4892,
+   18.5174,
+   47.0852
+  ]
+ },
+ {
+  "iso_a2": "JE",
+  "iso_a3": "JEY",
+  "name": "Jersey",
+  "name_tr": "Jersey",
+  "bbox": [
+   -2.242,
+   49.1713,
+   -2.0083,
+   49.267
+  ]
+ },
+ {
+  "iso_a2": "JM",
+  "iso_a3": "JAM",
+  "name": "Jamaica",
+  "name_tr": "Jamaika",
+  "bbox": [
+   -78.3747,
+   17.7032,
+   -76.188,
+   18.5251
+  ]
+ },
+ {
+  "iso_a2": "JO",
+  "iso_a3": "JOR",
+  "name": "Jordan",
+  "name_tr": "Ürdün",
+  "bbox": [
+   34.9494,
+   29.19,
+   39.292,
+   33.3717
+  ]
+ },
+ {
+  "iso_a2": "JP",
+  "iso_a3": "JPN",
+  "name": "Japan",
+  "name_tr": "Japonya",
+  "bbox": [
+   122.9382,
+   24.2121,
+   153.9856,
+   45.5204
+  ]
+ },
+ {
+  "iso_a2": "KE",
+  "iso_a3": "KEN",
+  "name": "Kenya",
+  "name_tr": "Kenya",
+  "bbox": [
+   33.8905,
+   -4.6775,
+   41.885,
+   4.6202
+  ]
+ },
+ {
+  "iso_a2": "KG",
+  "iso_a3": "KGZ",
+  "name": "Kyrgyzstan",
+  "name_tr": "Kırgızistan",
+  "bbox": [
+   69.2263,
+   39.1892,
+   80.2576,
+   43.2617
+  ]
+ },
+ {
+  "iso_a2": "KH",
+  "iso_a3": "KHM",
+  "name": "Cambodia",
+  "name_tr": "Kamboçya",
+  "bbox": [
+   102.3134,
+   10.4158,
+   107.6105,
+   14.7046
+  ]
+ },
+ {
+  "iso_a2": "KI",
+  "iso_a3": "KIR",
+  "name": "Kiribati",
+  "name_tr": "Kiribati",
+  "bbox": [
+   -174.5434,
+   -11.4611,
+   176.8509,
+   4.7231
+  ]
+ },
+ {
+  "iso_a2": "KM",
+  "iso_a3": "COM",
+  "name": "Comoros",
+  "name_tr": "Komorlar",
+  "bbox": [
+   43.2132,
+   -12.3803,
+   44.5291,
+   -11.3613
+  ]
+ },
+ {
+  "iso_a2": "KN",
+  "iso_a3": "KNA",
+  "name": "Saint Kitts and Nevis",
+  "name_tr": "Saint Kitts ve Nevis",
+  "bbox": [
+   -62.8611,
+   17.1005,
+   -62.5368,
+   17.4158
+  ]
+ },
+ {
+  "iso_a2": "KP",
+  "iso_a3": "PRK",
+  "name": "North Korea",
+  "name_tr": "Kuzey Kore",
+  "bbox": [
+   124.2113,
+   37.6756,
+   130.7,
+   43.0103
+  ]
+ },
+ {
+  "iso_a2": "KR",
+  "iso_a3": "KOR",
+  "name": "South Korea",
+  "name_tr": "Güney Kore",
+  "bbox": [
+   124.6136,
+   33.1976,
+   130.9207,
+   38.6243
+  ]
+ },
+ {
+  "iso_a2": "KW",
+  "iso_a3": "KWT",
+  "name": "Kuwait",
+  "name_tr": "Kuveyt",
+  "bbox": [
+   46.5324,
+   28.5335,
+   48.4328,
+   30.0982
+  ]
+ },
+ {
+  "iso_a2": "KY",
+  "iso_a3": "CYM",
+  "name": "Cayman Islands",
+  "name_tr": "Cayman Adaları",
+  "bbox": [
+   -81.4165,
+   19.2639,
+   -79.7266,
+   19.7576
+  ]
+ },
+ {
+  "iso_a2": "KZ",
+  "iso_a3": "KAZ",
+  "name": "Kazakhstan",
+  "name_tr": "Kazakistan",
+  "bbox": [
+   46.4783,
+   40.5847,
+   87.3238,
+   55.4346
+  ]
+ },
+ {
+  "iso_a2": "LA",
+  "iso_a3": "LAO",
+  "name": "Laos",
+  "name_tr": "Laos",
+  "bbox": [
+   100.0971,
+   13.9155,
+   107.6644,
+   22.496
+  ]
+ },
+ {
+  "iso_a2": "LB",
+  "iso_a3": "LBN",
+  "name": "Lebanon",
+  "name_tr": "Lübnan",
+  "bbox": [
+   35.0996,
+   33.0556,
+   36.6041,
+   34.6875
+  ]
+ },
+ {
+  "iso_a2": "LC",
+  "iso_a3": "LCA",
+  "name": "Saint Lucia",
+  "name_tr": "Saint Lucia",
+  "bbox": [
+   -61.0785,
+   13.7147,
+   -60.883,
+   14.1119
+  ]
+ },
+ {
+  "iso_a2": "LI",
+  "iso_a3": "LIE",
+  "name": "Liechtenstein",
+  "name_tr": "Lihtenştayn",
+  "bbox": [
+   9.4759,
+   47.0524,
+   9.6157,
+   47.2628
+  ]
+ },
+ {
+  "iso_a2": "LK",
+  "iso_a3": "LKA",
+  "name": "Sri Lanka",
+  "name_tr": "Sri Lanka",
+  "bbox": [
+   79.6558,
+   5.9237,
+   81.8903,
+   9.8296
+  ]
+ },
+ {
+  "iso_a2": "LR",
+  "iso_a3": "LBR",
+  "name": "Liberia",
+  "name_tr": "Liberya",
+  "bbox": [
+   -11.4762,
+   4.3472,
+   -7.3841,
+   8.5654
+  ]
+ },
+ {
+  "iso_a2": "LS",
+  "iso_a3": "LSO",
+  "name": "Lesotho",
+  "name_tr": "Lesotho",
+  "bbox": [
+   27.0022,
+   -30.6588,
+   29.4359,
+   -28.5708
+  ]
+ },
+ {
+  "iso_a2": "LT",
+  "iso_a3": "LTU",
+  "name": "Lithuania",
+  "name_tr": "Litvanya",
+  "bbox": [
+   20.9246,
+   53.8868,
+   26.8007,
+   56.4426
+  ]
+ },
+ {
+  "iso_a2": "LU",
+  "iso_a3": "LUX",
+  "name": "Luxembourg",
+  "name_tr": "Lüksemburg",
+  "bbox": [
+   5.7149,
+   49.4413,
+   6.5026,
+   50.175
+  ]
+ },
+ {
+  "iso_a2": "LV",
+  "iso_a3": "LVA",
+  "name": "Latvia",
+  "name_tr": "Letonya",
+  "bbox": [
+   20.9686,
+   55.667,
+   28.2173,
+   58.0751
+  ]
+ },
+ {
+  "iso_a2": "LY",
+  "iso_a3": "LBY",
+  "name": "Libya",
+  "name_tr": "Libya",
+  "bbox": [
+   9.2865,
+   19.4961,
+   25.1563,
+   33.1812
+  ]
+ },
+ {
+  "iso_a2": "MA",
+  "iso_a3": "MAR",
+  "name": "Morocco",
+  "name_tr": "Fas",
+  "bbox": [
+   -17.1046,
+   20.7669,
+   -1.032,
+   35.9265
+  ]
+ },
+ {
+  "iso_a2": "MC",
+  "iso_a3": "MCO",
+  "name": "Monaco",
+  "name_tr": "Monako",
+  "bbox": [
+   7.3658,
+   43.718,
+   7.4375,
+   43.7635
+  ]
+ },
+ {
+  "iso_a2": "MD",
+  "iso_a3": "MDA",
+  "name": "Moldova",
+  "name_tr": "Moldova",
+  "bbox": [
+   26.6179,
+   45.4618,
+   30.1316,
+   48.486
+  ]
+ },
+ {
+  "iso_a2": "ME",
+  "iso_a3": "MNE",
+  "name": "Montenegro",
+  "name_tr": "Karadağ",
+  "bbox": [
+   18.4335,
+   41.8524,
+   20.3552,
+   43.5479
+  ]
+ },
+ {
+  "iso_a2": "MF",
+  "iso_a3": "MAF",
+  "name": "Saint Martin",
+  "name_tr": "Saint Martin",
+  "bbox": [
+   -63.1468,
+   18.0334,
+   -63.0107,
+   18.1221
+  ]
+ },
+ {
+  "iso_a2": "MG",
+  "iso_a3": "MDG",
+  "name": "Madagascar",
+  "name_tr": "Madagaskar",
+  "bbox": [
+   43.2229,
+   -25.5986,
+   50.5039,
+   -11.9436
+  ]
+ },
+ {
+  "iso_a2": "MH",
+  "iso_a3": "MHL",
+  "name": "Marshall Islands",
+  "name_tr": "Marshall Adaları",
+  "bbox": [
+   165.2822,
+   4.5738,
+   172.0298,
+   14.6105
+  ]
+ },
+ {
+  "iso_a2": "MK",
+  "iso_a3": "MKD",
+  "name": "North Macedonia",
+  "name_tr": "Kuzey Makedonya",
+  "bbox": [
+   20.4442,
+   40.8494,
+   23.0096,
+   42.3703
+  ]
+ },
+ {
+  "iso_a2": "ML",
+  "iso_a3": "MLI",
+  "name": "Mali",
+  "name_tr": "Mali",
+  "bbox": [
+   -12.2641,
+   10.1401,
+   4.2356,
+   24.9951
+  ]
+ },
+ {
+  "iso_a2": "MM",
+  "iso_a3": "MMR",
+  "name": "Myanmar",
+  "name_tr": "Myanmar",
+  "bbox": [
+   92.175,
+   9.7907,
+   101.1739,
+   28.5385
+  ]
+ },
+ {
+  "iso_a2": "MN",
+  "iso_a3": "MNG",
+  "name": "Mongolia",
+  "name_tr": "Moğolistan",
+  "bbox": [
+   87.7357,
+   41.5861,
+   119.907,
+   52.1296
+  ]
+ },
+ {
+  "iso_a2": "MO",
+  "iso_a3": "MAC",
+  "name": "Macau",
+  "name_tr": "Makao",
+  "bbox": [
+   113.5199,
+   22.1054,
+   113.5875,
+   22.2208
+  ]
+ },
+ {
+  "iso_a2": "MP",
+  "iso_a3": "MNP",
+  "name": "Northern Mariana Islands",
+  "name_tr": "Kuzey Mariana Adaları",
+  "bbox": [
+   144.9021,
+   14.1107,
+   145.8689,
+   20.5554
+  ]
+ },
+ {
+  "iso_a2": "MR",
+  "iso_a3": "MRT",
+  "name": "Mauritania",
+  "name_tr": "Moritanya",
+  "bbox": [
+   -17.0812,
+   14.7344,
+   -4.8216,
+   27.2854
+  ]
+ },
+ {
+  "iso_a2": "MS",
+  "iso_a3": "MSR",
+  "name": "Montserrat",
+  "name_tr": "Montserrat",
+  "bbox": [
+   -62.2301,
+   16.6754,
+   -62.1405,
+   16.8193
+  ]
+ },
+ {
+  "iso_a2": "MT",
+  "iso_a3": "MLT",
+  "name": "Malta",
+  "name_tr": "Malta",
+  "bbox": [
+   14.1836,
+   35.8012,
+   14.5671,
+   36.0756
+  ]
+ },
+ {
+  "iso_a2": "MU",
+  "iso_a3": "MUS",
+  "name": "Mauritius",
+  "name_tr": "Mauritius",
+  "bbox": [
+   56.5242,
+   -20.5173,
+   63.4939,
+   -10.3239
+  ]
+ },
+ {
+  "iso_a2": "MV",
+  "iso_a3": "MDV",
+  "name": "Maldives",
+  "name_tr": "Maldivler",
+  "bbox": [
+   72.6848,
+   -0.6886,
+   73.7532,
+   7.1072
+  ]
+ },
+ {
+  "iso_a2": "MW",
+  "iso_a3": "MWI",
+  "name": "Malawi",
+  "name_tr": "Malavi",
+  "bbox": [
+   32.6633,
+   -17.1353,
+   35.9043,
+   -9.3812
+  ]
+ },
+ {
+  "iso_a2": "MX",
+  "iso_a3": "MEX",
+  "name": "Mexico",
+  "name_tr": "Meksika",
+  "bbox": [
+   -118.3688,
+   14.5463,
+   -86.7006,
+   32.7128
+  ]
+ },
+ {
+  "iso_a2": "MY",
+  "iso_a3": "MYS",
+  "name": "Malaysia",
+  "name_tr": "Malezya",
+  "bbox": [
+   99.6452,
+   0.8514,
+   119.2781,
+   7.3558
+  ]
+ },
+ {
+  "iso_a2": "MZ",
+  "iso_a3": "MOZ",
+  "name": "Mozambique",
+  "name_tr": "Mozambik",
+  "bbox": [
+   30.2138,
+   -26.8603,
+   40.848,
+   -10.469
+  ]
+ },
+ {
+  "iso_a2": "NA",
+  "iso_a3": "NAM",
+  "name": "Namibia",
+  "name_tr": "Namibya",
+  "bbox": [
+   11.7176,
+   -28.9594,
+   25.2598,
+   -16.9511
+  ]
+ },
+ {
+  "iso_a2": "NC",
+  "iso_a3": "NCL",
+  "name": "New Caledonia",
+  "name_tr": "Yeni Kaledonya",
+  "bbox": [
+   163.6157,
+   -22.6707,
+   171.3438,
+   -19.6237
+  ]
+ },
+ {
+  "iso_a2": "NE",
+  "iso_a3": "NER",
+  "name": "Niger",
+  "name_tr": "Nijer",
+  "bbox": [
+   0.1529,
+   11.6958,
+   15.9703,
+   23.5174
+  ]
+ },
+ {
+  "iso_a2": "NF",
+  "iso_a3": "NFK",
+  "name": "Norfolk Island",
+  "name_tr": "Norfolk Adası",
+  "bbox": [
+   167.9121,
+   -29.08,
+   167.9963,
+   -28.9975
+  ]
+ },
+ {
+  "iso_a2": "NG",
+  "iso_a3": "NGA",
+  "name": "Nigeria",
+  "name_tr": "Nijerya",
+  "bbox": [
+   2.6711,
+   4.2722,
+   14.6699,
+   13.8803
+  ]
+ },
+ {
+  "iso_a2": "NI",
+  "iso_a3": "NIC",
+  "name": "Nicaragua",
+  "name_tr": "Nikaragua",
+  "bbox": [
+   -87.6858,
+   10.7135,
+   -82.7257,
+   15.031
+  ]
+ },
+ {
+  "iso_a2": "NL",
+  "iso_a3": "NLD",
+  "name": "Netherlands",
+  "name_tr": "Hollanda",
+  "bbox": [
+   -68.4174,
+   12.022,
+   7.1985,
+   53.5581
+  ]
+ },
+ {
+  "iso_a2": "NO",
+  "iso_a3": "NOR",
+  "name": "Norway",
+  "name_tr": "Norveç",
+  "bbox": [
+   -9.1174,
+   -54.4625,
+   33.6404,
+   80.7701
+  ]
+ },
+ {
+  "iso_a2": "NP",
+  "iso_a3": "NPL",
+  "name": "Nepal",
+  "name_tr": "Nepal",
+  "bbox": [
+   80.0303,
+   26.3438,
+   88.1691,
+   30.4169
+  ]
+ },
+ {
+  "iso_a2": "NR",
+  "iso_a3": "NRU",
+  "name": "Nauru",
+  "name_tr": "Nauru",
+  "bbox": [
+   166.907,
+   -0.5519,
+   166.9583,
+   -0.4904
+  ]
+ },
+ {
+  "iso_a2": "NU",
+  "iso_a3": "NIU",
+  "name": "Niue",
+  "name_tr": "Niue",
+  "bbox": [
+   -169.9504,
+   -19.1428,
+   -169.7829,
+   -18.964
+  ]
+ },
+ {
+  "iso_a2": "NZ",
+  "iso_a3": "NZL",
+  "name": "New Zealand",
+  "name_tr": "Yeni Zelanda",
+  "bbox": [
+   -177.958,
+   -52.6003,
+   178.8439,
+   -8.5432
+  ]
+ },
+ {
+  "iso_a2": "OM",
+  "iso_a3": "OMN",
+  "name": "Oman",
+  "name_tr": "Umman",
+  "bbox": [
+   51.9786,
+   16.6424,
+   59.8446,
+   26.386
+  ]
+ },
+ {
+  "iso_a2": "PA",
+  "iso_a3": "PAN",
+  "name": "Panama",
+  "name_tr": "Panama",
+  "bbox": [
+   -83.0532,
+   7.2057,
+   -77.1633,
+   9.6293
+  ]
+ },
+ {
+  "iso_a2": "PE",
+  "iso_a3": "PER",
+  "name": "Peru",
+  "name_tr": "Peru",
+  "bbox": [
+   -81.3376,
+   -18.3377,
+   -68.6843,
+   -0.0291
+  ]
+ },
+ {
+  "iso_a2": "PF",
+  "iso_a3": "PYF",
+  "name": "French Polynesia",
+  "name_tr": "Fransız Polinezyası",
+  "bbox": [
+   -154.537,
+   -27.6412,
+   -134.943,
+   -7.9501
+  ]
+ },
+ {
+  "iso_a2": "PG",
+  "iso_a3": "PNG",
+  "name": "Papua New Guinea",
+  "name_tr": "Papua Yeni Gine",
+  "bbox": [
+   140.8492,
+   -11.6363,
+   155.9675,
+   -1.3464
+  ]
+ },
+ {
+  "iso_a2": "PH",
+  "iso_a3": "PHL",
+  "name": "Philippines",
+  "name_tr": "Filipinler",
+  "bbox": [
+   116.9549,
+   4.6557,
+   126.6177,
+   21.1224
+  ]
+ },
+ {
+  "iso_a2": "PK",
+  "iso_a3": "PAK",
+  "name": "Pakistan",
+  "name_tr": "Pakistan",
+  "bbox": [
+   60.8444,
+   20.7055,
+   79.6207,
+   37.0545
+  ]
+ },
+ {
+  "iso_a2": "PL",
+  "iso_a3": "POL",
+  "name": "Poland",
+  "name_tr": "Polonya",
+  "bbox": [
+   14.1239,
+   48.994,
+   24.1432,
+   54.8383
+  ]
+ },
+ {
+  "iso_a2": "PM",
+  "iso_a3": "SPM",
+  "name": "Saint Pierre and Miquelon",
+  "name_tr": "Saint Pierre ve Miquelon",
+  "bbox": [
+   -56.3966,
+   46.7528,
+   -56.1448,
+   47.1413
+  ]
+ },
+ {
+  "iso_a2": "PN",
+  "iso_a3": "PCN",
+  "name": "Pitcairn Islands",
+  "name_tr": "Pitcairn Adaları",
+  "bbox": [
+   -130.7531,
+   -25.0771,
+   -124.7781,
+   -23.9244
+  ]
+ },
+ {
+  "iso_a2": "PR",
+  "iso_a3": "PRI",
+  "name": "Puerto Rico",
+  "name_tr": "Porto Riko",
+  "bbox": [
+   -67.9378,
+   17.9229,
+   -65.2446,
+   18.5228
+  ]
+ },
+ {
+  "iso_a2": "PS",
+  "iso_a3": "PSE",
+  "name": "Palestine",
+  "name_tr": "Filistin",
+  "bbox": [
+   34.2003,
+   31.2114,
+   35.5725,
+   32.5426
+  ]
+ },
+ {
+  "iso_a2": "PT",
+  "iso_a3": "PRT",
+  "name": "Portugal",
+  "name_tr": "Portekiz",
+  "bbox": [
+   -31.2849,
+   30.0292,
+   -6.2059,
+   42.1536
+  ]
+ },
+ {
+  "iso_a2": "PW",
+  "iso_a3": "PLW",
+  "name": "Palau",
+  "name_tr": "Palau",
+  "bbox": [
+   131.1311,
+   2.949,
+   134.7273,
+   8.0966
+  ]
+ },
+ {
+  "iso_a2": "PY",
+  "iso_a3": "PRY",
+  "name": "Paraguay",
+  "name_tr": "Paraguay",
+  "bbox": [
+   -62.6504,
+   -27.5868,
+   -54.2453,
+   -19.2867
+  ]
+ },
+ {
+  "iso_a2": "QA",
+  "iso_a3": "QAT",
+  "name": "Qatar",
+  "name_tr": "Katar",
+  "bbox": [
+   50.751,
+   24.5599,
+   51.6165,
+   26.1601
+  ]
+ },
+ {
+  "iso_a2": "RO",
+  "iso_a3": "ROU",
+  "name": "Romania",
+  "name_tr": "Romanya",
+  "bbox": [
+   20.2428,
+   43.65,
+   29.6996,
+   48.2748
+  ]
+ },
+ {
+  "iso_a2": "RS",
+  "iso_a3": "SRB",
+  "name": "Serbia",
+  "name_tr": "Sırbistan",
+  "bbox": [
+   18.845,
+   42.2349,
+   22.9846,
+   46.1739
+  ]
+ },
+ {
+  "iso_a2": "RU",
+  "iso_a3": "RUS",
+  "name": "Russia",
+  "name_tr": "Rusya",
+  "bbox": [
+   -180.0,
+   41.1927,
+   180.0,
+   81.8587
+  ]
+ },
+ {
+  "iso_a2": "RW",
+  "iso_a3": "RWA",
+  "name": "Rwanda",
+  "name_tr": "Ruanda",
+  "bbox": [
+   28.8572,
+   -2.8269,
+   30.8878,
+   -1.0587
+  ]
+ },
+ {
+  "iso_a2": "SA",
+  "iso_a3": "SAU",
+  "name": "Saudi Arabia",
+  "name_tr": "Suudi Arabistan",
+  "bbox": [
+   34.5728,
+   16.371,
+   55.6376,
+   32.1213
+  ]
+ },
+ {
+  "iso_a2": "SB",
+  "iso_a3": "SLB",
+  "name": "Solomon Islands",
+  "name_tr": "Solomon Adaları",
+  "bbox": [
+   155.508,
+   -12.2906,
+   168.8259,
+   -6.5999
+  ]
+ },
+ {
+  "iso_a2": "SC",
+  "iso_a3": "SYC",
+  "name": "Seychelles",
+  "name_tr": "Seyşeller",
+  "bbox": [
+   46.2074,
+   -9.7555,
+   56.2874,
+   -3.7911
+  ]
+ },
+ {
+  "iso_a2": "SD",
+  "iso_a3": "SDN",
+  "name": "Sudan",
+  "name_tr": "Sudan",
+  "bbox": [
+   21.8094,
+   8.6816,
+   38.6039,
+   22.227
+  ]
+ },
+ {
+  "iso_a2": "SE",
+  "iso_a3": "SWE",
+  "name": "Sweden",
+  "name_tr": "İsveç",
+  "bbox": [
+   11.1082,
+   55.3427,
+   24.1634,
+   69.0364
+  ]
+ },
+ {
+  "iso_a2": "SG",
+  "iso_a3": "SGP",
+  "name": "Singapore",
+  "name_tr": "Singapur",
+  "bbox": [
+   103.6404,
+   1.2643,
+   104.0034,
+   1.4486
+  ]
+ },
+ {
+  "iso_a2": "SH",
+  "iso_a3": "SHN",
+  "name": "Saint Helena",
+  "name_tr": "Saint Helena",
+  "bbox": [
+   -14.4177,
+   -40.3979,
+   -5.6504,
+   -7.8779
+  ]
+ },
+ {
+  "iso_a2": "SI",
+  "iso_a3": "SVN",
+  "name": "Slovenia",
+  "name_tr": "Slovenya",
+  "bbox": [
+   13.3653,
+   45.4236,
+   16.5153,
+   46.864
+  ]
+ },
+ {
+  "iso_a2": "SK",
+  "iso_a3": "SVK",
+  "name": "Slovakia",
+  "name_tr": "Slovakya",
+  "bbox": [
+   16.8445,
+   47.75,
+   22.5396,
+   49.6018
+  ]
+ },
+ {
+  "iso_a2": "SL",
+  "iso_a3": "SLE",
+  "name": "Sierra Leone",
+  "name_tr": "Sierra Leone",
+  "bbox": [
+   -13.3011,
+   6.9194,
+   -10.2822,
+   9.996
+  ]
+ },
+ {
+  "iso_a2": "SM",
+  "iso_a3": "SMR",
+  "name": "San Marino",
+  "name_tr": "San Marino",
+  "bbox": [
+   12.3856,
+   43.8921,
+   12.4924,
+   43.9826
+  ]
+ },
+ {
+  "iso_a2": "SN",
+  "iso_a3": "SEN",
+  "name": "Senegal",
+  "name_tr": "Senegal",
+  "bbox": [
+   -17.536,
+   12.3056,
+   -11.3778,
+   16.6914
+  ]
+ },
+ {
+  "iso_a2": "SO",
+  "iso_a3": "SOM",
+  "name": "Somalia",
+  "name_tr": "Somali",
+  "bbox": [
+   40.9654,
+   -1.6963,
+   51.417,
+   11.9891
+  ]
+ },
+ {
+  "iso_a2": "SR",
+  "iso_a3": "SUR",
+  "name": "Suriname",
+  "name_tr": "Surinam",
+  "bbox": [
+   -58.0677,
+   1.8335,
+   -53.9864,
+   6.0116
+  ]
+ },
+ {
+  "iso_a2": "SS",
+  "iso_a3": "SSD",
+  "name": "South Sudan",
+  "name_tr": "Güney Sudan",
+  "bbox": [
+   24.1216,
+   3.4902,
+   35.9208,
+   12.2162
+  ]
+ },
+ {
+  "iso_a2": "ST",
+  "iso_a3": "STP",
+  "name": "São Tomé and Príncipe",
+  "name_tr": "São Tomé ve Príncipe",
+  "bbox": [
+   6.4617,
+   0.0241,
+   7.4627,
+   1.6998
+  ]
+ },
+ {
+  "iso_a2": "SV",
+  "iso_a3": "SLV",
+  "name": "El Salvador",
+  "name_tr": "El Salvador",
+  "bbox": [
+   -90.1148,
+   13.1586,
+   -87.6932,
+   14.4454
+  ]
+ },
+ {
+  "iso_a2": "SX",
+  "iso_a3": "SXM",
+  "name": "Sint Maarten",
+  "name_tr": "Sint Maarten",
+  "bbox": [
+   -63.1189,
+   18.0191,
+   -63.0176,
+   18.0621
+  ]
+ },
+ {
+  "iso_a2": "SY",
+  "iso_a3": "SYR",
+  "name": "Syria",
+  "name_tr": "Suriye",
+  "bbox": [
+   35.5877,
+   32.313,
+   42.3772,
+   37.3249
+  ]
+ },
+ {
+  "iso_a2": "SZ",
+  "iso_a3": "SWZ",
+  "name": "Eswatini",
+  "name_tr": "Esvatini",
+  "bbox": [
+   30.7829,
+   -27.3163,
+   32.1174,
+   -25.736
+  ]
+ },
+ {
+  "iso_a2": "TC",
+  "iso_a3": "TCA",
+  "name": "Turks and Caicos Islands",
+  "name_tr": "Turks ve Caicos Adaları",
+  "bbox": [
+   -72.4813,
+   21.2901,
+   -71.1289,
+   21.9592
+  ]
+ },
+ {
+  "iso_a2": "TD",
+  "iso_a3": "TCD",
+  "name": "Chad",
+  "name_tr": "Çad",
+  "bbox": [
+   13.4492,
+   7.4556,
+   23.9844,
+   23.4447
+  ]
+ },
+ {
+  "iso_a2": "TF",
+  "iso_a3": "ATF",
+  "name": "French Southern and Antarctic Lands",
+  "name_tr": "Fransız Güney ve Antarktika Toprakları",
+  "bbox": [
+   39.7283,
+   -49.7216,
+   77.5852,
+   -11.5506
+  ]
+ },
+ {
+  "iso_a2": "TG",
+  "iso_a3": "TGO",
+  "name": "Togo",
+  "name_tr": "Togo",
+  "bbox": [
+   -0.1661,
+   6.1005,
+   1.7824,
+   11.135
+  ]
+ },
+ {
+  "iso_a2": "TH",
+  "iso_a3": "THA",
+  "name": "Thailand",
+  "name_tr": "Tayland",
+  "bbox": [
+   97.3514,
+   5.6299,
+   105.651,
+   20.445
+  ]
+ },
+ {
+  "iso_a2": "TJ",
+  "iso_a3": "TJK",
+  "name": "Tajikistan",
+  "name_tr": "Tacikistan",
+  "bbox": [
+   67.3427,
+   36.6786,
+   75.1641,
+   41.04
+  ]
+ },
+ {
+  "iso_a2": "TL",
+  "iso_a3": "TLS",
+  "name": "East Timor",
+  "name_tr": "Doğu Timor",
+  "bbox": [
+   124.03,
+   -9.5012,
+   127.3132,
+   -8.135
+  ]
+ },
+ {
+  "iso_a2": "TM",
+  "iso_a3": "TKM",
+  "name": "Turkmenistan",
+  "name_tr": "Türkmenistan",
+  "bbox": [
+   52.4377,
+   35.1406,
+   66.6458,
+   42.7912
+  ]
+ },
+ {
+  "iso_a2": "TN",
+  "iso_a3": "TUN",
+  "name": "Tunisia",
+  "name_tr": "Tunus",
+  "bbox": [
+   7.4798,
+   30.2289,
+   11.5641,
+   37.3452
+  ]
+ },
+ {
+  "iso_a2": "TO",
+  "iso_a3": "TON",
+  "name": "Tonga",
+  "name_tr": "Tonga",
+  "bbox": [
+   -176.2193,
+   -22.3388,
+   -173.9143,
+   -15.5595
+  ]
+ },
+ {
+  "iso_a2": "TR",
+  "iso_a3": "TUR",
+  "name": "Turkey",
+  "name_tr": "Türkiye",
+  "bbox": [
+   25.6633,
+   35.8198,
+   44.807,
+   42.0988
+  ]
+ },
+ {
+  "iso_a2": "TT",
+  "iso_a3": "TTO",
+  "name": "Trinidad and Tobago",
+  "name_tr": "Trinidad ve Tobago",
+  "bbox": [
+   -61.9287,
+   10.0421,
+   -60.5221,
+   11.3511
+  ]
+ },
+ {
+  "iso_a2": "TV",
+  "iso_a3": "TUV",
+  "name": "Tuvalu",
+  "name_tr": "Tuvalu",
+  "bbox": [
+   176.1253,
+   -9.4207,
+   179.9067,
+   -5.6775
+  ]
+ },
+ {
+  "iso_a2": "TW",
+  "iso_a3": "TWN",
+  "name": "Taiwan",
+  "name_tr": "Çin Cumhuriyeti",
+  "bbox": [
+   118.2796,
+   21.9046,
+   122.0054,
+   25.2874
+  ]
+ },
+ {
+  "iso_a2": "TZ",
+  "iso_a3": "TZA",
+  "name": "Tanzania",
+  "name_tr": "Tanzanya",
+  "bbox": [
+   29.321,
+   -11.7313,
+   40.4494,
+   -0.9858
+  ]
+ },
+ {
+  "iso_a2": "UA",
+  "iso_a3": "UKR",
+  "name": "Ukraine",
+  "name_tr": "Ukrayna",
+  "bbox": [
+   22.1328,
+   44.381,
+   40.1595,
+   52.3689
+  ]
+ },
+ {
+  "iso_a2": "UG",
+  "iso_a3": "UGA",
+  "name": "Uganda",
+  "name_tr": "Uganda",
+  "bbox": [
+   29.5485,
+   -1.4752,
+   35.0065,
+   4.2197
+  ]
+ },
+ {
+  "iso_a2": "UM",
+  "iso_a3": "UMI",
+  "name": "United States Minor Outlying Islands",
+  "name_tr": "United States Minor Outlying Islands",
+  "bbox": [
+   -177.3896,
+   -0.3888,
+   166.6524,
+   28.2153
+  ]
+ },
+ {
+  "iso_a2": "US",
+  "iso_a3": "USA",
+  "name": "United States of America",
+  "name_tr": "Amerika Birleşik Devletleri",
+  "bbox": [
+   -179.1435,
+   18.9061,
+   179.7809,
+   71.4125
+  ]
+ },
+ {
+  "iso_a2": "UY",
+  "iso_a3": "URY",
+  "name": "Uruguay",
+  "name_tr": "Uruguay",
+  "bbox": [
+   -58.4394,
+   -34.9734,
+   -53.1108,
+   -30.0969
+  ]
+ },
+ {
+  "iso_a2": "UZ",
+  "iso_a3": "UZB",
+  "name": "Uzbekistan",
+  "name_tr": "Özbekistan",
+  "bbox": [
+   55.9758,
+   37.1851,
+   73.1486,
+   45.5587
+  ]
+ },
+ {
+  "iso_a2": "VA",
+  "iso_a3": "VAT",
+  "name": "Vatican City",
+  "name_tr": "Vatikan",
+  "bbox": [
+   12.4527,
+   41.9028,
+   12.454,
+   41.9039
+  ]
+ },
+ {
+  "iso_a2": "VC",
+  "iso_a3": "VCT",
+  "name": "Saint Vincent and the Grenadines",
+  "name_tr": "Saint Vincent ve Grenadinler",
+  "bbox": [
+   -61.4598,
+   12.5852,
+   -61.1239,
+   13.3808
+  ]
+ },
+ {
+  "iso_a2": "VE",
+  "iso_a3": "VEN",
+  "name": "Venezuela",
+  "name_tr": "Venezuela",
+  "bbox": [
+   -73.3911,
+   0.6493,
+   -59.8156,
+   15.7029
+  ]
+ },
+ {
+  "iso_a2": "VG",
+  "iso_a3": "VGB",
+  "name": "British Virgin Islands",
+  "name_tr": "Britanya Virjin Adaları",
+  "bbox": [
+   -64.774,
+   18.3347,
+   -64.2707,
+   18.7462
+  ]
+ },
+ {
+  "iso_a2": "VI",
+  "iso_a3": "VIR",
+  "name": "United States Virgin Islands",
+  "name_tr": "ABD Virjin Adaları",
+  "bbox": [
+   -65.0415,
+   17.6828,
+   -64.5594,
+   18.3866
+  ]
+ },
+ {
+  "iso_a2": "VN",
+  "iso_a3": "VNM",
+  "name": "Vietnam",
+  "name_tr": "Vietnam",
+  "bbox": [
+   102.1187,
+   8.5656,
+   109.4724,
+   23.3663
+  ]
+ },
+ {
+  "iso_a2": "VU",
+  "iso_a3": "VUT",
+  "name": "Vanuatu",
+  "name_tr": "Vanuatu",
+  "bbox": [
+   166.5205,
+   -20.2531,
+   169.8989,
+   -13.0649
+  ]
+ },
+ {
+  "iso_a2": "WF",
+  "iso_a3": "WLF",
+  "name": "Wallis and Futuna",
+  "name_tr": "Wallis ve Futuna Adaları",
+  "bbox": [
+   -178.1857,
+   -14.3194,
+   -176.1256,
+   -13.2089
+  ]
+ },
+ {
+  "iso_a2": "WS",
+  "iso_a3": "WSM",
+  "name": "Samoa",
+  "name_tr": "Samoa",
+  "bbox": [
+   -172.7826,
+   -14.0528,
+   -171.4377,
+   -13.4628
+  ]
+ },
+ {
+  "iso_a2": "XK",
+  "iso_a3": "KOS",
+  "name": "Kosovo",
+  "name_tr": "Kosova",
+  "bbox": [
+   20.0248,
+   41.844,
+   21.7728,
+   43.2631
+  ]
+ },
+ {
+  "iso_a2": "XN",
+  "iso_a3": "XNC",
+  "name": "Turkish Republic of Northern Cyprus",
+  "name_tr": "Kuzey Kıbrıs Türk Cumhuriyeti",
+  "bbox": [
+   32.6019,
+   35.0027,
+   34.5925,
+   35.692
+  ]
+ },
+ {
+  "iso_a2": "YE",
+  "iso_a3": "YEM",
+  "name": "Yemen",
+  "name_tr": "Yemen",
+  "bbox": [
+   42.5457,
+   12.1114,
+   54.5403,
+   18.9956
+  ]
+ },
+ {
+  "iso_a2": "ZA",
+  "iso_a3": "ZAF",
+  "name": "South Africa",
+  "name_tr": "Güney Afrika Cumhuriyeti",
+  "bbox": [
+   16.47,
+   -46.9658,
+   37.9778,
+   -22.1265
+  ]
+ },
+ {
+  "iso_a2": "ZM",
+  "iso_a3": "ZMB",
+  "name": "Zambia",
+  "name_tr": "Zambiya",
+  "bbox": [
+   21.9799,
+   -18.0692,
+   33.6742,
+   -8.1941
+  ]
+ },
+ {
+  "iso_a2": "ZW",
+  "iso_a3": "ZWE",
+  "name": "Zimbabwe",
+  "name_tr": "Zimbabve",
+  "bbox": [
+   25.2194,
+   -22.3973,
+   33.0428,
+   -15.6148
+  ]
+ }
+]

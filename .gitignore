@@ -14,6 +14,12 @@ node_modules/
 # --- Personal run outputs (real birth data + readings) ---
 runs/
 synastry_run/
+prediction_run/
+acg_run/
+cal_run/
+
+# --- Local runtime cache (geocode lookups) ---
+.cache/
 
 # --- Source corpus / extraction inputs (large; copyright-sensitive) ---
 TXT/
@@ -71,3 +77,30 @@ d_layer/test/out.json
 .DS_Store
 Thumbs.db
 **/validation_report.json
+
+# --- Corpus delta backups / logs (large; regenerable) ---
+**/*.backup-pre-*.json
+**/houses_delta.extract_log.txt
+
+# --- Local-only: contracts, build logs, one-off corpus backups ---
+Contracts/
+Astrocartography/*.log
+!Astrocartography/build_gazetteer.log
+**/*.bak-pre-*
+
+# --- Corpus build intermediates (regenerable by the principles_grounding pipeline; kept locally) ---
+principles_grounding/all_principles_grounded_reclassified.json
+principles_grounding/combined_relationship_principles.clean.json
+principles_grounding/relationship_principles.clean.json
+principles_grounding/relationship_natal_principles.clean.json
+principles_grounding/predictive_delta.clean.json
+principles_grounding/predictive_delta.backfill_report.json
+principles_grounding/houses_delta.raw.json
+principles_grounding/houses_delta.clean.json
+principles_grounding/houses_delta.grounded.json
+principles_grounding/houses_delta.merge_report.json
+principles_grounding/houses_delta.near_dupes_review.json
+principles_grounding/acg_consolidation_report.json
+principles_grounding/acg_goal_tagging_report.json
+principles_grounding/transit_goal_tagging_report.json
+principles_grounding/validation_report.merged.json

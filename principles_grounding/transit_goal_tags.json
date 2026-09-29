@@ -1,0 +1,4121 @@
+{
+  "eclipse-activation-natal-planet": {},
+  "eclipse-delayed-trigger": {},
+  "eclipse-natal-activation": {},
+  "eclipse-natal-planet-duration": {},
+  "jupiter-conjunct-ascendant-transit": {},
+  "jupiter-conjunct-ascendant-transit-2": {},
+  "jupiter-conjunct-jupiter-return": {
+    "business": "challenging",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "jupiter-conjunct-mars-transit": {
+    "family": "mixed",
+    "rest": "challenging"
+  },
+  "jupiter-conjunct-mercury-transit": {
+    "business": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-conjunct-midheaven-transit": {
+    "business": "mixed",
+    "career": "supportive"
+  },
+  "jupiter-conjunct-midheaven-transit-2": {
+    "business": "mixed",
+    "career": "supportive"
+  },
+  "jupiter-conjunct-moon-transit": {
+    "family": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-conjunct-neptune-transit": {
+    "business": "challenging",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-conjunct-pluto-transit": {
+    "career": "mixed",
+    "money": "mixed"
+  },
+  "jupiter-conjunct-pluto-transit-2": {
+    "career": "mixed",
+    "money": "mixed"
+  },
+  "jupiter-conjunct-saturn-transit": {
+    "career": "mixed",
+    "family": "mixed",
+    "love": "mixed"
+  },
+  "jupiter-conjunct-sun-transit": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "jupiter-conjunct-uranus-transit": {
+    "travel": "supportive"
+  },
+  "jupiter-conjunct-venus-transit": {
+    "love": "supportive",
+    "money": "mixed"
+  },
+  "jupiter-jupiter-opposition": {
+    "career": "mixed",
+    "money": "mixed"
+  },
+  "jupiter-jupiter-sextile": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "jupiter-jupiter-square": {
+    "money": "challenging"
+  },
+  "jupiter-jupiter-trine": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "jupiter-mars-conjunction": {
+    "family": "supportive",
+    "rest": "challenging"
+  },
+  "jupiter-mars-opposition": {},
+  "jupiter-mars-sextile": {
+    "career": "supportive",
+    "family": "supportive"
+  },
+  "jupiter-mars-square": {},
+  "jupiter-mars-trine": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "family": "supportive"
+  },
+  "jupiter-mercury-conjunction": {
+    "business": "supportive",
+    "education": "supportive"
+  },
+  "jupiter-mercury-opposition": {
+    "business": "mixed"
+  },
+  "jupiter-mercury-sextile": {
+    "business": "supportive"
+  },
+  "jupiter-mercury-square": {
+    "business": "mixed"
+  },
+  "jupiter-mercury-trine": {
+    "business": "supportive",
+    "education": "supportive"
+  },
+  "jupiter-moon-conjunction": {
+    "family": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-moon-opposition": {
+    "love": "mixed"
+  },
+  "jupiter-moon-sextile": {
+    "family": "supportive"
+  },
+  "jupiter-moon-square": {
+    "love": "mixed"
+  },
+  "jupiter-moon-trine": {
+    "family": "supportive"
+  },
+  "jupiter-neptune-conjunction": {
+    "money": "challenging",
+    "spirituality": "supportive"
+  },
+  "jupiter-neptune-sextile": {
+    "money": "challenging",
+    "spirituality": "supportive"
+  },
+  "jupiter-neptune-square": {
+    "money": "challenging",
+    "spirituality": "mixed"
+  },
+  "jupiter-opposition-ascendant-transit": {
+    "business": "supportive",
+    "love": "mixed"
+  },
+  "jupiter-opposition-ascendant-transit-2": {
+    "business": "supportive",
+    "love": "mixed"
+  },
+  "jupiter-opposition-jupiter-transit": {
+    "money": "mixed"
+  },
+  "jupiter-opposition-mars-transit": {},
+  "jupiter-opposition-mercury-transit": {
+    "business": "mixed",
+    "education": "mixed"
+  },
+  "jupiter-opposition-midheaven-transit": {
+    "career": "challenging",
+    "family": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-opposition-midheaven-transit-2": {
+    "family": "supportive",
+    "money": "mixed"
+  },
+  "jupiter-opposition-moon-transit": {
+    "love": "mixed"
+  },
+  "jupiter-opposition-neptune-transit": {
+    "love": "challenging",
+    "money": "challenging",
+    "spirituality": "mixed"
+  },
+  "jupiter-opposition-neptune-transit-2": {
+    "love": "challenging",
+    "money": "challenging",
+    "spirituality": "mixed"
+  },
+  "jupiter-opposition-pluto-transit": {},
+  "jupiter-opposition-pluto-transit-2": {},
+  "jupiter-opposition-saturn-transit": {
+    "career": "mixed",
+    "love": "challenging"
+  },
+  "jupiter-opposition-sun-transit": {
+    "love": "mixed",
+    "money": "mixed",
+    "spirituality": "supportive"
+  },
+  "jupiter-opposition-uranus-transit": {
+    "business": "challenging",
+    "love": "challenging"
+  },
+  "jupiter-opposition-venus-transit": {
+    "love": "mixed",
+    "money": "challenging"
+  },
+  "jupiter-pluto-opposition-transit-power-peak": {},
+  "jupiter-saturn-conjunction": {},
+  "jupiter-saturn-opposition": {
+    "business": "supportive",
+    "love": "challenging"
+  },
+  "jupiter-saturn-sextile": {
+    "business": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-saturn-square": {
+    "career": "mixed",
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "jupiter-saturn-trine": {
+    "business": "supportive"
+  },
+  "jupiter-sextile-ascendant-transit": {
+    "business": "supportive",
+    "career": "supportive"
+  },
+  "jupiter-sextile-ascendant-transit-2": {
+    "business": "supportive",
+    "career": "supportive"
+  },
+  "jupiter-sextile-jupiter-transit": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "jupiter-sextile-mars-transit": {
+    "career": "supportive"
+  },
+  "jupiter-sextile-mercury-transit": {
+    "business": "supportive",
+    "education": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-sextile-midheaven-transit": {
+    "career": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-sextile-midheaven-transit-2": {
+    "career": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-sextile-moon-transit": {
+    "family": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-sextile-neptune-transit": {
+    "money": "challenging",
+    "spirituality": "supportive"
+  },
+  "jupiter-sextile-pluto-transit": {
+    "creativity": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-sextile-pluto-transit-2": {
+    "creativity": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-sextile-saturn-transit": {
+    "business": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-sextile-sun-transit": {
+    "money": "supportive"
+  },
+  "jupiter-sextile-uranus-transit": {
+    "career": "supportive",
+    "money": "mixed"
+  },
+  "jupiter-sextile-venus-transit": {
+    "love": "supportive",
+    "money": "mixed"
+  },
+  "jupiter-square-ascendant-transit": {},
+  "jupiter-square-ascendant-transit-2": {},
+  "jupiter-square-jupiter-transit": {
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "jupiter-square-mars-transit": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "jupiter-square-mercury-transit": {
+    "business": "mixed",
+    "education": "mixed"
+  },
+  "jupiter-square-midheaven-transit": {
+    "career": "mixed"
+  },
+  "jupiter-square-midheaven-transit-2": {
+    "career": "mixed"
+  },
+  "jupiter-square-moon-transit": {
+    "love": "challenging"
+  },
+  "jupiter-square-neptune-transit": {
+    "money": "challenging",
+    "spirituality": "mixed"
+  },
+  "jupiter-square-pluto-transit": {
+    "career": "challenging"
+  },
+  "jupiter-square-pluto-transit-2": {
+    "career": "challenging",
+    "spirituality": "challenging"
+  },
+  "jupiter-square-saturn-transit": {
+    "career": "mixed",
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "jupiter-square-sun-transit": {},
+  "jupiter-square-uranus-transit": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "jupiter-square-venus-transit": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "rest": "supportive"
+  },
+  "jupiter-sun-conjunction": {},
+  "jupiter-sun-opposition": {
+    "money": "mixed",
+    "spirituality": "supportive"
+  },
+  "jupiter-sun-sextile": {
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-sun-square": {},
+  "jupiter-sun-trine": {
+    "creativity": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "jupiter-trine-ascendant-transit": {
+    "education": "supportive",
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-trine-ascendant-transit-2": {
+    "education": "supportive",
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-trine-jupiter-transit": {
+    "education": "supportive",
+    "rest": "supportive",
+    "travel": "supportive"
+  },
+  "jupiter-trine-mars-transit": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "family": "supportive"
+  },
+  "jupiter-trine-mercury-transit": {
+    "business": "supportive",
+    "education": "supportive"
+  },
+  "jupiter-trine-midheaven-transit": {
+    "career": "supportive",
+    "money": "supportive",
+    "relocation": "supportive"
+  },
+  "jupiter-trine-midheaven-transit-2": {
+    "business": "supportive",
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-trine-moon-transit": {
+    "family": "supportive",
+    "rest": "supportive",
+    "spirituality": "supportive"
+  },
+  "jupiter-trine-neptune-transit": {
+    "money": "challenging",
+    "spirituality": "supportive"
+  },
+  "jupiter-trine-neptune-transit-2": {
+    "education": "supportive",
+    "money": "challenging",
+    "spirituality": "supportive"
+  },
+  "jupiter-trine-pluto-transit": {
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-trine-pluto-transit-2": {
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-trine-saturn-transit": {
+    "business": "supportive",
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-trine-sun-transit": {
+    "creativity": "supportive",
+    "money": "supportive",
+    "travel": "supportive"
+  },
+  "jupiter-trine-uranus-transit": {
+    "education": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-trine-venus-transit": {
+    "love": "supportive",
+    "money": "supportive",
+    "rest": "supportive"
+  },
+  "jupiter-uranus-conjunction": {
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-uranus-opposition": {},
+  "jupiter-uranus-sextile": {
+    "career": "supportive",
+    "education": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-uranus-square": {},
+  "jupiter-uranus-trine": {
+    "education": "supportive",
+    "money": "supportive"
+  },
+  "jupiter-venus-conjunction": {
+    "love": "supportive",
+    "money": "mixed"
+  },
+  "jupiter-venus-opposition": {
+    "love": "mixed",
+    "money": "mixed"
+  },
+  "jupiter-venus-sextile": {
+    "love": "supportive",
+    "money": "supportive",
+    "travel": "supportive"
+  },
+  "jupiter-venus-square": {
+    "love": "mixed",
+    "money": "challenging"
+  },
+  "jupiter-venus-trine": {
+    "love": "supportive",
+    "money": "mixed"
+  },
+  "lunation-activates-natal-planet": {},
+  "lunation-eclipse-activates-natal-planet": {},
+  "mars-conjunct-ascendant-transit": {},
+  "mars-conjunct-jupiter-transit": {
+    "business": "supportive",
+    "family": "supportive"
+  },
+  "mars-conjunct-mars-transit": {},
+  "mars-conjunct-mercury-transit": {
+    "education": "mixed",
+    "travel": "challenging"
+  },
+  "mars-conjunct-midheaven-transit": {
+    "career": "mixed"
+  },
+  "mars-conjunct-moon-transit": {
+    "family": "challenging"
+  },
+  "mars-conjunct-neptune-transit": {
+    "rest": "challenging",
+    "spirituality": "supportive"
+  },
+  "mars-conjunct-pluto-transit": {},
+  "mars-conjunct-saturn-transit": {
+    "rest": "challenging"
+  },
+  "mars-conjunct-sun-transit": {
+    "career": "challenging"
+  },
+  "mars-conjunct-uranus-transit": {},
+  "mars-conjunct-venus-transit": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "mars-jupiter-conjunction": {
+    "business": "supportive",
+    "family": "supportive"
+  },
+  "mars-jupiter-opposition": {
+    "family": "supportive"
+  },
+  "mars-jupiter-sextile": {
+    "business": "supportive"
+  },
+  "mars-jupiter-square": {},
+  "mars-jupiter-trine": {
+    "business": "supportive"
+  },
+  "mars-mars-conjunction-return": {},
+  "mars-mars-opposition": {},
+  "mars-mars-sextile": {
+    "travel": "supportive"
+  },
+  "mars-mars-square": {},
+  "mars-mars-trine": {},
+  "mars-mercury-conjunction": {
+    "business": "mixed",
+    "education": "supportive",
+    "travel": "challenging"
+  },
+  "mars-mercury-opposition": {
+    "education": "mixed",
+    "travel": "challenging"
+  },
+  "mars-mercury-sextile": {
+    "business": "supportive",
+    "travel": "supportive"
+  },
+  "mars-mercury-square": {
+    "career": "challenging",
+    "family": "challenging",
+    "travel": "challenging"
+  },
+  "mars-mercury-trine": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mars-moon-conjunction": {
+    "family": "mixed"
+  },
+  "mars-moon-opposition": {
+    "love": "challenging"
+  },
+  "mars-moon-sextile": {
+    "love": "supportive"
+  },
+  "mars-moon-square": {
+    "family": "challenging"
+  },
+  "mars-moon-trine": {
+    "love": "supportive"
+  },
+  "mars-neptune-conjunction": {
+    "rest": "challenging"
+  },
+  "mars-neptune-opposition": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "mars-neptune-sextile": {
+    "education": "supportive",
+    "rest": "mixed",
+    "spirituality": "supportive"
+  },
+  "mars-neptune-square": {
+    "rest": "challenging"
+  },
+  "mars-neptune-trine": {
+    "spirituality": "supportive"
+  },
+  "mars-opposition-ascendant-transit": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "mars-opposition-jupiter-transit": {
+    "family": "supportive"
+  },
+  "mars-opposition-mars-transit": {},
+  "mars-opposition-mercury-transit": {
+    "education": "mixed",
+    "travel": "challenging"
+  },
+  "mars-opposition-midheaven-transit": {
+    "career": "challenging",
+    "family": "challenging"
+  },
+  "mars-opposition-moon-transit": {
+    "love": "challenging"
+  },
+  "mars-opposition-neptune-transit": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "mars-opposition-pluto-transit": {},
+  "mars-opposition-saturn-transit": {
+    "rest": "challenging"
+  },
+  "mars-opposition-sun-transit": {},
+  "mars-opposition-uranus-transit": {},
+  "mars-opposition-venus-transit": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "mars-pluto-conjunction": {},
+  "mars-pluto-sextile": {},
+  "mars-pluto-square": {},
+  "mars-pluto-trine": {},
+  "mars-saturn-conjunction": {
+    "business": "challenging",
+    "rest": "challenging"
+  },
+  "mars-saturn-opposition": {
+    "rest": "challenging"
+  },
+  "mars-saturn-sextile": {},
+  "mars-saturn-square": {
+    "spirituality": "mixed"
+  },
+  "mars-saturn-trine": {
+    "career": "supportive",
+    "rest": "challenging"
+  },
+  "mars-sextile-ascendant-transit": {},
+  "mars-sextile-jupiter-transit": {
+    "business": "supportive"
+  },
+  "mars-sextile-mars-transit": {
+    "travel": "supportive"
+  },
+  "mars-sextile-mercury-transit": {
+    "business": "supportive",
+    "travel": "supportive"
+  },
+  "mars-sextile-midheaven-transit": {
+    "career": "supportive"
+  },
+  "mars-sextile-moon-transit": {},
+  "mars-sextile-neptune-transit": {
+    "education": "supportive",
+    "rest": "challenging",
+    "spirituality": "supportive"
+  },
+  "mars-sextile-pluto-transit": {
+    "spirituality": "supportive"
+  },
+  "mars-sextile-saturn-transit": {
+    "rest": "challenging"
+  },
+  "mars-sextile-sun-transit": {
+    "business": "supportive",
+    "career": "supportive"
+  },
+  "mars-sextile-uranus-transit": {},
+  "mars-sextile-venus-transit": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "mars-square-ascendant-transit": {
+    "love": "challenging"
+  },
+  "mars-square-jupiter-transit": {},
+  "mars-square-mars-transit": {},
+  "mars-square-mercury-transit": {
+    "family": "challenging",
+    "travel": "challenging"
+  },
+  "mars-square-midheaven-transit": {
+    "career": "challenging",
+    "family": "challenging"
+  },
+  "mars-square-moon-transit": {
+    "family": "challenging"
+  },
+  "mars-square-neptune-transit": {
+    "rest": "challenging"
+  },
+  "mars-square-pluto-transit": {},
+  "mars-square-saturn-transit": {
+    "rest": "challenging"
+  },
+  "mars-square-sun-transit": {
+    "rest": "challenging"
+  },
+  "mars-square-uranus-transit": {
+    "rest": "challenging"
+  },
+  "mars-square-venus-transit": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "mars-sun-conjunction": {
+    "career": "mixed"
+  },
+  "mars-sun-opposition": {
+    "love": "mixed"
+  },
+  "mars-sun-sextile": {
+    "business": "supportive",
+    "career": "supportive"
+  },
+  "mars-sun-square": {
+    "rest": "challenging"
+  },
+  "mars-sun-trine": {
+    "career": "supportive",
+    "love": "supportive"
+  },
+  "mars-trine-ascendant-transit": {},
+  "mars-trine-jupiter-transit": {
+    "business": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "mars-trine-mars-transit": {},
+  "mars-trine-mercury-transit": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mars-trine-midheaven-transit": {
+    "career": "supportive"
+  },
+  "mars-trine-moon-transit": {
+    "love": "supportive"
+  },
+  "mars-trine-neptune-transit": {
+    "spirituality": "mixed"
+  },
+  "mars-trine-pluto-transit": {
+    "career": "supportive"
+  },
+  "mars-trine-saturn-transit": {
+    "career": "supportive",
+    "creativity": "supportive"
+  },
+  "mars-trine-sun-transit": {
+    "career": "supportive",
+    "love": "supportive"
+  },
+  "mars-trine-uranus-transit": {},
+  "mars-trine-venus-transit": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "mars-uranus-conjunction": {
+    "career": "challenging"
+  },
+  "mars-uranus-opposition": {
+    "love": "challenging"
+  },
+  "mars-uranus-sextile": {},
+  "mars-uranus-square": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "mars-uranus-trine": {},
+  "mars-venus-conjunction": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "mars-venus-opposition": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "mars-venus-sextile": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "mars-venus-square": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "mars-venus-trine": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "mercury-conjunct-ascendant": {
+    "business": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-conjunct-midheaven": {
+    "career": "supportive"
+  },
+  "mercury-conjunct-natal-jupiter": {
+    "business": "mixed"
+  },
+  "mercury-conjunct-natal-mars": {
+    "education": "mixed"
+  },
+  "mercury-conjunct-natal-mercury": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-conjunct-natal-moon": {
+    "family": "supportive"
+  },
+  "mercury-conjunct-natal-neptune": {
+    "business": "challenging",
+    "creativity": "supportive"
+  },
+  "mercury-conjunct-natal-pluto": {
+    "education": "supportive"
+  },
+  "mercury-conjunct-natal-saturn": {},
+  "mercury-conjunct-natal-sun": {
+    "travel": "mixed"
+  },
+  "mercury-conjunct-natal-uranus": {
+    "education": "supportive",
+    "rest": "challenging",
+    "travel": "challenging"
+  },
+  "mercury-conjunct-natal-venus": {
+    "business": "supportive",
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "mercury-jupiter-conjunction": {
+    "business": "supportive"
+  },
+  "mercury-jupiter-opposition": {
+    "business": "mixed"
+  },
+  "mercury-jupiter-sextile": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-jupiter-square": {
+    "business": "mixed"
+  },
+  "mercury-jupiter-trine": {
+    "business": "supportive",
+    "education": "supportive"
+  },
+  "mercury-mars-conjunction": {
+    "education": "mixed"
+  },
+  "mercury-mars-opposition": {
+    "travel": "challenging"
+  },
+  "mercury-mars-sextile": {},
+  "mercury-mars-square": {
+    "travel": "challenging"
+  },
+  "mercury-mars-trine": {
+    "business": "supportive",
+    "career": "supportive"
+  },
+  "mercury-mercury-conjunction": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-mercury-opposition": {
+    "education": "mixed",
+    "travel": "challenging"
+  },
+  "mercury-mercury-sextile": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-mercury-square": {
+    "business": "challenging",
+    "education": "mixed",
+    "rest": "challenging"
+  },
+  "mercury-mercury-trine": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-moon-conjunction": {
+    "family": "supportive"
+  },
+  "mercury-moon-opposition": {},
+  "mercury-moon-sextile": {},
+  "mercury-moon-square": {},
+  "mercury-moon-trine": {},
+  "mercury-neptune-conjunction": {
+    "business": "challenging",
+    "creativity": "supportive",
+    "spirituality": "supportive"
+  },
+  "mercury-neptune-opposition": {
+    "business": "challenging",
+    "spirituality": "mixed"
+  },
+  "mercury-neptune-sextile": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "mercury-neptune-square": {
+    "business": "challenging",
+    "spirituality": "supportive"
+  },
+  "mercury-neptune-trine": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "mercury-opposition-ascendant": {
+    "business": "supportive",
+    "love": "supportive"
+  },
+  "mercury-opposition-midheaven": {
+    "career": "challenging",
+    "family": "supportive"
+  },
+  "mercury-opposition-natal-jupiter": {
+    "business": "supportive"
+  },
+  "mercury-opposition-natal-mars": {
+    "travel": "challenging"
+  },
+  "mercury-opposition-natal-mercury": {
+    "travel": "challenging"
+  },
+  "mercury-opposition-natal-moon": {},
+  "mercury-opposition-natal-neptune": {
+    "business": "challenging",
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "mercury-opposition-natal-pluto": {
+    "education": "supportive",
+    "love": "challenging"
+  },
+  "mercury-opposition-natal-saturn": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "mercury-opposition-natal-sun": {
+    "business": "mixed"
+  },
+  "mercury-opposition-natal-uranus": {
+    "education": "supportive"
+  },
+  "mercury-opposition-natal-venus": {
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "mercury-pluto-conjunction": {
+    "education": "supportive"
+  },
+  "mercury-pluto-opposition": {
+    "education": "supportive"
+  },
+  "mercury-pluto-sextile": {
+    "education": "supportive"
+  },
+  "mercury-pluto-square": {
+    "education": "mixed",
+    "spirituality": "mixed"
+  },
+  "mercury-pluto-trine": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "mercury-saturn-conjunction": {
+    "education": "supportive"
+  },
+  "mercury-saturn-opposition": {
+    "education": "supportive",
+    "love": "challenging"
+  },
+  "mercury-saturn-sextile": {
+    "education": "supportive"
+  },
+  "mercury-saturn-square": {
+    "business": "challenging",
+    "education": "mixed",
+    "love": "challenging"
+  },
+  "mercury-saturn-trine": {
+    "education": "supportive"
+  },
+  "mercury-sextile-ascendant": {
+    "business": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-sextile-midheaven": {
+    "business": "supportive",
+    "career": "supportive",
+    "education": "supportive"
+  },
+  "mercury-sextile-natal-jupiter": {
+    "business": "supportive",
+    "spirituality": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-sextile-natal-mars": {
+    "education": "supportive"
+  },
+  "mercury-sextile-natal-mercury": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-sextile-natal-moon": {
+    "spirituality": "supportive"
+  },
+  "mercury-sextile-natal-neptune": {
+    "creativity": "supportive",
+    "rest": "supportive",
+    "spirituality": "supportive"
+  },
+  "mercury-sextile-natal-pluto": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "mercury-sextile-natal-saturn": {
+    "education": "supportive",
+    "rest": "challenging"
+  },
+  "mercury-sextile-natal-sun": {
+    "travel": "supportive"
+  },
+  "mercury-sextile-natal-uranus": {
+    "education": "supportive"
+  },
+  "mercury-sextile-natal-venus": {
+    "love": "supportive",
+    "rest": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-square-ascendant": {},
+  "mercury-square-midheaven": {
+    "career": "supportive"
+  },
+  "mercury-square-natal-jupiter": {
+    "business": "supportive"
+  },
+  "mercury-square-natal-mars": {
+    "rest": "challenging"
+  },
+  "mercury-square-natal-mercury": {
+    "business": "challenging",
+    "rest": "challenging"
+  },
+  "mercury-square-natal-moon": {
+    "family": "mixed"
+  },
+  "mercury-square-natal-neptune": {
+    "business": "challenging",
+    "spirituality": "supportive"
+  },
+  "mercury-square-natal-pluto": {
+    "education": "supportive"
+  },
+  "mercury-square-natal-saturn": {
+    "business": "challenging",
+    "rest": "challenging"
+  },
+  "mercury-square-natal-sun": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "mercury-square-natal-uranus": {
+    "creativity": "supportive",
+    "rest": "challenging"
+  },
+  "mercury-square-natal-venus": {
+    "love": "mixed",
+    "money": "challenging"
+  },
+  "mercury-sun-conjunction": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-sun-opposition": {
+    "business": "mixed"
+  },
+  "mercury-sun-sextile": {
+    "travel": "supportive"
+  },
+  "mercury-sun-square": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "mercury-sun-trine": {
+    "business": "supportive",
+    "education": "supportive"
+  },
+  "mercury-trine-ascendant": {
+    "business": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-trine-midheaven": {
+    "business": "mixed",
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "mercury-trine-natal-jupiter": {
+    "business": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "mercury-trine-natal-mars": {
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "mercury-trine-natal-mercury": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-trine-natal-moon": {},
+  "mercury-trine-natal-neptune": {
+    "creativity": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "mercury-trine-natal-pluto": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "mercury-trine-natal-saturn": {},
+  "mercury-trine-natal-sun": {
+    "business": "supportive",
+    "education": "supportive"
+  },
+  "mercury-trine-natal-uranus": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-trine-natal-venus": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "mercury-uranus-conjunction": {
+    "creativity": "supportive",
+    "rest": "challenging",
+    "travel": "challenging"
+  },
+  "mercury-uranus-opposition": {
+    "education": "mixed"
+  },
+  "mercury-uranus-sextile": {
+    "education": "supportive"
+  },
+  "mercury-uranus-square": {
+    "rest": "challenging"
+  },
+  "mercury-uranus-trine": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "mercury-venus-conjunction": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "mercury-venus-opposition": {
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "mercury-venus-sextile": {
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "mercury-venus-square": {
+    "love": "challenging",
+    "money": "challenging"
+  },
+  "mercury-venus-trine": {
+    "love": "supportive"
+  },
+  "moon-conjunct-ascendant-transit": {},
+  "moon-conjunct-ascendant-transit-2": {},
+  "moon-conjunct-jupiter-transit": {
+    "spirituality": "supportive"
+  },
+  "moon-conjunct-jupiter-transit-2": {
+    "spirituality": "supportive"
+  },
+  "moon-conjunct-mars-transit": {
+    "rest": "challenging"
+  },
+  "moon-conjunct-mars-transit-2": {
+    "rest": "challenging"
+  },
+  "moon-conjunct-mercury-transit": {},
+  "moon-conjunct-mercury-transit-2": {},
+  "moon-conjunct-midheaven-transit": {
+    "career": "mixed"
+  },
+  "moon-conjunct-midheaven-transit-2": {
+    "career": "mixed"
+  },
+  "moon-conjunct-moon-transit-2": {},
+  "moon-conjunct-neptune-transit": {
+    "love": "challenging"
+  },
+  "moon-conjunct-neptune-transit-2": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "moon-conjunct-pluto-transit": {
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "moon-conjunct-pluto-transit-2": {
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "moon-conjunct-saturn-transit": {
+    "rest": "challenging"
+  },
+  "moon-conjunct-saturn-transit-2": {
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "moon-conjunct-sun-transit": {
+    "love": "supportive"
+  },
+  "moon-conjunct-sun-transit-2": {
+    "rest": "mixed"
+  },
+  "moon-conjunct-uranus-transit": {
+    "rest": "challenging"
+  },
+  "moon-conjunct-uranus-transit-2": {
+    "rest": "challenging"
+  },
+  "moon-conjunct-venus-transit": {
+    "family": "supportive",
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "moon-conjunct-venus-transit-2": {
+    "family": "supportive",
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "moon-opposition-ascendant-transit": {
+    "business": "mixed",
+    "love": "supportive"
+  },
+  "moon-opposition-ascendant-transit-2": {
+    "business": "mixed",
+    "love": "supportive"
+  },
+  "moon-opposition-jupiter-transit": {
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "moon-opposition-jupiter-transit-2": {
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "moon-opposition-mars-transit": {
+    "family": "challenging"
+  },
+  "moon-opposition-mars-transit-2": {
+    "family": "challenging"
+  },
+  "moon-opposition-mercury-transit": {
+    "business": "challenging"
+  },
+  "moon-opposition-mercury-transit-2": {
+    "business": "challenging"
+  },
+  "moon-opposition-midheaven-transit": {
+    "career": "challenging",
+    "family": "supportive",
+    "rest": "supportive"
+  },
+  "moon-opposition-midheaven-transit-2": {
+    "career": "challenging",
+    "family": "supportive",
+    "rest": "supportive"
+  },
+  "moon-opposition-moon-transit-2": {
+    "love": "challenging"
+  },
+  "moon-opposition-neptune-transit": {
+    "rest": "challenging"
+  },
+  "moon-opposition-neptune-transit-2": {
+    "rest": "challenging"
+  },
+  "moon-opposition-pluto-transit": {
+    "love": "challenging"
+  },
+  "moon-opposition-pluto-transit-2": {
+    "love": "challenging"
+  },
+  "moon-opposition-saturn-transit": {},
+  "moon-opposition-saturn-transit-2": {},
+  "moon-opposition-sun-transit": {
+    "career": "challenging",
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "moon-opposition-sun-transit-2": {
+    "career": "challenging",
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "moon-opposition-uranus-transit": {
+    "love": "mixed"
+  },
+  "moon-opposition-uranus-transit-2": {
+    "love": "mixed"
+  },
+  "moon-opposition-venus-transit": {
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "moon-opposition-venus-transit-2": {
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "moon-sextile-ascendant-transit": {
+    "business": "supportive"
+  },
+  "moon-sextile-ascendant-transit-2": {},
+  "moon-sextile-jupiter-transit": {
+    "business": "supportive"
+  },
+  "moon-sextile-jupiter-transit-2": {
+    "business": "supportive"
+  },
+  "moon-sextile-mars-transit": {
+    "career": "supportive",
+    "love": "supportive"
+  },
+  "moon-sextile-mars-transit-2": {
+    "career": "supportive",
+    "love": "supportive"
+  },
+  "moon-sextile-mercury-transit": {},
+  "moon-sextile-mercury-transit-2": {},
+  "moon-sextile-midheaven-transit": {
+    "business": "supportive"
+  },
+  "moon-sextile-midheaven-transit-2": {
+    "business": "supportive"
+  },
+  "moon-sextile-moon-transit-2": {
+    "family": "supportive"
+  },
+  "moon-sextile-neptune-transit": {
+    "spirituality": "supportive"
+  },
+  "moon-sextile-neptune-transit-2": {
+    "spirituality": "supportive"
+  },
+  "moon-sextile-pluto-transit": {
+    "family": "supportive",
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "moon-sextile-pluto-transit-2": {
+    "family": "supportive",
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "moon-sextile-saturn-transit": {
+    "family": "mixed",
+    "rest": "supportive"
+  },
+  "moon-sextile-saturn-transit-2": {
+    "rest": "supportive"
+  },
+  "moon-sextile-sun-transit": {
+    "love": "supportive"
+  },
+  "moon-sextile-sun-transit-2": {
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "moon-sextile-uranus-transit": {
+    "education": "mixed",
+    "family": "supportive"
+  },
+  "moon-sextile-uranus-transit-2": {
+    "education": "supportive",
+    "family": "supportive"
+  },
+  "moon-sextile-venus-transit": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "moon-sextile-venus-transit-2": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "moon-square-ascendant-transit": {},
+  "moon-square-ascendant-transit-2": {},
+  "moon-square-jupiter-transit": {
+    "spirituality": "mixed"
+  },
+  "moon-square-jupiter-transit-2": {
+    "spirituality": "mixed"
+  },
+  "moon-square-mars-accident-risk": {
+    "family": "challenging"
+  },
+  "moon-square-mars-transit": {
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "moon-square-mars-transit-2": {
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "moon-square-mercury-transit": {},
+  "moon-square-mercury-transit-2": {},
+  "moon-square-midheaven-transit": {
+    "career": "challenging",
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "moon-square-midheaven-transit-2": {
+    "career": "mixed",
+    "family": "mixed"
+  },
+  "moon-square-moon-transit-2": {
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "moon-square-neptune-transit": {},
+  "moon-square-neptune-transit-2": {},
+  "moon-square-pluto-transit": {
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "moon-square-pluto-transit-2": {
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "moon-square-saturn-transit": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "moon-square-saturn-transit-2": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "moon-square-sun-transit": {
+    "creativity": "supportive",
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "moon-square-sun-transit-2": {
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "moon-square-uranus-transit": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "moon-square-uranus-transit-2": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "moon-square-venus-transit": {
+    "love": "mixed",
+    "rest": "challenging"
+  },
+  "moon-square-venus-transit-2": {
+    "love": "mixed",
+    "rest": "challenging"
+  },
+  "moon-trine-ascendant-transit": {},
+  "moon-trine-ascendant-transit-2": {},
+  "moon-trine-jupiter-transit": {
+    "spirituality": "supportive"
+  },
+  "moon-trine-jupiter-transit-2": {
+    "spirituality": "supportive"
+  },
+  "moon-trine-mars-transit": {},
+  "moon-trine-mars-transit-2": {},
+  "moon-trine-mercury-transit": {
+    "education": "supportive"
+  },
+  "moon-trine-mercury-transit-2": {
+    "education": "supportive",
+    "family": "supportive"
+  },
+  "moon-trine-midheaven-transit": {
+    "career": "supportive",
+    "family": "supportive",
+    "rest": "supportive"
+  },
+  "moon-trine-midheaven-transit-2": {
+    "career": "supportive",
+    "family": "supportive",
+    "rest": "supportive"
+  },
+  "moon-trine-moon-transit-2": {
+    "family": "supportive",
+    "rest": "supportive"
+  },
+  "moon-trine-neptune-transit": {
+    "creativity": "supportive",
+    "spirituality": "supportive"
+  },
+  "moon-trine-neptune-transit-2": {
+    "creativity": "supportive",
+    "spirituality": "supportive"
+  },
+  "moon-trine-pluto-transit": {
+    "love": "supportive",
+    "rest": "challenging"
+  },
+  "moon-trine-pluto-transit-2": {
+    "love": "supportive",
+    "rest": "challenging"
+  },
+  "moon-trine-saturn-transit": {},
+  "moon-trine-saturn-transit-2": {},
+  "moon-trine-sun-transit": {
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "moon-trine-sun-transit-2": {
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "moon-trine-uranus-transit": {
+    "family": "supportive"
+  },
+  "moon-trine-uranus-transit-2": {
+    "family": "supportive"
+  },
+  "moon-trine-venus-transit": {
+    "family": "supportive",
+    "love": "supportive",
+    "rest": "challenging"
+  },
+  "moon-trine-venus-transit-2": {
+    "love": "supportive",
+    "rest": "challenging"
+  },
+  "neptune-conjunct-ascendant-transit": {
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-conjunct-jupiter": {
+    "money": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-conjunct-jupiter-transit": {
+    "money": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-conjunct-mars": {
+    "rest": "challenging"
+  },
+  "neptune-conjunct-mars-transit": {
+    "rest": "challenging"
+  },
+  "neptune-conjunct-mercury": {
+    "business": "challenging",
+    "education": "challenging"
+  },
+  "neptune-conjunct-mercury-transit": {
+    "business": "challenging",
+    "education": "challenging"
+  },
+  "neptune-conjunct-midheaven-transit": {
+    "career": "challenging",
+    "spirituality": "mixed"
+  },
+  "neptune-conjunct-moon": {
+    "love": "challenging"
+  },
+  "neptune-conjunct-moon-transit": {
+    "love": "challenging"
+  },
+  "neptune-conjunct-saturn": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "neptune-conjunct-saturn-transit": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "neptune-conjunct-sun": {
+    "rest": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-conjunct-sun-transit": {
+    "rest": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-conjunct-uranus": {},
+  "neptune-conjunct-venus": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "neptune-conjunct-venus-transit": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "neptune-opposition-ascendant-transit": {
+    "love": "challenging"
+  },
+  "neptune-opposition-jupiter": {
+    "money": "challenging",
+    "spirituality": "challenging"
+  },
+  "neptune-opposition-jupiter-transit": {
+    "career": "challenging",
+    "money": "challenging",
+    "spirituality": "challenging"
+  },
+  "neptune-opposition-mars": {
+    "rest": "challenging"
+  },
+  "neptune-opposition-mars-transit": {
+    "rest": "challenging"
+  },
+  "neptune-opposition-mercury": {
+    "business": "challenging",
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "neptune-opposition-mercury-transit": {
+    "business": "challenging",
+    "education": "challenging",
+    "rest": "challenging"
+  },
+  "neptune-opposition-midheaven-transit": {
+    "career": "challenging",
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "neptune-opposition-moon": {
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "neptune-opposition-moon-transit": {
+    "family": "challenging",
+    "love": "challenging",
+    "spirituality": "challenging"
+  },
+  "neptune-opposition-neptune-transit": {
+    "education": "supportive",
+    "rest": "mixed",
+    "spirituality": "mixed"
+  },
+  "neptune-opposition-pluto-transit": {
+    "rest": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-opposition-saturn": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "neptune-opposition-saturn-transit": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "neptune-opposition-sun": {
+    "rest": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-opposition-sun-transit": {
+    "rest": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-opposition-uranus-transit": {
+    "spirituality": "mixed"
+  },
+  "neptune-opposition-venus": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "neptune-opposition-venus-transit": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "neptune-sextile-ascendant-transit": {
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-jupiter": {
+    "education": "supportive",
+    "spirituality": "supportive",
+    "travel": "supportive"
+  },
+  "neptune-sextile-jupiter-transit": {
+    "spirituality": "supportive",
+    "travel": "supportive"
+  },
+  "neptune-sextile-mars": {
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-mars-transit": {
+    "rest": "mixed",
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-mercury": {
+    "creativity": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-mercury-transit": {
+    "creativity": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-midheaven-transit": {
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-moon": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-moon-transit": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-neptune-transit": {
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-pluto-transit": {
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-saturn": {
+    "rest": "supportive",
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-saturn-transit": {
+    "rest": "supportive",
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-sun": {
+    "rest": "supportive",
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-sun-transit": {
+    "rest": "supportive",
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-uranus": {
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-uranus-transit": {
+    "spirituality": "supportive"
+  },
+  "neptune-sextile-venus": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "neptune-sextile-venus-transit": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "neptune-square-ascendant-transit": {
+    "business": "challenging",
+    "love": "challenging"
+  },
+  "neptune-square-jupiter": {
+    "money": "challenging",
+    "spirituality": "challenging"
+  },
+  "neptune-square-jupiter-transit": {
+    "money": "challenging",
+    "spirituality": "challenging"
+  },
+  "neptune-square-mars": {
+    "career": "challenging",
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "neptune-square-mars-transit": {
+    "career": "challenging",
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "neptune-square-mercury": {
+    "business": "challenging",
+    "rest": "challenging"
+  },
+  "neptune-square-mercury-transit": {
+    "business": "challenging",
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "neptune-square-midheaven-transit": {
+    "career": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-square-moon": {
+    "love": "challenging"
+  },
+  "neptune-square-moon-transit": {
+    "family": "challenging"
+  },
+  "neptune-square-neptune-transit": {
+    "career": "challenging",
+    "family": "challenging",
+    "spirituality": "mixed"
+  },
+  "neptune-square-pluto-transit": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "neptune-square-saturn": {
+    "career": "challenging",
+    "family": "challenging",
+    "money": "challenging"
+  },
+  "neptune-square-saturn-transit": {
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "neptune-square-sun": {
+    "career": "challenging",
+    "rest": "challenging",
+    "spirituality": "challenging"
+  },
+  "neptune-square-sun-transit": {
+    "career": "challenging",
+    "rest": "challenging",
+    "spirituality": "challenging"
+  },
+  "neptune-square-uranus": {
+    "spirituality": "mixed"
+  },
+  "neptune-square-uranus-transit": {
+    "spirituality": "mixed"
+  },
+  "neptune-square-venus": {
+    "love": "challenging"
+  },
+  "neptune-square-venus-transit": {
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "neptune-trine-ascendant-transit": {
+    "love": "mixed",
+    "spirituality": "supportive"
+  },
+  "neptune-trine-jupiter": {
+    "spirituality": "supportive",
+    "travel": "supportive"
+  },
+  "neptune-trine-jupiter-transit": {
+    "education": "supportive",
+    "spirituality": "supportive",
+    "travel": "supportive"
+  },
+  "neptune-trine-mars": {
+    "spirituality": "supportive"
+  },
+  "neptune-trine-mars-transit": {
+    "spirituality": "supportive"
+  },
+  "neptune-trine-mercury": {
+    "creativity": "supportive",
+    "education": "supportive"
+  },
+  "neptune-trine-mercury-transit": {
+    "creativity": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "neptune-trine-midheaven-transit": {
+    "career": "mixed",
+    "rest": "challenging",
+    "spirituality": "supportive"
+  },
+  "neptune-trine-moon": {
+    "creativity": "supportive",
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "neptune-trine-moon-transit": {
+    "creativity": "supportive",
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "neptune-trine-neptune-transit": {
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "neptune-trine-pluto-transit": {
+    "spirituality": "supportive"
+  },
+  "neptune-trine-saturn": {
+    "money": "mixed",
+    "spirituality": "supportive"
+  },
+  "neptune-trine-saturn-transit": {
+    "money": "mixed",
+    "spirituality": "supportive"
+  },
+  "neptune-trine-sun": {
+    "creativity": "supportive",
+    "spirituality": "supportive"
+  },
+  "neptune-trine-sun-transit": {
+    "creativity": "mixed",
+    "spirituality": "supportive"
+  },
+  "neptune-trine-uranus": {
+    "spirituality": "supportive"
+  },
+  "neptune-trine-uranus-transit": {
+    "spirituality": "supportive"
+  },
+  "neptune-trine-venus": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "spirituality": "supportive"
+  },
+  "neptune-trine-venus-transit": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "spirituality": "supportive"
+  },
+  "pluto-conjunct-ascendant-transit": {
+    "love": "mixed"
+  },
+  "pluto-conjunct-ascendant-transit-2": {
+    "love": "mixed"
+  },
+  "pluto-conjunct-jupiter": {},
+  "pluto-conjunct-jupiter-transit": {
+    "career": "mixed",
+    "education": "mixed",
+    "spirituality": "mixed"
+  },
+  "pluto-conjunct-mars": {
+    "rest": "challenging"
+  },
+  "pluto-conjunct-mars-transit": {
+    "rest": "challenging"
+  },
+  "pluto-conjunct-mc-transit": {
+    "career": "mixed",
+    "family": "challenging"
+  },
+  "pluto-conjunct-mercury": {
+    "education": "mixed"
+  },
+  "pluto-conjunct-mercury-transit": {
+    "education": "mixed"
+  },
+  "pluto-conjunct-midheaven-transit": {
+    "career": "mixed",
+    "family": "challenging"
+  },
+  "pluto-conjunct-moon": {
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "pluto-conjunct-moon-transit": {
+    "family": "mixed",
+    "relocation": "mixed",
+    "rest": "challenging"
+  },
+  "pluto-conjunct-natal-neptune-transit": {
+    "career": "challenging",
+    "spirituality": "mixed"
+  },
+  "pluto-conjunct-neptune-transit": {
+    "education": "supportive",
+    "rest": "challenging",
+    "spirituality": "challenging"
+  },
+  "pluto-conjunct-saturn": {
+    "money": "challenging"
+  },
+  "pluto-conjunct-saturn-transit": {
+    "love": "challenging",
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "pluto-conjunct-sun": {},
+  "pluto-conjunct-sun-transit": {},
+  "pluto-conjunct-uranus-generational": {
+    "education": "supportive"
+  },
+  "pluto-conjunct-uranus-transit": {
+    "education": "supportive",
+    "rest": "challenging"
+  },
+  "pluto-conjunct-venus": {
+    "love": "mixed"
+  },
+  "pluto-conjunct-venus-transit": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "pluto-opposition-ascendant-transit": {
+    "business": "challenging",
+    "love": "challenging"
+  },
+  "pluto-opposition-ascendant-transit-2": {
+    "love": "challenging"
+  },
+  "pluto-opposition-jupiter": {
+    "spirituality": "supportive"
+  },
+  "pluto-opposition-jupiter-transit": {
+    "spirituality": "supportive"
+  },
+  "pluto-opposition-mars": {},
+  "pluto-opposition-mars-transit": {
+    "rest": "challenging"
+  },
+  "pluto-opposition-mc-transit": {
+    "family": "challenging",
+    "relocation": "challenging"
+  },
+  "pluto-opposition-mercury": {
+    "rest": "challenging"
+  },
+  "pluto-opposition-mercury-transit": {
+    "rest": "challenging"
+  },
+  "pluto-opposition-midheaven-transit": {
+    "family": "mixed",
+    "relocation": "challenging"
+  },
+  "pluto-opposition-moon": {
+    "love": "challenging"
+  },
+  "pluto-opposition-moon-transit": {
+    "love": "challenging"
+  },
+  "pluto-opposition-saturn": {
+    "love": "challenging",
+    "money": "challenging"
+  },
+  "pluto-opposition-saturn-transit": {
+    "love": "challenging",
+    "money": "challenging"
+  },
+  "pluto-opposition-sun": {},
+  "pluto-opposition-sun-transit": {},
+  "pluto-opposition-uranus-generational": {},
+  "pluto-opposition-uranus-transit": {
+    "career": "challenging",
+    "love": "challenging"
+  },
+  "pluto-opposition-venus": {
+    "love": "mixed"
+  },
+  "pluto-opposition-venus-transit": {
+    "love": "mixed"
+  },
+  "pluto-sextile-ascendant-transit": {
+    "love": "supportive"
+  },
+  "pluto-sextile-ascendant-transit-2": {
+    "love": "supportive"
+  },
+  "pluto-sextile-jupiter": {
+    "business": "supportive",
+    "career": "supportive",
+    "education": "supportive"
+  },
+  "pluto-sextile-jupiter-transit": {
+    "business": "supportive",
+    "career": "supportive",
+    "education": "supportive"
+  },
+  "pluto-sextile-mars": {},
+  "pluto-sextile-mars-transit": {
+    "career": "supportive"
+  },
+  "pluto-sextile-mc-transit": {
+    "career": "supportive",
+    "family": "challenging",
+    "relocation": "supportive"
+  },
+  "pluto-sextile-mercury": {
+    "education": "supportive"
+  },
+  "pluto-sextile-mercury-transit": {
+    "education": "supportive"
+  },
+  "pluto-sextile-midheaven-transit": {
+    "career": "supportive",
+    "family": "mixed",
+    "relocation": "supportive"
+  },
+  "pluto-sextile-moon": {
+    "family": "supportive",
+    "spirituality": "supportive"
+  },
+  "pluto-sextile-moon-transit": {
+    "family": "supportive"
+  },
+  "pluto-sextile-natal-neptune-meaning": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "pluto-sextile-natal-pluto-transit": {},
+  "pluto-sextile-neptune-transit": {
+    "spirituality": "supportive"
+  },
+  "pluto-sextile-pluto-transit": {
+    "spirituality": "supportive"
+  },
+  "pluto-sextile-saturn": {},
+  "pluto-sextile-saturn-transit": {
+    "education": "supportive",
+    "rest": "challenging"
+  },
+  "pluto-sextile-sun": {},
+  "pluto-sextile-sun-transit": {
+    "career": "supportive",
+    "creativity": "supportive"
+  },
+  "pluto-sextile-uranus": {
+    "creativity": "supportive",
+    "education": "supportive"
+  },
+  "pluto-sextile-uranus-transit": {
+    "creativity": "supportive",
+    "education": "supportive"
+  },
+  "pluto-sextile-venus": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "pluto-sextile-venus-transit": {
+    "career": "supportive",
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "pluto-square-ascendant-transit": {
+    "love": "challenging"
+  },
+  "pluto-square-ascendant-transit-2": {
+    "love": "challenging"
+  },
+  "pluto-square-jupiter": {
+    "spirituality": "mixed"
+  },
+  "pluto-square-jupiter-transit": {
+    "spirituality": "challenging"
+  },
+  "pluto-square-mars": {
+    "rest": "challenging"
+  },
+  "pluto-square-mars-transit": {
+    "rest": "challenging"
+  },
+  "pluto-square-mc-transit": {
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "pluto-square-mercury": {
+    "education": "mixed",
+    "spirituality": "mixed"
+  },
+  "pluto-square-mercury-transit": {
+    "education": "mixed",
+    "spirituality": "mixed"
+  },
+  "pluto-square-midheaven-transit": {
+    "family": "challenging",
+    "relocation": "supportive"
+  },
+  "pluto-square-moon": {
+    "family": "challenging"
+  },
+  "pluto-square-moon-transit": {
+    "family": "challenging",
+    "love": "challenging",
+    "relocation": "mixed"
+  },
+  "pluto-square-natal-neptune-meaning": {
+    "money": "challenging",
+    "spirituality": "supportive"
+  },
+  "pluto-square-natal-pluto-meaning": {
+    "career": "mixed",
+    "family": "mixed"
+  },
+  "pluto-square-neptune-transit": {
+    "spirituality": "supportive"
+  },
+  "pluto-square-pluto-transit": {
+    "love": "challenging",
+    "spirituality": "mixed"
+  },
+  "pluto-square-saturn": {
+    "money": "challenging"
+  },
+  "pluto-square-saturn-transit": {
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "pluto-square-sun": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "pluto-square-sun-transit": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "pluto-square-uranus": {},
+  "pluto-square-uranus-transit": {},
+  "pluto-square-venus": {
+    "love": "challenging"
+  },
+  "pluto-square-venus-transit": {
+    "love": "challenging"
+  },
+  "pluto-transit-square-natal-pluto-power-test": {},
+  "pluto-trine-ascendant-transit": {},
+  "pluto-trine-ascendant-transit-2": {},
+  "pluto-trine-jupiter": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "pluto-trine-jupiter-transit": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "pluto-trine-mars": {
+    "career": "supportive"
+  },
+  "pluto-trine-mars-transit": {
+    "career": "supportive"
+  },
+  "pluto-trine-mc-transit": {
+    "career": "supportive"
+  },
+  "pluto-trine-mercury": {
+    "education": "supportive"
+  },
+  "pluto-trine-mercury-transit": {
+    "education": "supportive"
+  },
+  "pluto-trine-midheaven-transit": {
+    "career": "supportive"
+  },
+  "pluto-trine-moon": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "pluto-trine-moon-transit": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "pluto-trine-saturn": {
+    "career": "supportive"
+  },
+  "pluto-trine-saturn-transit": {
+    "career": "supportive"
+  },
+  "pluto-trine-sun": {
+    "career": "supportive"
+  },
+  "pluto-trine-sun-transit": {
+    "career": "supportive"
+  },
+  "pluto-trine-uranus": {},
+  "pluto-trine-uranus-transit": {},
+  "pluto-trine-venus": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "pluto-trine-venus-transit": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "saturn-conjunct-asc-consolidation": {
+    "love": "mixed",
+    "rest": "challenging"
+  },
+  "saturn-conjunct-ascendant-transit": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-conjunct-jupiter": {},
+  "saturn-conjunct-jupiter-transit": {
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-conjunct-mars": {
+    "rest": "challenging"
+  },
+  "saturn-conjunct-mars-transit": {
+    "rest": "challenging"
+  },
+  "saturn-conjunct-mc-culmination": {
+    "career": "mixed"
+  },
+  "saturn-conjunct-mercury": {
+    "education": "mixed"
+  },
+  "saturn-conjunct-mercury-transit": {
+    "education": "mixed"
+  },
+  "saturn-conjunct-midheaven-transit": {
+    "career": "mixed"
+  },
+  "saturn-conjunct-moon": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-conjunct-moon-transit": {
+    "family": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-conjunct-neptune-confusion": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "saturn-conjunct-neptune-transit": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "saturn-conjunct-pluto-restructuring": {
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-conjunct-pluto-transit": {
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-conjunct-saturn-return": {
+    "career": "challenging",
+    "love": "challenging"
+  },
+  "saturn-conjunct-sun": {
+    "career": "mixed",
+    "rest": "challenging"
+  },
+  "saturn-conjunct-sun-cardiovascular-health": {
+    "rest": "challenging"
+  },
+  "saturn-conjunct-sun-transit": {
+    "rest": "challenging"
+  },
+  "saturn-conjunct-uranus": {
+    "career": "challenging",
+    "love": "challenging",
+    "relocation": "challenging"
+  },
+  "saturn-conjunct-uranus-transit": {
+    "career": "challenging",
+    "love": "challenging",
+    "relocation": "challenging"
+  },
+  "saturn-conjunct-venus": {
+    "love": "mixed",
+    "money": "challenging"
+  },
+  "saturn-conjunct-venus-transit": {
+    "love": "mixed",
+    "money": "challenging"
+  },
+  "saturn-opposition-asc-breakthrough-strain": {
+    "career": "supportive",
+    "love": "challenging"
+  },
+  "saturn-opposition-ascendant-transit": {
+    "career": "mixed",
+    "love": "challenging"
+  },
+  "saturn-opposition-jupiter": {
+    "love": "challenging",
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-opposition-jupiter-transit": {
+    "career": "challenging",
+    "love": "challenging",
+    "money": "challenging"
+  },
+  "saturn-opposition-mars": {
+    "rest": "challenging"
+  },
+  "saturn-opposition-mars-transit": {
+    "rest": "challenging"
+  },
+  "saturn-opposition-mc-transition": {
+    "love": "supportive"
+  },
+  "saturn-opposition-mercury": {
+    "education": "mixed"
+  },
+  "saturn-opposition-mercury-transit": {
+    "education": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-opposition-midheaven-transit": {
+    "career": "supportive",
+    "family": "supportive",
+    "love": "mixed"
+  },
+  "saturn-opposition-moon": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-opposition-moon-transit": {
+    "family": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-opposition-neptune-disintegration": {
+    "rest": "challenging",
+    "spirituality": "challenging"
+  },
+  "saturn-opposition-neptune-transit": {
+    "rest": "challenging",
+    "spirituality": "challenging"
+  },
+  "saturn-opposition-pluto-culmination": {
+    "rest": "challenging"
+  },
+  "saturn-opposition-pluto-transit": {
+    "rest": "challenging"
+  },
+  "saturn-opposition-saturn": {
+    "career": "mixed",
+    "love": "mixed"
+  },
+  "saturn-opposition-saturn-transit": {
+    "career": "mixed",
+    "love": "challenging"
+  },
+  "saturn-opposition-sun": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-opposition-sun-transit": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-opposition-uranus-crisis": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-opposition-uranus-transit": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-opposition-venus": {
+    "love": "challenging",
+    "money": "challenging"
+  },
+  "saturn-opposition-venus-transit": {
+    "creativity": "challenging",
+    "love": "challenging",
+    "money": "challenging"
+  },
+  "saturn-return-first": {
+    "career": "challenging",
+    "love": "challenging",
+    "relocation": "challenging"
+  },
+  "saturn-return-second": {},
+  "saturn-sextile-asc-stabilization": {},
+  "saturn-sextile-ascendant-transit": {},
+  "saturn-sextile-jupiter": {
+    "business": "supportive",
+    "career": "supportive",
+    "education": "supportive"
+  },
+  "saturn-sextile-jupiter-transit": {
+    "career": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "saturn-sextile-mars": {
+    "career": "supportive"
+  },
+  "saturn-sextile-mars-transit": {
+    "career": "supportive"
+  },
+  "saturn-sextile-mc-advancement": {
+    "career": "supportive"
+  },
+  "saturn-sextile-mercury": {
+    "business": "supportive",
+    "education": "mixed"
+  },
+  "saturn-sextile-mercury-transit": {
+    "business": "supportive",
+    "education": "mixed"
+  },
+  "saturn-sextile-midheaven-transit": {
+    "career": "mixed"
+  },
+  "saturn-sextile-moon": {
+    "family": "supportive"
+  },
+  "saturn-sextile-moon-transit": {
+    "family": "supportive",
+    "love": "mixed"
+  },
+  "saturn-sextile-neptune-balance": {
+    "spirituality": "supportive"
+  },
+  "saturn-sextile-neptune-transit": {
+    "spirituality": "supportive"
+  },
+  "saturn-sextile-pluto-focused-power": {
+    "career": "supportive"
+  },
+  "saturn-sextile-pluto-transit": {
+    "career": "supportive"
+  },
+  "saturn-sextile-saturn": {},
+  "saturn-sextile-saturn-transit": {},
+  "saturn-sextile-sun": {
+    "career": "supportive"
+  },
+  "saturn-sextile-sun-transit": {
+    "career": "supportive"
+  },
+  "saturn-sextile-uranus": {
+    "education": "supportive"
+  },
+  "saturn-sextile-uranus-transit": {
+    "education": "supportive"
+  },
+  "saturn-sextile-venus": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "saturn-sextile-venus-transit": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "saturn-square-asc-relationship-test": {
+    "love": "challenging"
+  },
+  "saturn-square-ascendant-transit": {
+    "love": "challenging"
+  },
+  "saturn-square-jupiter": {
+    "career": "challenging",
+    "money": "challenging"
+  },
+  "saturn-square-jupiter-transit": {
+    "money": "challenging"
+  },
+  "saturn-square-mars": {},
+  "saturn-square-mars-transit": {},
+  "saturn-square-mc-alienation": {
+    "career": "mixed",
+    "love": "challenging"
+  },
+  "saturn-square-mercury": {
+    "education": "challenging"
+  },
+  "saturn-square-mercury-transit": {
+    "education": "challenging"
+  },
+  "saturn-square-midheaven-transit": {
+    "career": "challenging",
+    "love": "mixed"
+  },
+  "saturn-square-moon": {
+    "career": "challenging",
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "saturn-square-moon-transit": {
+    "career": "challenging",
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "saturn-square-neptune-transit": {
+    "rest": "challenging",
+    "spirituality": "challenging"
+  },
+  "saturn-square-neptune-uncertainty": {
+    "rest": "challenging",
+    "spirituality": "challenging"
+  },
+  "saturn-square-pluto-obstruction": {
+    "money": "challenging"
+  },
+  "saturn-square-pluto-transit": {
+    "money": "challenging"
+  },
+  "saturn-square-saturn": {
+    "career": "challenging",
+    "love": "challenging"
+  },
+  "saturn-square-saturn-transit": {
+    "career": "challenging",
+    "love": "challenging"
+  },
+  "saturn-square-sun": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-square-sun-transit": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-square-uranus": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-square-uranus-transit": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "saturn-square-venus": {
+    "creativity": "challenging",
+    "love": "challenging"
+  },
+  "saturn-square-venus-transit": {
+    "creativity": "challenging",
+    "love": "challenging"
+  },
+  "saturn-trine-asc-equilibrium": {
+    "career": "supportive"
+  },
+  "saturn-trine-ascendant-transit": {
+    "career": "supportive"
+  },
+  "saturn-trine-jupiter": {
+    "business": "supportive",
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "saturn-trine-jupiter-transit": {
+    "business": "supportive",
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "saturn-trine-mars": {
+    "creativity": "supportive"
+  },
+  "saturn-trine-mars-transit": {},
+  "saturn-trine-mc-self-reliance": {
+    "career": "supportive"
+  },
+  "saturn-trine-mercury": {
+    "education": "mixed"
+  },
+  "saturn-trine-mercury-transit": {
+    "education": "mixed"
+  },
+  "saturn-trine-midheaven-transit": {
+    "career": "supportive"
+  },
+  "saturn-trine-moon": {
+    "family": "supportive",
+    "money": "supportive"
+  },
+  "saturn-trine-moon-transit": {
+    "career": "supportive",
+    "family": "supportive",
+    "money": "supportive"
+  },
+  "saturn-trine-neptune-consolidation": {
+    "spirituality": "supportive"
+  },
+  "saturn-trine-neptune-transit": {
+    "spirituality": "supportive"
+  },
+  "saturn-trine-pluto-self-mastery": {
+    "career": "supportive",
+    "spirituality": "supportive"
+  },
+  "saturn-trine-pluto-transit": {
+    "career": "supportive",
+    "spirituality": "supportive"
+  },
+  "saturn-trine-saturn": {
+    "career": "supportive",
+    "love": "supportive"
+  },
+  "saturn-trine-saturn-transit": {
+    "career": "supportive"
+  },
+  "saturn-trine-sun": {
+    "career": "supportive",
+    "education": "supportive"
+  },
+  "saturn-trine-sun-transit": {
+    "career": "supportive"
+  },
+  "saturn-trine-uranus-integration": {
+    "creativity": "supportive",
+    "education": "supportive"
+  },
+  "saturn-trine-uranus-transit": {
+    "career": "supportive",
+    "creativity": "mixed"
+  },
+  "saturn-trine-venus": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "saturn-trine-venus-transit": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "stationary-transit-intensification": {},
+  "stationary-transit-intensification-2": {},
+  "sun-conjunct-ascendant": {},
+  "sun-conjunct-jupiter": {},
+  "sun-conjunct-mars": {
+    "rest": "challenging"
+  },
+  "sun-conjunct-mercury": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "sun-conjunct-midheaven": {
+    "career": "mixed"
+  },
+  "sun-conjunct-moon": {
+    "family": "supportive"
+  },
+  "sun-conjunct-natal-jupiter": {
+    "money": "challenging"
+  },
+  "sun-conjunct-natal-mars": {
+    "rest": "challenging"
+  },
+  "sun-conjunct-natal-mercury": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "sun-conjunct-natal-moon": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "sun-conjunct-natal-neptune": {
+    "rest": "challenging",
+    "spirituality": "supportive"
+  },
+  "sun-conjunct-natal-pluto": {},
+  "sun-conjunct-natal-saturn": {
+    "career": "supportive",
+    "rest": "challenging"
+  },
+  "sun-conjunct-natal-sun": {},
+  "sun-conjunct-natal-sun-solar-return": {},
+  "sun-conjunct-natal-uranus": {},
+  "sun-conjunct-natal-venus": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "money": "mixed"
+  },
+  "sun-conjunct-neptune": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "sun-conjunct-pluto": {},
+  "sun-conjunct-saturn": {
+    "career": "supportive",
+    "rest": "challenging"
+  },
+  "sun-conjunct-uranus": {},
+  "sun-conjunct-venus": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "money": "mixed"
+  },
+  "sun-opposition-ascendant": {
+    "business": "mixed",
+    "love": "mixed"
+  },
+  "sun-opposition-jupiter": {},
+  "sun-opposition-mars": {
+    "rest": "challenging"
+  },
+  "sun-opposition-mercury": {
+    "education": "mixed",
+    "rest": "challenging"
+  },
+  "sun-opposition-midheaven": {
+    "career": "challenging",
+    "family": "supportive",
+    "spirituality": "supportive"
+  },
+  "sun-opposition-moon": {
+    "career": "mixed",
+    "family": "challenging"
+  },
+  "sun-opposition-natal-jupiter": {
+    "career": "mixed",
+    "money": "challenging"
+  },
+  "sun-opposition-natal-mars": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "sun-opposition-natal-mercury": {
+    "education": "mixed",
+    "rest": "challenging",
+    "travel": "supportive"
+  },
+  "sun-opposition-natal-moon": {
+    "career": "mixed",
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "sun-opposition-natal-neptune": {
+    "business": "challenging",
+    "love": "mixed"
+  },
+  "sun-opposition-natal-pluto": {
+    "career": "challenging",
+    "creativity": "mixed",
+    "love": "mixed"
+  },
+  "sun-opposition-natal-saturn": {
+    "rest": "challenging"
+  },
+  "sun-opposition-natal-sun": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "sun-opposition-natal-sun-2": {
+    "career": "challenging"
+  },
+  "sun-opposition-natal-uranus": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "sun-opposition-natal-venus": {
+    "love": "mixed"
+  },
+  "sun-opposition-neptune": {
+    "business": "challenging",
+    "love": "challenging"
+  },
+  "sun-opposition-saturn": {
+    "rest": "challenging"
+  },
+  "sun-opposition-uranus": {
+    "love": "challenging"
+  },
+  "sun-opposition-venus": {
+    "love": "mixed"
+  },
+  "sun-sextile-ascendant": {},
+  "sun-sextile-jupiter": {},
+  "sun-sextile-mars": {},
+  "sun-sextile-mercury": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "sun-sextile-midheaven": {
+    "career": "supportive"
+  },
+  "sun-sextile-moon": {},
+  "sun-sextile-natal-jupiter": {},
+  "sun-sextile-natal-mars": {},
+  "sun-sextile-natal-mercury": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "sun-sextile-natal-moon": {
+    "rest": "supportive"
+  },
+  "sun-sextile-natal-neptune": {
+    "spirituality": "supportive"
+  },
+  "sun-sextile-natal-pluto": {},
+  "sun-sextile-natal-saturn": {
+    "rest": "challenging"
+  },
+  "sun-sextile-natal-sun": {},
+  "sun-sextile-natal-sun-2": {},
+  "sun-sextile-natal-uranus": {
+    "creativity": "supportive",
+    "education": "supportive"
+  },
+  "sun-sextile-natal-venus": {
+    "business": "supportive",
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "sun-sextile-neptune": {
+    "rest": "mixed",
+    "spirituality": "supportive"
+  },
+  "sun-sextile-saturn": {
+    "career": "supportive",
+    "rest": "challenging"
+  },
+  "sun-sextile-uranus": {
+    "creativity": "supportive",
+    "education": "supportive"
+  },
+  "sun-sextile-venus": {
+    "business": "supportive",
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "sun-square-ascendant": {
+    "career": "challenging",
+    "love": "challenging"
+  },
+  "sun-square-jupiter": {
+    "business": "challenging"
+  },
+  "sun-square-mars": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "sun-square-mercury": {
+    "education": "mixed"
+  },
+  "sun-square-midheaven": {
+    "career": "mixed"
+  },
+  "sun-square-moon": {
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "sun-square-natal-jupiter": {
+    "business": "mixed"
+  },
+  "sun-square-natal-mars": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "sun-square-natal-mercury": {
+    "education": "mixed"
+  },
+  "sun-square-natal-moon": {
+    "family": "challenging",
+    "rest": "mixed"
+  },
+  "sun-square-natal-neptune": {
+    "business": "challenging",
+    "rest": "challenging"
+  },
+  "sun-square-natal-pluto": {
+    "career": "mixed",
+    "creativity": "supportive"
+  },
+  "sun-square-natal-saturn": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "sun-square-natal-sun": {},
+  "sun-square-natal-sun-2": {},
+  "sun-square-natal-uranus": {
+    "rest": "challenging"
+  },
+  "sun-square-natal-venus": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "money": "challenging"
+  },
+  "sun-square-neptune": {
+    "rest": "challenging"
+  },
+  "sun-square-saturn": {
+    "career": "challenging",
+    "rest": "challenging"
+  },
+  "sun-square-uranus": {},
+  "sun-square-venus": {
+    "love": "mixed",
+    "money": "challenging"
+  },
+  "sun-trine-ascendant": {
+    "career": "supportive",
+    "rest": "supportive",
+    "travel": "supportive"
+  },
+  "sun-trine-jupiter": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "sun-trine-mars": {},
+  "sun-trine-mercury": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "sun-trine-midheaven": {
+    "career": "supportive"
+  },
+  "sun-trine-moon": {
+    "love": "supportive"
+  },
+  "sun-trine-natal-jupiter": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "sun-trine-natal-mars": {},
+  "sun-trine-natal-mercury": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "sun-trine-natal-moon": {
+    "love": "supportive"
+  },
+  "sun-trine-natal-neptune": {
+    "education": "supportive",
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "sun-trine-natal-pluto": {
+    "creativity": "supportive"
+  },
+  "sun-trine-natal-saturn": {
+    "education": "supportive",
+    "family": "supportive",
+    "money": "supportive"
+  },
+  "sun-trine-natal-sun": {
+    "rest": "supportive"
+  },
+  "sun-trine-natal-sun-2": {
+    "rest": "supportive"
+  },
+  "sun-trine-natal-uranus": {
+    "education": "supportive",
+    "rest": "challenging"
+  },
+  "sun-trine-natal-venus": {
+    "love": "supportive",
+    "money": "supportive",
+    "rest": "supportive"
+  },
+  "sun-trine-neptune": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "sun-trine-saturn": {},
+  "sun-trine-uranus": {
+    "creativity": "supportive",
+    "education": "supportive",
+    "rest": "challenging"
+  },
+  "sun-trine-venus": {
+    "love": "supportive",
+    "money": "supportive",
+    "rest": "supportive"
+  },
+  "transit-mars-ascendant-conjunction-caution-sharp-objects": {
+    "rest": "challenging"
+  },
+  "transit-mars-ascendant-conjunction-self-assertion": {
+    "rest": "challenging"
+  },
+  "transit-mars-ascendant-sextile-teamwork": {},
+  "transit-mars-ascendant-square-relationship-conflict": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "transit-mars-ascendant-trine-confidence-balance": {
+    "rest": "supportive"
+  },
+  "transit-mars-midheaven-conjunction-ego-drive": {
+    "career": "mixed"
+  },
+  "transit-mars-midheaven-square-conflict": {
+    "career": "challenging",
+    "family": "challenging"
+  },
+  "transit-mars-midheaven-trine-achievement": {
+    "career": "supportive"
+  },
+  "transit-mars-pluto-conjunction-collective-benefit": {
+    "career": "mixed"
+  },
+  "transit-mars-pluto-conjunction-long-range-goals": {
+    "career": "mixed"
+  },
+  "transit-mars-pluto-conjunction-self-understanding": {
+    "spirituality": "supportive"
+  },
+  "transit-mars-pluto-opposition-domination-risk": {},
+  "transit-mars-pluto-opposition-power-struggle": {},
+  "transit-mars-pluto-opposition-violence-risk": {},
+  "transit-mercury-conjunct-asc": {
+    "business": "supportive",
+    "travel": "supportive"
+  },
+  "transit-mercury-conjunct-mc": {
+    "career": "supportive"
+  },
+  "transit-mercury-opposition-asc": {
+    "business": "supportive"
+  },
+  "transit-mercury-opposition-mc": {
+    "business": "mixed",
+    "family": "supportive"
+  },
+  "transit-mercury-sextile-asc": {
+    "business": "supportive",
+    "travel": "supportive"
+  },
+  "transit-mercury-sextile-mc": {
+    "business": "mixed",
+    "career": "supportive",
+    "family": "supportive"
+  },
+  "transit-mercury-square-asc": {},
+  "transit-mercury-square-mc": {
+    "career": "mixed"
+  },
+  "transit-mercury-trine-asc": {
+    "business": "supportive",
+    "education": "supportive"
+  },
+  "transit-mercury-trine-mc": {
+    "business": "supportive",
+    "career": "supportive",
+    "family": "supportive"
+  },
+  "transit-neptune-conjunct-ascendant": {
+    "love": "challenging"
+  },
+  "transit-neptune-conjunct-midheaven": {
+    "career": "challenging",
+    "spirituality": "mixed"
+  },
+  "transit-neptune-conjunct-neptune": {},
+  "transit-neptune-conjunct-pluto-rarity": {},
+  "transit-neptune-opposition-ascendant": {
+    "love": "challenging"
+  },
+  "transit-neptune-opposition-midheaven": {
+    "career": "challenging",
+    "family": "challenging"
+  },
+  "transit-neptune-opposition-neptune": {
+    "spirituality": "mixed"
+  },
+  "transit-neptune-opposition-pluto": {
+    "spirituality": "mixed"
+  },
+  "transit-neptune-opposition-uranus": {
+    "spirituality": "mixed"
+  },
+  "transit-neptune-sextile-ascendant": {
+    "spirituality": "supportive"
+  },
+  "transit-neptune-sextile-midheaven": {
+    "spirituality": "supportive"
+  },
+  "transit-neptune-sextile-neptune": {
+    "spirituality": "supportive"
+  },
+  "transit-neptune-sextile-pluto": {
+    "spirituality": "supportive"
+  },
+  "transit-neptune-square-ascendant": {
+    "business": "challenging"
+  },
+  "transit-neptune-square-midheaven": {
+    "spirituality": "mixed"
+  },
+  "transit-neptune-square-neptune": {
+    "career": "challenging",
+    "family": "challenging"
+  },
+  "transit-neptune-square-pluto": {},
+  "transit-neptune-trine-ascendant": {
+    "spirituality": "supportive"
+  },
+  "transit-neptune-trine-midheaven": {
+    "career": "supportive",
+    "rest": "challenging"
+  },
+  "transit-neptune-trine-neptune": {
+    "spirituality": "supportive"
+  },
+  "transit-neptune-trine-pluto": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "transit-sun-conjunct-ascendant": {},
+  "transit-sun-conjunct-mc": {
+    "career": "mixed",
+    "family": "challenging"
+  },
+  "transit-sun-conjunct-pluto-caution": {},
+  "transit-sun-opposition-ascendant": {},
+  "transit-sun-opposition-mc": {
+    "career": "challenging",
+    "family": "supportive"
+  },
+  "transit-sun-opposition-pluto": {
+    "love": "challenging"
+  },
+  "transit-sun-sextile-ascendant": {},
+  "transit-sun-sextile-mc": {
+    "career": "supportive",
+    "family": "supportive"
+  },
+  "transit-sun-sextile-pluto": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "transit-sun-square-ascendant": {
+    "career": "challenging",
+    "family": "challenging"
+  },
+  "transit-sun-square-mc": {
+    "career": "mixed"
+  },
+  "transit-sun-square-pluto": {
+    "rest": "challenging"
+  },
+  "transit-sun-trine-ascendant": {
+    "career": "supportive",
+    "rest": "supportive",
+    "travel": "supportive"
+  },
+  "transit-sun-trine-mc": {
+    "career": "supportive"
+  },
+  "transit-sun-trine-pluto": {
+    "creativity": "supportive",
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "transit-uranus-conjunct-ascendant": {
+    "education": "supportive",
+    "love": "mixed",
+    "spirituality": "supportive"
+  },
+  "transit-uranus-conjunct-midheaven": {
+    "career": "mixed",
+    "family": "challenging"
+  },
+  "transit-uranus-conjunct-neptune": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "transit-uranus-conjunct-pluto": {
+    "rest": "challenging"
+  },
+  "transit-uranus-first-trine-uranus-age28": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "transit-uranus-opposition-ascendant": {
+    "love": "challenging"
+  },
+  "transit-uranus-opposition-midheaven": {
+    "career": "challenging",
+    "family": "challenging"
+  },
+  "transit-uranus-opposition-neptune": {
+    "spirituality": "mixed"
+  },
+  "transit-uranus-opposition-pluto": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "transit-uranus-opposition-uranus-midlife": {
+    "career": "mixed",
+    "love": "mixed",
+    "spirituality": "supportive"
+  },
+  "transit-uranus-sextile-ascendant": {},
+  "transit-uranus-sextile-midheaven": {
+    "career": "supportive",
+    "family": "mixed"
+  },
+  "transit-uranus-sextile-neptune": {
+    "spirituality": "supportive"
+  },
+  "transit-uranus-sextile-pluto": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "transit-uranus-square-ascendant": {
+    "family": "challenging",
+    "love": "mixed"
+  },
+  "transit-uranus-square-midheaven": {
+    "career": "mixed",
+    "family": "mixed"
+  },
+  "transit-uranus-square-neptune": {
+    "spirituality": "mixed"
+  },
+  "transit-uranus-square-pluto": {
+    "rest": "mixed"
+  },
+  "transit-uranus-trine-ascendant": {
+    "creativity": "supportive",
+    "spirituality": "supportive"
+  },
+  "transit-uranus-trine-midheaven": {
+    "career": "supportive"
+  },
+  "transit-uranus-trine-neptune": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "transit-uranus-trine-pluto": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "transiting-moon-new-full-extended": {},
+  "uranus-conjunct-ascendant-transit": {
+    "love": "challenging"
+  },
+  "uranus-conjunct-jupiter": {
+    "career": "supportive",
+    "money": "mixed"
+  },
+  "uranus-conjunct-jupiter-transit": {
+    "money": "mixed",
+    "spirituality": "supportive",
+    "travel": "supportive"
+  },
+  "uranus-conjunct-mars": {
+    "rest": "challenging"
+  },
+  "uranus-conjunct-mars-transit": {
+    "creativity": "supportive",
+    "rest": "challenging"
+  },
+  "uranus-conjunct-mercury": {
+    "education": "mixed",
+    "rest": "challenging",
+    "travel": "challenging"
+  },
+  "uranus-conjunct-mercury-transit": {
+    "education": "mixed",
+    "rest": "challenging",
+    "travel": "challenging"
+  },
+  "uranus-conjunct-midheaven-transit": {
+    "career": "mixed",
+    "family": "mixed"
+  },
+  "uranus-conjunct-moon": {
+    "family": "challenging",
+    "rest": "challenging"
+  },
+  "uranus-conjunct-moon-transit": {
+    "family": "challenging",
+    "love": "mixed",
+    "rest": "challenging"
+  },
+  "uranus-conjunct-natal-uranus": {
+    "spirituality": "supportive"
+  },
+  "uranus-conjunct-neptune-transit": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "uranus-conjunct-pluto-transit": {},
+  "uranus-conjunct-saturn": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "uranus-conjunct-saturn-transit": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "uranus-conjunct-sun": {
+    "rest": "challenging"
+  },
+  "uranus-conjunct-sun-transit": {
+    "rest": "challenging"
+  },
+  "uranus-conjunct-venus": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "uranus-conjunct-venus-transit": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "uranus-opposition-ascendant-transit": {
+    "business": "challenging",
+    "love": "challenging"
+  },
+  "uranus-opposition-jupiter": {
+    "love": "mixed",
+    "money": "mixed"
+  },
+  "uranus-opposition-jupiter-transit": {
+    "love": "challenging",
+    "money": "mixed"
+  },
+  "uranus-opposition-mars": {
+    "rest": "challenging"
+  },
+  "uranus-opposition-mars-transit": {
+    "love": "mixed",
+    "rest": "challenging"
+  },
+  "uranus-opposition-mercury": {
+    "education": "mixed",
+    "rest": "challenging",
+    "travel": "challenging"
+  },
+  "uranus-opposition-mercury-transit": {
+    "education": "mixed",
+    "rest": "challenging",
+    "travel": "challenging"
+  },
+  "uranus-opposition-midheaven-transit": {
+    "career": "challenging",
+    "family": "challenging"
+  },
+  "uranus-opposition-moon": {
+    "love": "challenging"
+  },
+  "uranus-opposition-moon-transit": {
+    "love": "challenging"
+  },
+  "uranus-opposition-natal-uranus": {
+    "career": "challenging",
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "uranus-opposition-neptune-transit": {
+    "spirituality": "mixed"
+  },
+  "uranus-opposition-pluto-transit": {
+    "rest": "challenging",
+    "spirituality": "mixed"
+  },
+  "uranus-opposition-saturn": {
+    "rest": "challenging"
+  },
+  "uranus-opposition-saturn-transit": {
+    "business": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "uranus-opposition-sun": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "uranus-opposition-sun-transit": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "uranus-opposition-venus": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "uranus-opposition-venus-transit": {
+    "creativity": "mixed",
+    "love": "challenging"
+  },
+  "uranus-sextile-ascendant-transit": {
+    "education": "supportive"
+  },
+  "uranus-sextile-jupiter": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "uranus-sextile-jupiter-transit": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "uranus-sextile-mars": {},
+  "uranus-sextile-mars-transit": {},
+  "uranus-sextile-mercury": {
+    "education": "supportive"
+  },
+  "uranus-sextile-mercury-transit": {
+    "education": "supportive"
+  },
+  "uranus-sextile-midheaven-transit": {
+    "career": "supportive",
+    "creativity": "supportive",
+    "family": "supportive"
+  },
+  "uranus-sextile-moon": {
+    "creativity": "supportive",
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "uranus-sextile-moon-transit": {
+    "creativity": "supportive",
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "uranus-sextile-natal-uranus": {
+    "spirituality": "supportive"
+  },
+  "uranus-sextile-neptune-transit": {
+    "education": "supportive",
+    "spirituality": "supportive"
+  },
+  "uranus-sextile-pluto-transit": {
+    "spirituality": "supportive"
+  },
+  "uranus-sextile-saturn": {
+    "career": "supportive",
+    "family": "supportive"
+  },
+  "uranus-sextile-saturn-transit": {
+    "career": "supportive",
+    "family": "supportive"
+  },
+  "uranus-sextile-sun": {
+    "rest": "supportive"
+  },
+  "uranus-sextile-sun-transit": {
+    "career": "supportive",
+    "creativity": "supportive",
+    "spirituality": "supportive"
+  },
+  "uranus-sextile-venus": {
+    "love": "supportive"
+  },
+  "uranus-sextile-venus-transit": {
+    "love": "supportive"
+  },
+  "uranus-square-ascendant-transit": {
+    "love": "mixed"
+  },
+  "uranus-square-jupiter": {
+    "money": "challenging"
+  },
+  "uranus-square-jupiter-transit": {
+    "money": "mixed"
+  },
+  "uranus-square-mars": {
+    "rest": "challenging"
+  },
+  "uranus-square-mars-transit": {
+    "rest": "challenging"
+  },
+  "uranus-square-mercury": {
+    "business": "challenging",
+    "rest": "challenging",
+    "travel": "challenging"
+  },
+  "uranus-square-mercury-transit": {
+    "business": "challenging",
+    "rest": "challenging",
+    "travel": "challenging"
+  },
+  "uranus-square-midheaven-transit": {
+    "career": "challenging",
+    "family": "challenging"
+  },
+  "uranus-square-moon": {
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "uranus-square-moon-transit": {
+    "family": "challenging",
+    "love": "challenging",
+    "relocation": "challenging"
+  },
+  "uranus-square-natal-uranus": {
+    "spirituality": "challenging"
+  },
+  "uranus-square-neptune-transit": {
+    "spirituality": "mixed"
+  },
+  "uranus-square-pluto-transit": {},
+  "uranus-square-saturn": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "uranus-square-saturn-transit": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "uranus-square-sun": {
+    "rest": "challenging"
+  },
+  "uranus-square-sun-transit": {
+    "career": "challenging",
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "uranus-square-venus": {
+    "love": "mixed"
+  },
+  "uranus-square-venus-transit": {
+    "love": "mixed"
+  },
+  "uranus-trine-ascendant-transit": {
+    "love": "supportive",
+    "spirituality": "supportive",
+    "travel": "supportive"
+  },
+  "uranus-trine-jupiter": {
+    "education": "supportive",
+    "money": "supportive",
+    "spirituality": "supportive"
+  },
+  "uranus-trine-jupiter-transit": {
+    "education": "supportive",
+    "money": "supportive",
+    "spirituality": "supportive"
+  },
+  "uranus-trine-mars": {},
+  "uranus-trine-mars-transit": {},
+  "uranus-trine-mercury": {
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "uranus-trine-mercury-transit": {
+    "business": "supportive",
+    "education": "supportive",
+    "travel": "supportive"
+  },
+  "uranus-trine-midheaven-transit": {
+    "career": "supportive"
+  },
+  "uranus-trine-moon": {
+    "family": "supportive"
+  },
+  "uranus-trine-moon-transit": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "uranus-trine-natal-uranus": {
+    "career": "mixed"
+  },
+  "uranus-trine-neptune-transit": {
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "uranus-trine-pluto-transit": {
+    "spirituality": "supportive"
+  },
+  "uranus-trine-saturn": {
+    "career": "supportive"
+  },
+  "uranus-trine-saturn-transit": {
+    "career": "supportive"
+  },
+  "uranus-trine-sun": {},
+  "uranus-trine-sun-transit": {
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "uranus-trine-venus": {
+    "love": "supportive"
+  },
+  "uranus-trine-venus-transit": {
+    "love": "supportive"
+  },
+  "venus-asc-opposition": {
+    "love": "supportive"
+  },
+  "venus-asc-sextile": {
+    "love": "supportive"
+  },
+  "venus-conjunct-ascendant-transit": {
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "venus-conjunct-jupiter-transit": {
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "venus-conjunct-mars-transit": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-conjunct-mercury-transit": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "travel": "supportive"
+  },
+  "venus-conjunct-midheaven-transit": {
+    "career": "supportive",
+    "love": "supportive"
+  },
+  "venus-conjunct-moon-transit": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "venus-conjunct-neptune-transit": {
+    "creativity": "supportive",
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "venus-conjunct-pluto-transit": {
+    "love": "mixed"
+  },
+  "venus-conjunct-saturn-transit": {
+    "love": "mixed",
+    "money": "supportive"
+  },
+  "venus-conjunct-sun-transit": {
+    "creativity": "supportive",
+    "rest": "supportive"
+  },
+  "venus-conjunct-uranus-transit": {
+    "love": "mixed",
+    "money": "mixed"
+  },
+  "venus-conjunct-venus-transit": {
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "venus-jupiter-conjunct": {
+    "love": "supportive",
+    "money": "mixed"
+  },
+  "venus-jupiter-opposition": {
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "venus-jupiter-sextile": {
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "venus-jupiter-square": {
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "venus-jupiter-trine": {
+    "love": "supportive",
+    "money": "supportive",
+    "travel": "supportive"
+  },
+  "venus-mars-conjunct": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-mars-opposition": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "venus-mars-sextile": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "venus-mars-square": {
+    "love": "challenging"
+  },
+  "venus-mars-trine": {
+    "love": "supportive"
+  },
+  "venus-mercury-conjunct": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-mercury-opposition": {
+    "love": "mixed"
+  },
+  "venus-mercury-sextile": {
+    "business": "supportive",
+    "love": "supportive"
+  },
+  "venus-mercury-square": {
+    "business": "challenging",
+    "education": "mixed"
+  },
+  "venus-mercury-trine": {
+    "business": "supportive",
+    "love": "supportive",
+    "travel": "supportive"
+  },
+  "venus-moon-conjunct": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "venus-moon-opposition": {
+    "love": "mixed"
+  },
+  "venus-moon-sextile": {
+    "family": "supportive"
+  },
+  "venus-moon-square": {
+    "family": "challenging",
+    "love": "challenging"
+  },
+  "venus-moon-trine": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "venus-neptune-conjunct": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "spirituality": "supportive"
+  },
+  "venus-neptune-delusion-risk": {
+    "love": "challenging"
+  },
+  "venus-neptune-opposition": {
+    "love": "challenging"
+  },
+  "venus-neptune-sextile": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-neptune-square": {
+    "creativity": "supportive",
+    "love": "challenging"
+  },
+  "venus-neptune-trine": {
+    "creativity": "supportive",
+    "spirituality": "mixed"
+  },
+  "venus-opposition-ascendant-transit": {
+    "business": "mixed",
+    "love": "supportive"
+  },
+  "venus-opposition-jupiter-transit": {
+    "love": "challenging",
+    "money": "challenging"
+  },
+  "venus-opposition-mars-transit": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "venus-opposition-mercury-transit": {
+    "love": "mixed"
+  },
+  "venus-opposition-midheaven-transit": {
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "venus-opposition-moon-transit": {
+    "love": "mixed"
+  },
+  "venus-opposition-neptune-transit": {
+    "love": "challenging",
+    "spirituality": "supportive"
+  },
+  "venus-opposition-pluto-transit": {
+    "love": "mixed"
+  },
+  "venus-opposition-saturn-transit": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "venus-opposition-sun-transit": {
+    "creativity": "mixed",
+    "love": "mixed"
+  },
+  "venus-opposition-uranus-transit": {
+    "love": "mixed"
+  },
+  "venus-opposition-venus-transit": {
+    "business": "challenging",
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "venus-pluto-conjunct": {
+    "love": "mixed"
+  },
+  "venus-pluto-opposition": {
+    "love": "mixed"
+  },
+  "venus-pluto-sextile": {
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "venus-pluto-square": {
+    "love": "challenging"
+  },
+  "venus-pluto-trine": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-saturn-conjunct": {
+    "love": "mixed"
+  },
+  "venus-saturn-difficult-pairing": {
+    "love": "challenging"
+  },
+  "venus-saturn-opposition": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "venus-saturn-sextile": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-saturn-square": {
+    "love": "challenging",
+    "rest": "challenging"
+  },
+  "venus-saturn-trine": {
+    "business": "supportive",
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "venus-sextile-ascendant-transit": {
+    "love": "supportive"
+  },
+  "venus-sextile-jupiter-transit": {
+    "love": "supportive",
+    "money": "supportive",
+    "rest": "supportive"
+  },
+  "venus-sextile-mars-transit": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "venus-sextile-mercury-transit": {
+    "business": "supportive",
+    "love": "supportive"
+  },
+  "venus-sextile-midheaven-transit": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "venus-sextile-moon-transit": {
+    "career": "supportive",
+    "family": "supportive",
+    "rest": "supportive"
+  },
+  "venus-sextile-neptune-transit": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "venus-sextile-pluto-transit": {
+    "love": "supportive",
+    "spirituality": "supportive"
+  },
+  "venus-sextile-saturn-transit": {
+    "business": "supportive",
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-sextile-sun-transit": {
+    "business": "supportive",
+    "career": "supportive",
+    "money": "supportive"
+  },
+  "venus-sextile-uranus-transit": {
+    "love": "mixed"
+  },
+  "venus-sextile-venus-transit": {
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "venus-square-ascendant-transit": {
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "venus-square-jupiter-transit": {
+    "love": "supportive",
+    "money": "challenging",
+    "rest": "supportive"
+  },
+  "venus-square-mars-transit": {
+    "love": "challenging"
+  },
+  "venus-square-mercury-transit": {
+    "business": "challenging",
+    "education": "supportive"
+  },
+  "venus-square-midheaven-transit": {
+    "love": "mixed"
+  },
+  "venus-square-moon-transit": {
+    "love": "mixed"
+  },
+  "venus-square-neptune-transit": {
+    "creativity": "supportive",
+    "love": "mixed"
+  },
+  "venus-square-pluto-transit": {
+    "love": "challenging"
+  },
+  "venus-square-saturn-transit": {
+    "love": "challenging"
+  },
+  "venus-square-sun-transit": {
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "venus-square-uranus-transit": {
+    "love": "mixed",
+    "money": "challenging"
+  },
+  "venus-square-venus-transit": {
+    "love": "mixed",
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "venus-sun-conjunct": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "venus-sun-opposition": {
+    "creativity": "challenging",
+    "love": "mixed",
+    "rest": "supportive"
+  },
+  "venus-sun-sextile": {
+    "career": "supportive"
+  },
+  "venus-sun-square": {
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "venus-sun-trine": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "venus-trine-ascendant-transit": {
+    "family": "supportive",
+    "love": "supportive",
+    "money": "mixed"
+  },
+  "venus-trine-jupiter-transit": {
+    "business": "challenging",
+    "money": "supportive",
+    "travel": "supportive"
+  },
+  "venus-trine-mars-transit": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-trine-mercury-transit": {
+    "business": "supportive",
+    "love": "supportive",
+    "travel": "supportive"
+  },
+  "venus-trine-midheaven-transit": {
+    "career": "supportive",
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-trine-moon-transit": {
+    "business": "supportive",
+    "family": "supportive",
+    "love": "supportive"
+  },
+  "venus-trine-neptune-transit": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "spirituality": "supportive"
+  },
+  "venus-trine-pluto-transit": {
+    "creativity": "supportive",
+    "love": "supportive"
+  },
+  "venus-trine-saturn-transit": {
+    "business": "supportive",
+    "love": "supportive"
+  },
+  "venus-trine-sun-transit": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "rest": "supportive"
+  },
+  "venus-trine-uranus-transit": {
+    "love": "mixed"
+  },
+  "venus-trine-venus-transit": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "venus-uranus-conjunct": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "money": "mixed"
+  },
+  "venus-uranus-opposition": {
+    "love": "mixed"
+  },
+  "venus-uranus-sextile": {
+    "love": "mixed"
+  },
+  "venus-uranus-square": {
+    "creativity": "supportive",
+    "love": "mixed",
+    "money": "challenging"
+  },
+  "venus-uranus-trine": {
+    "love": "mixed"
+  },
+  "venus-venus-conjunct": {
+    "love": "supportive",
+    "money": "supportive"
+  },
+  "venus-venus-opposition": {
+    "business": "challenging",
+    "love": "supportive",
+    "money": "challenging"
+  },
+  "venus-venus-sextile": {
+    "business": "supportive",
+    "love": "supportive",
+    "travel": "supportive"
+  },
+  "venus-venus-square": {
+    "love": "challenging",
+    "money": "challenging",
+    "rest": "challenging"
+  },
+  "venus-venus-trine": {
+    "creativity": "supportive",
+    "love": "supportive",
+    "rest": "supportive"
+  }
+}

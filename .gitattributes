@@ -1,0 +1,7 @@
+# Same bytes on every OS: corpus/affinity files are hashed, so line endings must not change on checkout.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.pdf binary
+*.npz binary
+*.png binary
+*.svg text eol=lf

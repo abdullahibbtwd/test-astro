@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "acg_schema.json",
+  "title": "acg.json (ACG spec 01 §7.1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "meta", "status", "absence", "bodies"],
+  "properties": {
+    "schema_version": {"const": "acg-1"},
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jd_ut", "gast_deg", "flags", "ephemeris", "node_type", "method",
+                   "sampling", "time_precision", "line_uncertainty_deg_per_min"],
+      "properties": {
+        "jd_ut": {"type": ["number", "null"]},
+        "gast_deg": {"type": ["number", "null"]},
+        "flags": {"type": "array", "items": {"type": "string"}},
+        "ephemeris": {"type": "string"},
+        "node_type": {"enum": ["mean", "true"]},
+        "method": {"const": "in_mundo_geometric_horizon"},
+        "sampling": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["lat_min", "lat_max", "lat_step"],
+          "properties": {
+            "lat_min": {"type": "number"},
+            "lat_max": {"type": "number"},
+            "lat_step": {"type": "number", "exclusiveMinimum": 0}
+          }
+        },
+        "time_precision": {"type": ["string", "null"]},
+        "line_uncertainty_deg_per_min": {"type": "number"}
+      }
+    },
+    "status": {"enum": ["ok", "absent"]},
+    "absence": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reason", "detail"],
+          "properties": {
+            "reason": {"enum": ["birth_time_not_exact", "missing_utc_instant", "ephemeris_error"]},
+            "detail": {"type": ["string", "null"]}
+          }
+        }
+      ]
+    },
+    "bodies": {"type": "array", "items": {"$ref": "#/$defs/Body"}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "absent"}}},
+      "then": {"properties": {"absence": {"type": "object"}, "bodies": {"maxItems": 0}}},
+      "else": {"properties": {"absence": {"type": "null"}, "bodies": {"minItems": 1}}}
+    }
+  ],
+  "$defs": {
+    "Vertex": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "number", "minimum": -180, "maximum": 180},
+        {"type": "number", "minimum": -90, "maximum": 90}
+      ],
+      "items": false,
+      "minItems": 2
+    },
+    "Meridian": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vertices"],
+      "properties": {"vertices": {"type": "array", "items": {"$ref": "#/$defs/Vertex"}}}
+    },
+    "Horizon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["vertices", "joins"],
+      "properties": {
+        "vertices": {"type": "array", "items": {"$ref": "#/$defs/Vertex"}},
+        "joins": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["MC_at_lat", "IC_at_lat"],
+          "properties": {
+            "MC_at_lat": {"type": ["number", "null"]},
+            "IC_at_lat": {"type": ["number", "null"]}
+          }
+        }
+      }
+    },
+    "Body": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["body", "read_in_v1", "out_of_scope", "equatorial",
+                   "circumpolar_lat_limit", "lines"],
+      "properties": {
+        "body": {"enum": ["sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",
+                          "uranus", "neptune", "pluto", "north_node"]},
+        "read_in_v1": {"type": "boolean"},
+        "out_of_scope": {"enum": [null, "acg_nodes_v1"]},
+        "equatorial": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ra", "dec"],
+          "properties": {
+            "ra": {"type": "number", "minimum": 0, "maximum": 360},
+            "dec": {"type": "number", "minimum": -90, "maximum": 90},
+            "dist": {"type": "number"}
+          }
+        },
+        "circumpolar_lat_limit": {"type": "number", "minimum": 0, "maximum": 90},
+        "lines": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["MC", "IC", "ASC", "DSC"],
+          "properties": {
+            "MC": {"$ref": "#/$defs/Meridian"},
+            "IC": {"$ref": "#/$defs/Meridian"},
+            "ASC": {"$ref": "#/$defs/Horizon"},
+            "DSC": {"$ref": "#/$defs/Horizon"}
+          }
+        }
+      }
+    }
+  }
+}

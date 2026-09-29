@@ -1,0 +1,126 @@
+{
+  "records": 435,
+  "by_scope": {
+    "angle_frame": 4,
+    "ccg": 10,
+    "line": 246,
+    "method": 9,
+    "mundane": 51,
+    "paran": 82,
+    "planet_general": 24,
+    "zenith": 9
+  },
+  "v1_retrieval_records": 283,
+  "sensitivity_high": 93,
+  "with_requires": 53,
+  "requires_kinds": {
+    "natal_point_aspect": 50,
+    "natal_point_retrograde": 1,
+    "natal_point_sign": 2,
+    "unsupported": 1,
+    "relocated_point_angular": 1
+  },
+  "reparaphrased_records": 0,
+  "dropped_nonfixed_method": 0,
+  "duplicate_fixed_dropped": 0,
+  "guards": {
+    "C-2": {
+      "pass": true,
+      "missing_fixed_ids": [],
+      "planets_failing_general": []
+    },
+    "C-3": {
+      "pass": true,
+      "failures": [],
+      "initial_failures": 0
+    },
+    "C-4": {
+      "pass": true,
+      "failures": [],
+      "initial_failures": 0,
+      "gazetteer_present": true,
+      "blocklist": {
+        "person_tokens": 247,
+        "place_tokens": 532,
+        "source_proper_nouns": 1268,
+        "phrases": 57,
+        "common": 880
+      }
+    },
+    "C-5": {
+      "pass": true,
+      "bad_line_records": [],
+      "mh_remaining": []
+    },
+    "C-6": {
+      "pass": true,
+      "blocking": false,
+      "below_2": [],
+      "below_4": [
+        "Mercury|IC"
+      ],
+      "per_bucket": {
+        "Sun|ASC": 5,
+        "Sun|DSC": 7,
+        "Sun|MC": 5,
+        "Sun|IC": 5,
+        "Moon|ASC": 5,
+        "Moon|DSC": 4,
+        "Moon|MC": 6,
+        "Moon|IC": 5,
+        "Mercury|ASC": 4,
+        "Mercury|DSC": 4,
+        "Mercury|MC": 4,
+        "Mercury|IC": 3,
+        "Venus|ASC": 7,
+        "Venus|DSC": 7,
+        "Venus|MC": 7,
+        "Venus|IC": 4,
+        "Mars|ASC": 5,
+        "Mars|DSC": 8,
+        "Mars|MC": 9,
+        "Mars|IC": 5,
+        "Jupiter|ASC": 5,
+        "Jupiter|DSC": 6,
+        "Jupiter|MC": 7,
+        "Jupiter|IC": 4,
+        "Saturn|ASC": 10,
+        "Saturn|DSC": 6,
+        "Saturn|MC": 9,
+        "Saturn|IC": 8,
+        "Uranus|ASC": 6,
+        "Uranus|DSC": 5,
+        "Uranus|MC": 6,
+        "Uranus|IC": 9,
+        "Neptune|ASC": 9,
+        "Neptune|DSC": 7,
+        "Neptune|MC": 7,
+        "Neptune|IC": 9,
+        "Pluto|ASC": 7,
+        "Pluto|DSC": 5,
+        "Pluto|MC": 5,
+        "Pluto|IC": 7
+      }
+    },
+    "C-7": {
+      "pass": true,
+      "duplicate_ids": [],
+      "schema_errors": []
+    },
+    "deterministic_classification": {
+      "pass": true,
+      "non_deterministic": [],
+      "scope_factor_consistent": true
+    },
+    "C-1": {
+      "pass": true,
+      "detail": "distance 125 chars, contiguous"
+    },
+    "C-8": {
+      "pass": true,
+      "reparaphrased_on_rerun": 0
+    }
+  },
+  "build_blocking": [],
+  "passes": true
+}

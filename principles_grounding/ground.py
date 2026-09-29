@@ -3,7 +3,15 @@
 ground.py — the Layer 2 exit contract (PRINCIPLE_GROUNDING_SPEC.md §4-§5).
 
 ``ground(records, chart, reading="natal")`` is the deterministic filter applied
-AFTER semantic retrieval and BEFORE handing off to Layer 3. It runs three
+AFTER semantic retrieval and BEFORE handing off to Layer 3.
+
+House policy (added 2026-09-21): the reading is Placidus-only. By default every
+house claim — ``house_system``, ``subject_house_system``,
+``placement_house_system`` — is verified against the chart's **placidus** sector
+and rulers regardless of the house system the source book used
+(``house_policy="placidus"``). A whole-sign record therefore survives only when
+its house is also the planet's Placidus house. Pass ``house_policy=None`` to
+verify each record in its own declared system (the pre-2026-09 behaviour). It runs three
 sequential gates and returns only principles whose subject is verifiably true of
 the chart and whose dependencies the chart can satisfy:
 
@@ -49,6 +57,18 @@ _TRADITION_SCHEME = {"modern": "modern", "traditional": "whole_sign"}
 # house_system -> the relation scheme that house system implies.
 _HS_SCHEME = {"placidus": "modern", "whole_sign": "whole_sign"}
 
+# The house system every house claim is verified against (see module docstring).
+# None = honour each record's own declared system.
+DEFAULT_HOUSE_POLICY: Optional[str] = "placidus"
+HOUSE_POLICIES = ("placidus", "whole_sign")
+_HOUSE_SYSTEM_KEYS = ("house_system", "subject_house_system", "placement_house_system")
+
+
+def _hs(about: dict, key: str, policy: Optional[str]) -> Optional[str]:
+    """The house system to verify ``about[key]`` in: the policy when set, else
+    the record's own declaration."""
+    return policy or about.get(key)
+
 
 # ---------------------------------------------------------------------------
 # Chart access helpers (points is a LIST keyed by name; see chart_types.py)
@@ -92,12 +112,14 @@ class GroundingResult:
     drops: list[DropLog]
     chart: dict
     reading: str
+    house_policy: Optional[str] = DEFAULT_HOUSE_POLICY
 
     def report(self) -> dict:
         """Diagnostic report — drop accounting (secondary output)."""
         from collections import Counter
         return {
             "reading": self.reading,
+            "house_policy": self.house_policy,
             "kept": len(self.kept),
             "dropped": len(self.drops),
             "drops_by_gate": dict(Counter(d.gate for d in self.drops)),
@@ -111,6 +133,7 @@ class GroundingResult:
         This is the primary output: the personal principles true of the chart."""
         return {
             "reading": self.reading,
+            "house_policy": self.house_policy,   # the system every house was verified in
             "kept_count": len(self.kept),
             "principles": self.kept,                  # flat list of full records
             "bundled_by_factor": self.bundles,        # same records, grouped
@@ -155,13 +178,16 @@ class InvariantViolation(Exception):
 
 
 def _reconcile_house_lord_relative(about: dict, chart: dict,
-                                   pts: dict[str, dict]) -> tuple[bool, str, Any]:
+                                   pts: dict[str, dict],
+                                   house_policy: Optional[str] = DEFAULT_HOUSE_POLICY
+                                   ) -> tuple[bool, str, Any]:
     """Spec §3.1: resolve the lord of subject_house from sector_rulers, then keep
     iff that lord's actual placement equals placement_house. The ruling planet is
-    chart-derived (never stored), so this is a full reconciliation, not passthrough."""
-    shs = about.get("subject_house_system")
+    chart-derived (never stored), so this is a full reconciliation, not passthrough.
+    Under a house policy both the lord lookup and the placement use that system."""
+    shs = _hs(about, "subject_house_system", house_policy)
     sh = about.get("subject_house")
-    phs = about.get("placement_house_system")
+    phs = _hs(about, "placement_house_system", house_policy)
     ph = about.get("placement_house")
 
     rulers = (chart.get("sector_rulers") or {}).get(shs) or {}
@@ -186,7 +212,8 @@ def _reconcile_house_lord_relative(about: dict, chart: dict,
 
 
 def _gate_b(record: dict, chart: dict, pts: dict[str, dict],
-            strict_invariants: bool = False) -> tuple[bool, str, Any]:
+            strict_invariants: bool = False,
+            house_policy: Optional[str] = DEFAULT_HOUSE_POLICY) -> tuple[bool, str, Any]:
     """Returns (passed, reason, relevant_chart_fact). Raises InvariantViolation
     (when strict) for a reconcilable type missing its required field; otherwise
     surfaces it as a distinct INVARIANT_VIOLATION drop, never a None-mismatch."""
@@ -218,7 +245,7 @@ def _gate_b(record: dict, chart: dict, pts: dict[str, dict],
             {"point": point, "house": about.get("house")}
 
     if ft == "house_lord_relative":
-        return _reconcile_house_lord_relative(about, chart, pts)
+        return _reconcile_house_lord_relative(about, chart, pts, house_policy)
 
     # --- placements: sign / house / both / node -----------------------------
     if ft in ("planet_in_sign", "planet_in_house", "planet_in_sign_and_house",
@@ -238,7 +265,7 @@ def _gate_b(record: dict, chart: dict, pts: dict[str, dict],
 
     if ft in ("planet_in_house",) or (ft == "node" and "house" in about):
         p = pts[about["point"]]
-        hs = about.get("house_system")
+        hs = _hs(about, "house_system", house_policy)
         sector = (p.get("sector") or {}).get(hs)
         if sector is None:
             return False, f"chart has no {hs} sector for {about['point']}", \
@@ -252,7 +279,7 @@ def _gate_b(record: dict, chart: dict, pts: dict[str, dict],
 
     if ft == "planet_in_sign_and_house":
         p = pts[about["point"]]
-        hs = about.get("house_system")
+        hs = _hs(about, "house_system", house_policy)
         sector = (p.get("sector") or {}).get(hs)
         fact = {"point": about["point"], "sign": p.get("sign"),
                 "house_system": hs, "sector": sector}
@@ -325,7 +352,7 @@ def _gate_b(record: dict, chart: dict, pts: dict[str, dict],
         ), {"ascendant": asc}
 
     if ft == "house_ruler":
-        hs = about.get("house_system")
+        hs = _hs(about, "house_system", house_policy)
         house = about.get("house")
         rulers = (chart.get("sector_rulers") or {}).get(hs) or {}
         block = rulers.get(str(house))
@@ -392,7 +419,10 @@ def _gate_c(record: dict, chart: dict, pts: dict[str, dict]) -> tuple[bool, str]
 # Bundling (spec §5: keyed by the chart factor that grounded them)
 # ---------------------------------------------------------------------------
 
-def _bundle_key(about: dict) -> str:
+def _bundle_key(about: dict, house_policy: Optional[str] = DEFAULT_HOUSE_POLICY) -> str:
+    if house_policy:
+        # label houses in the system they were actually verified in
+        about = {**about, **{k: house_policy for k in _HOUSE_SYSTEM_KEYS if k in about}}
     ft = about.get("factor_type")
     if ft in ("planet_in_sign",) or (ft == "node" and "sign" in about and "house" not in about):
         return f"{about.get('point')} in {about.get('sign')}"
@@ -425,10 +455,16 @@ def _bundle_key(about: dict) -> str:
 # ---------------------------------------------------------------------------
 
 def ground(records: list[dict], chart: dict, reading: str = "natal",
-           strict_invariants: bool = False) -> GroundingResult:
+           strict_invariants: bool = False,
+           house_policy: Optional[str] = DEFAULT_HOUSE_POLICY) -> GroundingResult:
     """Run gates A→B→C. With ``strict_invariants`` an INVARIANT_VIOLATION raises
     (build-time tripwire); otherwise it is logged as a distinct drop gate so it
-    can never masquerade as a subject mismatch (spec §4 precondition)."""
+    can never masquerade as a subject mismatch (spec §4 precondition).
+    ``house_policy`` is the house system every house claim is verified against
+    (default placidus; None = each record's own system)."""
+    if house_policy is not None and house_policy not in HOUSE_POLICIES:
+        raise ValueError(f"house_policy must be one of {HOUSE_POLICIES} or None, "
+                         f"got {house_policy!r}")
     allowed = _READING_DOMAINS.get(reading, {"natal"})
     pts = _point_index(chart)
     kept: list[dict] = []
@@ -446,7 +482,8 @@ def ground(records: list[dict], chart: dict, reading: str = "natal",
             continue
 
         # Gate B (with invariant precondition)
-        ok, reason, fact = _gate_b(rec, chart, pts, strict_invariants=strict_invariants)
+        ok, reason, fact = _gate_b(rec, chart, pts, strict_invariants=strict_invariants,
+                                   house_policy=house_policy)
         if reason.startswith("INVARIANT_VIOLATION"):
             drops.append(DropLog(pid, "INVARIANT_VIOLATION", reason, about, fact))
             continue
@@ -461,10 +498,10 @@ def ground(records: list[dict], chart: dict, reading: str = "natal",
             continue
 
         kept.append(rec)
-        bundles.setdefault(_bundle_key(about), []).append(rec)
+        bundles.setdefault(_bundle_key(about, house_policy), []).append(rec)
 
     return GroundingResult(kept=kept, bundles=bundles, drops=drops,
-                           chart=chart, reading=reading)
+                           chart=chart, reading=reading, house_policy=house_policy)
 
 
 def main() -> None:
@@ -482,6 +519,10 @@ def main() -> None:
                                                           "chart.json")))
     ap.add_argument("--reading", default="natal",
                     choices=list(_READING_DOMAINS.keys()))
+    ap.add_argument("--house-policy", default=DEFAULT_HOUSE_POLICY,
+                    choices=list(HOUSE_POLICIES) + ["record"],
+                    help="house system every house claim is verified against "
+                         "(default placidus; 'record' = each record's own system)")
     ap.add_argument("--out", default=os.path.join(here, "personal_principles.json"),
                     help="PRIMARY output: the kept personal principles for the chart")
     ap.add_argument("--drop-report", dest="drop_report",
@@ -494,7 +535,8 @@ def main() -> None:
     with open(args.chart, encoding="utf-8") as fh:
         chart = json.load(fh)
 
-    result = ground(records, chart, reading=args.reading)
+    policy = None if args.house_policy == "record" else args.house_policy
+    result = ground(records, chart, reading=args.reading, house_policy=policy)
 
     # PRIMARY output — the kept personal principles, bundled by chart factor.
     payload = result.kept_payload()
@@ -506,8 +548,9 @@ def main() -> None:
         with open(args.drop_report, "w", encoding="utf-8", newline="\n") as fh:
             json.dump(result.report(), fh, ensure_ascii=False, indent=2)
 
-    print(f"reading={result.reading}: {len(result.kept)} personal principles "
-          f"grounded to the chart ({len(result.drops)} dropped)")
+    print(f"reading={result.reading} house_policy={result.house_policy}: "
+          f"{len(result.kept)} personal principles grounded to the chart "
+          f"({len(result.drops)} dropped)")
     print(f"-> {args.out}")
     print("\ngrounded principles by chart factor:")
     for factor, recs in result.bundles.items():

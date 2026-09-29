@@ -23,8 +23,8 @@ Two kinds of strings appear in this layer. They are not interchangeable.
   `is_diurnal`, `scheme`, etc.), and the output JSON keys. These are stable contract keys.
   Once written here they are locked; renaming any of them breaks the render contract.
 
-The twelve section keys defined in §2 become foreign keys the app renders against. Treat
-them with the same discipline as chart domain values: locked.
+The seventeen section keys defined in §2 become foreign keys the app renders against.
+Treat them with the same discipline as chart domain values: locked.
 
 ---
 
@@ -65,6 +65,10 @@ Top-level shape:
   may be used for logging/QA grouping.
 - `reading` is the scope tag (`"natal"` for this version). `kept_count` must equal
   `len(principles)`; assert it.
+- `house_policy` (since 2026-09-21) is `"placidus"`: L3 verified **every** house claim
+  against the Placidus placement, whatever `house_system` the source book declared. A
+  record's `about.*house_system` is therefore provenance only; L4 never routes on it
+  and strips it from the prompt view.
 
 Each record in `principles` carries the dataset fields plus the two grounding blocks
 (`about`, `requires`) conforming to `grounding_schema.json`:
@@ -108,35 +112,53 @@ in `grounding_schema.json`); §3 routes on exactly those fields. `requires`,
 
 ## 2. Section model
 
-Twelve sections, in two movements. Order below is the canonical render order.
+**Basis: modern astrology.** Houses are **Placidus only** — the grounding gate
+(`ground.py`, `house_policy="placidus"`) verifies every house claim against the Placidus
+placement, so L4 never sees a house that is not the Placidus house and never mentions a
+house system to the reader. All ten planets are full participants — Uranus, Neptune and
+Pluto included — plus the lunar nodes. House rulership names the traditional ruler and,
+for Scorpio / Aquarius / Pisces cusps, the modern co-ruler (Pluto / Uranus / Neptune)
+carried by `chart.sector_rulers.placidus[h].modern_ruler`.
+
+Seventeen sections, in two movements. Order below is the canonical render order.
 
 ### Movement 1 — structural portrait ("who you are")
 | key | covers (chart factors) |
 |---|---|
-| `core_identity` | Sun, Moon, and the Ascendant ruler (chart ruler). Luminaries + chart ruler as the spine. |
+| `core_identity` | Sun and Moon **by sign**, the Ascendant, the chart ruler(s) (1st-house ruler + modern co-ruler). The spine. |
+| `sun_house` | **Short note** (3–5 sentences): the Sun's Placidus house — where identity, vitality and purpose are focused. |
+| `moon_house` | **Short note** (3–5 sentences): the Moon's Placidus house — where emotional needs and safety are focused. |
 | `inner_drives` | Mercury, Venus, Mars — mind, values/attraction, will/action. |
-| `chart_shape` | Chart-level aggregate: dominant element/modality, `is_diurnal` (sect) condition, hemisphere emphasis, tightest aspect patterns / configurations. |
+| `chart_shape` | Chart-level aggregate (dominant element/modality, sect, hemisphere emphasis, tightest configurations) **and** Jupiter, Saturn, Uranus, Neptune, Pluto and the nodes read individually by sign and house as personal factors. |
 
-### Movement 2 — life-domain translation ("where it lands")
-| key | houses | theme |
-|---|---|---|
-| `identity_body` | H1 | self, vitality, presentation |
-| `resources_values` | H2 + H8 | own resources / shared resources, debt, depth |
-| `mind_communication` | H3 + H9 | near mind / far mind, learning, belief |
-| `home_roots` | H4 | origins, family, foundation, private base |
-| `creativity_pleasure` | H5 | creativity, romance, children, play |
-| `daily_work` | H6 | daily work, service, health, routine |
-| `relationships` | H7 | partnership, the other |
-| `vocation_public` | H10 | vocation, public role, calling, reputation |
-| `community_meaning` | H11 + H12 | hopes/community / retreat, the hidden, transcendence |
+### Movement 2 — one section per Placidus house ("where it lands")
+| key | house | reader-facing name (EN) | reader-facing name (TR) |
+|---|---|---|---|
+| `identity` | H1 | Identity | Kimlik |
+| `values_money` | H2 | Values and Money | Değerler ve Para |
+| `communication_learning` | H3 | Communication, Studying, Siblings | İletişim, Öğrenim ve Kardeşler |
+| `family_home` | H4 | Family and Home | Aile ve Yuva |
+| `joy_creativity_children` | H5 | Joy, Artistic Talents and Kids | Neşe, Sanatsal Yetenekler ve Çocuklar |
+| `health_routine_pets` | H6 | Health, Routine, Pets | Sağlık, Rutin ve Evcil Hayvanlar |
+| `partnerships` | H7 | Partnerships | Ortaklıklar |
+| `transformation_intimacy` | H8 | Transformation and Intimacy | Dönüşüm ve Yakınlık |
+| `travel_philosophy` | H9 | Distant Travels and Philosophy | Uzak Seyahatler ve Felsefe |
+| `status_vocation` | H10 | Social Status and Vocation | Toplumsal Statü ve Meslek |
+| `friendships_future` | H11 | Friendships and the Future | Arkadaşlıklar ve Gelecek |
+| `subconscious_solitude` | H12 | Subconscious and Solitary | Bilinçaltı ve Yalnızlık |
 
 Notes:
-- H6 (`daily_work`) and H10 (`vocation_public`) are **separate** sections. Do not merge them.
-- The paired sections (2/8, 3/9, 11/12) read each pair as one coherent domain, not as
-  two fragments.
+- Every house has its own section; there are no paired houses any more. Each house
+  section covers the house's meaning, **every planet placed in it (outer planets
+  included)**, and the cusp sign with its ruler(s) and their placement.
+- `sun_house` / `moon_house` are exempt from the §5.2 callback-trimming: they are the
+  reading's deliberately short "luminary by house" notes and must stay self-contained.
 - A section with no principles routed to it (rare, but possible for sparse charts)
   is **omitted entirely** from the output — not emitted empty. The no-hallucination contract
   forbids writing a section with nothing to ground it.
+- Section titles are display-only (`l4_render.py`). House sections render as
+  "N. Ev — <name>" / "House N — <name>"; the luminary notes render with the actual house
+  ("Güneş 9. Evde" / "Sun in the 9th House") read from the §6 `house` field.
 
 ---
 
@@ -151,31 +173,34 @@ own so the section calls run in parallel with no cross-dependencies.
 
 - **`section_for_point(p)`** — Movement-1 home of a point:
   - Sun, Moon → `core_identity`
-  - the Ascendant-ruler point (chart ruler; resolve via `axes`/`sector_rulers` in `chart`)
-    → `core_identity`
+  - each **chart ruler** — the placidus 1st-house `ruler` **and** its `modern_ruler`
+    when different (resolve via `sector_rulers` in `chart`) → `core_identity`
   - Mercury, Venus, Mars → `inner_drives`
   - Jupiter, Saturn, Uranus, Neptune, Pluto, North Node, South Node → `chart_shape`
+- **`luminary_section(p)`** — Sun → `sun_house`, Moon → `moon_house` (house records only).
 - **`domain_section_for_house(h)`** — Movement-2 home of a house number, per the §2 map
-  (e.g. 2→`resources_values`, 7→`relationships`, 10→`vocation_public`).
-- **House-system rule (locked):** when an `about` block carries a house under a
-  `*_house_system`, route on **`placidus`** records for domain placement. `whole_sign`
-  house records are **still routed** to the same domain section, but flagged
-  `texture: classical` (see §4 — they read as classical texture, never as the domain's
-  verdict). If only a `whole_sign` record exists for a placement, it may set the domain
-  read; if both exist, placidus governs and whole_sign is texture.
+  (one section per house: 1→`identity`, 2→`values_money`, … 12→`subconscious_solitude`).
+- **House policy (locked): Placidus.** L3 has already verified every house claim in
+  Placidus (§1 `house_policy`). `about.*house_system` is provenance; the router never
+  branches on it and no record is "classical texture" merely for coming from a whole-sign
+  source. `texture: classical` remains for dignities and `house_lord_relative` (classical
+  apparatus by construction).
 - **Point-occupancy & rulership (from `chart`, not from `about`):** independently of the
-  rules below, for every point `p` in the chart, also route **all** of `p`'s routed
-  principles to `domain_section_for_house(house_of(p))` and to
-  `domain_section_for_house(h)` for every house `h` that `p` rules (`sector_rulers`).
-  Use the **placidus** `sector` for occupancy. (This is what makes Venus-in-H7 land in
-  both `inner_drives` and `relationships`.)
+  rules below, for every subject point `p` of a record, also route the record to
+  `domain_section_for_house(house_of(p))` and to `domain_section_for_house(h)` for every
+  house `h` that `p` rules — as traditional `ruler` **or** as `modern_ruler`. Use the
+  **placidus** `sector` for occupancy. (This is what makes Venus-in-H7 land in both
+  `inner_drives` and `partnerships`, and Pluto material land in the house Pluto occupies.)
 
 ### 3.1 Routing by `about.factor_type`
 
 1. **`planet_in_sign`** → `section_for_point(about.point)`.
-2. **`planet_in_house`** → `section_for_point(about.point)` **and**
-   `domain_section_for_house(about.house)` (apply the house-system rule).
-3. **`planet_in_sign_and_house`** → same as `planet_in_house` (both homes).
+2. **`planet_in_house`** → `domain_section_for_house(about.house)` **and** either
+   `luminary_section(about.point)` when the point is the Sun or the Moon (the house record
+   feeds the short "by house" note, not `core_identity`, which reads the luminaries by
+   sign) or `section_for_point(about.point)` otherwise.
+3. **`planet_in_sign_and_house`** → `section_for_point`, `luminary_section` (if a luminary)
+   **and** the house domain.
 4. **`dignity`** → `section_for_point(about.point)`. (Dignity is character/condition of the
    point; it is classical apparatus → flag `texture: classical`.)
 5. **`node`** → `section_for_point(about.point)` (Nodes resolve to `chart_shape`) **and**, if
@@ -185,7 +210,7 @@ own so the section calls run in parallel with no cross-dependencies.
    If both endpoints are among {Sun, Moon, Mercury, Venus, Mars}, also `inner_drives`.
    The aspect additionally informs `chart_shape` (configuration).
 7. **`ascendant`** (keyed on `about.ascendant_sign`) → `core_identity` **and**
-   `identity_body` (H1). The rising sign is both spine and the H1 domain.
+   `identity` (H1). The rising sign is both spine and the H1 section.
 8. **`house_ruler`** (`about.point` rules `about.house`) →
    `domain_section_for_house(about.house)` **and** `section_for_point(about.point)`.
 9. **`house_domain`** — **polymorphic, branch on which key is present** (schema allows
@@ -194,13 +219,15 @@ own so the section calls run in parallel with no cross-dependencies.
      `section_for_point(about.point)`. **Movement 1.** (These are *not* house-domain reads
      despite the type name; they describe the point's elemental character.)
    - if `about.house` present (genuine house-domain) →
-     `domain_section_for_house(about.house)` (apply house-system rule). **Movement 2.**
+     `domain_section_for_house(about.house)` **Movement 2** — **and** `luminary_section(L)`
+     for every luminary `L` whose placidus house is `about.house` (the house's meaning
+     grounds the luminary's short note).
 10. **`house_lord_relative`** (no `point`; keyed on `subject_house` + `placement_house`) →
     `domain_section_for_house(about.subject_house)` — the **ruled** domain (how that house's
     lord disposes its affairs). Route on `subject_house`, not `placement_house`. Records are
-    whole-sign → flag `texture: classical`.
+    classical apparatus → flag `texture: classical`.
     *Note: in the current dataset only `subject_house: 1` is populated, so in practice these
-    land in `identity_body`. The rule generalizes if more are added later.*
+    land in `identity`. The rule generalizes if more are added later.*
 11. **`general`** → **sub-route by `topic_tags`**, do not dump wholesale into one section.
     `general` is the largest kept slice and is heterogeneous (chart-ruler material,
     angle/MC material, generational outer-planet texture, and interpretive methodology).
@@ -209,11 +236,11 @@ own so the section calls run in parallel with no cross-dependencies.
     - tags include **Midheaven / MC / MC ruler** → `vocation_public`.
     - tags name a **specific house lord** (e.g. "lord of 2nd house", "lord of 3rd house") →
       `domain_section_for_house(that house)`.
-    - tags are **generational / outer-planet** (Uranus, Neptune, Pluto, "generational") →
-      `chart_shape`, marked low-salience (generational material is backdrop, never a
-      personal verdict).
-    - tags reference a **specific personal point or luminary** (Sun, Moon, Mercury, Venus,
-      Mars) without a house → `section_for_point(that point)`.
+    - tags name **one or two specific planets** (any of the ten — Uranus, Neptune and
+      Pluto included; in the modern reading the outer planets are personal factors, never
+      mere backdrop) → `section_for_point(that planet)` **and** the point-occupancy &
+      rulership sections of that planet (§3.0). Naming three or more planets signals
+      class-level methodology → default bucket.
     - **default** → `chart_shape` (interpretive methodology / whole-chart weighting:
       element balance, orbs, dignity modulation, aspect priority). These are the
       "how to read the chart" principles and belong with overall shape.
@@ -256,8 +283,12 @@ Generation rules inside each section call:
   Soft separation: weave classical material in as enrichment and cultural color. **Never
   label** anything "modern" or "classical" to the reader. No tradition names surface in the
   output text. A principle arrives marked `texture: classical` when it is classical
-  apparatus (dignities, whole-sign houses, lord-relative, sect) — treat those as texture by
-  construction: they may color the read but must never carry the section's verdict alone.
+  apparatus (dignities, lord-relative, sect) — treat those as texture by construction:
+  they may color the read but must never carry the section's verdict alone.
+- **Framework: modern astrology, Placidus houses.** Never name a house system to the
+  reader. Uranus, Neptune and Pluto are read by house (and sign as background) as personal
+  factors whenever principles support it. Rulership names the traditional ruler with the
+  modern co-ruler alongside (Pluto/Mars, Uranus/Saturn, Neptune/Jupiter).
 - **Tradition priority on conflict:** when a `modern` and a `traditional` principle in the
   same section disagree on verdict, the modern reading governs the actual interpretation;
   the classical one may still contribute texture but must not set the verdict. (This mirrors
@@ -287,8 +318,10 @@ It is a rewrite/prune pass — **it never adds interpretive claims.**
 
 2. **Cross-section dedup** — when the same chart fact surfaces in multiple sections
    (e.g. Venus-in-H7 in both `inner_drives` and `relationships`):
-   - Pick the **canonical home** = the Movement-2 **domain section** (the "where it lands"
-     section), not the structural section. Domain wins.
+   - Pick the **canonical home** = the Movement-2 **house section** (the "where it lands"
+     section), not the structural section. Domain wins. **Exception:** `sun_house` and
+     `moon_house` are deliberately short dedicated notes — keep them intact (3–5
+     sentences), never trim them to a callback.
    - In the canonical home, keep the full treatment.
    - In the other section, trim to a one-line callback that points forward — do **not**
      delete the fact silently, and do not repeat the full treatment.
@@ -341,8 +374,10 @@ simply do not appear.
 }
 ```
 
-- `key` — one of the twelve §2 keys. Locked foreign key.
+- `key` — one of the seventeen §2 keys. Locked foreign key.
 - `movement` — `1` or `2`.
+- `house` — present on every Movement-2 section (its house number) and on `sun_house` /
+  `moon_house` (the luminary's Placidus house). Absent on the other Movement-1 sections.
 - `text_tr` — the synthesized Turkish reading for the section. This is what renders.
 - `claims[]` — the internal trace. `claim_span` references the part of `text_tr` it grounds;
   `principle_ids` are the supporting `principle_id`s. **This array is retained for QA and
@@ -364,7 +399,7 @@ These hold at generation time and must be enforced, not assumed.
    (and tradition-name equivalents) never appear in `text_tr`.
 4. **No empty sections.** A section with no routed principles is omitted, never emitted blank.
 5. **Domain values are never renamed in code.** Only translated inside reading text.
-6. **Section keys are locked.** The twelve keys are the render contract.
+6. **Section keys are locked.** The seventeen keys are the render contract.
 7. **Exact-time only.** `precision_tier` is always `"exact"` in this version; do not
    implement approximate/unknown handling.
 

@@ -1,0 +1,310 @@
+{
+ "policy": "viable_world_v1",
+ "version": 2,
+ "spec": "ACG/ACG_11_DESTINATIONS_SPEC.md §3",
+ "semantics": "Rules are evaluated in order; the first rule whose 'match' holds decides. action 'exclude' -> not allowed; 'allow' -> allowed; 'allow_if' -> allowed iff every key of 'condition' holds (AND). Condition keys: countries (dest.country in list), federal_district_in (dest.admin1_id looked up in this rule's federal_districts table), size_in, coast_km_max, med_coast_km_max (null distance fails), geonameids. Country = destinations.json 'country' (Natural Earth Turkey-POV code): Canary Islands, Ceuta and Melilla carry ES, Madeira PT, Reunion/Mayotte FR, Western Sahara MA, Crimea/Sevastopol UA, Northern Cyprus XN, Hong Kong HK, Macau MO, Taiwan TW. Users can't widen the policy; user filters only narrow it.",
+ "rules": [
+  {
+   "id": "P1",
+   "area": "North Korea, Mongolia, Afghanistan",
+   "match": {
+    "countries": [
+     "KP",
+     "MN",
+     "AF"
+    ]
+   },
+   "action": "exclude",
+   "note": "Afghanistan added 2026-09-28 (Radul)."
+  },
+  {
+   "id": "P2",
+   "area": "Russia: European Russia only",
+   "match": {
+    "countries": [
+     "RU"
+    ]
+   },
+   "action": "allow_if",
+   "condition": {
+    "federal_district_in": [
+     "Central",
+     "Northwestern",
+     "Southern",
+     "North Caucasian",
+     "Volga"
+    ]
+   },
+   "note": "Natural Earth's admin-1 'region' attribute is NOT the current federal district (e.g. Krasnodar is tagged 'Volga'; Buryatia/Zabaykalsky are 'Siberian' but have been Far Eastern since 2018), so the district is this explicit admin1_id table. Crimea (RUS-283) and Sevastopol (RUS-5482) are UA in the Turkey POV index and never reach this rule. A Russian destination with no admin1_id is excluded.",
+   "federal_districts": {
+    "RUS+99?": "Ural",
+    "RUS-2167": "Siberian",
+    "RUS-2279": "Southern",
+    "RUS-2280": "North Caucasian",
+    "RUS-2303": "North Caucasian",
+    "RUS-2304": "North Caucasian",
+    "RUS-2305": "North Caucasian",
+    "RUS-2306": "North Caucasian",
+    "RUS-2321": "Far Eastern",
+    "RUS-2324": "Northwestern",
+    "RUS-2333": "Northwestern",
+    "RUS-2334": "Northwestern",
+    "RUS-2335": "Northwestern",
+    "RUS-2336": "Northwestern",
+    "RUS-2337": "Northwestern",
+    "RUS-2342": "Central",
+    "RUS-2343": "Central",
+    "RUS-2353": "Northwestern",
+    "RUS-2354": "Northwestern",
+    "RUS-2355": "Central",
+    "RUS-2356": "Central",
+    "RUS-2357": "Volga",
+    "RUS-2358": "Central",
+    "RUS-2359": "Northwestern",
+    "RUS-2360": "Central",
+    "RUS-2361": "Central",
+    "RUS-2362": "Central",
+    "RUS-2363": "Central",
+    "RUS-2364": "Central",
+    "RUS-2365": "Central",
+    "RUS-2366": "Central",
+    "RUS-2367": "Southern",
+    "RUS-2368": "Central",
+    "RUS-2369": "Southern",
+    "RUS-2370": "Central",
+    "RUS-2371": "Southern",
+    "RUS-2372": "Volga",
+    "RUS-2373": "Volga",
+    "RUS-2374": "Central",
+    "RUS-2375": "Central",
+    "RUS-2376": "Central",
+    "RUS-2377": "Central",
+    "RUS-2378": "Volga",
+    "RUS-2379": "Ural",
+    "RUS-2380": "Ural",
+    "RUS-2381": "Northwestern",
+    "RUS-2382": "Ural",
+    "RUS-2383": "Northwestern",
+    "RUS-2384": "Volga",
+    "RUS-2385": "Volga",
+    "RUS-2386": "Ural",
+    "RUS-2387": "Volga",
+    "RUS-2388": "Southern",
+    "RUS-2389": "Volga",
+    "RUS-2390": "Southern",
+    "RUS-2391": "Volga",
+    "RUS-2392": "Volga",
+    "RUS-2393": "Volga",
+    "RUS-2394": "Volga",
+    "RUS-2395": "Volga",
+    "RUS-2396": "Ural",
+    "RUS-2397": "Siberian",
+    "RUS-2398": "Ural",
+    "RUS-2399": "Siberian",
+    "RUS-2400": "Siberian",
+    "RUS-2401": "Siberian",
+    "RUS-2402": "Siberian",
+    "RUS-2403": "Siberian",
+    "RUS-2416": "North Caucasian",
+    "RUS-2417": "North Caucasian",
+    "RUS-2602": "Siberian",
+    "RUS-2603": "Siberian",
+    "RUS-2605": "Siberian",
+    "RUS-2606": "Far Eastern",
+    "RUS-2609": "Far Eastern",
+    "RUS-2610": "Far Eastern",
+    "RUS-2611": "Far Eastern",
+    "RUS-2612": "Far Eastern",
+    "RUS-2613": "Far Eastern",
+    "RUS-2614": "Far Eastern",
+    "RUS-2615": "Far Eastern",
+    "RUS-2616": "Far Eastern",
+    "RUS-3200": "Volga",
+    "RUS-3468": "Far Eastern"
+   }
+  },
+  {
+   "id": "P3",
+   "area": "China (mainland)",
+   "match": {
+    "countries": [
+     "CN"
+    ]
+   },
+   "action": "allow_if",
+   "condition": {
+    "size_in": [
+     "big"
+    ],
+    "coast_km_max": 300
+   },
+   "note": "Hong Kong (HK), Macau (MO) and Taiwan (TW) have their own codes and follow the normal rules (P7)."
+  },
+  {
+   "id": "P4",
+   "area": "Africa",
+   "match": {
+    "countries": [
+     "AO",
+     "BF",
+     "BI",
+     "BJ",
+     "BW",
+     "CD",
+     "CF",
+     "CG",
+     "CI",
+     "CM",
+     "CV",
+     "DJ",
+     "DZ",
+     "EG",
+     "ER",
+     "ET",
+     "GA",
+     "GH",
+     "GM",
+     "GN",
+     "GQ",
+     "GW",
+     "KE",
+     "KM",
+     "LR",
+     "LS",
+     "LY",
+     "MA",
+     "MG",
+     "ML",
+     "MR",
+     "MU",
+     "MW",
+     "MZ",
+     "NA",
+     "NE",
+     "NG",
+     "RW",
+     "SC",
+     "SD",
+     "SH",
+     "SL",
+     "SN",
+     "SO",
+     "SS",
+     "ST",
+     "SZ",
+     "TD",
+     "TG",
+     "TN",
+     "TZ",
+     "UG",
+     "ZA",
+     "ZM",
+     "ZW"
+    ]
+   },
+   "action": "allow_if",
+   "condition": {
+    "any_of": [
+     {
+      "countries": [
+       "MA",
+       "DZ",
+       "TN",
+       "LY",
+       "EG"
+      ],
+      "med_coast_km_max": 100
+     },
+     {
+      "island": true
+     }
+    ]
+   },
+   "note": "Countries = GeoNames continent AF that exist in countries.json. med_coast_km = distance to the Mediterranean subset of Natural Earth ne_10m_geography_marine_polys (Mediterranean Sea, Alboran Sea, Strait of Gibraltar, Balearic, Ligurian, Tyrrhenian, Ionian, Adriatic, Aegean, Sea of Crete, Gulf of Sidra, Gulf of Gabes). Canary Islands, Ceuta, Melilla (ES) and Madeira (PT) are not in the list, so they are treated as Spain/Portugal. Islands are allowed (Radul, 2026-09-28): a destination whose point is not on a continental landmass (>= 3 million km2 in Natural Earth 1:50m land) passes, e.g. Mauritius, Seychelles, Zanzibar, Madagascar, Cabo Verde, Comoros, Sao Tome."
+  },
+  {
+   "id": "P5",
+   "area": "Middle East",
+   "match": {
+    "countries": [
+     "TR",
+     "IL",
+     "SA",
+     "AE",
+     "QA",
+     "AZ",
+     "BH",
+     "KW",
+     "OM",
+     "IR",
+     "IQ",
+     "SY",
+     "LB",
+     "JO",
+     "YE",
+     "PS"
+    ]
+   },
+   "action": "allow_if",
+   "condition": {
+    "countries": [
+     "TR",
+     "IL",
+     "SA",
+     "AE",
+     "QA",
+     "AZ",
+     "BH",
+     "KW",
+     "OM"
+    ]
+   },
+   "note": "Allowed: TR, IL, SA, AE, QA, AZ + Gulf hubs BH, KW, OM. Excluded: IR, IQ, SY, LB, JO, YE, PS. Egypt is decided by P4."
+  },
+  {
+   "id": "P6",
+   "area": "Central Asia",
+   "match": {
+    "countries": [
+     "KZ",
+     "UZ",
+     "KG",
+     "TJ",
+     "TM"
+    ]
+   },
+   "action": "allow_if",
+   "condition": {
+    "geonameids": [
+     1526273,
+     1526384,
+     1512569,
+     1216265,
+     1217662,
+     1528675,
+     1221874,
+     162183
+    ]
+   },
+   "geonameid_names": {
+    "1526273": "Astana",
+    "1526384": "Almaty",
+    "1512569": "Tashkent",
+    "1216265": "Samarkand",
+    "1217662": "Bukhara",
+    "1528675": "Bishkek",
+    "1221874": "Dushanbe",
+    "162183": "Ashgabat"
+   },
+   "note": "Capitals + Almaty, Samarkand, Bukhara. Default chosen by Claude; Radul to confirm (spec 11 §10.1)."
+  },
+  {
+   "id": "P7",
+   "area": "Everywhere else",
+   "match": {
+    "any": true
+   },
+   "action": "allow"
+  }
+ ]
+}

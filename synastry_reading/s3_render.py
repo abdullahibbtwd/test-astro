@@ -14,35 +14,26 @@ import argparse
 import json
 import os
 
-from s3_sections import SECTION_ORDER
-
-SECTION_TITLES: dict[str, dict[str, str]] = {
-    "what_each_brings": {"tr": "Her Biri Ne Getiriyor",     "en": "What Each Brings"},
-    "attraction":       {"tr": "Çekim ve Kimya",            "en": "Attraction & Chemistry"},
-    "emotional":        {"tr": "Duygusal İhtiyaçlar ve Güven", "en": "Emotional Needs & Security"},
-    "communication":    {"tr": "İletişim ve Zihinlerin Buluşması", "en": "Communication & the Meeting of Minds"},
-    "friction":         {"tr": "Sürtüşme ve Zorluk",        "en": "Friction & Challenge"},
-    "values":           {"tr": "Değerler, Para ve Ortak Hayat", "en": "Values, Money & Shared Life"},
-    "commitment":       {"tr": "Bağlılık ve Uzun Vade",     "en": "Commitment & Long-Term Viability"},
-    "purpose":          {"tr": "Ortak Amaç ve Büyüme",      "en": "Shared Purpose & Growth"},
-}
-
-_DOC_TITLE = {"tr": "İLİŞKİ YORUMU", "en": "RELATIONSHIP READING"}
+from s3_profiles import get_profile
 
 
 def render(output: dict, lang: str) -> str:
+    """Readable text for one language. Titles + order come from the reading's
+    profile (stamped in the output as ``reading_type``)."""
+    profile = get_profile(output.get("reading_type", "general"))
     field = "text_tr" if lang == "tr" else "text_en"
     by_key = {s.get("key"): s for s in output.get("sections", [])}
-    title = _DOC_TITLE[lang]
+    title = profile.doc_title[lang]
     lines: list[str] = [title, "=" * len(title), ""]
-    for key in SECTION_ORDER:
+    for key in profile.section_order:
         sec = by_key.get(key)
         if not sec:
             continue
         body = (sec.get(field) or "").strip()
         if not body:
             continue
-        lines += [SECTION_TITLES[key][lang], "", body, ""]
+        titles = profile.titles.get(key, {"tr": key, "en": key})
+        lines += [titles[lang], "", body, ""]
     return "\n".join(lines).strip() + "\n"
 
 

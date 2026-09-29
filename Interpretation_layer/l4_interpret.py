@@ -27,7 +27,7 @@ Run
 ---
     python l4_interpret.py                            # reads personal_principles.json
     python l4_interpret.py --personal path/to/personal_principles.json
-    python l4_interpret.py --model claude-opus-4-8    # real generation (needs ANTHROPIC_API_KEY)
+    python l4_interpret.py --model gemini-3.7-flash   # real generation (needs GEMINI_API_KEY)
 """
 
 from __future__ import annotations
@@ -37,8 +37,8 @@ import json
 import os
 import sys
 
-from l4_generate import DEFAULT_MODEL, make_generator
-from l4_routing import route
+from l4_generate import DEFAULT_MODEL, DEFAULT_TRANSLATION_MODEL, make_generator
+from l4_routing import route, section_houses
 from l4_sections import MOVEMENT, SECTION_ORDER
 from l4_validate import PRECISION_TIER, SCHEMA_VERSION, validate
 
@@ -78,7 +78,8 @@ def _ground_source(source: list[dict], chart: dict, reading: str) -> list[dict]:
     if grounding_dir not in sys.path:
         sys.path.insert(0, grounding_dir)
     from ground import ground  # type: ignore
-    return ground(source, chart, reading=reading).kept
+    # Placidus-only reading: every house claim is verified in Placidus (ground.py).
+    return ground(source, chart, reading=reading, house_policy="placidus").kept
 
 
 # ---------------------------------------------------------------------------
@@ -86,23 +87,30 @@ def _ground_source(source: list[dict], chart: dict, reading: str) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def _assemble(synth_sections: list[dict],
-              routed_ids: dict[str, set[str]] | None = None) -> dict:
+              routed_ids: dict[str, set[str]] | None = None,
+              houses: dict[str, int] | None = None) -> dict:
     routed_ids = routed_ids or {}
+    houses = houses or {}
     by_key = {s.get("key"): s for s in synth_sections}
     sections: list[dict] = []
     for key in SECTION_ORDER:          # canonical order (§6)
         s = by_key.get(key)
         if not s:
             continue                    # omitted sections simply do not appear
-        sections.append({
+        entry = {
             "key": key,
             "movement": MOVEMENT[key],
+        }
+        if key in houses:               # §6: house sections + luminary notes
+            entry["house"] = houses[key]
+        entry.update({
             "text_tr": s.get("text_tr", ""),
             "text_en": s.get("text_en", ""),
             # Grounding trace: the principle pool this section was built from
             # (structural, from routing §3). Retained for QA, stripped at render.
             "principle_ids": sorted(routed_ids.get(key, set())),
         })
+        sections.append(entry)
     return {
         "schema_version": SCHEMA_VERSION,
         "precision_tier": PRECISION_TIER,
@@ -119,7 +127,7 @@ def interpret(chart: dict, kept: list[dict], *, generator=None,
               synthesis_model: str | None = None,
               **gen_kwargs) -> tuple[dict, dict, list[str]]:
     """Run the full L4 pipeline. ``generator`` may be injected (tests); otherwise
-    the Anthropic runner is constructed (extra kwargs — e.g. max_tokens,
+    the model runner is constructed (extra kwargs — e.g. max_tokens,
     synthesis_max_tokens — pass through to it). Returns (output, routing_report,
     validation_errors)."""
     routing = route(kept, chart)
@@ -136,13 +144,19 @@ def interpret(chart: dict, kept: list[dict], *, generator=None,
     synth = gen.synthesize(drafts, chart,
                            low_salience_ids=sorted(routing.low_salience_ids()))
 
-    output = _assemble(synth, routed_ids)
+    houses = section_houses(chart)
+    output = _assemble(synth, routed_ids, houses)
     errors = validate(output, routed_ids)
     report = routing.report()
+    report["house_policy"] = "placidus"
+    report["luminary_houses"] = {k: houses[k] for k in ("sun_house", "moon_house")
+                                 if k in houses}
     report["backend"] = type(gen).__name__
     report["sections_emitted"] = [s["key"] for s in output["sections"]]
     if getattr(gen, "usage", None):
         report["token_usage"] = gen.usage      # real input/output tokens, all calls
+    if getattr(gen, "fallbacks", 0):
+        report["cheap_model_fallbacks"] = gen.fallbacks
     return output, report, errors
 
 
@@ -165,6 +179,9 @@ def main() -> None:
                     help=f"section-call model (default {DEFAULT_MODEL})")
     ap.add_argument("--synthesis-model", default=None,
                     help="synthesis-call model (default: same as --model)")
+    ap.add_argument("--translation-model", default=DEFAULT_TRANSLATION_MODEL,
+                    help=f"English translation + detox model (default "
+                         f"{DEFAULT_TRANSLATION_MODEL}; 'same' = the synthesis model)")
     ap.add_argument("--max-tokens", type=int, default=None,
                     help="per-section output budget")
     ap.add_argument("--synthesis-max-tokens", type=int, default=None,
@@ -187,6 +204,8 @@ def main() -> None:
         ap.error(f"no input: neither {args.personal} nor {args.grounded_source} exists")
 
     gen_kwargs = {}
+    gen_kwargs["translation_model"] = (None if args.translation_model == "same"
+                                       else args.translation_model)
     if args.max_tokens is not None:
         gen_kwargs["max_tokens"] = args.max_tokens
     if args.synthesis_max_tokens is not None:
