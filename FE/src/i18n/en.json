@@ -147,5 +147,22 @@
   "solar_return": "Solar Return",
   "area": "Areas",
   "forecast_month": "Monthly forecasts",
-  "forecast_year": "Yearly forecasts"
+  "forecast_year": "Yearly forecasts",
+  "loadMore": "Load more",
+  "deleteReport": "Delete “{title}”?",
+  "deleteReportBody": "This removes the saved report from your list. Your birth profile stays available.",
+  "deleteReportAction": "Delete {title}",
+  "screenErrorTitle": "This screen could not open",
+  "screenErrorBody": "Your saved information is still available. Try opening this screen again.",
+  "openReading": "Read your chart",
+  "expandAll": "Expand all",
+  "collapseAll": "Collapse all",
+  "contents": "Contents",
+  "copy": "Copy",
+  "share": "Share",
+  "copied": "Copied",
+  "missingProfile": "This profile is no longer available.",
+  "missingSection": "This section is not available in the reading.",
+  "readingIntro": "Your reading is saved automatically. You can come back to it from Saved reports.",
+  "backToReading": "Full reading"
 }

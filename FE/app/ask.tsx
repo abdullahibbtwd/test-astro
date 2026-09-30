@@ -8,3 +8,5 @@ export default function Ask() {
     </Screen>
   );
 }
+
+export { RouteError as ErrorBoundary } from "../src/design/components/RouteError";

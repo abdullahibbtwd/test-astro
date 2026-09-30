@@ -115,6 +115,12 @@ export default function TabScreen({ tab = "home" }: { tab?: string }) {
                 />
               ))}
               <Button
+                label={t("openReading")}
+                onPress={() =>
+                  router.push(`/chart/reading?profile=${active.profile_id}`)
+                }
+              />
+              <Button
                 secondary
                 label={t("edit")}
                 onPress={() =>

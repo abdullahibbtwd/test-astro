@@ -7,7 +7,7 @@ import { fileURLToPath, URL } from "node:url";
 import { validate } from "../src/api/zod";
 import { fixture, collection } from "./fixtures";
 import { Jobs } from "./jobs";
-import type { Job, Thread, Message } from "../contracts/spec-types";
+import type { Job, Thread, Message, ReportRef } from "../contracts/spec-types";
 
 const api = JSON.parse(
   fs.readFileSync(
@@ -53,6 +53,7 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
       ? fixture(`place.${value.current_place.place_id}.${lang}`)
       : null,
   });
+  const reports = new Map<string, ReportRef & { lang: string }>();
   const threads = new Map<string, Thread>();
   const compat = new Map<string, any>();
   const tokens = new Set(["mock-access"]);
@@ -217,6 +218,7 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                 me.consents = { birth_data: null, marketing: false };
                 profiles = [];
                 threads.clear();
+                reports.clear();
               }
               result = session();
               result.is_new_user = !me.self_profile_id;
@@ -263,6 +265,7 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
               profiles = [];
               threads.clear();
               compat.clear();
+              reports.clear();
               me = null;
               return accepted();
             case "post /me/export":
@@ -388,6 +391,8 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                 : Number(idx);
               const seed = seedProfiles[selected];
               if (changed) {
+                for (const [key, report] of reports)
+                  if (report.profile_id === p.id) reports.delete(key);
                 const [year, month, day] = birth.date.split("-").map(Number);
                 const [hour, minute] = birth.time.split(":").map(Number);
                 birth.tz = birth.place.tz;
@@ -457,6 +462,8 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
             case "delete /profiles/{id}":
               if (profile.is_self) return fail(reply, "conflict", 409, lang);
               profiles = profiles.filter((x) => x.profile_id !== p.id);
+              for (const [key, report] of reports)
+                if (report.profile_id === p.id) reports.delete(key);
               return noContent();
             case "get /profiles/{id}/chart":
               result = {
@@ -624,10 +631,26 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
               break;
             }
             case "get /reports":
-              result = page([], q);
+              result = page(
+                [...reports.values()]
+                  .filter(
+                    (report) =>
+                      report.lang === lang &&
+                      (!q.type || report.type === q.type),
+                  )
+                  .sort((a, b) => b.created_at.localeCompare(a.created_at))
+                  .map(({ lang: _lang, ...report }) => report),
+                q,
+              );
               break;
-            case "delete /reports/{report_id}":
-              return fail(reply, "not_found", 404, lang);
+            case "delete /reports/{report_id}": {
+              const entry = [...reports].find(
+                ([, report]) => report.report_id === p.report_id,
+              );
+              if (!entry) return fail(reply, "not_found", 404, lang);
+              reports.delete(entry[0]);
+              return noContent();
+            }
             case "get /compatibility":
               result = page([...compat.values()], q);
               break;
@@ -804,6 +827,20 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
             if (job.status !== "succeeded") {
               reply.header("Retry-After", "1");
               return reply.code(202).send(validate("JobAccepted", { job }));
+            }
+            if (route.endsWith("natal-reading")) {
+              const key = `${profile.profile_id}:${profile.chart_key}:${lang}`;
+              if (!reports.has(key))
+                reports.set(key, {
+                  report_id: randomUUID(),
+                  type: "natal",
+                  lang,
+                  title: result.title,
+                  subtitle: profile.label,
+                  profile_id: profile.profile_id,
+                  created_at: new Date(clock()).toISOString(),
+                  route: `/chart/reading?profile=${encodeURIComponent(profile.profile_id)}`,
+                });
             }
           } else if (
             result &&

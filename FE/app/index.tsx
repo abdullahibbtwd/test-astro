@@ -10,3 +10,5 @@ export default function Index() {
     return <Redirect href={`/(onboarding)/${app.draft.step}`} />;
   return <Redirect href="/(tabs)" />;
 }
+
+export { RouteError as ErrorBoundary } from "../src/design/components/RouteError";

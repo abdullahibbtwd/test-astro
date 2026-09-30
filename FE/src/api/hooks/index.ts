@@ -1,6 +1,6 @@
 import catalogueTr from "../../i18n/catalogue-fallback.tr.json";
 import catalogueEn from "../../i18n/catalogue-fallback.en.json";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 import { request, setSession, refreshToken, updateSessionMe } from "../client";
 import { queryClient, keys } from "../query";
@@ -17,6 +17,7 @@ import type {
   Config,
   Catalogue,
   ReportPage,
+  ReportRef,
 } from "../../../contracts/spec-types";
 function useResource<T>(
   name: string,
@@ -78,8 +79,13 @@ export function useActions() {
       body?: unknown;
       schema?: string;
     }) => request<any>(method, path, schema, body),
-    onSuccess: () => {
-      void queryClient.invalidateQueries();
+    onSuccess: (_data, variables) => {
+      // Deleting a saved reference must not refetch its reading and save it again.
+      void queryClient.invalidateQueries(
+        variables.path.startsWith("/reports/")
+          ? { queryKey: ["reports"] }
+          : undefined,
+      );
     },
   });
   return {
@@ -133,6 +139,8 @@ export function useActions() {
       await queryClient.invalidateQueries();
       return profile;
     },
+    removeReport: (id: string) =>
+      mutate.mutateAsync({ method: "DELETE", path: `/reports/${id}` }),
     removeProfile: (id: string) =>
       mutate.mutateAsync({ method: "DELETE", path: `/profiles/${id}` }),
     reverse: (lat: number, lon: number) =>
@@ -163,12 +171,21 @@ async function clearSession() {
   resetLocalState();
 }
 
-export const useReports = (type: string) =>
-  useResource<ReportPage>(
-    "reports",
-    `/reports${type ? "?type=" + type : ""}`,
-    "ReportPage",
-  );
+export function useReports(type: ReportRef["type"] | "") {
+  const lang = useApp((s) => s.language);
+  return useInfiniteQuery({
+    queryKey: keys.resource("reports", lang, type),
+    initialPageParam: "",
+    queryFn: ({ pageParam }) =>
+      request<ReportPage>(
+        "GET",
+        `/reports?limit=20${type ? `&type=${type}` : ""}${pageParam ? `&cursor=${encodeURIComponent(pageParam)}` : ""}`,
+        "ReportPage",
+      ),
+    getNextPageParam: (last) => last.next_cursor ?? undefined,
+    staleTime: 0,
+  });
+}
 
 export function useChart(id: string, chartKey?: string) {
   const lang = useApp((s) => s.language);

@@ -147,5 +147,22 @@
   "solar_return": "Güneş dönüşü",
   "area": "Bölgeler",
   "forecast_month": "Aylık öngörüler",
-  "forecast_year": "Yıllık öngörüler"
+  "forecast_year": "Yıllık öngörüler",
+  "loadMore": "Daha fazla göster",
+  "deleteReport": "“{title}” silinsin mi?",
+  "deleteReportBody": "Bu işlem kayıtlı yorumu listenden kaldırır. Doğum profilin korunur.",
+  "deleteReportAction": "Sil: {title}",
+  "screenErrorTitle": "Bu ekran açılamadı",
+  "screenErrorBody": "Kayıtlı bilgilerin korunuyor. Bu ekranı açmayı tekrar dene.",
+  "openReading": "Harita yorumunu oku",
+  "expandAll": "Tümünü aç",
+  "collapseAll": "Tümünü kapat",
+  "contents": "İçindekiler",
+  "copy": "Kopyala",
+  "share": "Paylaş",
+  "copied": "Kopyalandı",
+  "missingProfile": "Bu profil artık mevcut değil.",
+  "missingSection": "Bu bölüm yorumda mevcut değil.",
+  "readingIntro": "Yorumun otomatik olarak kaydedilir. Kayıtlı yorumlar bölümünden tekrar açabilirsin.",
+  "backToReading": "Yorumun tamamı"
 }

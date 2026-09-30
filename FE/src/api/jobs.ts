@@ -72,23 +72,41 @@ export function useGenerated<T>(
   useEffect(() => {
     if (job.data?.status === "succeeded") void refetchParent();
   }, [job.data?.status, refetchParent]);
+  const [retryError, setRetryError] = useState(false);
   const retry = async () => {
-    const value = await request<T | { job: Job }>(
-      "GET",
-      `${path}${path.includes("?") ? "&" : "?"}retry=true`,
-    );
-    client.setQueryData(
-      parentKey,
-      value && typeof value === "object" && "job" in value
-        ? { kind: "pending", job: value.job, started: Date.now() }
-        : { kind: "ready", data: value, started: Date.now() },
-    );
+    setRetryError(false);
+    try {
+      const value = await request<T | { job: Job }>(
+        "GET",
+        `${path}${path.includes("?") ? "&" : "?"}retry=true`,
+      );
+      client.setQueryData(
+        parentKey,
+        value && typeof value === "object" && "job" in value
+          ? {
+              kind: "pending",
+              job: validate<Job>("Job", value.job),
+              started: Date.now(),
+            }
+          : {
+              kind: "ready",
+              data: validate<T>(schema, value),
+              started: Date.now(),
+            },
+      );
+    } catch {
+      setRetryError(true);
+    }
   };
   return {
     data: parent.data?.kind === "ready" ? parent.data.data : undefined,
     job: job.data ?? pending?.job,
     state:
-      expired || parent.isError || job.isError || job.data?.status === "failed"
+      retryError ||
+      expired ||
+      parent.isError ||
+      job.isError ||
+      job.data?.status === "failed"
         ? "failed"
         : parent.data?.kind === "ready"
           ? "ready"

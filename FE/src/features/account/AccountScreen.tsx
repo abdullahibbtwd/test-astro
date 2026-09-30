@@ -14,11 +14,10 @@ import {
   Field,
   Card,
   ErrorNotice,
-  Skeleton,
 } from "../../design/components";
 import { PlaceSearch } from "../../design/components/PlaceSearch";
 import { useApp } from "../../lib/state";
-import { useMe, useActions, useConfig, useReports } from "../../api/hooks";
+import { useMe, useActions, useConfig } from "../../api/hooks";
 export default function AccountScreen({ page = "profile" }: { page?: string }) {
   const { t } = useTranslation(),
     app = useApp(),
@@ -274,50 +273,6 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
         error={error ?? actions.error ?? me.error}
         retry={() => void me.refetch()}
       />
-    </Screen>
-  );
-}
-export function ReportsScreen() {
-  const { t } = useTranslation(),
-    [type, setType] = useState(""),
-    reports = useReports(type);
-  return (
-    <Screen back title={t("savedReports")}>
-      <Choices>
-        {[
-          "",
-          "natal",
-          "compatibility",
-          "place",
-          "recommendation",
-          "area",
-          "forecast_month",
-          "forecast_year",
-          "solar_return",
-        ].map((value) => (
-          <Chip
-            key={value}
-            selected={type === value}
-            label={t(value || "all")}
-            onPress={() => setType(value)}
-          />
-        ))}
-      </Choices>
-      {reports.isPending ? (
-        <Skeleton />
-      ) : reports.data?.items.length ? (
-        reports.data.items.map((item) => (
-          <Row
-            key={item.report_id}
-            label={item.title}
-            detail={item.subtitle ?? undefined}
-            onPress={() => router.push(item.route as never)}
-          />
-        ))
-      ) : (
-        <Txt muted>{t("emptyReports")}</Txt>
-      )}
-      <ErrorNotice error={reports.error} retry={() => void reports.refetch()} />
     </Screen>
   );
 }

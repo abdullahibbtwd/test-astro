@@ -20,15 +20,18 @@ export function Txt({
   kind = "body",
   muted = false,
   style,
+  numberOfLines,
 }: {
   children: React.ReactNode;
   kind?: "body" | "title" | "display" | "caption" | "reading";
   muted?: boolean;
   style?: any;
+  numberOfLines?: number;
 }) {
   const c = useTheme();
   return (
     <Text
+      numberOfLines={numberOfLines}
       selectable={kind === "reading"}
       maxFontSizeMultiplier={kind === "reading" ? 2 : 1.6}
       style={[
@@ -199,18 +202,21 @@ export function Row({
   label,
   detail,
   onPress,
+  onLongPress,
 }: {
   leading?: React.ReactNode;
   label: string;
   detail?: string;
   onPress?: () => void;
+  onLongPress?: () => void;
 }) {
   const c = useTheme();
   return (
     <Pressable
       accessibilityRole={onPress ? "button" : undefined}
-      disabled={!onPress}
+      disabled={!onPress && !onLongPress}
       onPress={onPress}
+      onLongPress={onLongPress}
       style={{
         minHeight: 64,
         paddingVertical: 16,
