@@ -28,7 +28,12 @@ export function WheelPreview({
       <ErrorNotice error={chart.error} retry={() => void chart.refetch()} />
     );
   return (
-    <View accessible accessibilityRole="image" accessibilityLabel={t("chart")}>
+    <View
+      accessible
+      accessibilityRole="image"
+      accessibilityLabel={t("chartWheel")}
+      accessibilityHint={t("chartWheelHint")}
+    >
       <SvgCss xml={xml} width="100%" height={Math.min(width - 40, 480)} />
     </View>
   );

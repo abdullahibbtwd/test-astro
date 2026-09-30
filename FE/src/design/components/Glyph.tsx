@@ -1,14 +1,22 @@
 import { SvgXml } from "react-native-svg";
 import { glyphDefs } from "../../../../Chart_wheel/src/glyphs.js";
 import { useTheme } from "../theme";
-import type { Sign } from "../../../contracts/spec-types";
+import type { Sign, Body } from "../../../contracts/spec-types";
 const definitions = glyphDefs();
-export function Glyph({ name, size = 32 }: { name: Sign; size?: number }) {
+export function Glyph({
+  name,
+  size = 32,
+}: {
+  name: Sign | Body;
+  size?: number;
+}) {
   const color = useTheme().ink;
+  const key =
+    name === "north_node" ? "node-n" : name === "south_node" ? "node-s" : name;
   return (
     <SvgXml
       accessible={false}
-      xml={`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" color="${color}"><defs>${definitions}</defs><use href="#g-${name}" x="0" y="0" width="100" height="100"/></svg>`}
+      xml={`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" color="${color}"><defs>${definitions}</defs><use href="#g-${key}" x="0" y="0" width="100" height="100"/></svg>`}
       width={size}
       height={size}
     />

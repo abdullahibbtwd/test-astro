@@ -1,0 +1,11 @@
+import React from "react";
+import { render, screen, userEvent } from "@testing-library/react-native";
+import i18n from "../../src/i18n";
+import catalogue from "../../src/i18n/catalogue-fallback.en.json";
+import { ChartTables } from "../../src/features/chart/ChartTables";
+import type { ChartData, Catalogue } from "../../contracts/spec-types";
+jest.mock("../../src/design/components/Glyph",()=>({Glyph:()=>null}));
+jest.mock("../../src/design/components/AspectGlyph",()=>({AspectGlyph:()=>null}));
+const chart={points:[{body:"sun",sign:"capricorn",degree_in_sign:6.94,house:9,retrograde:false,longitude:276.94},{body:"north_node",sign:"pisces",degree_in_sign:4,house:12,retrograde:true,longitude:334}],houses:[],aspects:[{a:"sun",b:"north_node",type:"sextile",orb:1.5}]} as ChartData;
+test("planet table exposes facts without node retrograde and opens selection",async()=>{await i18n.changeLanguage("en"); const select=jest.fn(),user=userEvent.setup(); await render(<ChartTables chart={chart} catalogue={catalogue as Catalogue} tab="planets" select={select}/>); expect(screen.getByText("6°56′ Capricorn · House 9")).toBeOnTheScreen(); expect(screen.queryByText(/Retrograde/)).toBeNull(); await user.press(screen.getByRole("button",{name:/North Node/})); expect(select).toHaveBeenCalledWith({kind:"body",body:"north_node"});});
+test("aspect table preserves API facts and indexes",async()=>{const select=jest.fn(),user=userEvent.setup();await render(<ChartTables chart={chart} catalogue={catalogue as Catalogue} tab="aspects" select={select}/>);expect(screen.getByText("Orb: 1°30′")).toBeOnTheScreen();await user.press(screen.getByRole("button",{name:/Sun · North Node/}));expect(select).toHaveBeenCalledWith({kind:"aspect",index:0});});
