@@ -1,3 +1,4 @@
+import { nativeWheelSvg } from "../packages/wheel-core/native-svg";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -29,3 +30,14 @@ for (const [i, [dir, date]] of sources.entries())
       const gate = checkInvariants(input, { theme });
       assert.deepEqual(gate.violations, []);
     });
+
+test("native wheel resolves CSS tokens without changing geometry", () => {
+  const chart = fixture("chart.0");
+  for (const theme of ["light", "dark"] as const) {
+    const canonical = renderChart(toWheelInput(chart), { theme });
+    const native = nativeWheelSvg(chart, theme);
+    assert.ok(!native.includes("var("));
+    const geometry = /(?:cx|cy|r|x1|x2|y1|y2|d|transform)="[^"]*"/g;
+    assert.deepEqual(native.match(geometry), canonical.match(geometry));
+  }
+});

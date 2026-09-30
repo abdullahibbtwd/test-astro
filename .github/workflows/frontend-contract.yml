@@ -24,6 +24,7 @@ jobs:
       - run: git diff --exit-code -- openapi.yaml contracts src/api/schema.d.ts src/api/zod
       - run: npm run typecheck && npm run lint
       - run: npx tsx --test tests/schema.test.ts tests/fonts.test.ts
+      - run: npm run test:native
       - run: npm run bundle
         env:
           CI: '1'

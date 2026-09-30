@@ -205,9 +205,21 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                 return fail(reply, "validation_error", 400, lang);
               return noContent();
             case "post /auth/email/verify":
-              if (body.code !== "000000" || body.email !== "demo@example.com")
+              if (
+                body.code !== "000000" ||
+                !["demo@example.com", "new@example.com"].includes(body.email)
+              )
                 return fail(reply, "unauthorized", 401, lang);
+              if (!me || body.email === "new@example.com") {
+                me = fixture("me.tr");
+                me.email = body.email;
+                me.self_profile_id = null;
+                me.consents = { birth_data: null, marketing: false };
+                profiles = [];
+                threads.clear();
+              }
               result = session();
+              result.is_new_user = !me.self_profile_id;
               break;
             case "post /auth/apple":
             case "post /auth/google":
@@ -431,6 +443,15 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                   x.profile_id === result.profile_id ? result : x,
                 );
               source.set(result.profile_id, selected);
+              if (result.is_self) {
+                me.self_profile_id = result.profile_id;
+                result.natal_reading_job = jobs.resource(
+                  `natal:${result.profile_id}:${result.chart_key}:${lang}`,
+                  "natal_reading",
+                  fixture(`natal.${selected}.${lang}`) ? scenario : "fail",
+                  false,
+                );
+              }
               break;
             }
             case "delete /profiles/{id}":
@@ -771,7 +792,9 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
           }
           if (operation.responses["202"]?.content) {
             const job = jobs.resource(
-              `${route}:${p.id}:${lang}:${profile?.chart_key}`,
+              route.endsWith("natal-reading")
+                ? `natal:${p.id}:${profile?.chart_key}:${lang}`
+                : `${route}:${p.id}:${lang}:${profile?.chart_key}`,
               route.endsWith("elements") ? "element_notes" : "natal_reading",
               scenario,
               q.retry === "true",

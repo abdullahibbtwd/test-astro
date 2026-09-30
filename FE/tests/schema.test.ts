@@ -27,3 +27,13 @@ test("chrome keys match in Turkish and English; no masked terms", () => {
       ),
     );
 });
+
+test("TR and EN chrome do not contain Windows encoding corruption", () => {
+  for (const lang of ["tr", "en"]) {
+    const text = fs.readFileSync(`src/i18n/${lang}.json`, "utf8");
+    assert.ok(
+      !/[\u0400-\u04ff\ufffd]/u.test(text),
+      `${lang} contains corrupted encoding`,
+    );
+  }
+});
