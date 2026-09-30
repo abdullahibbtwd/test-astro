@@ -1,3 +1,4 @@
+import { useFlags } from "../../lib/flags";
 import { useEffect, useRef } from "react";
 import { View } from "react-native";
 import {
@@ -17,6 +18,7 @@ import type {
   Catalogue,
   NatalReading,
   Body,
+  ChartElements,
 } from "../../../contracts/spec-types";
 import {
   degrees,
@@ -47,6 +49,13 @@ export function ChartDetailSheet({
     `/profiles/${chart.profile_id}/natal-reading`,
     "NatalReading",
   );
+  const flags = useFlags();
+  const elements = useGenerated<ChartElements>(
+    ["elements", chart.profile_id, chart.chart_key],
+    `/profiles/${chart.profile_id}/chart/elements`,
+    "ChartElements",
+    !!flags.elementNotes,
+  );
   useEffect(() => {
     sheet.current?.present();
   }, []);
@@ -62,6 +71,24 @@ export function ChartDetailSheet({
     selection.kind === "aspect" ? chart.aspects[selection.index] : undefined;
   const axis =
     selection.kind === "axis" ? axisPoint(chart, selection.axis) : undefined;
+  const note = elements.data
+    ? selection.kind === "body"
+      ? elements.data.bodies[selection.body]
+      : selection.kind === "sign"
+        ? elements.data.signs[selection.sign]
+        : selection.kind === "house"
+          ? elements.data.houses[
+              String(selection.house) as keyof ChartElements["houses"]
+            ]
+          : aspect
+            ? elements.data.aspects.find(
+                (a) =>
+                  a.a === aspect.a &&
+                  a.b === aspect.b &&
+                  a.type === aspect.type,
+              )?.note
+            : undefined
+    : undefined;
   const title = point
     ? c.bodies[point.body]
     : house
@@ -211,6 +238,7 @@ export function ChartDetailSheet({
               onPress={() => select({ kind: "sign", sign: axis.sign })}
             />
           )}
+          {flags.elementNotes && note && <Txt kind="reading">{note.text}</Txt>}
           {!!sections.length && <Txt kind="title">{t("relatedReading")}</Txt>}
           {sections.map((section) => (
             <View key={section.key} style={{ gap: 12 }}>

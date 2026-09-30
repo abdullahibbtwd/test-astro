@@ -334,14 +334,14 @@ test("profile edits localize places, clear nullable fields and derive stable bir
   }
 });
 
-test("unmodeled place search kinds are explicit and polling jobs expire after 24 hours", async () => {
+test("area search is supported, invalid kinds fail and polling jobs expire after 24 hours", async () => {
   let now = Date.now();
   const app = buildApp({ now: () => now });
   try {
     assert.equal(
       (await app.inject({ url: "/v1/places/search?q=So&kind=area", headers }))
         .statusCode,
-      503,
+      200,
     );
     assert.equal(
       (

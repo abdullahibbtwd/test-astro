@@ -11,6 +11,8 @@ Remove-Item Env:CI -ErrorAction SilentlyContinue
 $adb = Join-Path $env:ANDROID_HOME 'platform-tools/adb.exe'
 $node = (Get-Command node.exe).Source
 function Is-Listening([int]$port) { return [bool](Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) }
+function Is-MetroReady { try { return (Invoke-WebRequest -Uri 'http://127.0.0.1:8081/status' -TimeoutSec 2).StatusCode -eq 200 } catch { return $false } }
+
 if (!(Is-Listening 4010)) {
  Start-Process -FilePath $node -ArgumentList 'node_modules/tsx/dist/cli.mjs','mock-api/server.ts' -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/mock.log" -RedirectStandardError "$tools/mock-error.log"
 }
@@ -34,6 +36,6 @@ $apk = Join-Path $frontend 'android/app/build/outputs/apk/debug/app-debug.apk'
 if (!(Test-Path -LiteralPath $apk)) { throw 'Run scripts/Build-Android-Preview.ps1 first.' }
 & $adb install -r $apk
 $deadline = (Get-Date).AddSeconds(60)
-while (!(Is-Listening 8081)) { if ((Get-Date) -gt $deadline) { throw 'Metro did not start. See .tooling/metro-error.log.' }; Start-Sleep -Seconds 1 }
+while (!(Is-MetroReady)) { if ((Get-Date) -gt $deadline) { throw 'Metro did not start. See .tooling/metro-error.log.' }; Start-Sleep -Seconds 1 }
 & $adb shell am start -a android.intent.action.VIEW -d 'astrology-dev://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081' com.example.astrology.dev
 Write-Host 'Preview ready. Sign in with demo@example.com and code 000000.'

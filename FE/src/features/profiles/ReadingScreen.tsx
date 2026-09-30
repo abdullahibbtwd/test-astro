@@ -1,4 +1,11 @@
-import { useState } from "react";
+import { useFlags } from "../../lib/flags";
+import {
+  BottomSheetModal,
+  BottomSheetScrollView,
+  BottomSheetBackdrop,
+} from "@gorhom/bottom-sheet";
+import { useTheme } from "../../design/theme";
+import { useRef, useState } from "react";
 import { Pressable, Share, View } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import { router, useLocalSearchParams } from "expo-router";
@@ -65,8 +72,9 @@ function ReadingContent({
     `/profiles/${profile.profile_id}/natal-reading`,
     "NatalReading",
   );
-  const [all, setAll] = useState<boolean | null>(null),
-    [contents, setContents] = useState(false);
+  const [all, setAll] = useState<boolean | null>(null);
+  const contents = useRef<BottomSheetModal>(null),
+    c = useTheme();
   const sections = sectionKey
     ? reading.data?.sections.filter((section) => section.key === sectionKey)
     : reading.data?.sections;
@@ -110,24 +118,50 @@ function ReadingContent({
                 <Button
                   secondary
                   label={t("contents")}
-                  onPress={() => setContents(!contents)}
+                  onPress={() => contents.current?.present()}
                 />
               </Choices>
-              {contents && (
-                <View>
+              <BottomSheetModal
+                ref={contents}
+                snapPoints={["60%", "90%"]}
+                enableDynamicSizing={false}
+                backgroundStyle={{ backgroundColor: c.surface }}
+                handleIndicatorStyle={{ backgroundColor: c.ink2 }}
+                backdropComponent={(props) => (
+                  <BottomSheetBackdrop
+                    {...props}
+                    appearsOnIndex={0}
+                    disappearsOnIndex={-1}
+                  />
+                )}
+              >
+                <BottomSheetScrollView
+                  contentContainerStyle={{
+                    padding: 24,
+                    paddingBottom: 48,
+                    gap: 12,
+                  }}
+                >
+                  <Txt kind="title">{t("contents")}</Txt>
+                  <Button
+                    secondary
+                    label={t("close")}
+                    onPress={() => contents.current?.dismiss()}
+                  />
                   {reading.data.sections.map((section) => (
                     <Row
                       key={section.key}
                       label={section.title}
-                      onPress={() =>
+                      onPress={() => {
+                        contents.current?.dismiss();
                         router.push(
                           `/chart/section/${section.key}?profile=${profile.profile_id}`,
-                        )
-                      }
+                        );
+                      }}
                     />
                   ))}
-                </View>
-              )}
+                </BottomSheetScrollView>
+              </BottomSheetModal>
             </>
           )}
           {!sections?.length && <Txt>{t("missingSection")}</Txt>}
@@ -142,6 +176,7 @@ function ReadingContent({
                   <ReadingSection
                     key={`${section.key}:${all}`}
                     section={section}
+                    askRoute={`/ask?profile=${profile.profile_id}&section_key=${section.key}`}
                     initialExpanded={
                       !!sectionKey ||
                       all ||
@@ -159,11 +194,14 @@ function ReadingContent({
 export function ReadingSection({
   section,
   initialExpanded,
+  askRoute,
 }: {
-  section: NatalSection;
+  section: Pick<NatalSection, "title" | "text">;
   initialExpanded: boolean;
+  askRoute?: string;
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation(),
+    flags = useFlags();
   const [expanded, setExpanded] = useState(initialExpanded),
     [copied, setCopied] = useState(false),
     [error, setError] = useState<unknown>();
@@ -192,6 +230,13 @@ export function ReadingSection({
       </Txt>
       {expanded && (
         <Choices>
+          {askRoute && flags.askAstrology && (
+            <Button
+              secondary
+              label={t("ask")}
+              onPress={() => router.push(askRoute as never)}
+            />
+          )}
           <Button
             secondary
             label={t(copied ? "copied" : "copy")}

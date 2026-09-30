@@ -1,3 +1,4 @@
+import Constants from "expo-constants";
 import { useState } from "react";
 import { Alert, Linking, Switch, View } from "react-native";
 import { router } from "expo-router";
@@ -137,7 +138,6 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
                   return;
                 }
                 await actions.patchMe({ current_place_id: place.place_id });
-                await Notifications.cancelAllScheduledNotificationsAsync();
                 router.back();
               })
             }
@@ -146,7 +146,6 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
             onConfirm={(place) =>
               void run(async () => {
                 await actions.patchMe({ current_place_id: place.place_id });
-                await Notifications.cancelAllScheduledNotificationsAsync();
                 router.back();
               })
             }
@@ -252,7 +251,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
       )}
       {page === "about" && (
         <>
-          <Txt kind="display">{"{{APP_NAME}}"}</Txt>
+          <Txt kind="display">{Constants.expoConfig?.name ?? "Astrology"}</Txt>
           <Txt muted>{t("version")} 0.1.0</Txt>
           <Txt>{t("disclaimer")}</Txt>
           <Txt kind="caption">

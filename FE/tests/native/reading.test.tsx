@@ -4,7 +4,14 @@ import * as Clipboard from "expo-clipboard";
 import i18n from "../../src/i18n";
 import { ReadingSection } from "../../src/features/profiles/ReadingScreen";
 import { RouteError } from "../../src/design/components/RouteError";
-jest.mock("../../src/api/hooks", () => ({}));
+jest.mock("@gorhom/bottom-sheet", () => ({
+  BottomSheetModal: "BottomSheetModal",
+  BottomSheetScrollView: "BottomSheetScrollView",
+  BottomSheetBackdrop: "BottomSheetBackdrop",
+}));
+jest.mock("../../src/api/hooks", () => ({
+  useConfig: () => ({ data: { flags: { askAstrology: true } } }),
+}));
 jest.mock("../../src/api/jobs", () => ({}));
 jest.mock("expo-clipboard", () => ({
   setStringAsync: jest.fn().mockResolvedValue(undefined),

@@ -4,6 +4,9 @@ import {
   View,
   TextInput,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  type ScrollViewProps,
   StyleSheet,
   ActivityIndicator,
   type TextInputProps,
@@ -76,47 +79,60 @@ export function Screen({
   title,
   back = false,
   footer,
+  scrollRef,
+  scrollProps,
+  embedded = false,
 }: {
   children: React.ReactNode;
   title?: string;
   back?: boolean;
   footer?: React.ReactNode;
+  scrollRef?: React.RefObject<ScrollView | null>;
+  scrollProps?: ScrollViewProps;
+  embedded?: boolean;
 }) {
   const c = useTheme(),
     { t } = useTranslation();
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: c.bg }}
-      edges={["top", "left", "right", "bottom"]}
+      edges={embedded ? ["left", "right"] : ["top", "left", "right", "bottom"]}
     >
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={styles.screen}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        {back && (
-          <Pressable
-            accessibilityLabel={t("back")}
-            accessibilityRole="button"
-            onPress={() =>
-              router.canGoBack() ? router.back() : router.replace("/")
-            }
-            style={{
-              minHeight: 44,
-              justifyContent: "center",
-              alignSelf: "flex-start",
-            }}
-          >
-            <ArrowLeft color={c.ink} size={24} />
-          </Pressable>
+        <ScrollView
+          ref={scrollRef}
+          {...scrollProps}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.screen}
+        >
+          {back && (
+            <Pressable
+              accessibilityLabel={t("back")}
+              accessibilityRole="button"
+              onPress={() =>
+                router.canGoBack() ? router.back() : router.replace("/")
+              }
+              style={{
+                minHeight: 44,
+                justifyContent: "center",
+                alignSelf: "flex-start",
+              }}
+            >
+              <ArrowLeft color={c.ink} size={24} />
+            </Pressable>
+          )}
+          {title && <Txt kind="title">{title}</Txt>}
+          {children}
+        </ScrollView>
+        {footer && (
+          <View style={{ padding: 20, borderTopWidth: 1, borderColor: c.hair }}>
+            {footer}
+          </View>
         )}
-        {title && <Txt kind="title">{title}</Txt>}
-        {children}
-      </ScrollView>
-      {footer && (
-        <View style={{ padding: 20, borderTopWidth: 1, borderColor: c.hair }}>
-          {footer}
-        </View>
-      )}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

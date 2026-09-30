@@ -1,3 +1,6 @@
+import Constants from "expo-constants";
+import * as Linking from "expo-linking";
+import { providerSignIn, ProviderUnavailable } from "../../lib/oauth";
 import { useEffect, useRef, useState } from "react";
 import { Alert, Platform, TextInput, View, Pressable } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
@@ -14,7 +17,7 @@ import {
 } from "../../design/components";
 import { useTheme } from "../../design/theme";
 import { useApp } from "../../lib/state";
-import { useActions } from "../../api/hooks";
+import { useActions, useConfig } from "../../api/hooks";
 export default function AuthScreen() {
   const { mode, fresh } = useLocalSearchParams<{
       mode?: string;
@@ -23,7 +26,27 @@ export default function AuthScreen() {
     { t } = useTranslation(),
     c = useTheme(),
     app = useApp(),
-    actions = useActions();
+    actions = useActions(),
+    config = useConfig();
+  const [providerBusy, setProviderBusy] = useState(false),
+    [providerError, setProviderError] = useState<unknown>();
+  const signIn = async (provider: "google" | "apple") => {
+    setProviderBusy(true);
+    setProviderError(undefined);
+    try {
+      const session = await providerSignIn(provider);
+      if (session)
+        router.replace(
+          session.me.self_profile_id ? "/(tabs)" : "/(onboarding)/consent",
+        );
+    } catch (e) {
+      if (e instanceof ProviderUnavailable)
+        Alert.alert(t("providerUnavailable"));
+      else setProviderError(e);
+    } finally {
+      setProviderBusy(false);
+    }
+  };
   const [email, setEmail] = useState(
       __DEV__ ? (fresh ? "new@example.com" : "demo@example.com") : "",
     ),
@@ -52,7 +75,7 @@ export default function AuthScreen() {
   if (!app.languageChosen)
     return (
       <Screen>
-        <Txt kind="caption">{"{{APP_NAME}}"}</Txt>
+        <Txt kind="caption">{Constants.expoConfig?.name ?? "Astrology"}</Txt>
         <View style={{ height: 64 }} />
         <Txt kind="display">{t("chooseLanguage")}</Txt>
         <Txt muted>{t("languageHint")}</Txt>
@@ -172,7 +195,7 @@ export default function AuthScreen() {
   return (
     <Screen>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Txt kind="caption">{"{{APP_NAME}}"}</Txt>
+        <Txt kind="caption">{Constants.expoConfig?.name ?? "Astrology"}</Txt>
         <Chip
           label={app.language === "tr" ? "TR" : "EN"}
           selected={false}
@@ -192,22 +215,21 @@ export default function AuthScreen() {
           />
         ))}
       </View>
+      <ErrorNotice error={providerError} />
       <View style={{ gap: 12 }}>
         {Platform.OS === "ios" && (
           <Button
             secondary
             label={t("appleContinue")}
-            onPress={() =>
-              Alert.alert(t("appleContinue"), t("providerUnavailable"))
-            }
+            loading={providerBusy}
+            onPress={() => void signIn("apple")}
           />
         )}
         <Button
           secondary
           label={t("googleContinue")}
-          onPress={() =>
-            Alert.alert(t("googleContinue"), t("providerUnavailable"))
-          }
+          loading={providerBusy}
+          onPress={() => void signIn("google")}
         />
         <Button
           label={t("emailContinue")}
@@ -227,7 +249,12 @@ export default function AuthScreen() {
             key={key}
             label={t(key)}
             selected={false}
-            onPress={() => Alert.alert(t(key), t("legalUnavailable"))}
+            onPress={() => {
+              const url = config.data?.links[key as "terms" | "privacy"];
+              if (url && /^https:\/\//.test(url))
+                void Linking.openURL(url).catch(setProviderError);
+              else Alert.alert(t(key), t("legalUnavailable"));
+            }}
           />
         ))}
       </Choices>

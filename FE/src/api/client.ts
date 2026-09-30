@@ -1,3 +1,4 @@
+import { useCapabilities } from "../lib/capabilities";
 import createClient from "openapi-fetch";
 import type { paths } from "./schema";
 import type { Session, Me } from "../../contracts/spec-types";
@@ -22,6 +23,7 @@ export async function setSession(value: Session | null) {
   session = value;
   if (value) await tokenStorage.set(value);
   else {
+    useApp.setState({ signedIn: false, me: null });
     await tokenStorage.clear();
     const { queryClient } = await import("./query");
     await queryClient.cancelQueries();
@@ -85,6 +87,7 @@ export async function request<T>(
   schema?: string,
   body?: unknown,
   retry = true,
+  idempotencyKey?: string,
 ): Promise<T> {
   const url = new URL(`${apiBase}${path}`);
   url.searchParams.set("lang", useApp.getState().language);
@@ -94,15 +97,26 @@ export async function request<T>(
     {
       params: { query: Object.fromEntries(url.searchParams) },
       body,
-      headers: body ? { "Content-Type": "application/json" } : undefined,
+      headers: {
+        ...(body ? { "Content-Type": "application/json" } : {}),
+        ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
+      },
     } as never,
   );
   if (response.response.status === 401 && retry && !path.startsWith("/auth/")) {
     if (await refreshSession())
-      return request(method, path, schema, body, false);
+      return request(method, path, schema, body, false, idempotencyKey);
     await setSession(null);
   }
   if (response.error || !response.response.ok) {
+    if (response.response.status === 404) {
+      if (path.split("?")[0] === "/ask/threads")
+        useCapabilities.getState().mark("askAstrology");
+      if (path.includes("/solar-return"))
+        useCapabilities.getState().mark("solarReturn");
+      if (path.includes("/chart/elements"))
+        useCapabilities.getState().mark("elementNotes");
+    }
     const error = response.error as { code?: string } | undefined;
     throw new ApiError(
       response.response.status,
@@ -125,4 +139,8 @@ export async function updateSessionMe(me: Me) {
     await tokenStorage.set(session);
   }
   useApp.getState().update({ me, theme: me.theme });
+}
+
+export function accessToken() {
+  return session?.access_token ?? "";
 }

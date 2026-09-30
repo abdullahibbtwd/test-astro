@@ -1,6 +1,6 @@
 # Astrology frontend — Android preview
 
-Active working copy: `D:\Dev\astrology-app\FE`. Phase 1 now has an Android development preview. Double-click **Open Android Preview.cmd** in this folder to open it. Use **demo@example.com**, code **000000**. The welcome screen also offers a fresh-account onboarding demo. Read [the latest build progress](BUILD_PROGRESS.md) and [the Phase 1 report](PHASE_1_REPORT.md) for verified flows and remaining acceptance gaps. The original [exploration report](FE_EXPLORATION_REPORT.md) records Phase 0 findings.
+Active working copy: `D:\Dev\astrology-app\FE`. The full frontend has an Android development preview. Double-click **Open Android Preview.cmd** in this folder to open it. Use **demo@example.com**, code **000000**. The welcome screen also offers a fresh-account onboarding demo. Read [the latest build progress](BUILD_PROGRESS.md) and [the Phase 1 report](PHASE_1_REPORT.md) for verified flows and remaining acceptance gaps. The original [exploration report](FE_EXPLORATION_REPORT.md) records Phase 0 findings.
 
 ## Run locally
 
@@ -19,7 +19,7 @@ Mock: `http://127.0.0.1:4010/v1`. Email: `demo@example.com`; code: `000000`. For
 Invoke-RestMethod 'http://127.0.0.1:4010/v1/profiles?lang=en' -Headers @{ Authorization = 'Bearer mock-access' }
 ```
 
-In another terminal, `npm start` starts Metro for a development client. `npm run android` requires Android SDK/JDK/device configuration. `npm run ios` requires macOS/Xcode; alternatively link an EAS project and use the checked-in build profiles. MapLibre/Skia require native development builds. The Phase 1 screens use the local mock API. `npm run bundle` checks both JavaScript/Hermes bundles; it does not compile native binaries.
+In another terminal, `npm start` starts Metro for a development client. `npm run android` requires Android SDK/JDK/device configuration. `npm run ios` requires macOS/Xcode; alternatively link an EAS project and use the checked-in build profiles. MapLibre/Skia require native development builds. The screens use the local preview API. `npm run bundle` checks both JavaScript/Hermes bundles; it does not compile native binaries.
 
 The mock listens on loopback by default. `MOCK_HOST` can explicitly change the interface for physical-device testing. Use Android emulator host alias `10.0.2.2` when wiring the future client. Do not expose this unauthenticated-development infrastructure publicly.
 
@@ -41,3 +41,12 @@ The mock listens on loopback by default. `MOCK_HOST` can explicitly change the i
 - Local logs: `../.tooling/metro.log`, `mock.log`, `emulator.log`, and corresponding error logs. Do not publish birth fixtures or debug output.
 - `npm run check` runs the complete fixture and native component checks; `npm run release:check` intentionally fails while legal consent and application identifiers remain placeholders.
 - Mock state resets when its server restarts. A stale session returns to sign-in. No real email is sent by the mock.
+
+## Live integration configuration
+
+The preview defaults are intentionally local. Configure the production API with `EXPO_PUBLIC_API_URL`.
+Google uses `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, optional `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`, and `GOOGLE_IOS_URL_SCHEME` for its native iOS plugin. Apple requires the final bundle identifier, entitlement and backend token verification. Never put provider client secrets in the app.
+`EXPO_PUBLIC_SHARE_URL` optionally adds the final public app link to share cards. Map styles and legal/support URLs come from `/app/config`.
+After native configuration changes, rebuild the development client. `npm run release:check` continues to reject draft legal content and development app identifiers.
+
+See [BUILD_PROGRESS.md](BUILD_PROGRESS.md) for the complete feature inventory, tested sample profiles and explicit preview-data limitations.

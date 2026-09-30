@@ -20,6 +20,13 @@ const labels = JSON.parse(
     { encoding: "utf8", maxBuffer: 8_000_000 },
   ),
 );
+const areaSource = JSON.parse(
+  execFileSync(
+    process.env.PYTHON ?? "python",
+    ["-X", "utf8", "mock-api/scripts/areas.py"],
+    { encoding: "utf8", maxBuffer: 8_000_000 },
+  ),
+);
 export const ids = [
   "00000000-0000-4000-8000-000000000001",
   "00000000-0000-4000-8000-000000000002",
@@ -173,8 +180,121 @@ for (const lang of ["tr", "en"] as Lang[]) {
     "Recommendation",
     recommendations(root, lang, cat),
   );
+  for (const [goal, run] of Object.entries({
+    overall: "20260928-114920_2xr",
+    career: "20260928-112003_5ta",
+    relocation: "20260928-112140_9qt",
+    travel: "20260928-112245_gzw",
+  }))
+    save(
+      `recommend-${goal}.${lang}`,
+      "Recommendation",
+      recommendations(
+        root,
+        lang,
+        cat,
+        `acg_run/${run}/recommend_${goal}_world_1979-03-30.json`,
+      ),
+    );
+  if (lang === "tr")
+    for (const goal of Object.keys(cat.goals)) {
+      const heat = read(
+        `acg_run/20260929-105635_kgc/goal_heat_${goal}_1979-03-30.geojson`,
+      );
+      const levels: Record<string, number> = {
+        strongly_supportive: 2,
+        supportive: 1,
+        mixed: 0,
+        challenging: -1,
+        strongly_challenging: -1,
+      };
+      save(`heat.${goal}`, "AcgHeat", {
+        chart_key: profiles[0]!.chart_key,
+        goal,
+        grid_step_deg: 0.5,
+        points: heat.features
+          .filter((f: any) => f.properties.band in levels)
+          .map((f: any) => [
+            ...f.geometry.coordinates,
+            levels[f.properties.band],
+          ]),
+      });
+    }
   for (const [key, data] of Object.entries(linePlaces(root, lang, cat)))
     save(`line-places.${key.replace("|", ".")}.${lang}`, "LinePlaces", data);
+  for (const area of areaSource.areas.filter((a: any) => a.status === "ok")) {
+    const meta = (
+      area.kind === "country" ? areaSource.countries : areaSource.regions
+    ).find(
+      (a: any) =>
+        (a.iso_a2 === area.code && area.kind === "country") ||
+        a.admin1_id === area.code,
+    );
+    save(`area-search.${area.code}.${lang}`, "PlaceCandidate", {
+      place_id: `${area.kind === "country" ? "iso2" : "admin1"}:${area.code}`,
+      kind: area.kind,
+      name: lang === "tr" ? area.name_tr : area.name,
+      admin1: null,
+      country_code: area.iso_a2,
+      country_name: new Intl.DisplayNames([lang], { type: "region" }).of(
+        area.iso_a2,
+      ),
+      lat: (meta.bbox[1] + meta.bbox[3]) / 2,
+      lon: (meta.bbox[0] + meta.bbox[2]) / 2,
+      tz: "Etc/UTC",
+      population: null,
+      source: "gazetteer",
+    });
+    save(`area-report.${area.code}.${lang}`, "AreaReport", {
+      area: {
+        kind: area.kind,
+        id: area.code,
+        iso2: area.iso_a2,
+        name: lang === "tr" ? area.name_tr : area.name,
+      },
+      status: "ok",
+      bands: Object.fromEntries(
+        Object.entries(area.bands).map(([key, value]: any) => [
+          key,
+          { band: value.band, label: cat.place_bands[value.band] },
+        ]),
+      ),
+      lines_crossing: area.lines_crossing.map((l: any) => ({
+        body: l.body,
+        angle: l.angle,
+        planet_label: cat.bodies[l.body],
+        angle_label: cat.angles[l.angle].line,
+      })),
+      best_cities: Object.fromEntries(
+        Object.entries(area.best_cities).map(([key, items]: any) => [
+          key,
+          items.map((c: any) => ({
+            place_id: c.id,
+            name: lang === "tr" ? c.name_tr : c.name,
+            band: c.band,
+            band_label: cat.place_bands[c.band],
+          })),
+        ]),
+      ),
+      varies_by_region: area.varies_by_region,
+      ...(area.kind === "country"
+        ? {
+            regions: areaSource.areas
+              .filter(
+                (a: any) => a.kind === "region" && a.iso_a2 === area.iso_a2,
+              )
+              .map((a: any) => ({
+                admin1_id: a.code,
+                name: lang === "tr" ? a.name_tr : a.name,
+              })),
+          }
+        : {}),
+      overview: { status: "absent", absence: { reason: "no_grounding" } },
+      footer: read(
+        `acg_run/20260929-105635_kgc/reading_${lang}_1979-03-30.json`,
+      ).footer,
+    });
+  }
   const prefs = {
     enabled: false,
     types: Object.fromEntries(
@@ -225,6 +345,125 @@ for (const lang of ["tr", "en"] as Lang[]) {
       "NotificationCandidate",
       n,
     );
+  // Calendar-month facts are exact. Existing rolling-month prose is deliberately not relabelled.
+  for (const [month, data] of Object.entries(cal.months) as [string, any][]) {
+    const last = new Date(
+      Date.UTC(Number(month.slice(0, 4)), Number(month.slice(5)), 0),
+    ).getUTCDate();
+    save(`forecast-month.${month}.${lang}`, "MonthForecast", {
+      profile_id: ids[0],
+      month,
+      tz: "Europe/Sofia",
+      lens: "general",
+      segments: {
+        early: { from: `${month}-01`, to: `${month}-10` },
+        mid: { from: `${month}-11`, to: `${month}-20` },
+        late: { from: `${month}-21`, to: `${month}-${last}` },
+      },
+      reading: { status: "absent", absence: { reason: "no_grounding" } },
+      highlights: {
+        favorable_days: data.days
+          .filter((d: any) => d.tone === "favorable")
+          .map((d: any) => d.date),
+        challenging_days: data.days
+          .filter((d: any) => d.tone === "challenging")
+          .map((d: any) => d.date),
+        periods: data.periods,
+        major_transits: data.major_transits,
+        lunations: data.lunations,
+        eclipses: data.eclipses,
+        retrogrades: data.retrograde_periods,
+      },
+    });
+  }
+  const yearSource = read(
+    `prediction_run/20260929-130811_qpm/reading_year_general_2026-09-29_1979-03-30${lang === "en" ? ".en" : ""}.json`,
+  );
+  const yearStart = Date.UTC(2026, 8, 29);
+  const dateAt = (offset: number) =>
+    new Date(yearStart + offset * 86400000).toISOString().slice(0, 10);
+  save(`forecast-year.${lang}`, "YearForecast", {
+    profile_id: ids[0],
+    from: dateAt(0),
+    to: dateAt(364),
+    tz: "Europe/Sofia",
+    lens: "general",
+    quarters: ["q1", "q2", "q3", "q4"].map((key, i) => ({
+      key,
+      from: dateAt(Math.floor((365 * i) / 4)),
+      to: dateAt(Math.floor((365 * (i + 1)) / 4) - 1),
+    })),
+    reading: {
+      status: "ready",
+      ...Object.fromEntries(
+        ["overview", "q1", "q2", "q3", "q4", "focus"].map((k) => [
+          k,
+          yearSource[k],
+        ]),
+      ),
+      focus_title: cat.lens_focus_titles.general,
+    },
+    highlights: {
+      strongest_periods: cal.periods
+        .filter(
+          (p: any) =>
+            p.kind === "favorable" &&
+            (p.importance === "major" || p.strength === "strong"),
+        )
+        .slice(0, 6),
+      challenging_periods: cal.periods
+        .filter(
+          (p: any) =>
+            p.kind === "challenging" &&
+            (p.importance === "major" || p.strength === "strong"),
+        )
+        .slice(0, 6),
+      key_events: [
+        ...cal.year.eclipses,
+        ...cal.year.major_transits.map((e: any) => ({ ...e, kind: "transit" })),
+      ],
+      retrogrades: cal.year.retrograde_periods,
+    },
+    months: Array.from({ length: 12 }, (_, i) => {
+      const d = new Date(Date.UTC(2026, 8 + i, 1));
+      return {
+        month: d.toISOString().slice(0, 7),
+        label: new Intl.DateTimeFormat(lang, {
+          month: "long",
+          year: "numeric",
+          timeZone: "UTC",
+        }).format(d),
+      };
+    }),
+  });
+  const relationship = read(
+    "synastry_run/20260701-131712_uxp_1988-12-28_1979-03-30/relationship_reading_1988-12-28_1979-03-30.json",
+  );
+  const person = (i: number) => ({
+    profile_id: ids[i],
+    label: profiles[i]!.label,
+    big_three: profiles[i]!.big_three,
+  });
+  save(`compat-love.${lang}`, "Compatibility", {
+    compatibility_id: "00000000-0000-4000-8000-000000000030",
+    type: "love",
+    family_relation: null,
+    people: { a: person(1), b: person(0) },
+    created_at: generated,
+    score: null,
+    reading: {
+      status: "ready",
+      title: labels.compat.title[lang],
+      sections: relationship.sections.map((section: any) => ({
+        key: section.key,
+        movement: section.movement,
+        title: labels.compat.titles[section.key][lang],
+        text: section[`text_${lang}`]
+          .replace(/\bR\b/g, profiles[1]!.label)
+          .replace(/\bN\b/g, profiles[0]!.label),
+      })),
+    },
+  });
   const date = "2026-09-29";
   const day = cal.days[date];
   const ds = cal.rawScores.find((d: any) => d.local_date === date);
@@ -259,6 +498,36 @@ for (const lang of ["tr", "en"] as Lang[]) {
     day_note: day.day_note,
     best_activities: day.best_activities,
   });
+  for (const [dayDate, detail] of Object.entries(cal.days) as [string, any][]) {
+    if (dayDate === date) continue;
+    const rawDay = cal.rawScores.find((d: any) => d.local_date === dayDate);
+    if (!rawDay) continue;
+    save(`forecast-day.${dayDate}.${lang}`, "DayForecast", {
+      ...forecast,
+      date: dayDate,
+      tone: detail.tone,
+      tone_label: detail.tone_label,
+      score_10: scores[detail.tone],
+      areas: Object.fromEntries(
+        Object.entries(rawDay.goals).map(([key, g]: any) => [
+          key,
+          {
+            band: g.band,
+            label: cat.day_bands[g.band],
+            score_10: scores[g.band],
+            drivers: rawDay.drivers[key].map((id: string) => cal.label(id)),
+          },
+        ]),
+      ),
+      moon: detail.moon,
+      retrograde: detail.retrograde,
+      events: detail.events,
+      transits: detail.transits,
+      day_note: detail.day_note,
+      best_activities: detail.best_activities,
+      reading: { status: "absent", absence: { reason: "no_grounding" } },
+    });
+  }
   const upcomingKinds: Record<string, string> = {
     favorable_window: "best_window",
     period_start: "period_start",
@@ -295,72 +564,107 @@ for (const lang of ["tr", "en"] as Lang[]) {
         deep_link: n.deep_link,
       })),
   });
-  const acg = "acg_run/20260929-105635_kgc";
-  const raw = read(`${acg}/reading_${lang}_1979-03-30.json`);
-  const loc = read(`${acg}/locate_1979-03-30.json`);
-  save(`place-report.istanbul.${lang}`, "PlaceReport", {
-    place: {
-      place_id: "gn-istanbul",
-      name: places[2]?.name,
-      country_code: "TR",
-      lat: loc.place.lat,
-      lon: loc.place.lon,
-    },
-    status: loc.status,
-    relocation: { status: loc.relocation.status },
-    focus_goal: raw.focus_goal ?? null,
-    lines_display: raw.lines_display.map((l: any) => ({
-      body: l.body,
-      angle: l.angle,
-      planet_label: l[`planet_${lang}`],
-      angle_label: l[`angle_label_${lang}`],
-      distance_km_rounded: l.distance_km_rounded,
-      tier: l.tier,
-      tier_label: l[`tier_label_${lang}`],
-      read_in_prose: l.read_in_prose,
-    })),
-    parans_display: raw.parans_display.map((p: any) => ({
-      id: p.id,
-      bodies:
-        p.bodies ??
-        p.planets ??
-        p.planets_en.map((name: string) => name.toLowerCase()),
-      planet_labels: p[`planets_${lang}`],
-      north_south: p.north_south,
-      distance_km_rounded: p.distance_km_rounded,
-      label: p[`label_${lang}`],
-    })),
-    goal_scores: Object.fromEntries(
-      Object.entries(raw.goal_scores).map(([g, v]: any) => [
-        g,
-        { band: v.band, label: v[`band_label_${lang}`] },
-      ]),
-    ),
-    cards: (
-      raw.sections.find((s: any) => s.key === "suitability")?.cards ?? []
-    ).map((c: any) => ({
-      card: c.card,
-      goal: c.goal,
-      title: c.title,
-      band: c.band,
-      band_label: c[`band_label_${lang}`],
-      text: c.text ?? null,
-    })),
-    reading: {
-      status: "ready",
-      sections: raw.sections
-        .filter((s: any) => s.key !== "suitability" && s.paragraphs?.length)
-        .map((s: any) => ({
-          key: s.key,
-          title: s.title,
-          paragraphs: s.paragraphs.map((p: any) => ({
-            slot_id: p.slot_id,
-            text: p.text,
+  const gazetteer = read("Astrocartography/gazetteer.json").cities;
+  for (const run of [
+    "20260929-105635_kgc",
+    "20260928-091748_iqi",
+    "20260928-091853_dql",
+    "20260928-091951_ovn",
+    "20260928-092115_26m",
+    "20260928-102133_dp1",
+    "20260929-103820_3o1",
+  ]) {
+    const acg = `acg_run/${run}`;
+    const raw = read(`${acg}/reading_${lang}_1979-03-30.json`);
+    const loc = read(`${acg}/locate_1979-03-30.json`);
+    const city = gazetteer.find((p: any) => p.name === loc.place.name);
+    const placeId = city?.id ?? `spot-${run}`;
+    if (city)
+      save(`map-place.${placeId}.${lang}`, "Place", {
+        place_id: placeId,
+        name: lang === "tr" ? city.name_tr : city.name,
+        admin1: null,
+        country_code: city.country_code,
+        country_name: new Intl.DisplayNames([lang], { type: "region" }).of(
+          city.country_code,
+        ),
+        lat: loc.place.lat,
+        lon: loc.place.lon,
+        tz: (
+          {
+            BG: "Europe/Sofia",
+            TR: "Europe/Istanbul",
+            DE: "Europe/Berlin",
+            GB: "Europe/London",
+            ES: "Europe/Madrid",
+            HK: "Asia/Hong_Kong",
+          } as Record<string, string>
+        )[city.country_code],
+      });
+    save(`place-report.${placeId}.${lang}`, "PlaceReport", {
+      place: {
+        place_id: placeId,
+        name: lang === "tr" ? raw.place.name_tr : raw.place.name,
+        country_code: loc.place.country_code,
+        lat: loc.place.lat,
+        lon: loc.place.lon,
+      },
+      status: loc.status,
+      relocation: { status: loc.relocation.status },
+      focus_goal: raw.focus_goal ?? null,
+      lines_display: raw.lines_display.map((l: any) => ({
+        body: l.body,
+        angle: l.angle,
+        planet_label: l[`planet_${lang}`],
+        angle_label: l[`angle_label_${lang}`],
+        distance_km_rounded: l.distance_km_rounded,
+        tier: l.tier,
+        tier_label: l[`tier_label_${lang}`],
+        read_in_prose: l.read_in_prose,
+      })),
+      parans_display: (raw.parans_display ?? []).map((p: any) => ({
+        id: p.id,
+        bodies:
+          p.bodies ??
+          p.planets ??
+          p.planets_en.map((name: string) => name.toLowerCase()),
+        planet_labels: p[`planets_${lang}`],
+        north_south: p.north_south,
+        distance_km_rounded: p.distance_km_rounded,
+        label: p[`label_${lang}`],
+      })),
+      goal_scores: Object.fromEntries(
+        Object.entries(raw.goal_scores).map(([g, v]: any) => [
+          g,
+          { band: v.band, label: v[`band_label_${lang}`] },
+        ]),
+      ),
+      cards: (
+        raw.sections.find((s: any) => s.key === "suitability")?.cards ?? []
+      ).map((c: any) => ({
+        card: c.card,
+        goal: c.goal,
+        title: c.title,
+        band: c.band,
+        band_label: c[`band_label_${lang}`],
+        text: c.text ?? null,
+      })),
+      reading: {
+        status: "ready",
+        sections: raw.sections
+          .filter((s: any) => s.key !== "suitability" && s.paragraphs?.length)
+          .map((s: any) => ({
+            key: s.key,
+            title: s.title,
+            paragraphs: s.paragraphs.map((p: any) => ({
+              slot_id: p.slot_id,
+              text: p.text,
+            })),
           })),
-        })),
-    },
-    footer: raw.footer,
-  });
+      },
+      footer: raw.footer,
+    });
+  }
 }
 save("config", "Config", {
   min_app_version: { ios: "0.1.0", android: "0.1.0" },

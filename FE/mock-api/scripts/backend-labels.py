@@ -4,8 +4,9 @@ from pathlib import Path
 import sys
 
 root = Path(__file__).resolve().parents[3]
-for folder in ('Interpretation_layer', 'calendar_reading', 'Calendar', 'Astrocartography'):
+for folder in ('Interpretation_layer', 'calendar_reading', 'Calendar', 'Astrocartography', 'synastry_reading'):
     sys.path.insert(0, str(root / folder))
+from s3_profiles import PERSONAL
 import l4_render as natal
 import cr_sections as calendar
 from acg_constants import GOALS
@@ -22,7 +23,7 @@ for event in events:
     labels[event['id']] = dict(zip(('tr', 'en'), calendar.event_label(event)))
 for period in periods:
     labels[period['id']] = dict(zip(('tr', 'en'), calendar.period_label(period['goal'], period['kind'])))
-result = {'events': labels, 'goals': GOALS, 'bodies': {'tr': calendar.PLANET_TR, 'en': calendar.PLANET_EN},
+result = {'compat': {'titles': PERSONAL.titles, 'title': PERSONAL.doc_title}, 'events': labels, 'goals': GOALS, 'bodies': {'tr': calendar.PLANET_TR, 'en': calendar.PLANET_EN},
           'signs': {'tr': calendar.SIGN_TR, 'en': {k: k.title() for k in calendar.SIGN_TR}},
           'natal': {lang: {'title': natal._DOC_TITLE[lang], 'parts': natal.MOVEMENT_TITLES[lang],
                     'sections': {key: {str(h): natal.section_title(key, lang, h) for h in range(13)}

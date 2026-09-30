@@ -47,7 +47,8 @@ export default function ProfileEditor() {
 function Editor({ original, id }: { original?: BirthProfile; id?: string }) {
   const actions = useActions(),
     { t } = useTranslation(),
-    me = useApp((s) => s.me);
+    me = useApp((s) => s.me),
+    params = useLocalSearchParams<{ returnTo?: string; a?: string }>();
   const [step, setStep] = useState(0),
     [label, setLabel] = useState(original?.label ?? ""),
     [relation, setRelation] = useState<Relation>(
@@ -78,7 +79,13 @@ function Editor({ original, id }: { original?: BirthProfile; id?: string }) {
           },
           id,
         )
-        .then((p) => router.replace(`/profile/charts/${p.profile_id}`))
+        .then((p) =>
+          params.returnTo === "match"
+            ? router.dismissTo(
+                `/match/new?other=${p.profile_id}&a=${params.a ?? me?.self_profile_id ?? ""}`,
+              )
+            : router.replace(`/profile/charts/${p.profile_id}`),
+        )
         .catch(() => {});
     if (changed)
       Alert.alert(t("edit"), t("recalculate"), [

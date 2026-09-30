@@ -15,7 +15,7 @@ import { AspectGlyph } from "../../design/components/AspectGlyph";
 import { useTheme } from "../../design/theme";
 import { useApp } from "../../lib/state";
 import { useProfiles, useCatalogue, useChart } from "../../api/hooks";
-import { WheelPreview } from "../profiles/WheelPreview";
+import { InteractiveWheel } from "./InteractiveWheel";
 import { ChartTables, type ChartTab } from "./ChartTables";
 import { ChartDetailSheet } from "./ChartDetailSheet";
 import type { BirthProfile } from "../../../contracts/spec-types";
@@ -84,6 +84,13 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
   return (
     <>
       <Txt kind="display">{profile.label}</Txt>
+      <Button
+        secondary
+        label={t("exportShare")}
+        onPress={() =>
+          router.push(`/chart/export?profile=${profile.profile_id}`)
+        }
+      />
       <Choices>
         {(["sun", "moon", "ascendant"] as const).map((key) => (
           <Chip
@@ -100,7 +107,23 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
           />
         ))}
       </Choices>
-      <WheelPreview id={profile.profile_id} chartKey={profile.chart_key} />
+      {chart.data ? (
+        <InteractiveWheel
+          chart={chart.data}
+          catalogue={c}
+          selection={selection}
+          select={select}
+        />
+      ) : (
+        <Skeleton />
+      )}
+      <Button
+        secondary
+        label={t("focusMode")}
+        onPress={() =>
+          router.push(`/chart/focus?profile=${profile.profile_id}`)
+        }
+      />
       <View style={{ gap: 8 }}>
         {(
           [

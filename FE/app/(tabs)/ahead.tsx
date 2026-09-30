@@ -1,6 +1,2 @@
-import TabScreen from "../../src/features/home/TabScreen";
-export default function Page() {
-  return <TabScreen tab="ahead" />;
-}
-
+export { default } from "../../src/features/forecast/AheadScreen";
 export { RouteError as ErrorBoundary } from "../../src/design/components/RouteError";

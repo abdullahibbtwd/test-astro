@@ -1,12 +1,35 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Catalogue, Lang } from "../../contracts/spec-types";
-export function recommendations(root: string, lang: Lang, cat: Catalogue) {
+export function recommendations(
+  root: string,
+  lang: Lang,
+  cat: Catalogue,
+  sourceFile = "acg_run/20260928-113431_8l9/recommend_love_world_1979-03-30.json",
+) {
   const read = (file: string) =>
     JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
-  const raw = read(
-    "acg_run/20260928-113431_8l9/recommend_love_world_1979-03-30.json",
-  );
+  const raw = read(sourceFile);
+  if (raw.goal === "overall") {
+    // Overall is breadth/strain, not a goal-band score. Preserve its explicit summary label.
+    raw.cities = raw.places.map((p: any) => ({
+      ...p,
+      band: "no_emphasis",
+      band_label_tr: p.label_tr,
+      band_label_en: p.label_en,
+    }));
+    raw.turkey.cities = (raw.turkey.places ?? []).map((p: any) => ({
+      ...p,
+      band: "no_emphasis",
+      band_label_tr: p.label_tr,
+      band_label_en: p.label_en,
+    }));
+    raw.by_line = [];
+    raw.by_purpose = { living: [], travel: [] };
+    raw.lines_without_destinations = [];
+    raw.countries = [];
+    raw.regions = [];
+  }
   const dest = new Map(
     read("Astrocartography/destinations.json").destinations.map((p: any) => [
       p.id,
@@ -21,6 +44,7 @@ export function recommendations(root: string, lang: Lang, cat: Catalogue) {
       name: lang === "tr" ? (p.name_tr ?? p.name) : p.name,
       country_code: p.country,
       size: meta.size,
+      ...(raw.goal === "overall" ? { summary_label: p[`label_${lang}`] } : {}),
       band: p.band,
       band_label: p[`band_label_${lang}`],
       dominant_line:
@@ -87,7 +111,13 @@ export function recommendations(root: string, lang: Lang, cat: Catalogue) {
       policy: raw.filters_applied.policy,
     },
     by_line: groups,
-    lines_without_destinations: raw.lines_without_destinations,
+    lines_without_destinations: raw.lines_without_destinations.map(
+      (l: any) => ({
+        line: l.line,
+        title: `${cat.bodies[l.line.body as keyof typeof cat.bodies]} · ${cat.angles[l.line.angle as keyof typeof cat.angles].line}`,
+        text: l[`text_${lang}`] ?? l.text,
+      }),
+    ),
     places: raw.cities.map(city),
     turkey: {
       places: (raw.turkey.cities ?? []).map(city),

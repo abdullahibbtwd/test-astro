@@ -6,8 +6,8 @@ import { createHash } from "node:crypto";
 import { toWheelInput } from "../packages/wheel-core/adapter";
 import { fixture } from "../mock-api/fixtures";
 // Phase 0 proves the adapter against the unmodified canonical engine. The TS port is Phase 2.
-import { renderChart } from "../../Chart_wheel/src/render.js";
-import { checkInvariants } from "../../Chart_wheel/src/invariants.js";
+import { renderChart } from "../packages/wheel-core/render";
+import { checkInvariants } from "../packages/wheel-core/invariants";
 const sources = [
   ["prediction_run/20260929-130811_qpm", "1979-03-30"],
   ["runs/20260924-102926_26p_1988-12-28", "1988-12-28"],

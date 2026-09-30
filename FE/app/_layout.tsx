@@ -1,4 +1,7 @@
+import { JobLifecycle } from "../src/lib/JobLifecycle";
 import "../src/i18n";
+import "../src/lib/notification-background";
+import { NotificationLifecycle } from "../src/lib/NotificationLifecycle";
 import { Stack, router, useSegments } from "expo-router";
 import { useFonts } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -98,6 +101,7 @@ export default function RootLayout() {
           persistOptions={{ persister, maxAge: 86400000, buster: "phase1" }}
         >
           <BottomSheetModalProvider>
+            <NotificationLifecycle />
             <StatusBar
               barStyle={c.bg === "#1A2030" ? "light-content" : "dark-content"}
             />
@@ -107,7 +111,25 @@ export default function RootLayout() {
                 contentStyle: { backgroundColor: c.bg },
                 animation: "fade",
               }}
-            />
+            >
+              {[
+                "map/place/[placeId]",
+                "map/point",
+                "map/area/[areaId]",
+                "map/line/[body]/[angle]",
+              ].map((name) => (
+                <Stack.Screen
+                  key={name}
+                  name={name}
+                  options={{
+                    presentation: "transparentModal",
+                    animation: "fade",
+                    contentStyle: { backgroundColor: "transparent" },
+                  }}
+                />
+              ))}
+            </Stack>
+            <JobLifecycle />
           </BottomSheetModalProvider>
         </PersistQueryClientProvider>
       </SafeAreaProvider>

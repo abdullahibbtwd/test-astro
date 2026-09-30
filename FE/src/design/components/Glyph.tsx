@@ -1,16 +1,19 @@
 import { SvgXml } from "react-native-svg";
-import { glyphDefs } from "../../../../Chart_wheel/src/glyphs.js";
+import { glyphDefs } from "../../../packages/wheel-core/glyphs";
 import { useTheme } from "../theme";
 import type { Sign, Body } from "../../../contracts/spec-types";
 const definitions = glyphDefs();
 export function Glyph({
   name,
   size = 32,
+  color: overrideColor,
 }: {
   name: Sign | Body;
   size?: number;
+  color?: string;
 }) {
-  const color = useTheme().ink;
+  const theme = useTheme();
+  const color = overrideColor ?? theme.ink;
   const key =
     name === "north_node" ? "node-n" : name === "south_node" ? "node-s" : name;
   return (

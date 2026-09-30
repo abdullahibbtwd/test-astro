@@ -6,6 +6,7 @@ import fs from "node:fs";
 import { fileURLToPath, URL } from "node:url";
 import { validate } from "../src/api/zod";
 import { fixture, collection } from "./fixtures";
+import { askFixture } from "./ask-fixture";
 import { Jobs } from "./jobs";
 import type { Job, Thread, Message, ReportRef } from "../contracts/spec-types";
 
@@ -279,11 +280,27 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
             case "get /places/search":
               if (q.kind && !["birth", "city", "area"].includes(q.kind))
                 return fail(reply, "validation_error", 400, lang);
-              if (q.kind === "area" || q.kind === "city") return fixtureOnly();
+              if (q.kind === "area") {
+                result = collection("area-search.", lang)
+                  .filter(
+                    (x) =>
+                      (q.q?.length ?? 0) >= 2 &&
+                      x.name
+                        .toLocaleLowerCase(lang)
+                        .includes((q.q ?? "").toLocaleLowerCase(lang)),
+                  )
+                  .slice(0, Math.min(Number(q.limit ?? 8), 50));
+                break;
+              }
               result =
                 (q.q?.length ?? 0) < 2
                   ? []
-                  : collection("place.", lang)
+                  : [
+                      ...collection("place.", lang),
+                      ...(q.kind === "city"
+                        ? collection("map-place.", lang)
+                        : []),
+                    ]
                       .filter((x) =>
                         x.name
                           .toLocaleLowerCase(lang)
@@ -298,7 +315,9 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                       }));
               break;
             case "get /places/{place_id}":
-              result = fixture(`place.${p.place_id}.${lang}`);
+              result =
+                fixture(`place.${p.place_id}.${lang}`) ??
+                fixture(`map-place.${p.place_id}.${lang}`);
               if (!result) return fail(reply, "not_found", 404, lang);
               break;
             case "get /places/reverse": {
@@ -493,13 +512,34 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
               result.greeting_name = me.display_name;
               break;
             case "get /profiles/{id}/forecast/day":
+              if (!originalSelf) return fixtureOnly();
+              result = fixture(
+                q.date && q.date !== "2026-09-29"
+                  ? `forecast-day.${q.date}.${lang}`
+                  : `forecast-day.${lang}`,
+              );
+              if (!result) return fail(reply, "out_of_range", 400, lang);
+              result.lens = q.lens ?? "general";
+              if (result.lens !== "general")
+                result.reading = {
+                  status: "absent",
+                  absence: { reason: "no_grounding" },
+                };
+              break;
+            case "get /profiles/{id}/forecast/month":
+              if (!originalSelf) return fixtureOnly();
+              result = fixture(`forecast-month.${q.month}.${lang}`);
+              if (!result) return fail(reply, "out_of_range", 400, lang);
+              result.lens = q.lens ?? "general";
+              break;
+            case "get /profiles/{id}/forecast/year":
               if (
                 !originalSelf ||
-                (q.date && q.date !== "2026-09-29") ||
+                q.from !== "2026-09" ||
                 (q.lens && q.lens !== "general")
               )
                 return fixtureOnly();
-              result = fixture(`forecast-day.${lang}`);
+              result = fixture(`forecast-year.${lang}`);
               break;
             case "get /profiles/{id}/calendar/months/{month}":
               if (!originalSelf) return fixtureOnly();
@@ -558,14 +598,27 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
               );
               break;
             case "get /profiles/{id}/acg/places/{place_id}":
-              if (!originalSelf || p.place_id !== "gn-istanbul")
-                return fixtureOnly();
-              result = fixture(`place-report.istanbul.${lang}`);
+              if (!originalSelf) return fixtureOnly();
+              result = fixture(
+                `place-report.${p.place_id === "gn-istanbul" ? "gn-745044" : p.place_id}.${lang}`,
+              );
+              if (!result) return fixtureOnly();
               if (scenario === "absent_polar")
                 result.relocation = {
                   status: "absent",
                   absence: { reason: "placidus_undefined_high_latitude" },
                 };
+              break;
+            case "get /profiles/{id}/acg/countries/{iso2}":
+            case "get /profiles/{id}/acg/regions/{admin1_id}":
+              if (!originalSelf) return fixtureOnly();
+              result = fixture(`area-report.${p.iso2 ?? p.admin1_id}.${lang}`);
+              if (!result) return fixtureOnly();
+              break;
+            case "get /profiles/{id}/acg/heat/{goal}":
+              if (!originalSelf) return fixtureOnly();
+              result = fixture(`heat.${p.goal}`);
+              if (!result) return fail(reply, "not_found", 404, lang);
               break;
             case "get /profiles/{id}/acg/lines":
               if (!originalSelf) return fixtureOnly();
@@ -589,7 +642,8 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
               break;
             case "post /profiles/{id}/acg/recommendations": {
               if (!originalSelf) return fixtureOnly();
-              result = fixture(`recommend-love.${lang}`);
+              result = fixture(`recommend-${body.goal ?? "love"}.${lang}`);
+              if (!result) return fixtureOnly();
               if (
                 scenario === "needs_goal" ||
                 (!body.goal && body.query_text)
@@ -614,11 +668,7 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                   },
                 };
               } else {
-                if (
-                  body.goal !== "love" ||
-                  (body.scope && body.scope !== "world") ||
-                  body.filters
-                )
+                if ((body.scope && body.scope !== "world") || body.filters)
                   return fixtureOnly();
                 if (scenario === "thin_result") {
                   result.status = "thin_result";
@@ -651,8 +701,73 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
               reports.delete(entry[0]);
               return noContent();
             }
+            case "post /compatibility": {
+              const a = profiles.find(
+                (x) => x.profile_id === body.profile_a_id,
+              );
+              const b = profiles.find(
+                (x) => x.profile_id === body.profile_b_id,
+              );
+              if (!a || !b) return fail(reply, "not_found", 404, lang);
+              if (a.profile_id === b.profile_id)
+                return fail(reply, "validation_error", 400, lang);
+              const pair = [a.chart_key, b.chart_key].sort().join(":");
+              if (
+                body.type !== "love" ||
+                pair !==
+                  [seedProfiles[0].chart_key, seedProfiles[1].chart_key]
+                    .sort()
+                    .join(":")
+              )
+                return fixtureOnly();
+              const prior = [...compat.values()].find(
+                (x) =>
+                  x.people.a.profile_id === a.profile_id &&
+                  x.people.b.profile_id === b.profile_id &&
+                  x.type === body.type,
+              );
+              result = {
+                ...fixture(`compat-love.${lang}`),
+                compatibility_id: prior?.compatibility_id ?? randomUUID(),
+                created_at:
+                  prior?.created_at ?? new Date(clock()).toISOString(),
+                people: {
+                  a: {
+                    profile_id: a.profile_id,
+                    label: a.label,
+                    big_three: a.big_three,
+                  },
+                  b: {
+                    profile_id: b.profile_id,
+                    label: b.label,
+                    big_three: b.big_three,
+                  },
+                },
+              };
+              compat.set(result.compatibility_id, structuredClone(result));
+              break;
+            }
+            case "get /compatibility/{id}": {
+              const saved = compat.get(p.id!);
+              if (!saved) return fail(reply, "not_found", 404, lang);
+              result = {
+                ...saved,
+                reading: fixture(`compat-love.${lang}`).reading,
+              };
+              break;
+            }
             case "get /compatibility":
-              result = page([...compat.values()], q);
+              result = page(
+                [...compat.values()].map(
+                  ({
+                    reading,
+                    score: _score,
+                    family_relation: _family,
+                    ...r
+                  }) => ({ ...r, status: reading.status }),
+                ),
+                q,
+              );
               break;
             case "delete /compatibility/{id}":
               if (!compat.delete(p.id!))
@@ -725,7 +840,38 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                   seedProfiles[0].chart_key
               )
                 return fixtureOnly();
-              const text = fixture(`forecast-day.${lang}`).reading.text;
+              const sample = askFixture(
+                body.text,
+                body.context ?? {},
+                lang as "tr" | "en",
+                thread.profile_id,
+              );
+              if (
+                body.context?.other_profile_id === seedProfiles[1].profile_id ||
+                body.context?.compatibility_id
+              ) {
+                const existing = body.context?.compatibility_id
+                  ? compat.get(body.context.compatibility_id)
+                  : [...compat.values()].find((c) => c.type === "love");
+                const report = existing ?? {
+                  ...fixture(`compat-love.${lang}`),
+                  compatibility_id: randomUUID(),
+                };
+                compat.set(report.compatibility_id, report);
+                sample.text =
+                  (lang === "tr"
+                    ? "Önizleme: kayıtlı uyum yorumundan bir bölüm.\n\n"
+                    : "Preview: an excerpt from the saved compatibility reading.\n\n") +
+                  fixture(`compat-love.${lang}`).reading.sections[0].text;
+                sample.card = {
+                  type: "compatibility",
+                  compatibility_id: report.compatibility_id,
+                  labels: [report.people.a.label, report.people.b.label],
+                  compat_type: "love",
+                };
+                sample.route = `/match/${report.compatibility_id}`;
+              }
+              const text = sample.text;
               reply.hijack();
               reply.raw.writeHead(200, {
                 "Content-Type": "text/event-stream",
@@ -779,17 +925,16 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                 send("delta", { text: chunk });
                 await new Promise((resolve) => setTimeout(resolve, 25));
               }
-              const card = {
-                type: "forecast" as const,
-                horizon: "day" as const,
-                date: "2026-09-29",
-                title: lang === "tr" ? "Bugün" : "Today",
-              };
-              const link = { label: card.title, route: "/ahead/today" };
-              answer.cards.push(card);
-              answer.links.push(link);
-              send("card", card);
-              send("link", link);
+              if (sample.card) {
+                answer.cards.push(sample.card);
+                send("card", sample.card);
+                const link = {
+                  label: lang === "tr" ? "Aç" : "Open",
+                  route: sample.route,
+                };
+                answer.links.push(link);
+                send("link", link);
+              }
               answer.status = "complete";
               me.ask_quota.used_today++;
               send("done", {
@@ -859,9 +1004,17 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                 const kind: Job["kind"] =
                   route === "/home" || route.endsWith("forecast/day")
                     ? "day_reading"
-                    : route.includes("/acg/")
-                      ? "place_reading"
-                      : "calendar_text";
+                    : route.includes("/compatibility")
+                      ? "compatibility"
+                      : route.endsWith("forecast/month")
+                        ? "month_reading"
+                        : route.endsWith("forecast/year")
+                          ? "year_reading"
+                          : route.endsWith("recommendations")
+                            ? "recommendation"
+                            : route.includes("/acg/")
+                              ? "place_reading"
+                              : "calendar_text";
                 const job = jobs.resource(
                   `${route}:${JSON.stringify(p)}:${JSON.stringify(
                     Object.fromEntries(
@@ -880,6 +1033,64 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                       ? { status: "failed", error: job.error }
                       : { status: "pending", job };
               }
+          }
+          if (result?.cards && result?.reading?.status !== "ready")
+            result.cards = result.cards.map((card: any) => ({
+              ...card,
+              text: card.band === "no_emphasis" ? card.text : null,
+            }));
+          // History records only completed interpretations, never pending or absent parts.
+          const ready =
+            result?.reading?.status === "ready" ||
+            result?.explanations?.status === "ready" ||
+            result?.overview?.status === "ready";
+          if (ready) {
+            let type: ReportRef["type"] | undefined,
+              target = "",
+              title = "";
+            if (route.includes("/compatibility") && result.compatibility_id) {
+              type = "compatibility";
+              target = `/match/${result.compatibility_id}`;
+              title = result.reading.title;
+            } else if (route.endsWith("forecast/year")) {
+              type = "forecast_year";
+              target = `/forecast/year?profile=${p.id}&month=${q.from}`;
+              title = `${result.from} – ${result.to}`;
+            } else if (route.endsWith("forecast/month")) {
+              type = "forecast_month";
+              target = `/forecast/month/${q.month}?profile=${p.id}`;
+              title = result.month;
+            } else if (
+              route.endsWith("recommendations") &&
+              result.status !== "needs_goal"
+            ) {
+              type = "recommendation";
+              target = `/map/recommend/result?profile=${p.id}&request=${encodeURIComponent(JSON.stringify(body))}`;
+              title = result.goal_label;
+            } else if (route.includes("/acg/places/")) {
+              type = "place";
+              target = `/map/place/${p.place_id}?profile=${p.id}`;
+              title = result.place.name;
+            }
+            if (type) {
+              const key = `${type}:${target}:${lang}`;
+              if (!reports.has(key))
+                reports.set(key, {
+                  report_id: randomUUID(),
+                  type,
+                  lang,
+                  title,
+                  subtitle:
+                    profile?.label ??
+                    Object.values(result.people ?? {})
+                      .map((p: any) => p.label)
+                      .join(" · "),
+                  profile_id:
+                    profile?.profile_id ?? result.people?.a.profile_id,
+                  created_at: new Date(clock()).toISOString(),
+                  route: target,
+                });
+            }
           }
           const responseSchema =
             operation.responses[String(status)]?.content?.["application/json"]

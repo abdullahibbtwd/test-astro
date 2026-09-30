@@ -9,7 +9,13 @@ export function DateTimeField({
   mode,
   value,
   onChange,
+  label,
+  minimumDate = new Date(1900, 0, 1),
+  maximumDate = new Date(),
 }: {
+  label?: string;
+  minimumDate?: Date;
+  maximumDate?: Date;
   mode: "date" | "time";
   value: string;
   onChange: (value: string) => void;
@@ -24,7 +30,7 @@ export function DateTimeField({
   return (
     <>
       <Row
-        label={t(mode === "date" ? "birthDate" : "birthTime")}
+        label={label ?? t(mode === "date" ? "birthDate" : "birthTime")}
         detail={
           value
             ? mode === "date"
@@ -42,8 +48,8 @@ export function DateTimeField({
             is24Hour
             locale={lang}
             display={Platform.OS === "ios" ? "spinner" : "default"}
-            minimumDate={mode === "date" ? new Date(1900, 0, 1) : undefined}
-            maximumDate={mode === "date" ? new Date() : undefined}
+            minimumDate={mode === "date" ? minimumDate : undefined}
+            maximumDate={mode === "date" ? maximumDate : undefined}
             onChange={(event, selected) => {
               if (Platform.OS === "android") setOpen(false);
               if (event.type === "set" && selected) {

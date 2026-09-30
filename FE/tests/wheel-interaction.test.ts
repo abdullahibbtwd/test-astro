@@ -1,0 +1,12 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {fixture} from "../mock-api/fixtures";
+import {computeWheel} from "../packages/wheel-core/model";
+import {toWheelInput} from "../packages/wheel-core/adapter";
+import {hitTest,touchToModel} from "../packages/wheel-core/hit-test";
+import {renderChartResolved} from "../packages/wheel-core/resolved";
+import {renderChart} from "../packages/wheel-core/render";
+import {chartDocument,slug} from "../src/features/exports/document";
+test("all glyph centers select their body at 1× and 3×, including crowded clusters",()=>{const model=computeWheel(toWheelInput(fixture("chart.1")));for(const zoom of [1,3])for(const p of model.points){const hit=hitTest(model,p.glyph.x,p.glyph.y,375,zoom);assert.equal(hit?.kind,"body");if(hit?.kind==="body")assert.ok(hit.names.includes(p.name));}assert.ok(model.points.some(p=>{const hit=hitTest(model,p.glyph.x,p.glyph.y,375,1);return hit?.kind==="body"&&hit.names.length>1}));const p=touchToModel(187.5+50+37.5*3,187.5-20,375,3,50,-20);assert.equal(p.x,600);assert.equal(p.y,500)});
+test("resolved SVG retains every geometry attribute without styles or variables",()=>{const chart=fixture("chart.1");for(const theme of ["light","dark"] as const){const svg=renderChartResolved(chart,theme),canonical=renderChart(toWheelInput(chart),{theme});assert.ok(!svg.includes("<style>"));assert.ok(!svg.includes("var("));assert.ok(!svg.includes('class="'));const geom=/\s(?:cx|cy|r|x1|x2|y1|y2|d|transform)="[^"]*"/g;assert.deepEqual(svg.match(geom),canonical.match(geom));assert.ok(svg.includes('stroke="#DEDED7"')||svg.includes('stroke="#3A4256"'));}});
+test("report export includes exact reading paragraphs and HTML escapes user labels",()=>{assert.equal(slug("Çağrı ŞİMŞEK"),"cagri-simsek");const profile=fixture("profile.1.en"),chart=fixture("chart.1"),cat=fixture("catalogue.en"),reading=fixture("natal.1.en");profile.label='<script>alert("x")</script>';const labels=Object.fromEntries(["chart","sun","moon","ascendant","contents","planets","houses","aspects","sign","house","orb"].map(k=>[k,k]));const html=chartDocument(profile,chart,cat,labels,reading);assert.ok(!html.includes('<script>'));assert.ok(html.includes('&lt;script&gt;'));for(const section of reading.sections)assert.ok(html.includes(`id="${section.key}"`));});

@@ -1,5 +1,10 @@
-const path = require('node:path');
 const { getDefaultConfig } = require('expo/metro-config');
 const config = getDefaultConfig(__dirname);
-config.watchFolders = [path.resolve(__dirname, '../Chart_wheel')];
+// Fixture regeneration and exported files are server/build artifacts, never app modules.
+const existing = config.resolver.blockList;
+config.resolver.blockList = [
+  ...(Array.isArray(existing) ? existing : existing ? [existing] : []),
+  /[/\\]mock-api[/\\]fixtures[/\\].*/,
+  /[/\\]artifacts[/\\].*/,
+];
 module.exports = config;

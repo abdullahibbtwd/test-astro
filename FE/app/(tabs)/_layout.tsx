@@ -1,3 +1,4 @@
+import { useFlags } from "../../src/lib/flags";
 import { Tabs, router } from "expo-router";
 import { Pressable } from "react-native";
 import {
@@ -13,7 +14,8 @@ import { useTranslation } from "react-i18next";
 import { useTheme } from "../../src/design/theme";
 export default function TabLayout() {
   const { t } = useTranslation(),
-    c = useTheme();
+    c = useTheme(),
+    flags = useFlags();
   const icons = [House, CircleDot, CalendarDays, Users, MapPin];
   return (
     <Tabs
@@ -40,16 +42,17 @@ export default function TabLayout() {
             <CircleUserRound color={c.ink} size={24} />
           </Pressable>
         ),
-        headerRight: () => (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("ask")}
-            onPress={() => router.push("/ask")}
-            style={{ padding: 12 }}
-          >
-            <MessageCircle color={c.accent} size={24} />
-          </Pressable>
-        ),
+        headerRight: () =>
+          flags.askAstrology ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("ask")}
+              onPress={() => router.push("/ask")}
+              style={{ padding: 12 }}
+            >
+              <MessageCircle color={c.accent} size={24} />
+            </Pressable>
+          ) : null,
       }}
     >
       {["index", "chart", "ahead", "match", "map"].map((name, i) => {

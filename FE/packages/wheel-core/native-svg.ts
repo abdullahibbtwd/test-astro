@@ -1,5 +1,5 @@
-import { renderChart } from "../../../Chart_wheel/src/render.js";
-import { THEMES } from "../../../Chart_wheel/src/theme.js";
+import { renderChart } from "./render";
+import { THEMES } from "./theme";
 import { toWheelInput } from "./adapter";
 import type { ChartData } from "../../contracts/spec-types";
 /** Native presentation adapter only; canonical geometry and exported SVG remain untouched. */

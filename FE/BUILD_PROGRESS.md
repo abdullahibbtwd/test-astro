@@ -1,36 +1,52 @@
-# Latest build progress
+# Frontend preview — 1 October 2026
 
-## Reading and saved reports — 30 September 2026
+Working copy: `D:\Dev\astrology-app\FE`. Open `D:\Dev\astrology-app\Open Android Preview.cmd`.
+Sign in with **demo@example.com**, code **000000**. The launcher opens the Android emulator, API and Metro.
 
-The Android preview has been updated in place. Reopen it with `D:\Dev\astrology-app\Open Android Preview.cmd`.
+## Implemented
 
-### Try it
+- Turkish/English app shell, themes, onboarding, saved birth profiles, account/preferences, secure local storage and report history.
+- Home, daily/monthly/yearly forecast views, lenses, profile/date navigation, optional Solar Return screen and capability flags.
+- Interactive canonical chart wheel with zoom/pan, body/sign/house/axis/aspect selection, detail sheets, reading links, accessible tables and contents sheet.
+- Chart PNG/JPG, vector PDF, full reading PDF, and feed/story share cards with birth details hidden by default.
+- Compatibility creation, relationship type selection, report, chart links, sharing/PDF, history and deletion.
+- Calendar month/day/item/period/year screens, goal filters, semantic bands, timeline, Best Days and reminders.
+- Notification permissions/preferences, quiet hours, rolling caps, deduplication, background/foreground refresh and notification deep links.
+- Native map, planet/angle layers, glyph sprites, heat layers, city/area search, line lists, place/area/point report screens, filterable recommendation requests and list/map results.
+- Ask threads, six starters, context chips, streaming, Stop/retry recovery, offline/quota states, structured cards, copy/share and feedback.
+- Composite job polling, ready notifications, retry handling and completed-report history.
 
-1. Sign in with **demo@example.com**, code **000000**, if needed.
-2. Open **Chart**, choose **Person B** or **Person C**, scroll below the wheel and choose **Read your chart**.
-3. Use **Contents** to open an individual section. Expand/collapse sections, copy their exact text, or open the native share sheet.
-4. Open the profile/avatar menu → **Saved reports**. Reports show a date and profile name, can be filtered, reopened, and deleted with confirmation.
+## Useful preview paths
 
-Person A has no natal reading in the supplied source fixtures. Its missing reading is shown as an error; no replacement interpretation is invented. Birth calculations and reading generation remain mocked.
+| Flow | Available sample |
+|---|---|
+| Home / forecasts / calendar | **Person A**. Preview today is 2026-09-29. Daily calendar facts cover the supplied year. |
+| Natal reading and exports | **Person B or Person C** → Chart → Read your chart / Export. |
+| Compatibility | Person A + Person B → **Love**. Text is from the matching existing synastry run. |
+| Map city reports | Person A → search Istanbul, Sofia, İzmir, Berlin, London, Barcelona or Hong Kong. |
+| Map area reports | Person A → Turkey, Bulgaria, Germany, United Kingdom or Spain; selected region links. Bands and city rankings are deterministic backend results. |
+| Recommendations | Person A → default Overall, or Love, Career, Travel, Permanent Relocation, with the stored world/default filters. |
+| Ask | Person A → starters replay clearly labelled saved-data samples/cards. This is not a live AI service. |
+| Notifications | Your space → Notifications → enable → Send a test notification. Uses real device time, not the fixed preview date. |
 
-### What changed
+The local basemap uses the project's Natural Earth Turkey-POV geometry. It is a development fallback; release still needs its provider/style configuration and final worldview review.
 
-- API-backed natal document viewer with the supplied titles, parts and sections, serif text, two-line collapsed previews, expand/collapse all and deep-linked section screens.
-- Copy and native share actions preserve the complete section text.
-- Populated saved-report lifecycle in the mock: records are created only after a reading is ready, separated by language, paginated, filtered, and deleted independently of birth profiles.
-- Saved-report deletion refreshes only the report cache so it cannot accidentally regenerate its deleted reference. Profile deletion and birth-data edits remove obsolete mock references.
-- Localized retry boundaries for routes; raw error details are not displayed. Telemetry vendor reporting is still unconfigured.
-- Long-press deletion with confirmation on non-self My Charts rows; the detail screen retains its accessible Delete action.
-- Generation retry errors are contained in the UI and retry responses are schema-validated.
+## Data boundaries (do not confuse these with live calculations)
 
-### Verified
+The contract server is a local preview, built from existing outputs and deterministic scans. New birth inputs reuse sample chart positions. Arbitrary profile/date/lens combinations, unrepresented city/point reports and recommendation filters can return an explicit unavailable state.
 
-- `npm run check`: strict TypeScript and lint pass; 4,451 fixtures validate; **31 Node tests and 5 native component tests pass**.
-- `npm run bundle`: Android and iOS JavaScript/Hermes bundles pass. The existing Android development APK runs these updates; no new native dependency was added.
-- Android emulator: mock sign-in, pending-to-ready natal reading, section deep link, populated dated saved report and confirmed deletion to the empty state.
-- Automated regression coverage includes missing fixtures, ready-only saving, no duplicate references, language/filter isolation, cursor pagination, report and profile deletion, exact section copying, accessible expansion, and recovery without exposing private exception text.
-- Screenshot: `artifacts/screenshots/reading-en-dark.png` (local, Git-ignored).
+The saved monthly prose is a **rolling September 29–October 29** reading, not a calendar-month reading. Monthly screens therefore show exact calendar facts and an absent-reading notice rather than falsely relabelling that prose. The saved yearly reading displays its actual September 29, 2026–September 28, 2027 range. Person A has no matching natal prose fixture. Area summaries have calculated facts but no generated overview prose. Work/family compatibility, Solar Return and element-note success data are not supplied for the preview profiles; optional capabilities stay disabled where appropriate.
 
-### Still open
+Mock account/thread/report state resets with the API process. Sign in again after a server restart. No emails or paid model requests are made.
 
-The remaining production configuration, iOS device validation, accessibility/performance audit, notifications, global job-ready toast and interactive chart work from `PHASE_1_REPORT.md` remain. This increment completes populated saved-report management and route retry boundaries and starts the chart-reading work; it does not close the entire Phase 1 gate. Real Google/Apple sign-in and production legal content still need configuration. Contents currently opens an inline section list with deep links rather than a bottom sheet.
+## Validation and remaining release work
+
+- `npm run check`: 5,302 fixtures validate; 47 Node tests and 9 native component tests pass. Strict TypeScript, ESLint, contract validation, Node and native component tests cover formatting, numeric parity, W1/W3 byte parity, W4 native SVG chord props, exports, notification policy, SSE, idempotency, history and job completion.
+- Android and iOS Hermes bundles build; the Android x86_64 development APK builds and is installed. This does **not** establish an iOS native/device pass.
+- Android smoke checks include auth, home/chart facts, real streamed preview answer, compatibility creation/read, calendar, native map, place bottom sheet/full screen, PDF/PNG sharing and local notification delivery.
+- Generated export checks: 2048×2400 PNG; chart PDF with vector wheel; full 17-page reading PDF with no raster images. Local evidence is in `artifacts/exports` and `artifacts/screenshots` (Git-ignored).
+- Native test coverage does not replace a full TalkBack/VoiceOver, physical-device performance, iOS background delivery or store-release audit.
+
+Still required for fully live functionality: production HTTP API/job/SSE adapter over the Python services; live generation and complete forecast data; authentication/email transport and account-export service; Google/Apple app credentials; final legal text and app identifiers; production map styles. No production deployment or store submission has been performed.
+
+The frontend is available for preview testing; the complete live product is **not** represented as finished.
