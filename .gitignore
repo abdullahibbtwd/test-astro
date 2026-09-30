@@ -104,3 +104,6 @@ principles_grounding/acg_consolidation_report.json
 principles_grounding/acg_goal_tagging_report.json
 principles_grounding/transit_goal_tagging_report.json
 principles_grounding/validation_report.merged.json
+
+# Local Android preview tooling
+.tooling/
