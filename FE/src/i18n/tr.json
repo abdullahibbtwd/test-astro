@@ -1,0 +1,9 @@
+{
+  "appName": "{{APP_NAME}}",
+  "language": "Dil",
+  "whoAmI": "Ben kimim?",
+  "whatsAhead": "Beni neler bekliyor?",
+  "whoFits": "Kim bana uygun?",
+  "whereToBe": "Nerede olmalıyım?",
+  "disclaimer": "Öz-farkındalık içindir, tavsiye değildir."
+}

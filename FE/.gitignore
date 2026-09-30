@@ -1,0 +1,14 @@
+node_modules/
+.expo/
+dist/
+android/
+ios/
+.env*
+!.env.example
+mock-api/fixtures/
+artifacts/
+*.tsbuildinfo
+
+# The root excludes backend Contracts; this frontend contract is source.
+!/contracts/
+!/contracts/**

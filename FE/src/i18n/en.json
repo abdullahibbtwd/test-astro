@@ -1,0 +1,9 @@
+{
+  "appName": "{{APP_NAME}}",
+  "language": "Language",
+  "whoAmI": "Who am I?",
+  "whatsAhead": "What's ahead?",
+  "whoFits": "Who fits me?",
+  "whereToBe": "Where should I be?",
+  "disclaimer": "For self-reflection, not advice."
+}
