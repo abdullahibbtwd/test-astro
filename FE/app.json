@@ -6,16 +6,35 @@
     "scheme": "astrology-dev",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
-    "ios": { "bundleIdentifier": "com.example.astrology.dev", "supportsTablet": true },
-    "android": { "package": "com.example.astrology.dev" },
+    "ios": {
+      "bundleIdentifier": "com.example.astrology.dev",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.example.astrology.dev"
+    },
     "plugins": [
       "expo-router",
       "expo-font",
       "expo-secure-store",
       "expo-localization",
       "@maplibre/maplibre-react-native",
-      ["expo-build-properties", {"ios":{"deploymentTarget":"16.4","enableSceneSupport":true},"android":{"minSdkVersion":26}}]
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "16.4",
+            "enableSceneSupport": true
+          },
+          "android": {
+            "minSdkVersion": 26
+          }
+        }
+      ],
+      "@react-native-community/datetimepicker"
     ],
-    "experiments": { "typedRoutes": true }
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }
