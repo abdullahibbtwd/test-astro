@@ -18,3 +18,15 @@
 - [ ] Production API/OAuth/map/legal integration and iOS/device accessibility/performance acceptance
 
 External requirements to track: final legal content/app identifiers; production API capabilities/credentials; OAuth client configuration; map provider style/worldview; iOS build environment. These do not block independent frontend implementation.
+
+## Local live integration — 2 October
+
+- [x] Real chart engine bridge and input validation
+- [x] Durable local profiles/charts and private sessions
+- [x] Real calendar, Best Days, notification candidates and daily/monthly facts
+- [x] Separate emulator launcher and cache isolation
+- [x] Reading-job infrastructure and cumulative US$20 budget guard
+- [ ] Fresh paid reading validation — payload approval pending; US$0 spent
+- [ ] Fresh forecasts, compatibility, maps/recommendations and Ask
+- [ ] Real email/Google/Apple authentication
+- [ ] Account deletion/export, cache lifecycle and broader acceptance

@@ -16,6 +16,7 @@
     "contracts/**/*.ts",
     "scripts/**/*.ts",
     "mock-api/**/*.ts",
+    "local-api/**/*.ts",
     "tests/**/*.ts",
     "expo-env.d.ts",
     ".expo/types/**/*.ts"

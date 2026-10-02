@@ -6,5 +6,6 @@ config.resolver.blockList = [
   ...(Array.isArray(existing) ? existing : existing ? [existing] : []),
   /[/\\]mock-api[/\\]fixtures[/\\].*/,
   /[/\\]artifacts[/\\].*/,
+  /[/\\]\.local-data[/\\].*/,
 ];
 module.exports = config;

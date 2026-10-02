@@ -1,3 +1,5 @@
+> **2 October integration update:** Real charts, saved profiles, calendar, Best Days and daily/monthly facts now work in the separate local preview. See [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md) for current status. Paid reading verification is pending explicit payload approval; spend remains US$0. The earlier snapshot below describes the sample demo.
+
 # Frontend preview — 1 October 2026
 
 Working copy: `D:\Dev\astrology-app\FE`. Open `D:\Dev\astrology-app\Open Android Preview.cmd`.

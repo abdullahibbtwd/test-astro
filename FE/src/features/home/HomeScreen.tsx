@@ -1,3 +1,4 @@
+import LocalHomeScreen from "./LocalHomeScreen";
 import { TimezoneNotice } from "../shared/TimezoneNotice";
 import { useEffect } from "react";
 import { AppState, RefreshControl, ScrollView, View } from "react-native";
@@ -21,7 +22,7 @@ import {
 } from "../../design/components";
 import { Generated, Score } from "../shared/Blocks";
 import type { HomeSummary } from "../../../contracts/spec-types";
-export default function HomeScreen() {
+function DemoHomeScreen() {
   const { t } = useTranslation(),
     app = useApp(),
     catalogue = useCatalogue(),
@@ -185,5 +186,13 @@ export default function HomeScreen() {
         }}
       />
     </ScrollView>
+  );
+}
+
+export default function HomeScreen() {
+  return process.env.EXPO_PUBLIC_BACKEND_MODE === "local" ? (
+    <LocalHomeScreen />
+  ) : (
+    <DemoHomeScreen />
   );
 }

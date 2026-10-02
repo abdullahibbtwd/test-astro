@@ -33,9 +33,13 @@ export async function setSession(value: Session | null) {
     privateStorage.clear();
     resetLocalState();
   }
+  privateStorage.setItem("api-base", apiBase);
   useApp.getState().update({ signedIn: !!value, me: value?.me ?? null });
 }
 export async function restoreSession() {
+  const previousApi = privateStorage.getItem("api-base");
+  if (previousApi !== apiBase) await setSession(null);
+  privateStorage.setItem("api-base", apiBase);
   const raw = await tokenStorage.get();
   if (raw) {
     try {

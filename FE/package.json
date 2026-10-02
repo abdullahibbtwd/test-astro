@@ -9,6 +9,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "mock": "tsx mock-api/server.ts",
+    "local-api": "tsx local-api/server.ts",
+    "test:budget": "python -X utf8 tests/budget_test.py",
     "contract:build": "tsx scripts/build-contract.ts",
     "contract:types": "openapi-typescript openapi.yaml -o src/api/schema.d.ts",
     "contract:zod": "tsx scripts/build-zod.ts",
@@ -16,7 +18,7 @@
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
     "check": "npm run contract:build && npm run contract:types && npm run contract:zod && npm run fixtures:build && npm run typecheck && npm run lint && npm test && npm run test:native",
-    "lint": "eslint app src scripts mock-api packages tests",
+    "lint": "eslint app src scripts mock-api local-api packages tests",
     "bundle": "expo export --platform ios --platform android --output-dir artifacts/bundle",
     "test:native": "jest --runInBand",
     "release:check": "tsx scripts/release-check.ts"

@@ -18,3 +18,5 @@ artifacts/
 
 expo-env.d.ts
 # @end expo-cli
+# Real local profiles, jobs, readings and cumulative AI budget.
+.local-data/

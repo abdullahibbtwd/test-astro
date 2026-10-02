@@ -1,3 +1,5 @@
+For the new **real-calculation preview**, open `Open Real Charts.cmd` and read [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md). The sample demo below remains available separately.
+
 # Astrology frontend — Android preview
 
 Active working copy: `D:\Dev\astrology-app\FE`. The full frontend has an Android development preview. Double-click **Open Android Preview.cmd** in this folder to open it. Use **demo@example.com**, code **000000**. The welcome screen also offers a fresh-account onboarding demo. Read [the latest build progress](BUILD_PROGRESS.md) and [the Phase 1 report](PHASE_1_REPORT.md) for verified flows and remaining acceptance gaps. The original [exploration report](FE_EXPLORATION_REPORT.md) records Phase 0 findings.

@@ -16,11 +16,16 @@ export function calendarFixtures(
   cat: Catalogue,
   labels: any,
   profileId: string,
+  source?: { dir: string; birthDate: string; years: number[] },
 ) {
-  const dir = path.join(root, "cal_run/20260929-130418_c7m_1979-03-30");
+  const dir =
+    source?.dir ?? path.join(root, "cal_run/20260929-130418_c7m_1979-03-30");
   const read = (name: string) =>
     JSON.parse(
-      fs.readFileSync(path.join(dir, `${name}_1979-03-30.json`), "utf8"),
+      fs.readFileSync(
+        path.join(dir, `${name}_${source?.birthDate ?? "1979-03-30"}.json`),
+        "utf8",
+      ),
     );
   const personal = read("personal_events");
   const periodsRaw = read("periods");
@@ -28,7 +33,7 @@ export function calendarFixtures(
   const bestRaw = read("best_days");
   const texts = read(`texts_${lang}`);
   const byId: Record<string, any> = {};
-  for (const year of [2026, 2027])
+  for (const year of source?.years ?? [2026, 2027])
     for (const ev of JSON.parse(
       fs.readFileSync(
         path.join(root, `cal_run/_collective/${year}.json`),

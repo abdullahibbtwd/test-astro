@@ -380,5 +380,8 @@
   "updateLocation": "Güncel şehri değiştir",
   "previewMap": "Önizleme haritası · Natural Earth",
   "expand": "Tam ekran",
-  "collapse": "Alt panele dön"
+  "collapse": "Alt panele dön",
+  "realChartPreview": "Gerçek haritalar · yerel önizleme",
+  "realChartDescription": "Doğum haritaları girdiğin bilgilerden hesaplanır ve bu bilgisayarda saklanır.",
+  "localServicesPending": "Haritalar, takvim, uygun günler ve günlük/aylık bilgiler gerçek hesaplamalara dayanır. Yazılı yorumlar, uyum, harita hizmetleri ve gerçek giriş bağlantıları hazırlanıyor."
 }

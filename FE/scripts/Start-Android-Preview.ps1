@@ -1,3 +1,4 @@
+param([switch]$RealCharts)
 $ErrorActionPreference = 'Stop'
 $frontend = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $project = (Resolve-Path (Join-Path $frontend '..')).Path
@@ -6,18 +7,23 @@ $env:JAVA_HOME = (Get-ChildItem $tools -Directory -Filter 'jdk-*' | Select-Objec
 $env:ANDROID_HOME = Join-Path $tools 'android'
 $env:ANDROID_AVD_HOME = Join-Path $tools 'avd'
 $env:NODE_OPTIONS = '--dns-result-order=ipv4first'
-$env:EXPO_PUBLIC_API_URL = 'http://127.0.0.1:4010/v1'
+$apiPort = if ($RealCharts) { 4020 } else { 4010 }
+$metroPort = if ($RealCharts) { 8082 } else { 8081 }
+$apiEntry = if ($RealCharts) { 'local-api/server.ts' } else { 'mock-api/server.ts' }
+$env:EXPO_PUBLIC_API_URL = "http://127.0.0.1:$apiPort/v1"
+$env:EXPO_PUBLIC_BACKEND_MODE = if ($RealCharts) { 'local' } else { 'demo' }
+$env:ASTRO_ALLOW_PAID = '0' # Enable only during explicitly authorized, supervised integration tests.
 Remove-Item Env:CI -ErrorAction SilentlyContinue
 $adb = Join-Path $env:ANDROID_HOME 'platform-tools/adb.exe'
 $node = (Get-Command node.exe).Source
 function Is-Listening([int]$port) { return [bool](Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) }
-function Is-MetroReady { try { return (Invoke-WebRequest -Uri 'http://127.0.0.1:8081/status' -TimeoutSec 2).StatusCode -eq 200 } catch { return $false } }
+function Is-MetroReady { try { return (Invoke-WebRequest -Uri "http://127.0.0.1:$metroPort/status" -TimeoutSec 2).StatusCode -eq 200 } catch { return $false } }
 
-if (!(Is-Listening 4010)) {
- Start-Process -FilePath $node -ArgumentList 'node_modules/tsx/dist/cli.mjs','mock-api/server.ts' -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/mock.log" -RedirectStandardError "$tools/mock-error.log"
+if (!(Is-Listening $apiPort)) {
+ Start-Process -FilePath $node -ArgumentList 'node_modules/tsx/dist/cli.mjs',$apiEntry -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/api-$apiPort.log" -RedirectStandardError "$tools/api-$apiPort-error.log"
 }
-if (!(Is-Listening 8081)) {
- Start-Process -FilePath $node -ArgumentList 'node_modules/expo/bin/cli','start','--dev-client','--localhost','--port','8081' -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/metro.log" -RedirectStandardError "$tools/metro-error.log"
+if (!(Is-Listening $metroPort)) {
+ Start-Process -FilePath $node -ArgumentList 'node_modules/expo/bin/cli','start','--dev-client','--localhost','--port',"$metroPort" -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/metro-$metroPort.log" -RedirectStandardError "$tools/metro-$metroPort-error.log"
 }
 $devices = & $adb devices
 if (!($devices -match 'emulator-\d+\s+device')) {
@@ -30,12 +36,12 @@ while ((& $adb shell getprop sys.boot_completed).Trim() -ne '1') {
  if ((Get-Date) -gt $deadline) { throw 'Android did not finish booting. See .tooling/emulator-error.log.' }
  Start-Sleep -Seconds 2
 }
-& $adb reverse tcp:8081 tcp:8081
-& $adb reverse tcp:4010 tcp:4010
+& $adb reverse "tcp:$metroPort" "tcp:$metroPort"
+& $adb reverse "tcp:$apiPort" "tcp:$apiPort"
 $apk = Join-Path $frontend 'android/app/build/outputs/apk/debug/app-debug.apk'
 if (!(Test-Path -LiteralPath $apk)) { throw 'Run scripts/Build-Android-Preview.ps1 first.' }
 & $adb install -r $apk
 $deadline = (Get-Date).AddSeconds(60)
 while (!(Is-MetroReady)) { if ((Get-Date) -gt $deadline) { throw 'Metro did not start. See .tooling/metro-error.log.' }; Start-Sleep -Seconds 1 }
-& $adb shell am start -a android.intent.action.VIEW -d 'astrology-dev://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A8081' com.example.astrology.dev
+& $adb shell am start -a android.intent.action.VIEW -d "astrology-dev://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A$metroPort" com.example.astrology.dev
 Write-Host 'Preview ready. Sign in with demo@example.com and code 000000.'
