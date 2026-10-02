@@ -94,15 +94,45 @@ test("local API calculates, persists, edits and deletes real profiles without sa
     assert.notEqual(changed.json().chart_key, profile.chart_key);
     const fresh = (await app.inject({ url: url + "/chart", headers })).json();
     assert.notEqual(fresh.points[0].longitude, chart.points[0].longitude);
-    assert.equal(
-      (
-        await app.inject({
-          url: url + "/forecast/year?from=2026-10&lens=general",
-          headers,
-        })
-      ).statusCode,
-      503,
-    );
+    const yearly = await app.inject({
+      url: url + "/forecast/year?from=2028-10&lens=general",
+      headers,
+    });
+    assert.equal(yearly.statusCode, 200, yearly.body);
+    validate("YearForecast", yearly.json());
+    assert.equal(yearly.json().from, "2028-10-01");
+    assert.equal(yearly.json().to, "2029-09-30");
+    const month = await app.inject({
+      url: url + "/forecast/month?month=2026-10",
+      headers,
+    });
+    assert.equal(month.statusCode, 200, month.body);
+    validate("MonthForecast", month.json());
+    const day = await app.inject({
+      url: url + "/forecast/day?date=2026-10-01",
+      headers,
+    });
+    assert.equal(day.statusCode, 200, day.body);
+    validate("DayForecast", day.json());
+    const event = yearly.json().highlights.key_events[0];
+    assert.ok(event);
+    const detail = await app.inject({
+      url: url + "/calendar/items/" + encodeURIComponent(event.id),
+      headers,
+    });
+    assert.equal(detail.statusCode, 200, detail.body);
+    assert.equal(detail.json().id, event.id);
+    for (const suffix of [
+      "year?from=2026-13",
+      "month?month=bad",
+      "day?date=2026-02-30",
+    ]) {
+      assert.equal(
+        (await app.inject({ url: url + "/forecast/" + suffix, headers }))
+          .statusCode,
+        400,
+      );
+    }
     assert.equal(
       (await app.inject({ method: "DELETE", url, headers })).statusCode,
       204,

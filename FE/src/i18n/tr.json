@@ -383,5 +383,5 @@
   "collapse": "Alt panele dön",
   "realChartPreview": "Gerçek haritalar · yerel önizleme",
   "realChartDescription": "Doğum haritaları girdiğin bilgilerden hesaplanır ve bu bilgisayarda saklanır.",
-  "localServicesPending": "Haritalar, takvim, uygun günler ve günlük/aylık bilgiler gerçek hesaplamalara dayanır. Fictional AI test yorumu görüntülenmeye hazır. Bu önizlemede yeni ücretli yorum üretimi kapalıdır. Uyum, harita hizmetleri ve gerçek giriş bağlantıları hazırlanıyor."
+  "localServicesPending": "Haritalar, takvim, uygun günler ve günlük/aylık/yıllık bilgiler gerçek hesaplamalara dayanır. Fictional AI test yorumu görüntülenmeye hazır. Bu önizlemede yeni ücretli yorum üretimi kapalıdır. Uyum, harita hizmetleri ve gerçek giriş bağlantıları hazırlanıyor."
 }

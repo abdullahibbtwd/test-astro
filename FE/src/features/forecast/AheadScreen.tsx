@@ -168,11 +168,7 @@ export default function AheadScreen() {
         ) : view === "month" ? (
           <MonthView profile={profile.profile_id} month={month} lens={lens} />
         ) : (
-          <YearView
-            profile={profile.profile_id}
-            month={today.slice(0, 7)}
-            lens={lens}
-          />
+          <YearView profile={profile.profile_id} month={month} lens={lens} />
         ))}
       <ErrorNotice
         error={profiles.error}

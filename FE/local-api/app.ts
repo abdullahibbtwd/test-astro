@@ -1,4 +1,4 @@
-import { dayForecast, monthForecast } from "./forecast";
+import { dayForecast, monthForecast, yearForecast } from "./forecast";
 import { computeCalendar } from "./calendar";
 import Fastify from "fastify";
 import { randomBytes, randomUUID, createHash } from "node:crypto";
@@ -82,7 +82,7 @@ export function buildLocalApp({
       me,
     };
   };
-  const calendarFor = async (profile: BirthProfile, lang: string) => {
+  const calendarContext = (profile: BirthProfile) => {
     const me = store.get<Me>("me")!;
     const current =
       (profile.is_self ? me.current_place : profile.current_place) ??
@@ -93,7 +93,30 @@ export function buildLocalApp({
       month: "2-digit",
       day: "2-digit",
     }).format(new Date());
-    const key = `calendar:${profile.profile_id}:${profile.chart_key}:${current.lat}:${current.lon}:${start}`;
+    return {
+      current,
+      start,
+      prefix: `calendar:${profile.profile_id}:${profile.chart_key}:${current.lat}:${current.lon}:`,
+    };
+  };
+  const validDate = (date: string) => {
+    if (
+      !/^20\d{2}-\d{2}-\d{2}$/.test(date) ||
+      !Number.isFinite(Date.parse(date)) ||
+      new Date(date).toISOString().slice(0, 10) !== date
+    )
+      throw issue(400);
+    return date;
+  };
+  const calendarFor = async (
+    profile: BirthProfile,
+    lang: string,
+    requestedStart?: string,
+  ) => {
+    const context = calendarContext(profile);
+    const start = requestedStart ? validDate(requestedStart) : context.start;
+    const current = context.current;
+    const key = context.prefix + start;
     let saved = store.get(key);
     if (!saved) {
       saved = await computeCalendar(profile, current, start);
@@ -359,35 +382,63 @@ export function buildLocalApp({
               result = store.get("chart:" + p.id);
               break;
             case "get /profiles/{id}/forecast/day":
-            case "get /profiles/{id}/forecast/month": {
+            case "get /profiles/{id}/forecast/month":
+            case "get /profiles/{id}/forecast/year": {
               if (
                 q.lens &&
                 !["general", "personal", "professional"].includes(q.lens)
               )
                 throw issue(400);
-              const cal = await calendarFor(profile!, lang);
+              const date = endpoint.path.endsWith("/day")
+                ? validDate(q.date ?? calendarContext(profile!).start)
+                : validDate(
+                    `${(endpoint.path.endsWith("/year") ? q.from : q.month) ?? calendarContext(profile!).start.slice(0, 7)}-01`,
+                  );
+              const month = date.slice(0, 7);
+              const cal = await calendarFor(profile!, lang, month + "-01");
               result = endpoint.path.endsWith("/day")
                 ? dayForecast(
                     cal,
                     fixture(`catalogue.${lang}`),
                     profile!.profile_id,
-                    q.date!,
+                    date,
                     q.lens,
                   )
-                : monthForecast(cal, profile!.profile_id, q.month!, q.lens);
+                : endpoint.path.endsWith("/month")
+                  ? monthForecast(cal, profile!.profile_id, month, q.lens)
+                  : yearForecast(
+                      cal,
+                      profile!.profile_id,
+                      month,
+                      lang as "en" | "tr",
+                      q.lens as
+                        "general" | "personal" | "professional" | undefined,
+                    );
               if (!result) throw issue(400);
               break;
             }
             case "get /profiles/{id}/calendar/months/{month}":
-              result = (await calendarFor(profile!, lang)).months[p.month!];
+              result = (
+                await calendarFor(profile!, lang, validDate(`${p.month}-01`))
+              ).months[p.month!];
               if (!result) throw issue(400);
               break;
             case "get /profiles/{id}/calendar/days/{date}":
-              result = (await calendarFor(profile!, lang)).days[p.date!];
+              result = (
+                await calendarFor(
+                  profile!,
+                  lang,
+                  validDate(p.date!).slice(0, 7) + "-01",
+                )
+              ).days[p.date!];
               if (!result) throw issue(400);
               break;
             case "get /profiles/{id}/calendar/items/{item_id}":
-              result = (await calendarFor(profile!, lang)).items[p.item_id!];
+              result = store
+                .list<any>(calendarContext(profile!).prefix)
+                .map((snapshot) => snapshot[lang]?.items[p.item_id!])
+                .find(Boolean);
+              result ??= (await calendarFor(profile!, lang)).items[p.item_id!];
               if (!result) throw issue(404);
               break;
             case "get /profiles/{id}/calendar/year":

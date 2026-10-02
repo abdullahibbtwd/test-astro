@@ -46,6 +46,13 @@ export default function LocalHomeScreen() {
               router.push(`/chart/reading?profile=${profile.profile_id}`)
             }
           />
+          <Button
+            secondary
+            label={t("ahead")}
+            onPress={() =>
+              router.push(`/(tabs)/ahead?profile=${profile.profile_id}`)
+            }
+          />
         </Card>
       ))}
       <Button
