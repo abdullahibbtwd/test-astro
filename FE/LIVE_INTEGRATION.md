@@ -20,7 +20,7 @@ The original `Open Android Preview.cmd` still opens the sample-data demo. Switch
 - Existing interactive chart, facts, tables and export interface use the calculated chart.
 - Real calendar month/day/year/event/period data, Best Days and notification candidates, generated with model calls explicitly disabled.
 - Daily and monthly forecast facts from that real calendar. Fresh forecast prose remains unconnected.
-- Reading worker adapter, durable job status, bilingual cache, history, stale-profile protection and explicit retry after interruption. This infrastructure is tested with injected saved outputs; a fresh paid reading has **not** been verified.
+- Reading worker adapter, durable job status, bilingual cache, history, stale-profile protection and explicit retry after interruption. A fresh 17-section natal reading passed existing backend validation and both English/Turkish API schemas; the English reading was verified in Android.
 - A shared, durable US$20 AI testing cap with per-call reservations, retry accounting, failed-call reservations and tests for concurrent spending. The ordinary launcher disables paid generation.
 
 ## Verification
@@ -29,13 +29,15 @@ The original `Open Android Preview.cmd` still opens the sample-data demo. Switch
 - 3 Python budget tests, including concurrent reservations and restart persistence.
 - Android smoke: computed fictional chart renders, calendar renders, session/profile survives app restart. API tests separately reopen the database and verify stored charts, edits, idempotency and deletion.
 - Android/iOS JavaScript bundles built during this integration. No new native dependencies were added. No iOS device test.
-- Screenshots: `artifacts/screenshots/real-chart.png`, `real-calendar.png`.
+- Screenshots: `artifacts/screenshots/real-chart.png`, `real-calendar.png`, `live-reading-en.png`.
 
 ## Paid-test status
 
-**Spent: US$0. No paid request has executed.** Automatic approval review rejected the proposed fresh-reading smoke test pending explicit approval of the payload and destination. A question is pending for sending the fictional chart and derived astrology facts to Google Gemini and OpenAI, within the already approved US$20 total.
+The user explicitly approved the fictional chart payload and Google Gemini/OpenAI destinations. The fresh test completed successfully: **US$0.305641 recorded by the shared budget guard**, within the US$20 cumulative cap. This is the guard's conservative estimate, not a provider invoice.
 
-Do not start external calls or enable the paid worker until that answer arrives. No workaround should bypass the rejection. The budget limit is cumulative across the integration effort and is not reset per run. Preserve `.local-data/ai-budget.sqlite` once initialized.
+The generated English and Turkish readings are saved locally under **Fictional AI test** (13 July 1990, 12:30, Sofia). The test uses coordinates 42.6977, 23.3217; it is separate from the earlier gazetteer-coordinate example. Android displays the fresh English reading. The normal launcher still disables new paid generation, while saved readings remain available.
+
+Preserve `.local-data/ai-budget.sqlite`; the cumulative cap must not reset between runs. The earlier approval block is resolved for this fictional test.
 
 Pricing sources checked on 2 October 2026:
 - https://ai.google.dev/gemini-api/docs/pricing — Gemini 3.7 Flash standard text input/output, including thinking.
@@ -45,7 +47,7 @@ The guard refuses unknown models, unverified endpoint overrides, oversized reque
 
 ## Still to do
 
-1. With the pending payload approval, run a fresh natal reading, inspect its grounding/validation and verify Android reading/export/history end to end. Record actual/reserved test cost.
+1. Complete native PDF export, Turkish display and saved-report navigation checks using the fresh natal result; generation, bilingual schema validation, job persistence and English Android display have passed.
 2. Connect fresh forecast prose and yearly forecasts; resolve rolling-month versus calendar-month semantics explicitly.
 3. Connect arbitrary-pair compatibility, real-profile map calculations/recommendations and grounded Ask answers.
 4. Replace the local demo login with email delivery and verified Google/Apple sign-in. Android Apple sign-in needs a browser-based flow. External account setup is still unconfirmed.
@@ -61,3 +63,5 @@ The guard refuses unknown models, unverified endpoint overrides, oversized reque
 - Calendar runs reuse the existing Python deterministic pipeline with `dry_run=True` and a model-call blocker. Existing source-cache material may supply validated calendar text; no new prose is fabricated.
 - The local API serializes requests for a single private tester. Initial calendar computation can briefly delay another request. It is not a production multi-user service.
 - Existing saved-data fixtures remain the demonstration API. Only catalogue/configuration metadata is reused by the local API; personal outputs come from real calculations or explicitly generated readings.
+
+- Approved fictional smoke: `scripts/smoke-live-reading.ts` makes paid provider calls only with `ASTRO_ALLOW_PAID=1`; `scripts/import-live-smoke.ts` imports its exact chart-matched result without further AI calls. Outputs remain in ignored `artifacts/live/`.

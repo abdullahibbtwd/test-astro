@@ -26,7 +26,8 @@ External requirements to track: final legal content/app identifiers; production 
 - [x] Real calendar, Best Days, notification candidates and daily/monthly facts
 - [x] Separate emulator launcher and cache isolation
 - [x] Reading-job infrastructure and cumulative US$20 budget guard
-- [ ] Fresh paid reading validation — payload approval pending; US$0 spent
+- [x] Approved fictional fresh reading: 17 sections, English/Turkish schemas, persisted result and English Android display; budget guard US$0.305641
+- [ ] Fresh-reading native PDF, Turkish display and saved-report navigation checks
 - [ ] Fresh forecasts, compatibility, maps/recommendations and Ask
 - [ ] Real email/Google/Apple authentication
 - [ ] Account deletion/export, cache lifecycle and broader acceptance

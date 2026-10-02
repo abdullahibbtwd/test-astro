@@ -1,4 +1,4 @@
-> **2 October integration update:** Real charts, saved profiles, calendar, Best Days and daily/monthly facts now work in the separate local preview. See [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md) for current status. Paid reading verification is pending explicit payload approval; spend remains US$0. The earlier snapshot below describes the sample demo.
+> **2 October integration update:** Real charts, saved profiles, calendar, Best Days and daily/monthly facts now work in the separate local preview. See [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md) for current status. The approved fresh natal reading passed backend and bilingual schema validation and displays in Android under Fictional AI test; the budget guard records US$0.305641 of the US$20 cap. The earlier snapshot below describes the sample demo.
 
 # Frontend preview — 1 October 2026
 
