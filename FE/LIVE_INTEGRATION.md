@@ -1,3 +1,30 @@
+## Current status — 3 October 2026: live maps and account tools
+
+The Android preview is updated in `D:\Dev\astrology-app\FE`. This is substantial progress, but the whole product is **not yet complete**. Real sign-in still needs an account-service choice, and several specified features do not yet have live backend implementations.
+
+### Completed in this continuation
+
+- Real map heat layers for all 11 goals; city and selected-point facts; country/region reports; filtered destination recommendations. Calculations use the existing approved backend, with no model calls for facts or ranking.
+- Written place, area and destination reports now use the approved reading pipelines. The app shows facts first, polls persistent jobs, handles failure/retry, caches English/Turkish results, and opens finished readings from Saved Reports. Changed birth details or recommendation home locations cannot receive stale results. Generated explanations cannot change the destination ranking.
+- Local **Download my data** creates a JSON file and opens Android sharing. Exports omit login credentials and API keys. **Delete account** clears local profiles/readings/session records and derived map caches, refuses deletion while a reading is running, and preserves the cumulative spending ledger. Previously saved/shared files remain outside the app. Deletion was tested on disposable databases, not the user's preview account.
+- Fixed empty-goal place links and malformed recommendation links; unavailable Solar Return controls are hidden. The sample-server UI remains available separately.
+
+### Evidence and how to see it
+
+- `npm run check`: **78 API/logic tests + 15 native tests passed**, with TypeScript, lint, OpenAPI and 5,302 fixture checks. Android/iOS JS bundles built successfully; this is not a claim of native iOS acceptance.
+- Fresh, validated bilingual readings generated for the already approved fictional birth (13 July 1990, 12:30, Sofia): Sofia place, Bulgaria country, and Love destination recommendations. The populated result contains **10 destinations across 3 line groups**; a narrow-filter empty result was also checked. An adapter error was corrected and a no-provider regression added for all four writing paths (place, area, goal recommendation, overall).
+- Cumulative tracked AI spend/reservation: **US$0.433985 of the US$20 cap**. This includes all supervised calls, including a repeated narrow-filter smoke test. The ordinary preview launcher still disables new paid generation; saved test readings remain viewable. Pricing guard expires after 9 October and requires re-verification before later paid tests.
+- On Android, open **Your space → Saved reports** and choose a report for **Fictional AI test**. Sofia and Bulgaria are saved alongside the recommendations and forecasts. Native account sharing and saved place/destination navigation were exercised. Screenshots: `artifacts/screenshots/real-map-heat.png`, `live-place-reading.png`, `account-data-share.png`.
+
+### Still needed, in plain language
+
+1. **Real sign-in:** the app needs a service that stores accounts and verifies email/Google/Apple logins. Pending user question: is there an existing service/project, should one be chosen, or should testing keep the local login? Until configured, use `demo@example.com` / `000000` in the emulator.
+2. **Ask Astrology and Solar Return:** their screens exist against the sample API; matching live services are not connected. They remain disabled in the real preview.
+3. **Family compatibility:** the approved backend has a general relationship mode, but no family-specific mode. The spec's general fallback has not been enabled in this local integration. Love/work wiring is implemented; a fresh paid compatibility test still awaits the earlier response about the second fictional profile.
+4. **Final acceptance and release setup:** broader real-birth/lens/location testing, physical-device accessibility/performance, native iOS, production hosting/account configuration, final legal links/identity and release map provider. These are not claimed as complete by the automated checks.
+
+The older sections below are historical snapshots and may list gaps closed by this update.
+
 ## Real map lines — 3 October 2026
 
 - Map lines and crossings now come from the selected profile's actual birth chart through the approved compute_acg / compute_parans backend. Nearby-city lists use its deterministic city scan, with English/Turkish names, rounded distances and proximity tiers. Static country/region boundaries are available to the map.

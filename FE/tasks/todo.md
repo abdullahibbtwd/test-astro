@@ -1,3 +1,7 @@
+# Current status — 3 October 2026
+
+The checked frontend items below describe implemented UI, including sample-server screens. They do not mean every production service exists. The local Android preview now uses real calculations and approved reading pipelines for the core features. Real sign-in requires an account-service choice; Ask, Solar Return and family-specific compatibility remain disabled where no matching live backend is connected.
+
 # Full build checklist
 
 - [x] Chart facts and detail sheets
@@ -30,7 +34,13 @@ External requirements to track: final legal content/app identifiers; production 
 - [x] Fresh-reading native PDF, Turkish display and saved-report navigation checks
 - [x] Live yearly facts, requested-month coverage and event navigation
 - [x] Fresh day/month/year forecast prose, bilingual jobs/cache and date alignment
-- [ ] Forecast Saved reports and broader lens/location acceptance
-- [ ] Compatibility, maps/recommendations and Ask
+- [x] Forecast Saved Reports and requested date/lens context handling
+- [ ] Broader live lens/location acceptance
+- [x] Compatibility love/work approved-pipeline wiring and offline regression
+- [ ] Fresh paid compatibility acceptance (second fictional profile response pending)
+- [x] Real map geometry, all 11 heat layers, places/points, areas and recommendations
+- [x] Bilingual map reading jobs, retries and saved history
+- [ ] Live Ask backend (frontend exists against scripted contract)
 - [ ] Real email/Google/Apple authentication
-- [ ] Account deletion/export, cache lifecycle and broader acceptance
+- [x] Local account JSON export and account deletion, including derived map cache
+- [ ] Broader device/accessibility/performance acceptance and production service setup
