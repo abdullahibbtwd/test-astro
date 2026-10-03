@@ -36,45 +36,11 @@ export function geoFixtures(root: string, chartKey: string) {
   const read = (file: string) =>
     JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
   const dir = "acg_run/20260929-105635_kgc";
-  const lines = {
-    chart_key: chartKey,
-    lines: {
-      type: "FeatureCollection",
-      features: read(`${dir}/acg_1979-03-30.geojson`).features.map(
-        (f: any) => ({
-          type: "Feature",
-          geometry: {
-            type: "MultiLineString",
-            coordinates: f.geometry.coordinates.map((part: Point[]) =>
-              simplify(part),
-            ),
-          },
-          properties: {
-            body: f.properties.body,
-            angle: f.properties.angle,
-            read: f.properties.read_in_v1,
-          },
-        }),
-      ),
-    },
-    parans: {
-      type: "FeatureCollection",
-      features: read(`${dir}/acg_parans_1979-03-30.geojson`)
-        .features.filter((f: any) => f.properties.kind === "paran")
-        .map((f: any) => ({
-          type: "Feature",
-          geometry: {
-            type: "LineString",
-            coordinates: simplify(f.geometry.coordinates),
-          },
-          properties: {
-            id: f.properties.id,
-            bodies: f.properties.planets,
-            angles: f.properties.angles,
-          },
-        })),
-    },
-  };
+  const lines = mapAcgLines(
+    chartKey,
+    read(`${dir}/acg_1979-03-30.geojson`),
+    read(`${dir}/acg_parans_1979-03-30.geojson`),
+  );
   const countries = {
     type: "FeatureCollection",
     features: read("Astrocartography/countries.geojson").features.map(
@@ -105,4 +71,44 @@ export function geoFixtures(root: string, chartKey: string) {
     });
   }
   return { lines, countries, regions };
+}
+
+export function mapAcgLines(chartKey: string, lineGeo: any, paranGeo: any) {
+  return {
+    chart_key: chartKey,
+    lines: {
+      type: "FeatureCollection",
+      features: lineGeo.features.map((f: any) => ({
+        type: "Feature",
+        geometry: {
+          type: "MultiLineString",
+          coordinates: f.geometry.coordinates.map((part: Point[]) =>
+            simplify(part),
+          ),
+        },
+        properties: {
+          body: f.properties.body,
+          angle: f.properties.angle,
+          read: f.properties.read_in_v1,
+        },
+      })),
+    },
+    parans: {
+      type: "FeatureCollection",
+      features: paranGeo.features
+        .filter((f: any) => f.properties.kind === "paran")
+        .map((f: any) => ({
+          type: "Feature",
+          geometry: {
+            type: "LineString",
+            coordinates: simplify(f.geometry.coordinates),
+          },
+          properties: {
+            id: f.properties.id,
+            bodies: f.properties.planets,
+            angles: f.properties.angles,
+          },
+        })),
+    },
+  };
 }

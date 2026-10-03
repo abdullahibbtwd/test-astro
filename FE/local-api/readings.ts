@@ -13,7 +13,10 @@ export function generateReading(
 }
 export function runReadingBridge(
   script:
-    "reading_bridge.py" | "forecast_bridge.py" | "compatibility_bridge.py",
+    | "reading_bridge.py"
+    | "forecast_bridge.py"
+    | "compatibility_bridge.py"
+    | "map_bridge.py",
   payload: unknown,
 ): Promise<any> {
   return new Promise((resolve, reject) => {

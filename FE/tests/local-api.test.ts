@@ -60,11 +60,47 @@ test("local API calculates, persists, edits and deletes real profiles without sa
     const url = `/v1/profiles/${profile.profile_id}`;
     const chart = (await app.inject({ url: url + "/chart", headers })).json();
     validate("ChartData", chart);
+    const map = (await app.inject({ url: url + "/acg/lines", headers })).json();
+    validate("AcgLines", map);
+    assert.equal(map.chart_key, chart.chart_key);
+    const linePlaces = await app.inject({
+      url: url + "/acg/lines/sun/MC/places?lang=tr",
+      headers,
+    });
+    assert.equal(linePlaces.statusCode, 200);
+    validate("LinePlaces", linePlaces.json());
+    assert.equal(
+      (await app.inject({ url: url + "/acg/lines/invalid/MC/places", headers }))
+        .statusCode,
+      400,
+    );
+    assert.equal(
+      (
+        await app.inject({
+          url: url + "/acg/lines/sun/MC/places?limit=0",
+          headers,
+        })
+      ).statusCode,
+      400,
+    );
+    validate(
+      "CountryGeometry",
+      (await app.inject({ url: "/v1/geo/countries.geojson" })).json(),
+    );
+    validate(
+      "RegionGeometry",
+      (await app.inject({ url: "/v1/geo/regions/TR.geojson" })).json(),
+    );
+
     await app.close();
     app = buildLocalApp({ dbPath });
     assert.deepEqual(
       (await app.inject({ url: url + "/chart", headers })).json(),
       chart,
+    );
+    assert.deepEqual(
+      (await app.inject({ url: url + "/acg/lines", headers })).json(),
+      map,
     );
     const repeated = await app.inject({
       method: "POST",

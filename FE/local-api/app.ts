@@ -1,3 +1,4 @@
+import { LiveMap } from "./map";
 import { CompatibilityJobs } from "./compatibility-jobs";
 import { ForecastJobs, forecastContext } from "./forecast-jobs";
 import { dayForecast, monthForecast, yearForecast } from "./forecast";
@@ -25,6 +26,7 @@ export function buildLocalApp({
 }) {
   const app = Fastify({ logger: false, bodyLimit: 65536 });
   const store = new Store(dbPath);
+  const maps = new LiveMap(store);
   const readings = new ReadingJobs(store, undefined, allowPaid);
   const forecasts = new ForecastJobs(store, allowPaid);
   const compatibility = new CompatibilityJobs(
@@ -403,6 +405,29 @@ export function buildLocalApp({
                   store.remove(`report:${p.id}:${language}`);
               });
               return reply.code(204).send();
+            case "get /profiles/{id}/acg/lines":
+              result = await maps.lines(profile!);
+              break;
+            case "get /profiles/{id}/acg/lines/{body}/{angle}/places":
+              result = await maps.places(
+                profile!,
+                p.body!,
+                p.angle!,
+                lang as "en" | "tr",
+                Number(q.limit ?? 5),
+              );
+              break;
+            case "get /geo/countries.geojson":
+              result = fixture("geo-countries");
+              break;
+            case "get /geo/regions/{iso2}.geojson":
+              if (!/^[A-Z]{2}$/.test(p.iso2 ?? "")) throw issue(400);
+              try {
+                result = fixture(`geo-regions.${p.iso2}`);
+              } catch {
+                throw issue(404);
+              }
+              break;
             case "get /profiles/{id}/chart":
               result = store.get("chart:" + p.id);
               break;

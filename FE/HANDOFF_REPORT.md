@@ -1,3 +1,11 @@
+## Real map lines — 3 October 2026
+
+- Map lines and crossings now come from the selected profile's actual birth chart through the approved compute_acg / compute_parans backend. Nearby-city lists use its deterministic city scan, with English/Turkish names, rounded distances and proximity tiers. Static country/region boundaries are available to the map.
+- Results are cached by chart key and adapter version, survive API restart, and change when birth details change. No model calls are allowed in this bridge. The existing display-geometry simplification is shared with the sample adapter; no astrology calculation rules changed.
+- Verified using two distinct fictional births: 44 backend lines (40 planetary plus 4 North Node; backend treats South Node as a derived display counterpart), different geometry, bilingual city results and compressed payload below 150 KB. Full check: 67 Node tests, 10 native tests, 5,302 fixtures, typecheck/lint passed.
+- Android displays real lines and the Sun/MC city list (including Asmara and Krasnodar). Screenshot: artifacts/screenshots/real-map.png. AI cost unchanged at $0.370374 of the approved $20 cap.
+- Still pending: goal heat layers, city/point and area reports, recommendations, written place readings, grounded Ask, real sign-in and account/data lifecycle. The separate fresh compatibility AI test still awaits the second fictional profile response.
+
 ## Saved Reports integration — 3 October 2026
 
 - Saved Reports now includes finished compatibility readings and monthly/yearly forecast readings, with English/Turkish titles and accurate profile, month and focus links. Daily readings remain in Today because the approved report contract has no daily report type.
