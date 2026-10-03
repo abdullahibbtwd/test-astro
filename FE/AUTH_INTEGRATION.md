@@ -2,7 +2,7 @@
 
 ## Current implementation
 
-Supabase handles email links and Google. Only the configured owner email, confirmed by Supabase, is accepted. The first verified Supabase UUID is pinned. Public project settings live in ignored `.local-data/auth-config.json`; provider secrets belong in the provider dashboards, never the mobile bundle. Real authentication remains disabled until dashboard setup and a live sign-in are complete. Apple is deferred by user choice.
+Supabase handles email links and Google. Only the configured owner email, confirmed by Supabase, is accepted. The first verified Supabase UUID is pinned. Public project settings live in ignored `.local-data/auth-config.json`; provider secrets belong in the provider dashboards, never the mobile bundle. Dashboard setup is complete and real authentication is enabled. End-to-end login awaits the user completing Chrome first-run setup and Google sign-in in the emulator. Apple is deferred by user choice.
 
 ### Private preview HTTP extension
 
@@ -17,16 +17,16 @@ These routes supplement the spec API only on the local server in real-auth mode.
 
 Identifiers and poll secrets are independent 32-byte random hex values. The PKCE verifier remains in server memory. Attempts expire after 10 minutes and completed results after 1 minute; completion can be polled again within that minute to recover a lost response. Restart cancels attempts. POST requests with a browser Origin are rejected; responses are no-store. Invalid input returns 400, missing/expired attempts 401, browser-origin POST 403, replay 409, and excess attempts 429. Session shape matches the existing Session contract. Only the owner identity verified by Supabase can issue a session.
 
-### Dashboard completion
+### Dashboard completion (steps 1–3 completed; live acceptance pending)
 
 1. Obtain acceptance of Google's displayed API Services User Data Policy, then complete Astro app branding in existing Cloud project `gen-lang-client-0801610698` (External, Testing, owner as test user).
 2. Create a Web OAuth client using the exact callback displayed in Supabase's Google provider panel. Configure that client in Supabase. Request only openid/email/profile.
 3. Save the prepared Supabase loopback redirect allowlist entry. Preserve the free default email template.
 4. Enable the local auth config, restart local API and Metro through `scripts/Start-Android-Preview.ps1 -RealCharts`, and exercise email and Google login, refresh and logout on Android. Preserve existing local data. Once real auth has been activated, configuration removal must not downgrade the database to demo auth.
 
-## Requested ChatGPT connection (not implemented)
+## Deferred ChatGPT connection — outside current scope
 
-User requirement: add Continue with ChatGPT and optional use of the user's own ChatGPT allowance. For this personal, locally hosted preview, use OpenAI's documented local-app flow. Do not assume the same registration grants permission to offer the feature in a hosted commercial app; that has a separate access process.
+User decision on 3 October 2026: defer Continue with ChatGPT and plan usage because commercial availability is limited. Do not implement or activate it in the current scope. The following is retained only as future research. For this personal, locally hosted preview, use OpenAI's documented local-app flow. Do not assume the same registration grants permission to offer the feature in a hosted commercial app; that has a separate access process.
 
 Proposed implementation order:
 

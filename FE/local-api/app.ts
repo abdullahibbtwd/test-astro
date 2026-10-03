@@ -119,6 +119,10 @@ export function buildLocalApp({
       accessKey: credential("access", access),
     });
     const me = store.get<Me>("me")!;
+    if (verified && me.email !== verified.user.email) {
+      me.email = verified.user.email;
+      store.put("me", me);
+    }
     return {
       access_token: access,
       refresh_token: refresh,

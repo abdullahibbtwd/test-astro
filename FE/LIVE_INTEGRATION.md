@@ -1,3 +1,15 @@
+## Google activated; OpenAI login deferred — 3 October 2026
+
+The user approved the Google policy/client/Supabase connection and explicitly removed OpenAI/ChatGPT login and plan sharing from the current scope. Apple also remains deferred. Existing server-side OpenAI reading integration is unaffected.
+
+Completed: Google branding in the existing Astrology app Cloud project; a Web OAuth client with Supabase's exact callback; Google provider enabled in Supabase; private loopback callback allowlisted; owner email added as the sole Google test user. No Google client secret was saved to the codebase or chat. Google remains in Testing, not public production.
+
+Live provider settings confirm email and Google enabled, Apple disabled. Local auth is now enabled and both API and Metro have restarted with real-auth settings. Android displays Google/email sign-in without demo login controls; Google launches the emulator browser. **End-to-end user login remains unverified:** Chrome's first-run terms screen requires user input, followed by Google sign-in. The user has been asked to complete that step. No sign-in email or paid AI request was sent.
+
+A regression found that first real login retained the demo email label. The session now stores the verified email while retaining the existing local user/profile IDs. Targeted auth checks cover this migration. Finish live Google callback, app return, refresh/logout and email-link acceptance once the user completes browser setup.
+
+---
+
 ## Email links, Google and ChatGPT — 3 October 2026
 
 The user chose free email links, Google now, and Apple later. Email-link and Google browser sign-in are implemented for the local Android preview: PKCE exchange stays on the loopback server, and the app retrieves its session using a separate random polling secret. Links can open on this computer or in the emulator with ADB reverse enabled. Cancellation, expiry, replay rejection and owner checks are covered by tests. Apple is hidden in real-auth mode.

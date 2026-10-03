@@ -83,6 +83,7 @@ test("Real auth blocks demo tokens, binds the verified owner, rotates and revoke
     let session = response.json();
     validate("Session", session);
     assert.equal(session.me.user_id, oldMe.user_id);
+    assert.equal(session.me.email, "owner@example.com");
     const headers = { authorization: "Bearer " + session.access_token };
     assert.equal(
       (await app.inject({ url: "/v1/me", headers })).statusCode,
