@@ -211,9 +211,9 @@ def astro_descriptor(event: dict, astro_detail: str) -> str:
     tech = astro_detail == "technical"
 
     if fam == "transit_aspect":
-        parts = [f"{trans} {event.get('aspect')} natal {natal}"]
-        if sign:
-            parts.append(f"in {sign}")
+        # The event sign belongs to the moving body, never to the natal target.
+        mover = f"transiting {trans}" + (f" in {sign}" if sign else "")
+        parts = [f"{mover} {event.get('aspect')} natal {natal}"]
         if tech:
             hp = event.get("house_placidus")
             if hp is not None:
