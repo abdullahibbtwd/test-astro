@@ -290,9 +290,11 @@ export function buildLocalApp({
               break;
             }
             case "get /places/search":
-              if (q.kind === "area") throw issue(503);
+              if (q.kind && !["birth", "city", "area"].includes(q.kind))
+                throw issue(400);
               result = await bridge({
                 action: "places",
+                kind: q.kind,
                 query: (q.q ?? "").slice(0, 100),
                 lang,
               });
@@ -303,7 +305,21 @@ export function buildLocalApp({
               result = await place(p.place_id!, lang);
               break;
             case "get /places/reverse":
-              result = null;
+              if (
+                q.lat === undefined ||
+                q.lon === undefined ||
+                !q.lat.trim() ||
+                !q.lon.trim() ||
+                !Number.isFinite(Number(q.lat)) ||
+                !Number.isFinite(Number(q.lon))
+              )
+                throw issue(400);
+              result = await bridge({
+                action: "reverse",
+                lat: Number(q.lat),
+                lon: Number(q.lon),
+                lang,
+              });
               break;
             case "get /profiles":
               result = store.list<BirthProfile>("profile:");
@@ -405,6 +421,72 @@ export function buildLocalApp({
                   store.remove(`report:${p.id}:${language}`);
               });
               return reply.code(204).send();
+            case "post /profiles/{id}/acg/recommendations":
+              result = await maps.recommend(
+                profile!,
+                body,
+                lang as "en" | "tr",
+              );
+              break;
+            case "get /profiles/{id}/acg/countries/{iso2}":
+              result = await maps.area(
+                profile!,
+                "country",
+                p.iso2!,
+                lang as "en" | "tr",
+              );
+              break;
+            case "get /profiles/{id}/acg/regions/{admin1_id}":
+              result = await maps.area(
+                profile!,
+                "region",
+                p.admin1_id!,
+                lang as "en" | "tr",
+              );
+              break;
+            case "get /profiles/{id}/acg/places/{place_id}": {
+              const found = await place(p.place_id!, lang);
+              result = await maps.placeReport(
+                profile!,
+                {
+                  place_id: found.place_id,
+                  name: found.name,
+                  country_code: found.country_code,
+                  lat: found.lat,
+                  lon: found.lon,
+                },
+                lang as "en" | "tr",
+                q.focus_goal,
+              );
+              break;
+            }
+            case "get /profiles/{id}/acg/point": {
+              if (
+                q.lat === undefined ||
+                q.lon === undefined ||
+                !q.lat.trim() ||
+                !q.lon.trim()
+              )
+                throw issue(400);
+              const lat = Number(q.lat),
+                lon = Number(q.lon);
+              result = await maps.placeReport(
+                profile!,
+                {
+                  place_id: null,
+                  name: `${lat.toFixed(4)}, ${lon.toFixed(4)}`,
+                  country_code: null,
+                  lat,
+                  lon,
+                },
+                lang as "en" | "tr",
+                q.focus_goal,
+              );
+              break;
+            }
+            case "get /profiles/{id}/acg/heat/{goal}":
+              result = await maps.heat(profile!, p.goal!);
+              break;
             case "get /profiles/{id}/acg/lines":
               result = await maps.lines(profile!);
               break;

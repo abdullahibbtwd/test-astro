@@ -41,6 +41,28 @@ test("local API calculates, persists, edits and deletes real profiles without sa
     ).json();
     assert.ok(places.length);
     validate("PlaceCandidate", places[0]);
+    const areas = (
+      await app.inject({
+        url: "/v1/places/search?kind=area&q=Bulgaria&lang=en",
+        headers,
+      })
+    ).json();
+    assert.ok(areas.some((a: any) => a.place_id === "iso2:BG"));
+    for (const a of areas) validate("PlaceCandidate", a);
+    const reverse = (
+      await app.inject({
+        url: "/v1/places/reverse?lat=42.6977&lon=23.3217",
+        headers,
+      })
+    ).json();
+    validate("Place", reverse);
+    assert.equal(reverse.place_id, places[0].place_id);
+    assert.equal(
+      (await app.inject({ url: "/v1/places/reverse?lat=91&lon=0", headers }))
+        .statusCode,
+      400,
+    );
+
     const payload = {
       label: "Integration test",
       relation: "friend",
@@ -62,6 +84,32 @@ test("local API calculates, persists, edits and deletes real profiles without sa
     validate("ChartData", chart);
     const map = (await app.inject({ url: url + "/acg/lines", headers })).json();
     validate("AcgLines", map);
+    const cityReport = await app.inject({
+      url: url + "/acg/places/" + places[0].place_id + "?focus_goal=career",
+      headers,
+    });
+    assert.equal(cityReport.statusCode, 200, cityReport.body);
+    validate("PlaceReport", cityReport.json());
+    assert.equal(
+      (await app.inject({ url: url + "/acg/point?lat=NaN&lon=0", headers }))
+        .statusCode,
+      400,
+    );
+
+    const heatResponse = await app.inject({
+      url: url + "/acg/heat/love",
+      headers,
+    });
+    assert.equal(heatResponse.statusCode, 200);
+    const heat = heatResponse.json();
+    validate("AcgHeat", heat);
+    assert.equal(heat.chart_key, chart.chart_key);
+    assert.equal(
+      (await app.inject({ url: url + "/acg/heat/invalid", headers }))
+        .statusCode,
+      400,
+    );
+
     assert.equal(map.chart_key, chart.chart_key);
     const linePlaces = await app.inject({
       url: url + "/acg/lines/sun/MC/places?lang=tr",

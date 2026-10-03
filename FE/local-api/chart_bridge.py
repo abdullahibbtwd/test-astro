@@ -41,6 +41,30 @@ def places(data):
     countries = {x["iso_a2"]: x for x in json.loads((ROOT / "Astrocartography/countries.json").read_text(encoding="utf-8"))}
     lang = data.get("lang", "en")
     query = data.get("query", "").casefold().strip()
+    if data.get("id", "").startswith("dst-"):
+        destinations = json.loads((ROOT / "Astrocartography/destinations.json").read_text(encoding="utf-8"))["destinations"]
+        cities = [{**d, "country_code": d["country"], "admin1_code": d.get("admin1_id")} for d in destinations if d["id"] == data["id"]]
+    if data.get("kind") == "area":
+        regions = json.loads((ROOT / "Astrocartography/regions.json").read_text(encoding="utf-8"))
+        rows = [("country", c["iso_a2"], c) for c in countries.values()] + [("region", r["admin1_id"], r) for r in regions]
+        found = [(kind, code, r) for kind, code, r in rows if len(query) >= 2 and any(query in str(r.get(k, "")).casefold() for k in ("name", "name_tr", "iso_a2"))]
+        return [{"place_id": ("iso2:" if kind == "country" else "admin1:") + code, "kind": kind,
+            "name": r.get("name_tr") or r["name"] if lang == "tr" else r["name"], "admin1": None,
+            "country_code": r["iso_a2"], "country_name": countries[r["iso_a2"]].get("name_tr" if lang == "tr" else "name") or countries[r["iso_a2"]]["name"],
+            "lat": (r["bbox"][1]+r["bbox"][3])/2, "lon": (r["bbox"][0]+r["bbox"][2])/2,
+            "tz": "Etc/UTC", "population": None, "source": "gazetteer"} for kind, code, r in found[:20]]
+    if data.get("action") == "reverse":
+        from math import radians, sin, cos, asin, sqrt
+        lat, lon = float(data["lat"]), float(data["lon"])
+        if not (-90 <= lat <= 90 and -180 <= lon <= 180):
+            raise ValueError("Invalid coordinates")
+        def distance(c):
+            a = sin(radians(c["lat"]-lat)/2)**2 + cos(radians(lat))*cos(radians(c["lat"]))*sin(radians(c["lon"]-lon)/2)**2
+            return 12742 * asin(sqrt(min(1, max(0, a))))
+        nearest = min(cities, key=distance)
+        if distance(nearest) > 75:
+            return None
+        return places({"id": nearest["id"], "lang": lang})[0]
     if data.get("id"):
         found = [c for c in cities if c["id"] == data["id"]]
     elif len(query) >= 2:
@@ -62,7 +86,7 @@ def places(data):
 if __name__ == "__main__":
     try:
         data = json.load(sys.stdin)
-        print(json.dumps(places(data) if data.get("action") == "places" else calculate(data), ensure_ascii=True))
+        print(json.dumps(places(data) if data.get("action") in ("places", "reverse") else calculate(data), ensure_ascii=True))
     except ValueError as error:
         print(json.dumps({"error": "validation_error", "message": str(error)}))
     except Exception:

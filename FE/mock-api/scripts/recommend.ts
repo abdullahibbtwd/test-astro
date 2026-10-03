@@ -9,7 +9,18 @@ export function recommendations(
 ) {
   const read = (file: string) =>
     JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
-  const raw = read(sourceFile);
+  return mapRecommendation(root, lang, cat, read(sourceFile));
+}
+export function mapRecommendation(
+  root: string,
+  lang: Lang,
+  cat: Catalogue,
+  source: any,
+) {
+  const read = (file: string) =>
+    JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
+  const raw = structuredClone(source);
+  raw.turkey ??= { cities: [], regions: [], places: [] };
   if (raw.goal === "overall") {
     // Overall is breadth/strain, not a goal-band score. Preserve its explicit summary label.
     raw.cities = raw.places.map((p: any) => ({
