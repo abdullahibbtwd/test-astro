@@ -12,6 +12,8 @@ export function exportAccount(store: Store) {
     natal_readings: store.list("reading:"),
     forecast_readings: store.list("forecast-reading:"),
     forecast_index: store.list("forecast-report:"),
+    map_readings: store.list("map-reading:"),
+    map_index: store.list("map-report:"),
     compatibility: store.list<any>("compat:").map((r) => ({
       id: r.id,
       context: r.context,

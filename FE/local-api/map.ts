@@ -190,7 +190,7 @@ export class LiveMap {
       chart,
       mode: "place",
       place,
-      focus_goal: focus ?? null,
+      focus_goal: focus || null,
     });
     return validate<PlaceReport>("PlaceReport", result.reports[lang]);
   }

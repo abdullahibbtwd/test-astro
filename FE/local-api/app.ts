@@ -1,3 +1,4 @@
+import { MapJobs, mapContext } from "./map-jobs";
 import { exportAccount, deleteAccount } from "./account";
 import { LiveMap } from "./map";
 import { CompatibilityJobs } from "./compatibility-jobs";
@@ -28,6 +29,7 @@ export function buildLocalApp({
   const app = Fastify({ logger: false, bodyLimit: 65536 });
   const store = new Store(dbPath);
   const maps = new LiveMap(store);
+  const mapJobs = new MapJobs(store, allowPaid);
   const readings = new ReadingJobs(store, undefined, allowPaid);
   const forecasts = new ForecastJobs(store, allowPaid);
   const compatibility = new CompatibilityJobs(
@@ -57,6 +59,7 @@ export function buildLocalApp({
     await readings.close();
     await forecasts.close();
     await compatibility.close();
+    await mapJobs.close();
     store.close();
   });
   app.setErrorHandler((error: any, _request, reply) => {
@@ -226,6 +229,7 @@ export function buildLocalApp({
               result = fixture("config");
               result.flags.askAstrology = false;
               result.flags.familyCompatibility = false;
+              result.flags.solarReturn = false;
               break;
             case "get /meta/catalogue":
               result = fixture(`catalogue.${lang}`);
@@ -436,6 +440,21 @@ export function buildLocalApp({
                 body,
                 lang as "en" | "tr",
               );
+              if (result.status !== "needs_goal") {
+                const home =
+                  (profile!.is_self
+                    ? store.get("me")?.current_place
+                    : profile!.current_place) ?? profile!.birth.place;
+                result = mapJobs.get(
+                  mapContext(profile!, "recommendation", {
+                    request: body,
+                    home: [home.lat, home.lon],
+                  }),
+                  result,
+                  lang as "en" | "tr",
+                  q.retry === "true",
+                );
+              }
               break;
             case "get /profiles/{id}/acg/countries/{iso2}":
               result = await maps.area(
@@ -444,6 +463,15 @@ export function buildLocalApp({
                 p.iso2!,
                 lang as "en" | "tr",
               );
+              result = mapJobs.get(
+                mapContext(profile!, "area", {
+                  kind: "country",
+                  code: p.iso2!,
+                }),
+                result,
+                lang as "en" | "tr",
+                q.retry === "true",
+              );
               break;
             case "get /profiles/{id}/acg/regions/{admin1_id}":
               result = await maps.area(
@@ -451,6 +479,15 @@ export function buildLocalApp({
                 "region",
                 p.admin1_id!,
                 lang as "en" | "tr",
+              );
+              result = mapJobs.get(
+                mapContext(profile!, "area", {
+                  kind: "region",
+                  code: p.admin1_id!,
+                }),
+                result,
+                lang as "en" | "tr",
+                q.retry === "true",
               );
               break;
             case "get /profiles/{id}/acg/places/{place_id}": {
@@ -466,6 +503,16 @@ export function buildLocalApp({
                 },
                 lang as "en" | "tr",
                 q.focus_goal,
+              );
+              const canonical = await place(p.place_id!, "en");
+              result = mapJobs.get(
+                mapContext(profile!, "place", {
+                  place: { ...result.place, name: canonical.name },
+                  focus_goal: q.focus_goal || null,
+                }),
+                result,
+                lang as "en" | "tr",
+                q.retry === "true",
               );
               break;
             }
@@ -490,6 +537,15 @@ export function buildLocalApp({
                 },
                 lang as "en" | "tr",
                 q.focus_goal,
+              );
+              result = mapJobs.get(
+                mapContext(profile!, "place", {
+                  place: result.place,
+                  focus_goal: q.focus_goal || null,
+                }),
+                result,
+                lang as "en" | "tr",
+                q.retry === "true",
               );
               break;
             }
@@ -657,6 +713,7 @@ export function buildLocalApp({
                   ),
                 ...forecasts.reports(lang as "en" | "tr"),
                 ...compatibility.reports(lang as "en" | "tr"),
+                ...mapJobs.reports(lang as "en" | "tr"),
               ]
                 .filter(
                   (r) =>
@@ -692,6 +749,8 @@ export function buildLocalApp({
                 ...forecasts.reports("tr"),
                 ...compatibility.reports("en"),
                 ...compatibility.reports("tr"),
+                ...mapJobs.reports("en"),
+                ...mapJobs.reports("tr"),
               ];
               if (
                 !reports.some((r) => r.report_id === p.report_id) ||

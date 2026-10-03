@@ -85,7 +85,7 @@ test("local API calculates, persists, edits and deletes real profiles without sa
     const map = (await app.inject({ url: url + "/acg/lines", headers })).json();
     validate("AcgLines", map);
     const cityReport = await app.inject({
-      url: url + "/acg/places/" + places[0].place_id + "?focus_goal=career",
+      url: url + "/acg/places/" + places[0].place_id + "?focus_goal=",
       headers,
     });
     assert.equal(cityReport.statusCode, 200, cityReport.body);

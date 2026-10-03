@@ -1,12 +1,10 @@
 """Map the approved grounding plan to immediate place facts, without generating prose."""
-def place_reports(data):
+def prepare_place(data):
     from run_acg import build_chart_products, Stages
     import acg_goals as ag
     import acg_locate as al
     import ground_acg as ga
     import ar_routing
-    from ar_sections import FOOTER, CARDS
-    from ar_generate import _card_output
     from pathlib import Path
     root = Path(__file__).resolve().parents[2]
     products = build_chart_products(data['chart'], str(root / 'FE/.local-data/map-products'), stages=Stages(), with_goal_scan=False)
@@ -20,6 +18,14 @@ def place_reports(data):
     if payload['status'] != 'ok':
         raise RuntimeError('Place grounding unavailable')
     plan = ar_routing.build_plan(payload, focus_goal=data.get('focus_goal'))
+    return loc, plan
+
+
+def place_reports(data):
+    from ar_sections import FOOTER, CARDS
+    from ar_generate import _card_output
+    loc, plan = prepare_place(data)
+    place = data['place']
     cards = next(s['cards'] for s in plan['sections'] if s['key'] == 'suitability')
     reports = {}
     for lang in ('en', 'tr'):
