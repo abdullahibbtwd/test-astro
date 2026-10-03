@@ -1,3 +1,13 @@
+## Google login verified with the selected test account — 3 October 2026
+
+The user chose a separate Google account for private app testing. Added it to the existing Google OAuth test-user list and changed the ignored local owner-email configuration to match. Before migration, verified that no Supabase identity or real session was bound. With the API stopped, updated only the authentication scope marker and config; compared all other database records before/after and confirmed they were unchanged. Both existing profiles are retained. The cloud project administration account was not changed; its original test-user entry remains, but the local API accepts only the newly configured owner email.
+
+Completed live Android Google sign-in, Supabase PKCE callback, app session retrieval and return to Home. Your space displays the selected Google email. Supabase identity is now pinned; future owner changes must not bypass this binding. The first completed attempt expired while returning through browser history; a fresh attempt and direct app return succeeded. Completed tickets remain available for one minute. No passwords or tokens were copied to chat or disk artifacts.
+
+Updated stale preview copy that still said map layers and real sign-in were under construction. Email-link end-to-end verification and live refresh/logout remain untested; automated auth tests cover these session operations. No paid AI calls were made. OpenAI login/plan sharing and Apple remain deferred.
+
+---
+
 ## Google activated; OpenAI login deferred — 3 October 2026
 
 The user approved the Google policy/client/Supabase connection and explicitly removed OpenAI/ChatGPT login and plan sharing from the current scope. Apple also remains deferred. Existing server-side OpenAI reading integration is unaffected.
