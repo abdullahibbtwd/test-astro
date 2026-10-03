@@ -1,3 +1,17 @@
+## Authentication update — 3 October 2026
+
+Supabase **Astro app** was selected and its public-key connection verified against `/auth/v1/settings`. Email is enabled; Google and Apple are not configured. The user supplied the owner email, saved only in ignored `.local-data/auth-config.json` in the D: checkout. **`enabled` remains false: real login has not been activated or tested end to end on Android.** The existing demo preview remains available.
+
+Implemented a server-side Supabase Auth adapter for email OTP verification, native provider ID-token exchange, refresh and logout. Every protected request verifies identity with Supabase; only the configured confirmed email is accepted, and the first verified UUID is pinned. Supabase sessions use a separate namespace, so legacy demo tokens cannot access real-auth mode. Once enabled for a database, removing or changing the owner/project configuration fails startup instead of restoring demo access. Tokens are hashed in the local store; no admin/service-role key is used. Existing local profile IDs and data are preserved. Local account deletion still deletes local data only, not the Supabase identity.
+
+**Pending decision:** Supabase's current Free dashboard requires custom SMTP or Pro to edit its default sign-in email, which contains a link rather than the app's six-digit OTP. Recommended: adapt the app to the free email-link flow. Alternative: configure a separate email sender and retain OTP. No service purchase, template change, sign-in email, or birth-data upload occurred. The email-link callback and mobile flow are not implemented yet.
+
+Validation: TypeScript and lint pass; **81 API/logic tests + 15 native tests pass**. New coverage rejects wrong/unconfirmed identities and malformed provider replies, checks old-demo-token rejection, owner UUID binding, refresh replay, logout and downgrade prevention. Live verification checked project connectivity/settings only, not a real user session. AI budget unchanged.
+
+Activation requires completing the selected email flow, then restarting both local API and Metro through `scripts/Start-Android-Preview.ps1 -RealCharts` with real auth enabled. The launcher reads `.local-data/auth-config.json` and supplies `EXPO_PUBLIC_AUTH_MODE`; existing listeners must be restarted for changed settings. Do not enable the current OTP UI against the unmodified link-only default template.
+
+---
+
 ## Current status — 3 October 2026: live maps and account tools
 
 The Android preview is updated in `D:\Dev\astrology-app\FE`. This is substantial progress, but the whole product is **not yet complete**. Real sign-in still needs an account-service choice, and several specified features do not yet have live backend implementations.

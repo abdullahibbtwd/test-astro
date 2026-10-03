@@ -1,3 +1,4 @@
+import type { SupabaseAuth, VerifiedSession } from "./supabase-auth";
 import { MapJobs, mapContext } from "./map-jobs";
 import { exportAccount, deleteAccount } from "./account";
 import { LiveMap } from "./map";
@@ -21,13 +22,30 @@ export function buildLocalApp({
   dbPath,
   allowPaid = false,
   generateCompatibility,
+  auth,
 }: {
+  auth?: SupabaseAuth;
   dbPath: string;
   allowPaid?: boolean;
   generateCompatibility?: (data: unknown) => Promise<any>;
 }) {
   const app = Fastify({ logger: false, bodyLimit: 65536 });
   const store = new Store(dbPath);
+  const previousAuth = store.get<string>("auth-mode");
+  if (previousAuth && previousAuth !== auth?.scope) {
+    store.close();
+    throw new Error(
+      "Real authentication is required for this database; keep its original project and owner configuration",
+    );
+  }
+  if (auth) store.put("auth-mode", auth.scope);
+  const credential = (kind: string, token: string) =>
+    (auth ? `supabase:${auth.scope}:` : "") + kind + ":" + digest(token);
+  const bindOwner = (id: string) => {
+    const bound = store.get<string>("auth-owner");
+    if (bound && bound !== id) throw issue(403);
+    store.put("auth-owner", id);
+  };
   const maps = new LiveMap(store);
   const mapJobs = new MapJobs(store, allowPaid);
   const readings = new ReadingJobs(store, undefined, allowPaid);
@@ -76,6 +94,8 @@ export function buildLocalApp({
             {
               400: "validation_error",
               401: "unauthorized",
+              403: "forbidden",
+              429: "rate_limited",
               404: "not_found",
               409: "conflict",
               503: "upstream_unavailable",
@@ -83,14 +103,19 @@ export function buildLocalApp({
           )[status] ?? "internal",
       });
   });
-  const session = () => {
-    const access = randomBytes(32).toString("hex"),
-      refresh = randomBytes(32).toString("hex");
-    const expires = Date.now() + 3600000;
-    store.put("access:" + digest(access), { expires });
-    store.put("refresh:" + digest(refresh), {
+  const session = (verified?: VerifiedSession) => {
+    if (auth && !verified) throw issue(401);
+    if (verified) bindOwner(verified.user.id);
+    const access = verified?.access_token ?? randomBytes(32).toString("hex"),
+      refresh = verified?.refresh_token ?? randomBytes(32).toString("hex");
+    const expires = Date.now() + (verified?.expires_in ?? 3600) * 1000;
+    store.put(credential("access", access), {
+      expires,
+      owner: verified?.user.id,
+    });
+    store.put(credential("refresh", refresh), {
       expires: Date.now() + 30 * 86400000,
-      accessHash: digest(access),
+      accessKey: credential("access", access),
     });
     const me = store.get<Me>("me")!;
     return {
@@ -181,9 +206,11 @@ export function buildLocalApp({
               "",
             );
             if (
-              (store.get("access:" + digest(token))?.expires ?? 0) <= Date.now()
+              (store.get(credential("access", token))?.expires ?? 0) <=
+              Date.now()
             )
               throw issue(401);
+            if (auth) bindOwner((await auth.user(token)).id);
           }
           let body: any = request.body ?? {};
           if (endpoint.body) {
@@ -195,7 +222,9 @@ export function buildLocalApp({
           }
           const idempotency = request.headers["idempotency-key"];
           const cacheKey =
-            idempotency && endpoint.method !== "get"
+            idempotency &&
+            !endpoint.path.startsWith("/auth/") &&
+            endpoint.method !== "get"
               ? `idem:${endpoint.method}:${request.url}:${String(idempotency)}`
               : null;
           if (cacheKey) {
@@ -234,32 +263,57 @@ export function buildLocalApp({
             case "get /meta/catalogue":
               result = fixture(`catalogue.${lang}`);
               break;
-            // Private emulator access only. This deliberately does not claim email delivery or OAuth.
+            // Demo credentials are accepted only when real authentication has never been enabled.
             case "post /auth/email/start":
-              if (body.email !== "demo@example.com") throw issue(503);
+              if (auth) await auth.startEmail(body.email);
+              else if (body.email !== "demo@example.com") throw issue(503);
               return reply.code(204).send();
             case "post /auth/email/verify":
-              if (body.email !== "demo@example.com" || body.code !== "000000")
-                throw issue(401);
-              result = session();
+              if (auth)
+                result = session(await auth.verify(body.email, body.code));
+              else {
+                if (body.email !== "demo@example.com" || body.code !== "000000")
+                  throw issue(401);
+                result = session();
+              }
+              break;
+            case "post /auth/google":
+            case "post /auth/apple":
+              if (!auth) throw issue(503);
+              result = session(
+                await auth.provider(
+                  endpoint.path.endsWith("google") ? "google" : "apple",
+                  body.id_token ?? body.identity_token,
+                ),
+              );
               break;
             case "post /auth/refresh": {
-              const key = "refresh:" + digest(body.refresh_token),
+              const key = credential("refresh", body.refresh_token),
                 saved = store.get(key);
               if (!saved || saved.expires <= Date.now()) throw issue(401);
+              const verified = auth
+                ? await auth.refresh(body.refresh_token)
+                : undefined;
               result = store.transaction(() => {
                 store.remove(key);
-                store.remove("access:" + saved.accessHash);
-                return session();
+                store.remove(saved.accessKey ?? "access:" + saved.accessHash);
+                return session(verified);
               });
               break;
             }
             case "post /auth/logout": {
-              const key = "refresh:" + digest(body.refresh_token),
+              const key = credential("refresh", body.refresh_token),
                 saved = store.get(key);
               if (saved) {
-                store.remove("access:" + saved.accessHash);
+                store.remove(saved.accessKey ?? "access:" + saved.accessHash);
                 store.remove(key);
+                const access = String(
+                  request.headers.authorization ?? "",
+                ).replace(/^Bearer /, "");
+                if (auth && credential("access", access) === saved.accessKey) {
+                  // Local revocation always succeeds, including when the provider is unavailable.
+                  await auth.logout(access).catch(() => {});
+                }
               }
               return reply.code(204).send();
             }
@@ -268,6 +322,7 @@ export function buildLocalApp({
               break;
             case "delete /me":
               deleteAccount(store, dbPath);
+              if (auth) store.put("auth-mode", auth.scope);
               initializeAccount();
               return reply.code(202).send();
             case "get /me":

@@ -18,6 +18,7 @@ import {
 import { useTheme } from "../../design/theme";
 import { useApp } from "../../lib/state";
 import { useActions, useConfig } from "../../api/hooks";
+const demoAuth = __DEV__ && process.env.EXPO_PUBLIC_AUTH_MODE !== "supabase";
 export default function AuthScreen() {
   const { mode, fresh } = useLocalSearchParams<{
       mode?: string;
@@ -48,7 +49,7 @@ export default function AuthScreen() {
     }
   };
   const [email, setEmail] = useState(
-      __DEV__ ? (fresh ? "new@example.com" : "demo@example.com") : "",
+      demoAuth ? (fresh ? "new@example.com" : "demo@example.com") : "",
     ),
     [code, setCode] = useState(""),
     [cooldown, setCooldown] = useState(0);
@@ -119,7 +120,7 @@ export default function AuthScreen() {
                 void actions
                   .startEmail(email)
                   .then(() => {
-                    setCooldown(30);
+                    setCooldown(60);
                     router.setParams({ mode: "verify" });
                   })
                   .catch(() => {});
@@ -176,7 +177,7 @@ export default function AuthScreen() {
                 void actions
                   .startEmail(email)
                   .then(() => {
-                    setCooldown(30);
+                    setCooldown(60);
                     setCode("");
                   })
                   .catch(() => {});
@@ -185,7 +186,7 @@ export default function AuthScreen() {
           </>
         )}
         <ErrorNotice error={actions.error} />
-        {__DEV__ && (
+        {demoAuth && (
           <Txt kind="caption" muted>
             {t("previewLogin", { email })}
           </Txt>
@@ -236,7 +237,7 @@ export default function AuthScreen() {
           onPress={() => router.push("/(auth)/welcome?mode=email")}
         />
       </View>
-      {__DEV__ && (
+      {demoAuth && (
         <Button
           secondary
           label={t("tryOnboarding")}

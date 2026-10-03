@@ -12,6 +12,9 @@ $metroPort = if ($RealCharts) { 8082 } else { 8081 }
 $apiEntry = if ($RealCharts) { 'local-api/server.ts' } else { 'mock-api/server.ts' }
 $env:EXPO_PUBLIC_API_URL = "http://127.0.0.1:$apiPort/v1"
 $env:EXPO_PUBLIC_BACKEND_MODE = if ($RealCharts) { 'local' } else { 'demo' }
+$authFile = Join-Path $frontend '.local-data/auth-config.json'
+$realAuth = $RealCharts -and (Test-Path -LiteralPath $authFile) -and ((Get-Content -Raw -LiteralPath $authFile | ConvertFrom-Json).enabled -eq $true)
+$env:EXPO_PUBLIC_AUTH_MODE = if ($realAuth) { 'supabase' } else { 'demo' }
 $env:ASTRO_ALLOW_PAID = '0' # Enable only during explicitly authorized, supervised integration tests.
 Remove-Item Env:CI -ErrorAction SilentlyContinue
 $adb = Join-Path $env:ANDROID_HOME 'platform-tools/adb.exe'
@@ -54,4 +57,4 @@ if (!(Test-Path -LiteralPath $apk)) { throw 'Run scripts/Build-Android-Preview.p
 $deadline = (Get-Date).AddSeconds(60)
 while (!(Is-MetroReady)) { if ((Get-Date) -gt $deadline) { throw 'Metro did not start. See .tooling/metro-error.log.' }; Start-Sleep -Seconds 1 }
 & $adb shell am start -a android.intent.action.VIEW -d "astrology-dev://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A$metroPort" com.example.astrology.dev
-Write-Host 'Preview ready. Sign in with demo@example.com and code 000000.'
+if ($realAuth) { Write-Host 'Preview ready. Sign in with your configured owner email.' } else { Write-Host 'Preview ready. Sign in with demo@example.com and code 000000.' }
