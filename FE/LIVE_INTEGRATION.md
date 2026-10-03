@@ -1,3 +1,17 @@
+## Email links, Google and ChatGPT — 3 October 2026
+
+The user chose free email links, Google now, and Apple later. Email-link and Google browser sign-in are implemented for the local Android preview: PKCE exchange stays on the loopback server, and the app retrieves its session using a separate random polling secret. Links can open on this computer or in the emulator with ADB reverse enabled. Cancellation, expiry, replay rejection and owner checks are covered by tests. Apple is hidden in real-auth mode.
+
+**Activation remains pending:** Google branding is prepared in the existing Astrology app Cloud project, at its required User Data Policy acceptance. The Supabase redirect dialog is prepared for `http://127.0.0.1:4020/v1/auth/browser/callback/*`. Neither submission is complete. The user has been asked to approve Google's policy and the Google credential/Supabase connection. No OAuth client was created, no email was sent, and `.local-data/auth-config.json` still has `enabled: false`. Real sign-in has not been exercised on Android.
+
+Validation: TypeScript/lint and **83 API/logic tests + 16 native tests** passed; TypeScript and the native sign-in test also passed after the final Google waiting-screen copy correction. Existing profiles and the AI spending ledger are unchanged. The normal preview still disables new paid generations.
+
+The user additionally requested **Continue with ChatGPT** and use of their own ChatGPT allowance. Official OpenAI documentation confirms a local-app OAuth route with optional plan-use permission. This is a new requirement, **not an implemented or activated feature**. See [AUTH_INTEGRATION.md](AUTH_INTEGRATION.md) for the connection plan, prerequisite account linking, and safeguards for the approved reading pipeline. No OpenAI credentials were requested or registered and no AI usage was consumed by this work.
+
+Older status sections below are historical; the free-link decision is resolved.
+
+---
+
 ## Authentication update — 3 October 2026
 
 Supabase **Astro app** was selected and its public-key connection verified against `/auth/v1/settings`. Email is enabled; Google and Apple are not configured. The user supplied the owner email, saved only in ignored `.local-data/auth-config.json` in the D: checkout. **`enabled` remains false: real login has not been activated or tested end to end on Android.** The existing demo preview remains available.

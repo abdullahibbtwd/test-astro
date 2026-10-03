@@ -1,3 +1,4 @@
+import { registerBrowserSignIn } from "./browser-auth-routes";
 import type { SupabaseAuth, VerifiedSession } from "./supabase-auth";
 import { MapJobs, mapContext } from "./map-jobs";
 import { exportAccount, deleteAccount } from "./account";
@@ -126,6 +127,7 @@ export function buildLocalApp({
       me,
     };
   };
+  if (auth) registerBrowserSignIn(app, auth, session);
   const calendarContext = (profile: BirthProfile) => {
     const me = store.get<Me>("me")!;
     const current =

@@ -100,6 +100,35 @@ export class SupabaseAuth {
     const user = await this.user(tokens.data.access_token);
     return { ...tokens.data, user };
   }
+  async startEmailLink(email: string, redirect: string, challenge: string) {
+    await this.call("/otp?redirect_to=" + encodeURIComponent(redirect), {
+      email: this.email(email),
+      create_user: true,
+      code_challenge: challenge,
+      code_challenge_method: "s256",
+    });
+  }
+  googleUrl(redirect: string, challenge: string) {
+    const url = new URL(this.base + "/authorize");
+    url.search = new URLSearchParams({
+      provider: "google",
+      redirect_to: redirect,
+      code_challenge: challenge,
+      code_challenge_method: "s256",
+      scopes: "openid email profile",
+      prompt: "select_account",
+      login_hint: this.ownerEmail,
+    }).toString();
+    return url.toString();
+  }
+  async exchangeCode(code: string, verifier: string) {
+    return this.verified(
+      await this.call("/token?grant_type=pkce", {
+        auth_code: code,
+        code_verifier: verifier,
+      }),
+    );
+  }
   async startEmail(email: string) {
     await this.call("/otp", { email: this.email(email), create_user: true });
   }

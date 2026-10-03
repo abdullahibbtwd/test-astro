@@ -32,6 +32,10 @@ export default function AuthScreen() {
   const [providerBusy, setProviderBusy] = useState(false),
     [providerError, setProviderError] = useState<unknown>();
   const signIn = async (provider: "google" | "apple") => {
+    if (!demoAuth && provider === "google") {
+      router.push("/(auth)/link?provider=google");
+      return;
+    }
     setProviderBusy(true);
     setProviderError(undefined);
     try {
@@ -218,7 +222,7 @@ export default function AuthScreen() {
       </View>
       <ErrorNotice error={providerError} />
       <View style={{ gap: 12 }}>
-        {Platform.OS === "ios" && (
+        {Platform.OS === "ios" && demoAuth && (
           <Button
             secondary
             label={t("appleContinue")}
@@ -234,7 +238,13 @@ export default function AuthScreen() {
         />
         <Button
           label={t("emailContinue")}
-          onPress={() => router.push("/(auth)/welcome?mode=email")}
+          onPress={() =>
+            router.push(
+              demoAuth
+                ? "/(auth)/welcome?mode=email"
+                : "/(auth)/link?provider=email",
+            )
+          }
         />
       </View>
       {demoAuth && (
