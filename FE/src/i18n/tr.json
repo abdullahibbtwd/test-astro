@@ -384,7 +384,7 @@
   "collapse": "Alt panele dön",
   "realChartPreview": "Gerçek haritalar · yerel önizleme",
   "realChartDescription": "Doğum haritaları girdiğin bilgilerden hesaplanır ve bu bilgisayarda saklanır.",
-  "localServicesPending": "Haritalar, takvim, öngörü bilgileri, harita çizgileri, ısı katmanları ve yakındaki şehirler gerçek hesaplamalara dayanır. Fictional AI test için doğum haritası, öngörü ve yer yorumları kayıtlıdır. Aşk ve iş uyumu test için bağlandı. Yeni ücretli yorum üretimi kapalıdır.",
+  "localServicesPending": "Haritalar, takvim, öngörü bilgileri, harita çizgileri, ısı katmanları ve yakındaki şehirler gerçek hesaplamalara dayanır. Fictional AI test için doğum haritası, öngörü ve yer yorumları kayıtlıdır. Aşk ve iş uyumu test için bağlandı. Yeni yazılı yorumlar canlı API erişimi gerektirir; kayıtlı raporlar kullanılabilir.",
   "sendSignInLink": "Giriş bağlantısı gönder",
   "emailLinkIntro": "Parola kullanmadan güvenle giriş yap.",
   "emailLinkWaiting": "E-postandaki giriş bağlantısını bu bilgisayarda veya emülatörde aç. Ardından devam etmek için buraya dön. Bağlantının süresi 10 dakika.",

@@ -1,3 +1,13 @@
+## Live user testing enabled — 3 October 2026
+
+At the user's explicit request, enabled paid reading generation for the running Android preview under the unchanged shared US$20 total cap. Google owner authentication remains enabled. The launcher now accepts `-RealCharts -EnableReadings -RestartApi`; omit EnableReadings with RestartApi to disable new generation. Existing API processes are verified before stopping; do not restart while a reading is active.
+
+Both configured providers returned text in a small guarded connection test. No personal birth data was used in those probes. Ledger after probes: **US$0.434003 spent/reserved**, about **US$19.565997 remaining**. All four reading bridges still install the shared budget guard, with conservative reservations and the existing 9 October pricing expiry. Current official rates were checked; no cap or deadline increase. Three budget tests pass; PowerShell script syntax validated; the live server confirms paid generation enabled. Emulator remains signed in at Home.
+
+The user can now generate fresh natal, daily/monthly/yearly, love/work compatibility and map/place/area/recommendation readings. Previously cached reports remain usable. [USER_TEST_GUIDE.md](USER_TEST_GUIDE.md) contains navigation, expected results, limits, issue-reporting instructions and enable/disable commands. OpenAI login, Apple, Ask, Solar Return and family compatibility remain outside active testing. Full live feature acceptance now belongs to the user's testing; provider connectivity alone does not establish reading quality.
+
+---
+
 ## Google login verified with the selected test account — 3 October 2026
 
 The user chose a separate Google account for private app testing. Added it to the existing Google OAuth test-user list and changed the ignored local owner-email configuration to match. Before migration, verified that no Supabase identity or real session was bound. With the API stopped, updated only the authentication scope marker and config; compared all other database records before/after and confirmed they were unchanged. Both existing profiles are retained. The cloud project administration account was not changed; its original test-user entry remains, but the local API accepts only the newly configured owner email.

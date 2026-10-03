@@ -1,5 +1,6 @@
-param([switch]$RealCharts)
+param([switch]$RealCharts, [switch]$EnableReadings, [switch]$RestartApi)
 $ErrorActionPreference = 'Stop'
+if ($EnableReadings -and !$RealCharts) { throw 'EnableReadings requires RealCharts' }
 $frontend = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $project = (Resolve-Path (Join-Path $frontend '..')).Path
 $tools = Join-Path $project '.tooling'
@@ -15,7 +16,7 @@ $env:EXPO_PUBLIC_BACKEND_MODE = if ($RealCharts) { 'local' } else { 'demo' }
 $authFile = Join-Path $frontend '.local-data/auth-config.json'
 $realAuth = $RealCharts -and (Test-Path -LiteralPath $authFile) -and ((Get-Content -Raw -LiteralPath $authFile | ConvertFrom-Json).enabled -eq $true)
 $env:EXPO_PUBLIC_AUTH_MODE = if ($realAuth) { 'supabase' } else { 'demo' }
-$env:ASTRO_ALLOW_PAID = '0' # Enable only during explicitly authorized, supervised integration tests.
+$env:ASTRO_ALLOW_PAID = if ($EnableReadings) { '1' } else { '0' } # Shared durable US$20 cap remains enforced.
 Remove-Item Env:CI -ErrorAction SilentlyContinue
 $adb = Join-Path $env:ANDROID_HOME 'platform-tools/adb.exe'
 $node = (Get-Command node.exe).Source
@@ -32,6 +33,16 @@ if ($otherListener) {
 function Is-Listening([int]$port) { return [bool](Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) }
 function Is-MetroReady { try { return (Invoke-WebRequest -Uri "http://127.0.0.1:$metroPort/status" -TimeoutSec 2).StatusCode -eq 200 } catch { return $false } }
 
+$existingApi = Get-NetTCPConnection -LocalPort $apiPort -State Listen -ErrorAction SilentlyContinue
+if ($existingApi -and $RestartApi) {
+ $apiProcess = Get-CimInstance Win32_Process -Filter "ProcessId=$($existingApi.OwningProcess)"
+ if (!$apiProcess.CommandLine.Contains($frontend) -or !$apiProcess.CommandLine.Contains($apiEntry)) {
+  throw 'The API port belongs to an unexpected process; not stopping it.'
+ }
+ Stop-Process -Id $apiProcess.ProcessId
+} elseif ($existingApi -and $EnableReadings) {
+ throw 'Use -RestartApi to apply EnableReadings to the running API. Wait for active readings to finish first.'
+}
 if (!(Is-Listening $apiPort)) {
  Start-Process -FilePath $node -ArgumentList 'node_modules/tsx/dist/cli.mjs',$apiEntry -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/api-$apiPort.log" -RedirectStandardError "$tools/api-$apiPort-error.log"
 }
@@ -58,3 +69,5 @@ $deadline = (Get-Date).AddSeconds(60)
 while (!(Is-MetroReady)) { if ((Get-Date) -gt $deadline) { throw 'Metro did not start. See .tooling/metro-error.log.' }; Start-Sleep -Seconds 1 }
 & $adb shell am start -a android.intent.action.VIEW -d "astrology-dev://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A$metroPort" com.example.astrology.dev
 if ($realAuth) { Write-Host 'Preview ready. Sign in with your configured owner email.' } else { Write-Host 'Preview ready. Sign in with demo@example.com and code 000000.' }
+
+Write-Host 'To change live reading generation, use -RestartApi; add -EnableReadings to enable it. Never restart during an active reading.'
