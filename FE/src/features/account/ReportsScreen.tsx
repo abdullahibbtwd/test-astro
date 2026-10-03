@@ -14,6 +14,7 @@ import {
   ErrorNotice,
 } from "../../design/components";
 import { useReports, useActions } from "../../api/hooks";
+import { useFlags } from "../../lib/flags";
 import { useApp } from "../../lib/state";
 import type { ReportRef } from "../../../contracts/spec-types";
 const types: (ReportRef["type"] | "")[] = [
@@ -28,6 +29,7 @@ const types: (ReportRef["type"] | "")[] = [
   "solar_return",
 ];
 export default function ReportsScreen() {
+  const flags = useFlags();
   const { t } = useTranslation(),
     lang = useApp((s) => s.language);
   const [type, setType] = useState<ReportRef["type"] | "">("");
@@ -58,14 +60,16 @@ export default function ReportsScreen() {
   return (
     <Screen back title={t("savedReports")}>
       <Choices>
-        {types.map((value) => (
-          <Chip
-            key={value}
-            label={t(value || "all")}
-            selected={type === value}
-            onPress={() => setType(value)}
-          />
-        ))}
+        {types
+          .filter((value) => value !== "solar_return" || flags.solarReturn)
+          .map((value) => (
+            <Chip
+              key={value}
+              label={t(value || "all")}
+              selected={type === value}
+              onPress={() => setType(value)}
+            />
+          ))}
       </Choices>
       {reports.isPending ? (
         <Skeleton />

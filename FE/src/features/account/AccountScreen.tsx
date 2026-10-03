@@ -219,7 +219,13 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
           />
           <Card>
             <Txt kind="title">{t("deleteAccount")}</Txt>
-            <Txt>{t("deleteExplanation")}</Txt>
+            <Txt>
+              {t(
+                process.env.EXPO_PUBLIC_BACKEND_MODE === "local"
+                  ? "deleteLocalExplanation"
+                  : "deleteExplanation",
+              )}
+            </Txt>
             {!confirm ? (
               <Button
                 secondary

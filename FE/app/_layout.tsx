@@ -101,7 +101,7 @@ export default function RootLayout() {
           persistOptions={{
             persister,
             maxAge: 86400000,
-            buster: "phase1-forecast-v2",
+            buster: "phase1-map-readings-v1",
           }}
         >
           <BottomSheetModalProvider>

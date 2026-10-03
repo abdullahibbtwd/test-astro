@@ -115,6 +115,7 @@
   "downloadData": "Download my data",
   "exportSent": "We’ll email you a link.",
   "deleteAccount": "Delete account",
+  "deleteLocalExplanation": "This signs you out and immediately removes the profiles and readings stored by this local preview. Files you already saved or shared are kept.",
   "deleteExplanation": "Your sessions end now. Your profiles, readings and conversations will be deleted within 30 days.",
   "typeDelete": "Type DELETE to confirm",
   "deleteWord": "DELETE",

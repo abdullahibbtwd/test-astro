@@ -115,6 +115,7 @@
   "downloadData": "Verilerimi indir",
   "exportSent": "Sana e-posta ile bir bağlantı göndereceğiz.",
   "deleteAccount": "Hesabı sil",
+  "deleteLocalExplanation": "Çıkış yapılır ve bu yerel önizlemede saklanan profiller ile yorumlar hemen silinir. Daha önce kaydettiğin veya paylaştığın dosyalar korunur.",
   "deleteExplanation": "Oturumların şimdi sonlanır. Profillerin, yorumların ve konuşmaların 30 gün içinde silinir.",
   "typeDelete": "Onaylamak için SİL yaz",
   "deleteWord": "SİL",

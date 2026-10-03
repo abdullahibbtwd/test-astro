@@ -9,6 +9,7 @@ import {
   Chip,
   Button,
 } from "../../design/components";
+import { validate } from "../../api/zod";
 import { useCatalogue } from "../../api/hooks";
 import { useProfile } from "../shared/useProfile";
 import { MapSearch } from "./MapSearch";
@@ -21,7 +22,12 @@ export default function RecommendScreen() {
   const params = useLocalSearchParams<{ request?: string }>();
   let initial: RecommendationRequest = {};
   try {
-    initial = params.request ? JSON.parse(params.request) : {};
+    initial = params.request
+      ? validate<RecommendationRequest>(
+          "RecommendationRequest",
+          JSON.parse(params.request),
+        )
+      : {};
   } catch {
     /* A malformed link uses defaults. */
   }

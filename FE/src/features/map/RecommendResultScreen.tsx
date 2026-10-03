@@ -13,6 +13,7 @@ import {
   Skeleton,
 } from "../../design/components";
 import { useApi } from "../../api/resource";
+import { ApiError } from "../../api/client";
 import { useProfile } from "../shared/useProfile";
 import { Generated } from "../shared/Blocks";
 import { MapCanvas, planetColors } from "./MapCanvas";
@@ -31,18 +32,23 @@ export default function RecommendResultScreen() {
     { id } = useProfile(),
     { t } = useTranslation(),
     [map, setMap] = useState(false),
-    body = useMemo(
-      () =>
-        validate<RecommendationRequest>(
-          "RecommendationRequest",
-          JSON.parse(params.request),
-        ),
-      [params.request],
-    );
+    parsed = useMemo(() => {
+      try {
+        return {
+          body: validate<RecommendationRequest>(
+            "RecommendationRequest",
+            JSON.parse(params.request),
+          ),
+        };
+      } catch {
+        return { error: new ApiError(400, "validation_error") };
+      }
+    }, [params.request]),
+    body = parsed.body;
   const q = useApi<Recommendation>(
       `/profiles/${id}/acg/recommendations`,
       "Recommendation",
-      !!id,
+      !!id && !!body,
       body,
     ),
     d = q.data,
@@ -85,8 +91,8 @@ export default function RecommendResultScreen() {
   );
   return (
     <Screen back title={d?.goal_label ?? t("whereShouldIGo")}>
-      {q.isPending && <Skeleton />}
-      <ErrorNotice error={q.error} />
+      {!parsed.error && q.isPending && <Skeleton />}
+      <ErrorNotice error={parsed.error ?? q.error} />
       {d && (
         <>
           {d.status === "needs_goal" ? (
@@ -124,7 +130,7 @@ export default function RecommendResultScreen() {
                       label={`${t(key)}: ${Array.isArray(value) ? value.map((v) => t(String(v))).join(", ") : t(String(value))} ×`}
                       selected
                       onPress={() => {
-                        const filters = { ...body.filters };
+                        const filters = { ...body?.filters };
                         if (key === "city_size")
                           filters.city_size = ["big", "mid", "small"];
                         else if (key === "climate") filters.climate = null;
