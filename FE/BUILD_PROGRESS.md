@@ -1,3 +1,11 @@
+## Saved Reports integration — 3 October 2026
+
+- Saved Reports now includes finished compatibility readings and monthly/yearly forecast readings, with English/Turkish titles and accurate profile, month and focus links. Daily readings remain in Today because the approved report contract has no daily report type.
+- Removing a saved entry persists across restart without deleting profiles or cached prose. Edited/deleted profiles and changed forecast locations hide outdated entries. Pending and failed generations are excluded.
+- Existing cached forecasts are indexed when opened; the already approved October 2026 monthly and October 2026–September 2027 yearly examples are indexed in the running preview. No model calls or extra budget used (tracked total remains $0.370374).
+- Verification: 66 Node tests and 10 native component tests passed; typecheck/lint and Android/iOS bundles passed. Android Saved Reports displays the real saved forecasts, and opening the monthly entry displays the correct October 2026 reading. A native regression verifies the saved focus overrides the remembered focus.
+- Fresh compatibility AI generation remains unverified pending the earlier second-fictional-profile question. Family-specific compatibility, maps integration, grounded Ask, real authentication and account/data lifecycle remain to be completed.
+
 ## Compatibility integration — 3 October 2026
 
 - Added local create/list/read/delete compatibility endpoints for the selected saved profiles, using the approved relationship grounding and reading pipeline. Love maps to personal; work maps to professional. Family is disabled in the real preview because the approved backend has no family-specific mode.

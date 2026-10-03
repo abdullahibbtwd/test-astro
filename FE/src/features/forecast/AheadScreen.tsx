@@ -27,6 +27,7 @@ export default function AheadScreen() {
       month?: string;
       date?: string;
       area?: string;
+      lens?: string;
     }>(),
     { t } = useTranslation(),
     app = useApp(),
@@ -54,7 +55,11 @@ export default function AheadScreen() {
     if (params.date) setDate(params.date);
     if (params.month) setMonth(params.month);
   }, [params.date, params.month]);
-  const lens = lenses[view] ?? "general";
+  const lens: Lens = ["general", "personal", "professional"].includes(
+    params.lens ?? "",
+  )
+    ? (params.lens as Lens)
+    : (lenses[view] ?? "general");
   if (view === "calendar") return <CalendarScreen />;
   return (
     <ScrollView
@@ -83,7 +88,7 @@ export default function AheadScreen() {
             onPress={() => {
               if (value === "calendar")
                 router.push(`/calendar?profile=${profile?.profile_id ?? ""}`);
-              else router.setParams({ view: value });
+              else router.setParams({ view: value, lens: undefined });
             }}
           />
         ))}
@@ -97,6 +102,7 @@ export default function AheadScreen() {
             onPress={() => {
               const next = { ...lenses, [view]: value };
               setLenses(next);
+              router.setParams({ lens: value });
               privateStorage.setItem("forecast-lenses", JSON.stringify(next));
             }}
           />

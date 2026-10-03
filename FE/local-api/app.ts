@@ -532,10 +532,25 @@ export function buildLocalApp({
               if (!result) throw issue(404);
               break;
             case "get /reports": {
-              const all = store
-                .list<any>("report:")
+              const all = [
+                ...store
+                  .list<any>("report:")
+                  .filter(
+                    (r) =>
+                      r.lang === lang && store.get("profile:" + r.profile_id),
+                  ),
+                ...forecasts.reports(lang as "en" | "tr"),
+                ...compatibility.reports(lang as "en" | "tr"),
+              ]
                 .filter(
-                  (r) => r.lang === lang && (!q.type || r.type === q.type),
+                  (r) =>
+                    (!q.type || r.type === q.type) &&
+                    !store.get("hidden-report:" + r.report_id),
+                )
+                .sort(
+                  (a, b) =>
+                    b.created_at.localeCompare(a.created_at) ||
+                    a.report_id.localeCompare(b.report_id),
                 );
               const start = Number(q.cursor ?? 0),
                 count = Number(q.limit ?? 20);
@@ -554,11 +569,22 @@ export function buildLocalApp({
               };
               break;
             }
-            case "delete /reports/{report_id}":
-              for (const r of store.list<any>("report:"))
-                if (r.report_id === p.report_id)
-                  store.remove(`report:${r.profile_id}:${r.lang}`);
+            case "delete /reports/{report_id}": {
+              const reports = [
+                ...store.list<any>("report:"),
+                ...forecasts.reports("en"),
+                ...forecasts.reports("tr"),
+                ...compatibility.reports("en"),
+                ...compatibility.reports("tr"),
+              ];
+              if (
+                !reports.some((r) => r.report_id === p.report_id) ||
+                store.get("hidden-report:" + p.report_id)
+              )
+                throw issue(404);
+              store.put("hidden-report:" + p.report_id, true);
               return reply.code(204).send();
+            }
             case "post /compatibility":
               result = compatibility.create(body, lang as "en" | "tr");
               if (cacheKey)

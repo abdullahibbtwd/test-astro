@@ -5,6 +5,7 @@ import { forecastSegments } from "./forecast";
 import { fixture } from "../mock-api/fixtures";
 import type {
   BirthProfile,
+  ReportRef,
   Place,
   Lang,
   Lens,
@@ -61,13 +62,82 @@ export class ForecastJobs {
       },
     };
   }
+  private indexReport(context: ForecastContext) {
+    if (context.horizon === "day") return;
+    const key = hash(context);
+    if (!this.store.get("forecast-report:" + key))
+      this.store.put("forecast-report:" + key, {
+        key,
+        context,
+        created_at:
+          this.store.get("forecast-job:" + key)?.job.created_at ??
+          new Date().toISOString(),
+      });
+  }
+  reports(lang: Lang): ReportRef[] {
+    return this.store
+      .list<{ key: string; context: ForecastContext; created_at: string }>(
+        "forecast-report:",
+      )
+      .flatMap(({ key, context, created_at }) => {
+        const p = this.store.get<BirthProfile>("profile:" + context.profile_id);
+        if (
+          !p ||
+          context.horizon === "day" ||
+          !this.store.get("forecast-reading:" + key)?.[lang]
+        )
+          return [];
+        const current =
+          (p.is_self ? this.store.get("me")?.current_place : p.current_place) ??
+          p.birth.place;
+        if (
+          hash(
+            forecastContext(
+              p,
+              current,
+              context.target,
+              context.horizon,
+              context.lens,
+            ),
+          ) !== key
+        )
+          return [];
+        const month = context.target.slice(0, 7);
+        const title = new Intl.DateTimeFormat(lang, {
+          month: "long",
+          year: "numeric",
+          timeZone: "UTC",
+        }).format(new Date(context.target));
+        const kind =
+          context.horizon === "month"
+            ? lang === "tr"
+              ? "Aylık öngörü"
+              : "Monthly forecast"
+            : lang === "tr"
+              ? "Yıllık öngörü"
+              : "Yearly forecast";
+        return [
+          {
+            report_id: `forecast-${key}-${lang}`,
+            type:
+              context.horizon === "month" ? "forecast_month" : "forecast_year",
+            title: `${kind} · ${title}`,
+            subtitle: `${p.label} · ${fixture(`catalogue.${lang}`).lenses[context.lens]}`,
+            profile_id: p.profile_id,
+            created_at,
+            route: `/ahead?view=${context.horizon}&profile=${encodeURIComponent(p.profile_id)}&month=${month}&lens=${context.lens}`,
+          },
+        ];
+      });
+  }
   async close() {
     await Promise.all(this.running);
   }
   get(context: ForecastContext, lang: Lang, retry = false): any {
     const key = hash(context),
       cached = this.store.get("forecast-reading:" + key);
-    if (cached)
+    if (cached) {
+      this.indexReport(context);
       return context.horizon === "day"
         ? { status: "ready", text: cached[lang].reading }
         : {
@@ -77,6 +147,7 @@ export class ForecastJobs {
               context.lens
             ],
           };
+    }
     const previous = this.store.get("forecast-job:" + key)?.job as
       Job | undefined;
     if (previous && !(retry && previous.status === "failed"))
@@ -175,6 +246,7 @@ export class ForecastJobs {
         )
           throw new Error("profile_changed");
         this.store.put("forecast-reading:" + key, readings);
+        this.indexReport(context);
         this.save(key, {
           ...job,
           status: "succeeded",

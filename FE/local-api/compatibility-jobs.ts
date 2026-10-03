@@ -4,6 +4,7 @@ import { runReadingBridge } from "./readings";
 import { validate } from "../src/api/zod";
 import type {
   BirthProfile,
+  ReportRef,
   Compatibility,
   CompatibilityInput,
   Job,
@@ -213,6 +214,20 @@ export class CompatibilityJobs {
           status: c.reading.status,
         };
       });
+  }
+  reports(lang: Lang): ReportRef[] {
+    return this.store
+      .list<any>("compat:")
+      .filter((r) => r.readings?.[lang] && this.valid(r))
+      .map((r) => ({
+        report_id: `compatibility-${r.id}-${lang}`,
+        type: "compatibility",
+        title: r.readings[lang].title,
+        subtitle: r.context.people.map((p: any) => p.label).join(" & "),
+        profile_id: r.context.people[0].profile_id,
+        created_at: r.created_at,
+        route: `/match/${r.id}`,
+      }));
   }
   remove(id: string) {
     const r = this.store.get("compat:" + id);

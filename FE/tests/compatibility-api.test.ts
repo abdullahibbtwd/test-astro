@@ -18,7 +18,7 @@ test("compatibility endpoints authenticate, replay safely, paginate and delete",
     store.put("raw:" + p.profile_id, {});
   }
   store.close();
-  const app = buildLocalApp({
+  let app = buildLocalApp({
     dbPath,
     allowPaid: true,
     generateCompatibility: async (data: any) => ({
@@ -99,6 +99,66 @@ test("compatibility endpoints authenticate, replay safely, paginate and delete",
     ).json();
     validate("CompatibilityPage", page);
     assert.equal(page.items.length, 1);
+    const reports = (
+      await app.inject({
+        url: "/v1/reports?type=compatibility&lang=tr",
+        headers,
+      })
+    ).json();
+    validate("ReportPage", reports);
+    assert.equal(reports.items.length, 1);
+    assert.equal(reports.items[0].title, "tr");
+    const deleteReport = {
+      method: "DELETE" as const,
+      url: "/v1/reports/" + reports.items[0].report_id,
+      headers,
+    };
+    assert.equal((await app.inject(deleteReport)).statusCode, 204);
+    assert.equal((await app.inject(deleteReport)).statusCode, 404);
+    assert.equal(
+      (
+        await app.inject({
+          url: "/v1/reports?type=compatibility&lang=tr",
+          headers,
+        })
+      ).json().items.length,
+      0,
+    );
+    assert.equal(
+      (await app.inject({ url: url + "?lang=tr", headers })).json().reading
+        .status,
+      "ready",
+    );
+    assert.equal(
+      (
+        await app.inject({
+          url: "/v1/reports?type=compatibility&lang=en",
+          headers,
+        })
+      ).json().items.length,
+      1,
+    );
+    assert.equal(
+      (await app.inject({ url: "/v1/reports?limit=0", headers })).statusCode,
+      400,
+    );
+
+    await app.close();
+    app = buildLocalApp({ dbPath });
+    assert.equal(
+      (
+        await app.inject({
+          url: "/v1/reports?type=compatibility&lang=tr",
+          headers,
+        })
+      ).json().items.length,
+      0,
+    );
+    assert.equal(
+      (await app.inject({ url: url + "?lang=tr", headers })).json().reading
+        .status,
+      "ready",
+    );
     assert.equal(
       (await app.inject({ method: "DELETE", url, headers })).statusCode,
       204,
