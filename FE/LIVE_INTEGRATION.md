@@ -1,4 +1,4 @@
-# Real calculation preview — 2 October 2026
+# Real calculation and reading preview — 3 October 2026
 
 This is the private integration preview, separate from the saved-example demo.
 
@@ -19,7 +19,7 @@ The original `Open Android Preview.cmd` still opens the sample-data demo. Switch
 - Saved profiles and charts in SQLite; edits recalculate; service/app restart preserves data.
 - Existing interactive chart, facts, tables and export interface use the calculated chart.
 - Real calendar month/day/year/event/period data, Best Days and notification candidates, generated with model calls explicitly disabled.
-- Daily, monthly and yearly forecast facts from that real calendar. Year shows twelve calendar months, three-month quarters, up to six significant supportive and challenging periods each, major transits, eclipses, slow-planet ingresses and retrogrades. Fresh forecast prose remains unconnected.
+- Daily, monthly and yearly forecast facts from that real calendar. Year shows twelve calendar months, quarters split by the backend day-count rules, up to six significant supportive and challenging periods each, major transits, eclipses, slow-planet ingresses and retrogrades. Fresh daily/monthly/yearly prose now uses the existing predictive calculation, grounding, reading and translation pipeline, with persistent bilingual jobs and caches.
 - Reading worker adapter, durable job status, bilingual cache, history, stale-profile protection and explicit retry after interruption. A fresh 17-section natal reading passed existing backend validation and both English/Turkish API schemas; both languages, saved-report navigation and full Turkish PDF export were verified in Android.
 - A shared, durable US$20 AI testing cap with per-call reservations, retry accounting, failed-call reservations and tests for concurrent spending. The ordinary launcher disables paid generation.
 
@@ -33,9 +33,9 @@ The original `Open Android Preview.cmd` still opens the sample-data demo. Switch
 
 ## Paid-test status
 
-The user explicitly approved the fictional chart payload and Google Gemini/OpenAI destinations. The fresh test completed successfully: **US$0.305641 recorded by the shared budget guard**, within the US$20 cumulative cap. This is the guard's conservative estimate, not a provider invoice.
+The user explicitly approved the fictional chart payload and Google Gemini/OpenAI destinations. The fresh test completed successfully: **US$0.370374 recorded by the shared budget guard**, within the US$20 cumulative cap. This is the guard's conservative estimate, not a provider invoice.
 
-The generated English and Turkish readings are saved locally under **Fictional AI test** (13 July 1990, 12:30, Sofia). The test uses coordinates 42.6977, 23.3217; it is separate from the earlier gazetteer-coordinate example. Android displays the fresh English reading. The normal launcher still disables new paid generation, while saved readings remain available.
+The generated English and Turkish natal and forecast readings are saved locally under **Fictional AI test** (13 July 1990, 12:30, Sofia). The test uses coordinates 42.6977, 23.3217; it is separate from the earlier gazetteer-coordinate example. Android displays the natal reading and fresh General forecasts: 3 October 2026 (day), October 2026 (month), and October 2026–September 2027 (year). The normal launcher still disables new paid generation, while saved readings remain available.
 
 Preserve `.local-data/ai-budget.sqlite`; the cumulative cap must not reset between runs. The earlier approval block is resolved for this fictional test.
 
@@ -47,7 +47,7 @@ The guard refuses unknown models, unverified endpoint overrides, oversized reque
 
 ## Still to do
 
-1. Connect fresh forecast prose. The new factual year view uses the selected calendar month through the end of the twelfth month, with three-month quarters; calendar-month forecasts cover complete months. Existing rolling-month prose must not be relabelled as calendar-month prose. Reading window alignment remains to be resolved before prose integration.
+1. Extend forecast acceptance to Love/Work lenses and other locations/profiles; add forecast entries to Saved reports. General day/month/year readings are verified end to end for the approved fictional chart. The ordinary preview still disables new paid generation; it serves saved results.
 2. Connect arbitrary-pair compatibility, real-profile map calculations/recommendations and grounded Ask answers.
 3. Replace the local demo login with email delivery and verified Google/Apple sign-in. Android Apple sign-in needs a browser-based flow. External account setup is still unconfirmed.
 4. Complete account deletion/export, lifecycle cleanup and cache versioning/invalidation for engine/corpus changes. Calendar cache currently includes profile/chart/current coordinates/start date; old snapshots are retained locally.
@@ -73,3 +73,18 @@ The guard refuses unknown models, unverified endpoint overrides, oversized reque
 - `npm run check` passed: 53 Node tests, 9 native tests, 5,302 validated fixtures, types and lint. API regression includes a future-year request and its event detail, complete-month/day requests and invalid dates.
 - Android: year loaded for Fictional AI test (October 2026–September 2027), period detail opened, monthly navigation passed. Fresh natal reading opened from Turkish history; full Turkish PDF exported (15 pages). All 17 section texts matched the source after Unicode ligature/whitespace normalization; rendered pages inspected.
 - No new paid provider requests in this increment; guard total remains US$0.305641.
+
+## 3 October — written forecast integration
+
+- Reused the approved predictive backend without altering its astrology rules: compute_forecast → ground_forecast → existing calendar context → run_reading → existing English translator. Paid calls use the same persistent US$20 guard as natal readings.
+- Month and year requests begin on the first of the selected month. Displayed thirds/quarters now match `pr_calendar.segment_dates` exactly (including leap years), rather than fixed 1–10/11–20 splits or three-calendar-month quarters. Dry-run tests compare all three horizons to the real backend with model calls blocked.
+- Forecast facts return immediately alongside absent/pending/failed/ready prose. Jobs cache both languages by profile, chart, current coordinates/time zone, target date, horizon, lens and adapter version. Edits during generation reject stale results; restart interruptions require explicit retry. Window/context mismatches and incomplete bilingual output cannot enter the cache.
+- Fresh fictional General tests: day, month and year succeeded, each with zero backend validation warnings. Cumulative budget estimate rose from US$0.305641 to US$0.370374 (about 6.47 cents for this increment, including wording-fix retests). All six live API responses passed their schemas; English day/month/year and Turkish month were checked in Android.
+- Checks: app checks passed (57 Node + 9 native tests, 5,302 fixtures, types/lint), plus 13 predictive-reading backend tests. The normal launcher remains paid-disabled, while cached forecast prose is available.
+- Developer helpers: `scripts/smoke-live-forecast.ts day|month|year` makes supervised paid requests using only the fixed fictional chart; `scripts/import-live-forecast.ts` imports the already generated output with exact context checks and no provider calls; `scripts/verify-live-forecast.ts` validates the six cached responses from the running local service.
+- Screenshots: `artifacts/screenshots/live-forecast-day.png`, `live-forecast-month.png`, `live-forecast-year.png`, `live-forecast-month-tr.png`. Generated artifacts remain ignored.
+
+- During native review, the forecast prose incorrectly attached a transit sign to a natal target. Fixed the upstream descriptor to say “transiting Neptune in Aries trine natal Mercury,” and made sign ownership explicit in the reading prompt. All 13 existing predictive-reading offline tests pass, including the updated regression. Calculation/grounding rules are unchanged.
+- Forecast cache revision 2 and a client query-cache version change prevent reuse of the earlier text. Regenerated all three fictional horizons after the fix: zero backend validation warnings, six live API schemas passed again, and the corrected English/Turkish monthly overview explicitly attributes Aries to Neptune. Reading quality still needs broader human acceptance; structural checks cannot prove every generated sentence correct.
+
+- Fixed an observed Expo typed-route generation race: the launcher uses an absolute CLI path and stops only the competing preview whose command belongs to this same checkout. Other projects are not stopped. A malformed generated router file was regenerated, then type/lint/test checks passed.

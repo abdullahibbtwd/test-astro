@@ -1,3 +1,4 @@
+import { ForecastJobs, forecastContext } from "./forecast-jobs";
 import { dayForecast, monthForecast, yearForecast } from "./forecast";
 import { computeCalendar } from "./calendar";
 import Fastify from "fastify";
@@ -22,6 +23,7 @@ export function buildLocalApp({
   const app = Fastify({ logger: false, bodyLimit: 65536 });
   const store = new Store(dbPath);
   const readings = new ReadingJobs(store, undefined, allowPaid);
+  const forecasts = new ForecastJobs(store, allowPaid);
   const now = () => new Date().toISOString();
   if (!store.get("me")) {
     const me: Me = {
@@ -41,6 +43,7 @@ export function buildLocalApp({
   app.addHook("onClose", async () => {
     await tail;
     await readings.close();
+    await forecasts.close();
     store.close();
   });
   app.setErrorHandler((error: any, _request, reply) => {
@@ -415,6 +418,23 @@ export function buildLocalApp({
                         "general" | "personal" | "professional" | undefined,
                     );
               if (!result) throw issue(400);
+              const horizon = endpoint.path.endsWith("/day")
+                ? "day"
+                : endpoint.path.endsWith("/month")
+                  ? "month"
+                  : "year";
+              result.reading = forecasts.get(
+                forecastContext(
+                  profile!,
+                  calendarContext(profile!).current,
+                  date,
+                  horizon,
+                  (q.lens ?? "general") as
+                    "general" | "personal" | "professional",
+                ),
+                lang as "en" | "tr",
+                q.retry === "true",
+              );
               break;
             }
             case "get /profiles/{id}/calendar/months/{month}":

@@ -1,5 +1,25 @@
 import type { Lang, Lens, YearForecast } from "../contracts/spec-types";
 import { scores } from "../mock-api/scripts/calendar";
+// Mirrors pr_calendar.segment_dates: inclusive civil dates split by day count.
+export function forecastSegments<K extends string>(
+  from: string,
+  to: string,
+  keys: K[],
+): Record<K, { from: string; to: string }> {
+  const first = Date.parse(from),
+    days = (Date.parse(to) - first) / 86400000 + 1;
+  const at = (n: number) =>
+    new Date(first + n * 86400000).toISOString().slice(0, 10);
+  return Object.fromEntries(
+    keys.map((key, i) => [
+      key,
+      {
+        from: at(Math.floor((days * i) / keys.length)),
+        to: at(Math.floor((days * (i + 1)) / keys.length) - 1),
+      },
+    ]),
+  ) as Record<K, { from: string; to: string }>;
+}
 export function dayForecast(
   cal: any,
   catalogue: any,
@@ -54,11 +74,11 @@ export function monthForecast(
     month,
     tz: data.tz,
     lens,
-    segments: {
-      early: { from: `${month}-01`, to: `${month}-10` },
-      mid: { from: `${month}-11`, to: `${month}-20` },
-      late: { from: `${month}-21`, to: `${month}-${last}` },
-    },
+    segments: forecastSegments(`${month}-01`, `${month}-${last}`, [
+      "early",
+      "mid",
+      "late",
+    ]),
     reading: { status: "absent", absence: { reason: "not_generated" } },
     highlights: {
       favorable_days: data.days
@@ -126,10 +146,9 @@ export function yearForecast(
     to,
     tz: cal.best.tz,
     lens,
-    quarters: (["q1", "q2", "q3", "q4"] as const).map((key, i) => ({
+    quarters: (["q1", "q2", "q3", "q4"] as const).map((key) => ({
       key,
-      from: at(i * 3),
-      to: at((i + 1) * 3, 0),
+      ...forecastSegments(from, to, ["q1", "q2", "q3", "q4"])[key],
     })),
     reading: { status: "absent", absence: { reason: "not_generated" } },
     highlights: {

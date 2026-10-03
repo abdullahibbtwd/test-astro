@@ -98,7 +98,11 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <PersistQueryClientProvider
           client={queryClient}
-          persistOptions={{ persister, maxAge: 86400000, buster: "phase1" }}
+          persistOptions={{
+            persister,
+            maxAge: 86400000,
+            buster: "phase1-forecast-v2",
+          }}
         >
           <BottomSheetModalProvider>
             <NotificationLifecycle />

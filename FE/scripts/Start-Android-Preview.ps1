@@ -16,6 +16,16 @@ $env:ASTRO_ALLOW_PAID = '0' # Enable only during explicitly authorized, supervis
 Remove-Item Env:CI -ErrorAction SilentlyContinue
 $adb = Join-Path $env:ANDROID_HOME 'platform-tools/adb.exe'
 $node = (Get-Command node.exe).Source
+$expoCli = Join-Path $frontend 'node_modules/expo/bin/cli'
+# Expo's typed-route file is shared by both previews. Keep one generator per checkout.
+$otherMetroPort = if ($RealCharts) { 8081 } else { 8082 }
+$otherListener = Get-NetTCPConnection -LocalPort $otherMetroPort -State Listen -ErrorAction SilentlyContinue
+if ($otherListener) {
+ $otherProcess = Get-CimInstance Win32_Process -Filter "ProcessId=$($otherListener.OwningProcess)"
+ if ($otherProcess.CommandLine -and $otherProcess.CommandLine.Contains($expoCli) -and $otherProcess.CommandLine -like "*--port $otherMetroPort*") {
+  Stop-Process -Id $otherProcess.ProcessId
+ }
+}
 function Is-Listening([int]$port) { return [bool](Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) }
 function Is-MetroReady { try { return (Invoke-WebRequest -Uri "http://127.0.0.1:$metroPort/status" -TimeoutSec 2).StatusCode -eq 200 } catch { return $false } }
 
@@ -23,7 +33,7 @@ if (!(Is-Listening $apiPort)) {
  Start-Process -FilePath $node -ArgumentList 'node_modules/tsx/dist/cli.mjs',$apiEntry -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/api-$apiPort.log" -RedirectStandardError "$tools/api-$apiPort-error.log"
 }
 if (!(Is-Listening $metroPort)) {
- Start-Process -FilePath $node -ArgumentList 'node_modules/expo/bin/cli','start','--dev-client','--localhost','--port',"$metroPort" -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/metro-$metroPort.log" -RedirectStandardError "$tools/metro-$metroPort-error.log"
+ Start-Process -FilePath $node -ArgumentList ('"' + $expoCli + '"'),'start','--dev-client','--localhost','--port',"$metroPort" -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/metro-$metroPort.log" -RedirectStandardError "$tools/metro-$metroPort-error.log"
 }
 $devices = & $adb devices
 if (!($devices -match 'emulator-\d+\s+device')) {

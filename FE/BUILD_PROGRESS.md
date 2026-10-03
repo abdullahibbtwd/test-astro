@@ -1,3 +1,5 @@
+> **3 October update:** Written daily, monthly and yearly forecasts now use the existing backend. Fresh General readings in English/Turkish passed validation for Fictional AI test and are saved in the Android preview. Cumulative tracked AI cost: US$0.370374. See [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md).
+
 > **2 October integration update:** Real charts, saved profiles, calendar, Best Days and daily/monthly/yearly facts now work in the separate local preview. See [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md) for current status. The approved fresh natal reading passed backend and bilingual schema validation and displays in both languages under Fictional AI test, with saved-report navigation and full Turkish PDF export checked; the budget guard records US$0.305641 of the US$20 cap. The earlier snapshot below describes the sample demo.
 
 # Frontend preview — 1 October 2026

@@ -5,14 +5,20 @@ export function generateReading(
   profile_id: string,
   chart_key: string,
 ): Promise<any> {
+  return runReadingBridge("reading_bridge.py", {
+    chart,
+    profile_id,
+    chart_key,
+  });
+}
+export function runReadingBridge(
+  script: "reading_bridge.py" | "forecast_bridge.py",
+  payload: unknown,
+): Promise<any> {
   return new Promise((resolve, reject) => {
     const child = spawn(
       process.env.PYTHON ?? "python",
-      [
-        "-X",
-        "utf8",
-        fileURLToPath(new URL("./reading_bridge.py", import.meta.url)),
-      ],
+      ["-X", "utf8", fileURLToPath(new URL(`./${script}`, import.meta.url))],
       { windowsHide: true, stdio: ["pipe", "pipe", "pipe"] },
     );
     let output = "";
@@ -40,6 +46,6 @@ export function generateReading(
       }
     });
     child.stdin.on("error", () => {});
-    child.stdin.end(JSON.stringify({ chart, profile_id, chart_key }));
+    child.stdin.end(JSON.stringify(payload));
   });
 }
