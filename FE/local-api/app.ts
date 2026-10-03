@@ -1,3 +1,4 @@
+import { CompatibilityJobs } from "./compatibility-jobs";
 import { ForecastJobs, forecastContext } from "./forecast-jobs";
 import { dayForecast, monthForecast, yearForecast } from "./forecast";
 import { computeCalendar } from "./calendar";
@@ -16,14 +17,21 @@ const issue = (status: number, message = "Request unavailable") =>
 export function buildLocalApp({
   dbPath,
   allowPaid = false,
+  generateCompatibility,
 }: {
   dbPath: string;
   allowPaid?: boolean;
+  generateCompatibility?: (data: unknown) => Promise<any>;
 }) {
   const app = Fastify({ logger: false, bodyLimit: 65536 });
   const store = new Store(dbPath);
   const readings = new ReadingJobs(store, undefined, allowPaid);
   const forecasts = new ForecastJobs(store, allowPaid);
+  const compatibility = new CompatibilityJobs(
+    store,
+    allowPaid,
+    generateCompatibility,
+  );
   const now = () => new Date().toISOString();
   if (!store.get("me")) {
     const me: Me = {
@@ -44,6 +52,7 @@ export function buildLocalApp({
     await tail;
     await readings.close();
     await forecasts.close();
+    await compatibility.close();
     store.close();
   });
   app.setErrorHandler((error: any, _request, reply) => {
@@ -186,6 +195,18 @@ export function buildLocalApp({
             const saved = store.get(cacheKey);
             if (saved && saved.expires > Date.now()) {
               if (saved.body !== JSON.stringify(body)) throw issue(409);
+              if (
+                endpoint.path === "/compatibility" &&
+                endpoint.method === "post"
+              )
+                return reply
+                  .code(saved.status)
+                  .send(
+                    compatibility.get(
+                      saved.result.compatibility_id,
+                      lang as "en" | "tr",
+                    ),
+                  );
               return reply.code(saved.status).send(saved.result);
             }
           }
@@ -200,6 +221,7 @@ export function buildLocalApp({
             case "get /meta/config":
               result = fixture("config");
               result.flags.askAstrology = false;
+              result.flags.familyCompatibility = false;
               break;
             case "get /meta/catalogue":
               result = fixture(`catalogue.${lang}`);
@@ -537,7 +559,37 @@ export function buildLocalApp({
                 if (r.report_id === p.report_id)
                   store.remove(`report:${r.profile_id}:${r.lang}`);
               return reply.code(204).send();
-            case "get /compatibility":
+            case "post /compatibility":
+              result = compatibility.create(body, lang as "en" | "tr");
+              if (cacheKey)
+                store.put(cacheKey, {
+                  body: JSON.stringify(body),
+                  result,
+                  status: 201,
+                  expires: Date.now() + 86400000,
+                });
+              break;
+            case "get /compatibility/{id}":
+              result = compatibility.get(
+                p.id!,
+                lang as "en" | "tr",
+                q.retry === "true",
+              );
+              break;
+            case "delete /compatibility/{id}":
+              compatibility.remove(p.id!);
+              return reply.code(204).send();
+            case "get /compatibility": {
+              const items = compatibility.list();
+              const offset = Math.max(0, Number(q.cursor) || 0),
+                limit = Math.min(100, Math.max(1, Number(q.limit) || 20));
+              result = {
+                items: items.slice(offset, offset + limit),
+                next_cursor:
+                  offset + limit < items.length ? String(offset + limit) : null,
+              };
+              break;
+            }
             case "get /ask/threads":
               result = { items: [], next_cursor: null };
               break;

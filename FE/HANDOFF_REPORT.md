@@ -1,3 +1,11 @@
+## Compatibility integration — 3 October 2026
+
+- Added local create/list/read/delete compatibility endpoints for the selected saved profiles, using the approved relationship grounding and reading pipeline. Love maps to personal; work maps to professional. Family is disabled in the real preview because the approved backend has no family-specific mode.
+- Persistent bilingual jobs, deduplication, explicit retry, interruption recovery, context validation and protection against edited/deleted profiles. Deleting a running report cannot resurrect it. Idempotency replay rechecks that the report is still valid.
+- Verified offline with two fictional charts (13 July 1990 and 20 February 1992, both 12:30 Sofia). No provider calls. Fresh paid compatibility generation is not yet tested; authorization for the second fictional profile has been requested. Existing budget total remains $0.370374 of $20.
+- Full check passed: 64 Node tests, 9 native component tests, 5,302 fixtures, typecheck and lint. Android Match screen loads against the real API. Compatibility history is available in Match; integration into the separate Saved Reports list remains pending.
+- Next: approved live compatibility generation and Android reading verification, then maps, grounded Ask, real authentication and remaining account/data lifecycle work.
+
 > **3 October update:** Written daily, monthly and yearly forecasts now use the existing backend. Fresh General readings in English/Turkish passed validation for Fictional AI test and are saved in the Android preview. Cumulative tracked AI cost: US$0.370374. See [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md).
 
 > **2 October integration update:** Real charts, saved profiles, calendar, Best Days and daily/monthly/yearly facts now work in the separate local preview. See [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md) for current status. The approved fresh natal reading passed backend and bilingual schema validation and displays in both languages under Fictional AI test, with saved-report navigation and full Turkish PDF export checked; the budget guard records US$0.305641 of the US$20 cap. The earlier snapshot below describes the sample demo.
