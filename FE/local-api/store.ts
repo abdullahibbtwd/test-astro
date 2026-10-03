@@ -44,6 +44,10 @@ export class Store {
       throw error;
     }
   }
+  clear() {
+    this.db.exec("DELETE FROM records");
+    this.db.exec("PRAGMA wal_checkpoint(TRUNCATE)");
+  }
   close() {
     this.db.close();
   }

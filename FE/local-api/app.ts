@@ -1,3 +1,4 @@
+import { exportAccount, deleteAccount } from "./account";
 import { LiveMap } from "./map";
 import { CompatibilityJobs } from "./compatibility-jobs";
 import { ForecastJobs, forecastContext } from "./forecast-jobs";
@@ -35,7 +36,7 @@ export function buildLocalApp({
     generateCompatibility,
   );
   const now = () => new Date().toISOString();
-  if (!store.get("me")) {
+  const initializeAccount = () => {
     const me: Me = {
       ...fixture("me.en"),
       user_id: randomUUID(),
@@ -47,7 +48,8 @@ export function buildLocalApp({
       ask_quota: { limit_per_day: 0, used_today: 0, resets_at: now() },
     };
     store.put("me", me);
-  }
+  };
+  if (!store.get("me")) initializeAccount();
   // Serialize handlers so profile edits/idempotency checks cannot interleave across an await.
   let tail = Promise.resolve();
   app.addHook("onClose", async () => {
@@ -257,6 +259,13 @@ export function buildLocalApp({
               }
               return reply.code(204).send();
             }
+            case "post /me/export":
+              result = exportAccount(store);
+              break;
+            case "delete /me":
+              deleteAccount(store, dbPath);
+              initializeAccount();
+              return reply.code(202).send();
             case "get /me":
               result = me;
               break;

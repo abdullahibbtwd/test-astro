@@ -1,3 +1,4 @@
+import { shareAccountData } from "../exports/data-file";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { Alert, Linking, Switch, View } from "react-native";
@@ -209,8 +210,10 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
             label={t("downloadData")}
             onPress={() =>
               void run(async () => {
-                await actions.exportData();
-                Alert.alert(t("downloadData"), t("exportSent"));
+                const data = await actions.exportData();
+                if (process.env.EXPO_PUBLIC_BACKEND_MODE === "local")
+                  await shareAccountData(data);
+                else Alert.alert(t("downloadData"), t("exportSent"));
               })
             }
           />
