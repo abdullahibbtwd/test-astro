@@ -1,3 +1,5 @@
+import { Snackbar } from "../../src/design/components/Snackbar";
+import { dismissSnackbar } from "../../src/design/components/snackbar-store";
 import React from "react";
 import { AppState } from "react-native";
 import { render, screen, waitFor, act } from "@testing-library/react-native";
@@ -23,22 +25,29 @@ test("completion notifier ignores render-time observer events and opens the comp
   queryClient.setDefaultOptions({
     queries: { gcTime: Infinity, retry: false },
   });
+  queryClient.setQueryData(["profiles", "en", "/profiles"], [{ profile_id: "self", label: "Test person" }]);
   const key = ["resource", "en", "/profiles/self/forecast/year?from=2026-09"];
   queryClient.setQueryData(key, {
     reading: {
       status: "pending",
-      job: { job_id: "regression", created_at: new Date().toISOString() },
+      job: {
+        kind: "year_reading",
+        job_id: "regression",
+        created_at: new Date().toISOString(),
+      },
     },
   });
   jest.spyOn(queryClient, "invalidateQueries").mockResolvedValue(undefined);
   const view = await render(
     <QueryClientProvider client={queryClient}>
       <JobLifecycle />
+      <Snackbar />
     </QueryClientProvider>,
   );
   await waitFor(() =>
     expect(screen.getByRole("button", { name: "Open" })).toBeOnTheScreen(),
   );
+  expect(screen.getByText("Your yearly forecast for Test person is ready")).toBeOnTheScreen();
   await act(async () => {
     for (let i = 0; i < 30; i++)
       queryClient.getQueryCache().notify({
@@ -58,6 +67,7 @@ test("completion notifier ignores render-time observer events and opens the comp
 });
 
 afterEach(() => {
+  dismissSnackbar("timeout");
   queryClient.clear();
   jest.restoreAllMocks();
 });

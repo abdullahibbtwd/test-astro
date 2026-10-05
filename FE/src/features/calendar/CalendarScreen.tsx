@@ -1,5 +1,5 @@
 import { ScrollView, View } from "react-native";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -20,7 +20,12 @@ import { useProfile } from "../shared/useProfile";
 import { ItemRows } from "../shared/Blocks";
 import { MonthGrid } from "./MonthGrid";
 import type { CalendarMonth, Goal } from "../../../contracts/spec-types";
-export default function CalendarScreen() {
+export default function CalendarScreen({
+  embedded = false,
+}: {
+  embedded?: boolean;
+}) {
+  const Surface = embedded ? Fragment : Screen;
   const params = useLocalSearchParams<{ month?: string }>(),
     { t } = useTranslation(),
     { id, tz } = useProfile(),
@@ -38,7 +43,7 @@ export default function CalendarScreen() {
     ),
     data = query.data;
   return (
-    <Screen back title={t("calendar")}>
+    <Surface {...(embedded ? {} : { back: true, title: t("calendar") })}>
       <Choices>
         <Button
           secondary
@@ -54,7 +59,11 @@ export default function CalendarScreen() {
           onPress={() => setMonth(shiftMonth(month, 1))}
         />
       </Choices>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView
+        horizontal
+        style={{ flexGrow: 0 }}
+        showsHorizontalScrollIndicator={false}
+      >
         <View style={{ flexDirection: "row", gap: 8 }}>
           <Chip
             label={t("all")}
@@ -146,6 +155,6 @@ export default function CalendarScreen() {
           void query.refetch();
         }}
       />
-    </Screen>
+    </Surface>
   );
 }

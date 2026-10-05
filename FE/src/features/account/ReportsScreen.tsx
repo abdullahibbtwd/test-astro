@@ -1,5 +1,15 @@
+import { removeDeletedReference } from "../../api/deleted-cache";
+import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import { MoreHorizontal } from "lucide-react-native";
+import { ActionSheet } from "../../design/components/ActionSheet";
+import { IconButton } from "../../design/components/IconButton";
+import { useTheme } from "../../design/theme";
+import {
+  deferDelete,
+  useDeletedItems,
+} from "../../design/components/deferred-delete";
 import { useState } from "react";
-import { Alert, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -7,7 +17,6 @@ import {
   Screen,
   Txt,
   Row,
-  Choices,
   Chip,
   Button,
   Skeleton,
@@ -29,7 +38,10 @@ const types: (ReportRef["type"] | "")[] = [
   "solar_return",
 ];
 export default function ReportsScreen() {
-  const flags = useFlags();
+  const flags = useFlags(),
+    c = useTheme(),
+    hidden = useDeletedItems((s) => s.hidden),
+    [menu, setMenu] = useState<ReportRef | null>(null);
   const { t } = useTranslation(),
     lang = useApp((s) => s.language);
   const [type, setType] = useState<ReportRef["type"] | "">("");
@@ -42,65 +54,97 @@ export default function ReportsScreen() {
     }, [refetch]),
   );
   const remove = (report: ReportRef) =>
-    Alert.alert(
-      t("deleteReport", { title: report.title }),
-      t("deleteReportBody"),
-      [
-        { text: t("cancel"), style: "cancel" },
-        {
-          text: t("delete"),
-          style: "destructive",
-          onPress: () => {
-            void actions.removeReport(report.report_id).catch(() => {});
-          },
-        },
-      ],
+    deferDelete(
+      `report:${report.report_id}`,
+      async () => {
+        await actions.removeReport(report.report_id);
+        removeDeletedReference("report_id", report.report_id);
+        await refetch();
+      },
+      { removed: t("removed"), undo: t("undo"), failed: t("deleteFailed") },
     );
-  const items = reports.data?.pages.flatMap((page) => page.items) ?? [];
+  const items = (
+    reports.data?.pages.flatMap((page) => page.items) ?? []
+  ).filter((item) => !hidden[`report:${item.report_id}`]);
   return (
-    <Screen back title={t("savedReports")}>
-      <Choices>
-        {types
-          .filter((value) => value !== "solar_return" || flags.solarReturn)
-          .map((value) => (
-            <Chip
-              key={value}
-              label={t(value || "all")}
-              selected={type === value}
-              onPress={() => setType(value)}
-            />
-          ))}
-      </Choices>
+    <Screen largeTitle back title={t("savedReports")}>
+      <ScrollView
+        horizontal
+        style={{ flexGrow: 0 }}
+        showsHorizontalScrollIndicator={false}
+      >
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          {types
+            .filter((value) => value !== "solar_return" || flags.solarReturn)
+            .map((value) => (
+              <Chip
+                key={value}
+                label={t(value || "all")}
+                selected={type === value}
+                onPress={() => setType(value)}
+              />
+            ))}
+        </View>
+      </ScrollView>
       {reports.isPending ? (
         <Skeleton />
       ) : items.length ? (
         items.map((item) => (
-          <View key={item.report_id} style={{ gap: 8 }}>
-            <Row
-              label={item.title}
-              detail={[
-                item.subtitle,
-                new Intl.DateTimeFormat(lang, { dateStyle: "medium" }).format(
-                  new Date(item.created_at),
-                ),
-              ]
-                .filter(Boolean)
-                .join(" · ")}
-              onPress={() => router.push(item.route as never)}
-              onLongPress={() => remove(item)}
-            />
-            <Button
-              secondary
-              danger
-              label={t("deleteReportAction", { title: item.title })}
-              disabled={actions.isPending}
-              onPress={() => remove(item)}
-            />
-          </View>
+          <Swipeable
+            key={item.report_id}
+            renderRightActions={() => (
+              <Button danger label={t("delete")} onPress={() => remove(item)} />
+            )}
+          >
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+            >
+              <View style={{ flex: 1 }}>
+                <Row
+                  label={item.title}
+                  detail={[
+                    item.subtitle,
+                    new Intl.DateTimeFormat(lang, {
+                      dateStyle: "medium",
+                    }).format(new Date(item.created_at)),
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
+                  onPress={() => router.push(item.route as never)}
+                  onLongPress={() => setMenu(item)}
+                />
+              </View>
+              <IconButton
+                accessibilityLabel={t("reportActions", { title: item.title })}
+                icon={<MoreHorizontal color={c.ink} size={22} />}
+                onPress={() => setMenu(item)}
+              />
+            </View>
+          </Swipeable>
         ))
       ) : (
         !reports.error && <Txt muted>{t("emptyReports")}</Txt>
       )}
+      <ActionSheet
+        open={!!menu}
+        title={menu?.title ?? ""}
+        onClose={() => setMenu(null)}
+        actions={
+          menu
+            ? [
+                {
+                  label: t("open"),
+                  onPress: () => router.push(menu.route as never),
+                },
+                {
+                  label: t("delete"),
+                  destructive: true,
+                  onPress: () => remove(menu),
+                },
+              ]
+            : []
+        }
+      />
       {reports.hasNextPage && (
         <Button
           secondary

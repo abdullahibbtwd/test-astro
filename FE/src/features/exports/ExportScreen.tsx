@@ -1,7 +1,8 @@
+import { showSnackbar } from "../../design/components/Snackbar";
 import { Glyph } from "../../design/components/Glyph";
 import Constants from "expo-constants";
 import { useRef, useState } from "react";
-import { View, Switch, Alert } from "react-native";
+import { View, Switch } from "react-native";
 import { SvgCss } from "react-native-svg/css";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
@@ -105,7 +106,7 @@ export default function ExportScreen() {
         profile.label,
         save,
       );
-      if (save) Alert.alert(t("savedToPhotos"));
+      if (save) showSnackbar(t("savedToPhotos"));
     });
   };
   return (
@@ -219,7 +220,9 @@ export default function ExportScreen() {
               {(["sun", "moon", "ascendant"] as const).map((key) => (
                 <View key={key} style={{ alignItems: "center", gap: 2 }}>
                   <Glyph
-                    name={key === "ascendant" ? profile.big_three.ascendant : key}
+                    name={
+                      key === "ascendant" ? profile.big_three.ascendant : key
+                    }
                     size={14}
                     color={ink}
                   />

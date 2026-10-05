@@ -20,7 +20,7 @@ export default function ChartsScreen() {
     catalogue = useCatalogue(),
     lang = useApp((s) => s.language);
   return (
-    <Screen back title={t("myCharts")}>
+    <Screen largeTitle back title={t("myCharts")}>
       <Txt muted>{t("homeBody")}</Txt>
       {profiles.isPending ? (
         <Skeleton />
@@ -59,13 +59,10 @@ export default function ChartsScreen() {
                                       useApp.getState().activeProfileId ===
                                       p.profile_id
                                     )
-                                      useApp
-                                        .getState()
-                                        .update({
-                                          activeProfileId:
-                                            useApp.getState().me
-                                              ?.self_profile_id,
-                                        });
+                                      useApp.getState().update({
+                                        activeProfileId:
+                                          useApp.getState().me?.self_profile_id,
+                                      });
                                   })
                                   .catch(() => {});
                               },

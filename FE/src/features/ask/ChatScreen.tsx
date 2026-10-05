@@ -1,14 +1,14 @@
-import { useEffect, useRef, useState } from "react";
 import {
-  AccessibilityInfo,
-  Alert,
-  Share,
-  View,
-  ScrollView,
-} from "react-native";
+  ProfileSwitcher,
+  ProfilePicker,
+} from "../../design/components/ProfileSwitcher";
+import { ActionSheet } from "../../design/components/ActionSheet";
+import { showSnackbar } from "../../design/components/Snackbar";
+import { useEffect, useRef, useState } from "react";
+import { AccessibilityInfo, Share, View, ScrollView } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import * as Crypto from "expo-crypto";
-import { router, useLocalSearchParams } from "expo-router";
+import { Stack, router, useLocalSearchParams } from "expo-router";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -40,6 +40,7 @@ import type {
   AskCard,
 } from "../../../contracts/spec-types";
 export default function ChatScreen() {
+  const [feedbackMessage, setFeedbackMessage] = useState<Message | null>(null);
   const params = useLocalSearchParams<Record<string, string>>(),
     id = params.threadId!,
     { t } = useTranslation(),
@@ -347,25 +348,38 @@ export default function ChatScreen() {
       <Button
         secondary
         label={t("about")}
-        onPress={() => Alert.alert(t("ask"), t("askDisclaimer"))}
+        onPress={() => showSnackbar(t("askDisclaimer"))}
       />
-      <Choices>
-        {profiles.data?.map((p) => (
-          <Chip
-            key={p.profile_id}
-            label={p.label}
-            selected={p.profile_id === query.data?.profile_id}
-            onPress={() => {
-              if (busy || p.profile_id === query.data?.profile_id) return;
-              void request<Thread>("POST", "/ask/threads", "Thread", {
-                profile_id: p.profile_id,
-              })
-                .then((thread) => router.replace(`/ask/${thread.thread_id}`))
-                .catch(setError);
-            }}
-          />
-        ))}
-      </Choices>
+      <Stack.Screen
+        options={{
+          headerTitle: () => (
+            <ProfileSwitcher
+              selectedId={query.data?.profile_id}
+              onSelect={(profileId) => {
+                if (busy || profileId === query.data?.profile_id) return;
+                void request<Thread>("POST", "/ask/threads", "Thread", {
+                  profile_id: profileId,
+                })
+                  .then((thread) => router.replace(`/ask/${thread.thread_id}`))
+                  .catch(setError);
+              }}
+            />
+          ),
+        }}
+      />
+      <ActionSheet
+        open={!!feedbackMessage}
+        title={t("feedbackReason")}
+        onClose={() => setFeedbackMessage(null)}
+        actions={["notAccurate", "notRelevant", "tooVague", "otherReason"].map(
+          (reason) => ({
+            label: t(reason),
+            onPress: () => {
+              if (feedbackMessage) feedback(feedbackMessage, "down", reason);
+            },
+          }),
+        )}
+      />
       {query.isPending && <Skeleton />}
       {!messages.length &&
         !query.isPending &&
@@ -380,23 +394,13 @@ export default function ChatScreen() {
             }}
           />
         ))}
-      {choosePerson && (
-        <Choices>
-          {profiles.data
-            ?.filter((p) => p.profile_id !== query.data?.profile_id)
-            .map((p) => (
-              <Chip
-                key={p.profile_id}
-                label={p.label}
-                selected={context.other_profile_id === p.profile_id}
-                onPress={() => {
-                  setContext({ ...context, other_profile_id: p.profile_id });
-                  setChoosePerson(false);
-                }}
-              />
-            ))}
-        </Choices>
-      )}
+      <ProfilePicker
+        open={choosePerson}
+        selectedId={context.other_profile_id}
+        disabledId={query.data?.profile_id}
+        onSelect={(id) => setContext({ ...context, other_profile_id: id })}
+        onClose={() => setChoosePerson(false)}
+      />
       {messages.map((message) => (
         <View
           key={message.message_id}
@@ -468,21 +472,7 @@ export default function ChatScreen() {
                       <Chip
                         label={t("notHelpful")}
                         selected={message.feedback === "down"}
-                        onPress={() =>
-                          Alert.alert(
-                            t("feedbackReason"),
-                            undefined,
-                            [
-                              "notAccurate",
-                              "notRelevant",
-                              "tooVague",
-                              "otherReason",
-                            ].map((reason) => ({
-                              text: t(reason),
-                              onPress: () => feedback(message, "down", reason),
-                            })),
-                          )
-                        }
+                        onPress={() => setFeedbackMessage(message)}
                       />
                     </>
                   )}

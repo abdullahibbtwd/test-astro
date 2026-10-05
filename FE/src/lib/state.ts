@@ -51,8 +51,15 @@ export const useApp = create<State>((set, get) => ({
   recentProfileIds: [],
   update: (values) => {
     set(values);
-    const { language, languageChosen, theme, activeProfileId, draft, recent, recentProfileIds } =
-      get();
+    const {
+      language,
+      languageChosen,
+      theme,
+      activeProfileId,
+      draft,
+      recent,
+      recentProfileIds,
+    } = get();
     privateStorage.setItem(
       "preferences",
       JSON.stringify({
@@ -86,6 +93,6 @@ export function resetLocalState() {
     activeProfileId: null,
     draft: { ...emptyDraft },
     recent: [],
-  recentProfileIds: [],
+    recentProfileIds: [],
   });
 }

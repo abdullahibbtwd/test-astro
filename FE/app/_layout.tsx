@@ -128,11 +128,39 @@ export default function RootLayout() {
             />
             <Stack
               screenOptions={{
-                headerShown: false,
+                headerShown: true,
+                headerStyle: { backgroundColor: c.bg },
+                headerTintColor: c.ink,
+                headerTitleStyle: { fontFamily: "Inter-SemiBold" },
+                headerShadowVisible: false,
+                headerBackButtonDisplayMode: "minimal",
                 contentStyle: { backgroundColor: c.bg },
-                animation: "fade",
               }}
             >
+              <Stack.Screen
+                name="(auth)"
+                options={{ headerShown: false, animation: "fade" }}
+              />
+              <Stack.Screen
+                name="(onboarding)"
+                options={{ headerShown: false, animation: "fade" }}
+              />
+              <Stack.Screen
+                name="(tabs)"
+                options={{ headerShown: false, animation: "fade" }}
+              />
+              <Stack.Screen
+                name="ask/index"
+                options={{ presentation: "modal" }}
+              />
+              <Stack.Screen
+                name="ask/[threadId]"
+                options={{ presentation: "modal" }}
+              />
+              <Stack.Screen
+                name="chart/export"
+                options={{ presentation: "modal" }}
+              />
               {[
                 "map/place/[placeId]",
                 "map/point",
@@ -143,6 +171,7 @@ export default function RootLayout() {
                   key={name}
                   name={name}
                   options={{
+                    headerShown: false,
                     presentation: "transparentModal",
                     animation: "fade",
                     contentStyle: { backgroundColor: "transparent" },

@@ -1,8 +1,9 @@
+import { showSnackbar } from "../../design/components/Snackbar";
 import Constants from "expo-constants";
 import * as Linking from "expo-linking";
 import { providerSignIn, ProviderUnavailable } from "../../lib/oauth";
 import { useEffect, useRef, useState } from "react";
-import { Alert, Platform, TextInput, View, Pressable } from "react-native";
+import { Platform, TextInput, View, Pressable } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -46,7 +47,7 @@ export default function AuthScreen() {
         );
     } catch (e) {
       if (e instanceof ProviderUnavailable)
-        Alert.alert(t("providerUnavailable"));
+        showSnackbar(t("providerUnavailable"));
       else setProviderError(e);
     } finally {
       setProviderBusy(false);
@@ -79,7 +80,7 @@ export default function AuthScreen() {
   };
   if (!app.languageChosen)
     return (
-      <Screen>
+      <Screen headerless>
         <Txt kind="caption">{Constants.expoConfig?.name ?? "Astrology"}</Txt>
         <View style={{ height: 64 }} />
         <Txt kind="display">{t("chooseLanguage")}</Txt>
@@ -102,7 +103,7 @@ export default function AuthScreen() {
     );
   if (mode === "email" || mode === "verify")
     return (
-      <Screen back>
+      <Screen headerless back>
         <Txt kind="display">
           {t(mode === "email" ? "emailTitle" : "checkInbox")}
         </Txt>
@@ -198,7 +199,7 @@ export default function AuthScreen() {
       </Screen>
     );
   return (
-    <Screen>
+    <Screen headerless>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Txt kind="caption">{Constants.expoConfig?.name ?? "Astrology"}</Txt>
         <Chip
@@ -264,7 +265,7 @@ export default function AuthScreen() {
               const url = config.data?.links[key as "terms" | "privacy"];
               if (url && /^https:\/\//.test(url))
                 void Linking.openURL(url).catch(setProviderError);
-              else Alert.alert(t(key), t("legalUnavailable"));
+              else showSnackbar(t("legalUnavailable"));
             }}
           />
         ))}

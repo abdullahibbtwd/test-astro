@@ -1,6 +1,7 @@
+import { showSnackbar } from "../../design/components/Snackbar";
 import { WheelPreview } from "../profiles/WheelPreview";
 import { useState, useCallback } from "react";
-import { Alert, Switch, View, Linking } from "react-native";
+import { Switch, View, Linking } from "react-native";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import * as Location from "expo-location";
 import * as Notifications from "expo-notifications";
@@ -109,7 +110,7 @@ export default function OnboardingScreen() {
     go("building");
   };
   return (
-    <Screen back>
+    <Screen headerless back>
       <Progress step={steps.indexOf(step) + 1} total={steps.length} />
       {step === "consent" ? (
         <>
@@ -145,7 +146,7 @@ export default function OnboardingScreen() {
                 onPress={() => {
                   const url = config.data?.links[kind];
                   if (url) void Linking.openURL(url);
-                  else Alert.alert(t(kind), t("legalUnavailable"));
+                  else showSnackbar(t("legalUnavailable"));
                 }}
               />
             ))}
@@ -253,7 +254,7 @@ export default function OnboardingScreen() {
                 const permission =
                   await Location.requestForegroundPermissionsAsync();
                 if (!permission.granted) {
-                  Alert.alert(t("currentLocation"), t("locationHint"));
+                  showSnackbar(t("locationHint"));
                   return;
                 }
                 const position = await Location.getCurrentPositionAsync({
@@ -264,7 +265,7 @@ export default function OnboardingScreen() {
                   position.coords.longitude,
                 );
                 if (place) await current(place);
-                else Alert.alert(t("currentLocation"), t("locationHint"));
+                else showSnackbar(t("locationHint"));
               })
             }
           />

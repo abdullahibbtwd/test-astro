@@ -44,6 +44,7 @@ export const planetColors = {
 };
 export function MapCanvas({
   lines,
+  fill = false,
   heat,
   bodies,
   parans = false,
@@ -54,6 +55,7 @@ export function MapCanvas({
   onDestination,
   emphasized,
 }: {
+  fill?: boolean;
   lines?: AcgLines;
   heat?: AcgHeat;
   bodies: Body[];
@@ -176,7 +178,13 @@ export function MapCanvas({
       />
     );
   return (
-    <View style={{ height: 420, borderRadius: 12, overflow: "hidden" }}>
+    <View
+      style={
+        fill
+          ? { flex: 1, overflow: "hidden" }
+          : { height: 420, borderRadius: 12, overflow: "hidden" }
+      }
+    >
       <Map
         mapStyle={preview ? previewStyle : mapStyle.data!}
         attribution
@@ -388,7 +396,7 @@ export function MapCanvas({
           pointerEvents="none"
           style={{
             position: "absolute",
-            bottom: 8,
+            bottom: fill ? 76 : 8,
             left: 8,
             backgroundColor: theme.surface,
             padding: 4,

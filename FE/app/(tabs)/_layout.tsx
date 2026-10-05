@@ -1,3 +1,8 @@
+import { View } from "react-native";
+import { Share2 } from "lucide-react-native";
+import { ProfileSwitcher } from "../../src/design/components/ProfileSwitcher";
+import { IconButton } from "../../src/design/components/IconButton";
+import { useApp } from "../../src/lib/state";
 import { useFlags } from "../../src/lib/flags";
 import { Tabs, router } from "expo-router";
 import { Pressable } from "react-native";
@@ -15,7 +20,8 @@ import { useTheme } from "../../src/design/theme";
 export default function TabLayout() {
   const { t } = useTranslation(),
     c = useTheme(),
-    flags = useFlags();
+    flags = useFlags(),
+    app = useApp();
   const icons = [House, CircleDot, CalendarDays, Users, MapPin];
   return (
     <Tabs
@@ -63,6 +69,42 @@ export default function TabLayout() {
             name={name}
             options={{
               title: t(i === 0 ? "home" : name),
+              ...(["chart", "ahead", "map"].includes(name)
+                ? {
+                    headerTitle: () => (
+                      <ProfileSwitcher
+                        onSelect={(id) => {
+                          if (name !== "chart")
+                            router.setParams({ profile: id });
+                        }}
+                      />
+                    ),
+                  }
+                : {}),
+              ...(name === "chart"
+                ? {
+                    headerRight: () => (
+                      <View style={{ flexDirection: "row" }}>
+                        <IconButton
+                          accessibilityLabel={t("exportShare")}
+                          icon={<Share2 color={c.ink} size={22} />}
+                          onPress={() =>
+                            router.push(
+                              `/chart/export?profile=${app.activeProfileId ?? app.me?.self_profile_id ?? ""}`,
+                            )
+                          }
+                        />
+                        {flags.askAstrology && (
+                          <IconButton
+                            accessibilityLabel={t("ask")}
+                            icon={<MessageCircle color={c.accent} size={22} />}
+                            onPress={() => router.push("/ask")}
+                          />
+                        )}
+                      </View>
+                    ),
+                  }
+                : {}),
               tabBarIcon: ({ color, size }) => (
                 <Icon color={color} size={size} />
               ),

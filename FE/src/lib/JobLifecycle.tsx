@@ -1,7 +1,11 @@
+import { todayLocal } from "./dates";
+import { mockToday } from "../api/client";
+import { showSnackbar } from "../design/components/Snackbar";
+import { shouldNotifyJob } from "./job-notification";
 import { useEffect, useRef, useState } from "react";
-import { AppState, View, AccessibilityInfo } from "react-native";
+import { AppState } from "react-native";
 import { useQueries } from "@tanstack/react-query";
-import { router } from "expo-router";
+import { router, usePathname, useGlobalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { queryClient } from "../api/query";
 import { ApiError } from "../api/errors";
@@ -10,9 +14,7 @@ import { jobAgeMs } from "../api/job-timing";
 import { pollingDelay } from "../api/job-policy";
 import { pendingJobs } from "../api/resource";
 import { useApp } from "./state";
-import { Txt, Button, Choices } from "../design/components";
-import { useTheme } from "../design/theme";
-import type { Job } from "../../contracts/spec-types";
+import type { BirthProfile, Job } from "../../contracts/spec-types";
 function routeFor(key: readonly unknown[]): string {
   if (key[0] === "generated" && key[2] === "natal")
     return `/chart/reading?profile=${key[3]}`;
@@ -21,7 +23,7 @@ function routeFor(key: readonly unknown[]): string {
     parts = url.pathname.split("/"),
     profile = parts[2] ?? "",
     q = url.searchParams;
-  if (url.pathname === "/home") return "/ahead/today";
+  if (url.pathname === "/home") return "/(tabs)/ahead?view=day";
   if (path.startsWith("/compatibility/")) return `/match/${parts[2]}`;
   if (parts[3] === "acg") {
     if (parts[4] === "places")
@@ -43,12 +45,12 @@ function routeFor(key: readonly unknown[]): string {
 export function JobLifecycle() {
   const app = useApp(),
     { t } = useTranslation(),
-    c = useTheme(),
+    pathname = usePathname(),
+    params = useGlobalSearchParams(),
     [active, setActive] = useState(AppState.currentState === "active"),
     [pending, setPending] = useState<
       { job: Job; key: readonly unknown[]; route: string }[]
     >([]),
-    [toast, setToast] = useState<string>(),
     seen = useRef(new Set<string>());
   useEffect(() => {
     const sub = AppState.addEventListener("change", (s) =>
@@ -59,7 +61,6 @@ export function JobLifecycle() {
   useEffect(() => {
     if (!app.signedIn) {
       setPending([]);
-      setToast(undefined);
       seen.current.clear();
       return;
     }
@@ -167,51 +168,64 @@ export function JobLifecycle() {
         exact: true,
         refetchType: "none",
       });
-      if (status === "succeeded") {
-        setToast(p.route);
-        AccessibilityInfo.announceForAccessibility(t("reportReady"));
+      if (
+        status !== "missing" &&
+        shouldNotifyJob(
+          p.job.kind,
+          p.route,
+          pathname,
+          {
+            month: todayLocal(app.me?.current_place?.tz, mockToday).slice(0, 7),
+            ...params,
+          },
+          app.activeProfileId ?? app.me?.self_profile_id,
+        )
+      ) {
+        const target = new URL(p.route, "http://local"),
+          profileId = target.searchParams.get("profile");
+        const profiles = queryClient.getQueryData<BirthProfile[]>([
+          "profiles",
+          app.language,
+          "/profiles",
+        ]);
+        const parent = queryClient.getQueryData(p.key) as
+          | {
+              place?: { name?: string };
+              area?: { name?: string };
+              title?: string;
+            }
+          | undefined;
+        const label =
+          parent?.place?.name ??
+          parent?.area?.name ??
+          profiles?.find((person) => person.profile_id === profileId)?.label ??
+          t("yourReport");
+        showSnackbar(
+          status === "succeeded"
+            ? t(`ready_${p.job.kind}`, { label })
+            : t("reportCouldNotPrepare", {
+                kind: t(`kind_${p.job.kind}`),
+                label,
+              }),
+          {
+            action: {
+              label: t("open"),
+              onPress: () => router.push(p.route as never),
+            },
+          },
+        );
       }
     });
-  }, [statuses, pending, t]);
-  useEffect(() => {
-    if (!toast) return;
-    const timer = setTimeout(() => setToast(undefined), 10000);
-    return () => clearTimeout(timer);
-  }, [toast]);
-  if (!toast || !app.signedIn) return null;
-  return (
-    <View
-      accessibilityLiveRegion="polite"
-      style={{
-        position: "absolute",
-        left: 16,
-        right: 16,
-        bottom: 84,
-        padding: 16,
-        gap: 8,
-        backgroundColor: c.surface,
-        borderWidth: 1,
-        borderColor: c.hair,
-        borderRadius: 12,
-        elevation: 8,
-      }}
-    >
-      <Txt>{t("reportReady")}</Txt>
-      <Choices>
-        <Button
-          secondary
-          label={t("open")}
-          onPress={() => {
-            router.push(toast as never);
-            setToast(undefined);
-          }}
-        />
-        <Button
-          secondary
-          label={t("close")}
-          onPress={() => setToast(undefined)}
-        />
-      </Choices>
-    </View>
-  );
+  }, [
+    statuses,
+    pending,
+    t,
+    pathname,
+    params,
+    app.activeProfileId,
+    app.me?.self_profile_id,
+    app.me?.current_place?.tz,
+    app.language,
+  ]);
+  return null;
 }

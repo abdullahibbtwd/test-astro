@@ -1,13 +1,13 @@
-import { useState, type ReactNode } from "react";
-import { View } from "react-native";
-import BottomSheet, {
-  BottomSheetScrollView,
-  BottomSheetBackdrop,
-} from "@gorhom/bottom-sheet";
-import { router } from "expo-router";
+import { useRef, useState, useCallback, type ReactNode } from "react";
+import {
+  router,
+  useLocalSearchParams,
+  usePathname,
+  useFocusEffect,
+} from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Screen, Txt, Button, Choices } from "../../design/components";
-import { useTheme } from "../../design/theme";
+import { Screen } from "../../design/components";
+import { Sheet } from "../../design/components/Sheet";
 export function ReportSurface({
   title,
   children,
@@ -16,59 +16,45 @@ export function ReportSurface({
   children: ReactNode;
   back?: boolean;
 }) {
-  const [full, setFull] = useState(false),
-    c = useTheme(),
+  const params = useLocalSearchParams(),
+    path = usePathname(),
+    [focused, setFocused] = useState(false),
     { t } = useTranslation();
-  if (full)
+  const active = useRef(false);
+  useFocusEffect(
+    useCallback(() => {
+      active.current = true;
+      setFocused(true);
+      return () => {
+        active.current = false;
+        setFocused(false);
+      };
+    }, []),
+  );
+  if (params.full === "1")
     return (
-      <Screen back title={title}>
-        <Button
-          secondary
-          label={t("collapse")}
-          onPress={() => setFull(false)}
-        />
+      <Screen back title={title ?? t("reading")}>
         {children}
       </Screen>
     );
   return (
-    <View style={{ flex: 1 }}>
-      <BottomSheet
-        index={1}
-        snapPoints={["25%", "55%", "92%"]}
-        enableDynamicSizing={false}
-        enablePanDownToClose
-        onClose={() => router.back()}
-        backgroundStyle={{ backgroundColor: c.surface }}
-        handleIndicatorStyle={{ backgroundColor: c.ink2 }}
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            {...props}
-            appearsOnIndex={0}
-            disappearsOnIndex={-1}
-          />
-        )}
-      >
-        <BottomSheetScrollView
-          contentContainerStyle={{ padding: 24, gap: 20, paddingBottom: 48 }}
-        >
-          <View accessibilityViewIsModal style={{ gap: 20 }}>
-            <Choices>
-              <Button
-                secondary
-                label={t("close")}
-                onPress={() => router.back()}
-              />
-              <Button
-                secondary
-                label={t("expand")}
-                onPress={() => setFull(true)}
-              />
-            </Choices>
-            {title && <Txt kind="title">{title}</Txt>}
-            {children}
-          </View>
-        </BottomSheetScrollView>
-      </BottomSheet>
-    </View>
+    <Sheet
+      open={focused}
+      title={title ?? t("reading")}
+      snapPoints={["25%", "55%", "92%"]}
+      index={1}
+      onClose={() => {
+        if (active.current) router.back();
+      }}
+      onExpand={() => {
+        active.current = false;
+        router.push({
+          pathname: "/map/full",
+          params: { ...params, full: "1", reportPath: path },
+        });
+      }}
+    >
+      {children}
+    </Sheet>
   );
 }

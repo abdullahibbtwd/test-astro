@@ -1,2 +1,9 @@
-export { default } from "../../src/features/forecast/AheadScreen";
-export { RouteError as ErrorBoundary } from "../../src/design/components/RouteError";
+import { Redirect, useLocalSearchParams } from "expo-router";
+export default function LegacyAhead() {
+  const params = useLocalSearchParams();
+  return (
+    <Redirect
+      href={{ pathname: "/(tabs)/ahead", params: { ...params, view: "day" } }}
+    />
+  );
+}

@@ -1,6 +1,10 @@
+import { Maximize2, RotateCcw } from "lucide-react-native";
+import { IconButton } from "../../design/components/IconButton";
+import { ActionSheet } from "../../design/components/ActionSheet";
 import { useEffect, useMemo, useState } from "react";
-import { View, Alert, AccessibilityInfo } from "react-native";
+import { View, AccessibilityInfo } from "react-native";
 import Animated, {
+  runOnJS,
   useSharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
@@ -14,7 +18,7 @@ import { nativeWheelSvg } from "../../../packages/wheel-core/native-svg";
 import { hitTest, touchToModel } from "../../../packages/wheel-core/hit-test";
 import { mod360 } from "../../../packages/wheel-core/transform";
 import { useTheme } from "../../design/theme";
-import { Button, Choices } from "../../design/components";
+import { Button } from "../../design/components";
 import { AspectGlyph } from "../../design/components/AspectGlyph";
 import { degrees, signs, type Selection } from "./facts";
 import type { Body, ChartData, Catalogue } from "../../../contracts/spec-types";
@@ -24,12 +28,16 @@ export function InteractiveWheel({
   catalogue,
   selection,
   select,
+  onExpand,
 }: {
+  onExpand?: () => void;
   chart: ChartData;
   catalogue: Catalogue;
   selection: Selection | null;
   select: (s: Selection | null) => void;
 }) {
+  const [zoomed, setZoomed] = useState(false),
+    [bodies, setBodies] = useState<string[]>([]);
   const c = useTheme(),
     { t } = useTranslation(),
     [screenReader, setScreenReader] = useState(false),
@@ -67,14 +75,7 @@ export function InteractiveWheel({
       return;
     }
     if (hit.kind === "body") {
-      if (hit.names.length > 1)
-        Alert.alert(t("choosePlanet"), undefined, [
-          ...hit.names.map((name) => ({
-            text: catalogue.bodies[bodyId(name)],
-            onPress: () => select({ kind: "body", body: bodyId(name) }),
-          })),
-          { text: t("cancel"), style: "cancel" },
-        ]);
+      if (hit.names.length > 1) setBodies(hit.names);
       else select({ kind: "body", body: bodyId(hit.names[0]!) });
     } else if (hit.kind === "sign")
       select({ kind: "sign", sign: signs[hit.index]! });
@@ -88,11 +89,13 @@ export function InteractiveWheel({
       scale.value = Math.max(1, Math.min(3, baseScale.value * e.scale));
     })
     .onEnd(() => {
+      runOnJS(setZoomed)(scale.value > 1);
       const bound = (width * (scale.value - 1)) / 2;
       x.value = Math.max(-bound, Math.min(bound, x.value));
       y.value = Math.max(-bound, Math.min(bound, y.value));
     });
   const pan = Gesture.Pan()
+    .enabled(zoomed)
     .minPointers(1)
     .minDistance(8)
     .onStart(() => {
@@ -104,6 +107,16 @@ export function InteractiveWheel({
       const bound = (width * (scale.value - 1)) / 2;
       x.value = Math.max(-bound, Math.min(bound, baseX.value + e.translationX));
       y.value = Math.max(-bound, Math.min(bound, baseY.value + e.translationY));
+    });
+  const doubleTap = Gesture.Tap()
+    .numberOfTaps(2)
+    .runOnJS(true)
+    .onEnd(() => {
+      const next = scale.value > 1 ? 1 : 2;
+      scale.value = next;
+      x.value = 0;
+      y.value = 0;
+      setZoomed(next > 1);
     });
   const press = Gesture.Tap()
     .runOnJS(true)
@@ -160,7 +173,10 @@ export function InteractiveWheel({
         accessibilityHint={t("chartWheelHint")}
       >
         <GestureDetector
-          gesture={Gesture.Simultaneous(pinch, Gesture.Race(pan, press))}
+          gesture={Gesture.Simultaneous(
+            pinch,
+            Gesture.Race(pan, Gesture.Exclusive(doubleTap, press)),
+          )}
         >
           <Animated.View style={[{ width, height: width }, animated]}>
             <SvgCss
@@ -256,25 +272,45 @@ export function InteractiveWheel({
               })()}
           </Animated.View>
         </GestureDetector>
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            right: 0,
+            backgroundColor: c.surface,
+            borderRadius: 22,
+          }}
+        >
+          {onExpand && (
+            <IconButton
+              accessibilityLabel={t("focusMode")}
+              icon={<Maximize2 size={20} color={c.ink} />}
+              onPress={onExpand}
+            />
+          )}
+          {zoomed && (
+            <IconButton
+              accessibilityLabel={t("resetZoom")}
+              icon={<RotateCcw size={20} color={c.ink} />}
+              onPress={() => {
+                scale.value = 1;
+                x.value = 0;
+                y.value = 0;
+                setZoomed(false);
+              }}
+            />
+          )}
+        </View>
       </View>
-      <Choices>
-        <Button
-          secondary
-          label={t("zoomIn")}
-          onPress={() => {
-            scale.value = Math.min(3, scale.value + 0.5);
-          }}
-        />
-        <Button
-          secondary
-          label={t("resetZoom")}
-          onPress={() => {
-            scale.value = 1;
-            x.value = 0;
-            y.value = 0;
-          }}
-        />
-      </Choices>
+      <ActionSheet
+        open={bodies.length > 0}
+        title={t("choosePlanet")}
+        onClose={() => setBodies([])}
+        actions={bodies.map((name) => ({
+          label: catalogue.bodies[bodyId(name)],
+          onPress: () => select({ kind: "body", body: bodyId(name) }),
+        }))}
+      />
       {screenReader && (
         <View style={{ gap: 8 }}>
           {chart.points.map((p) => (

@@ -5,6 +5,9 @@ import { useApi } from "../../src/api/resource";
 import RecommendResultScreen from "../../src/features/map/RecommendResultScreen";
 let mockRequest = "broken-json";
 jest.mock("expo-router", () => ({
+  useFocusEffect: (callback: () => void) =>
+    require("react").useEffect(callback, [callback]),
+  Stack: { Screen: () => null },
   useLocalSearchParams: () => ({ request: mockRequest }),
   router: { canGoBack: () => true, back: jest.fn() },
 }));

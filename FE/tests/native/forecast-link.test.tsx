@@ -5,6 +5,9 @@ import { router } from "expo-router";
 import "../../src/i18n";
 import AheadScreen from "../../src/features/forecast/AheadScreen";
 jest.mock("expo-router", () => ({
+  useFocusEffect: (callback: () => void) =>
+    require("react").useEffect(callback, [callback]),
+  Stack: { Screen: () => null },
   useLocalSearchParams: () => ({
     view: "month",
     profile: "p",
@@ -50,6 +53,6 @@ test("saved forecast focus overrides remembered focus and remains changeable", a
   const user = userEvent.setup();
   await render(<AheadScreen />);
   expect(screen.getByText("p/2026-10/professional")).toBeOnTheScreen();
-  await user.press(screen.getByRole("radio", { name: "General" }));
+  await user.press(screen.getByRole("tab", { name: "General" }));
   expect(router.setParams).toHaveBeenCalledWith({ lens: "general" });
 });

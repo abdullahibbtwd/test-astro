@@ -11,6 +11,7 @@ import { request } from "../../src/api/client";
 import i18n from "../../src/i18n";
 let mockFocusCleanup: (() => void) | undefined;
 jest.mock("expo-router", () => ({
+  Stack: { Screen: () => null },
   router: { back: jest.fn() },
   useFocusEffect: (callback: () => () => void) => {
     require("react").useEffect(() => {

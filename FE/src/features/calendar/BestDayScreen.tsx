@@ -1,3 +1,4 @@
+import { showSnackbar } from "../../design/components/Snackbar";
 import { useState } from "react";
 import { Alert } from "react-native";
 import * as Notifications from "expo-notifications";
@@ -68,7 +69,7 @@ export default function BestDayScreen() {
         me,
         app.language,
       );
-      Alert.alert(t(saved ? "reminderSet" : "reminderLimit"));
+      showSnackbar(t(saved ? "reminderSet" : "reminderLimit"));
     } catch (e) {
       setReminderError(e);
     }

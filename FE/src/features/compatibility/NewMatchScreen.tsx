@@ -1,3 +1,7 @@
+import { ArrowUpDown } from "lucide-react-native";
+import { ProfilePicker } from "../../design/components/ProfileSwitcher";
+import { IconButton } from "../../design/components/IconButton";
+import { useTheme } from "../../design/theme";
 import { useParentJobs } from "../../api/use-parent-jobs";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as Crypto from "expo-crypto";
@@ -5,6 +9,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
   Screen,
+  Row,
   Txt,
   Choices,
   Chip,
@@ -21,6 +26,8 @@ import type {
   FamilyRelation,
 } from "../../../contracts/spec-types";
 export default function NewMatchScreen() {
+  const [picker, setPicker] = useState<"a" | "b" | null>(null),
+    c = useTheme();
   const params = useLocalSearchParams<{ other?: string; a?: string }>(),
     { t } = useTranslation(),
     app = useApp(),
@@ -94,40 +101,28 @@ export default function NewMatchScreen() {
   );
   return (
     <Screen back title={t("newCompatibility")}>
-      <Txt kind="title">{t("personA")}</Txt>
-      <Choices>
-        {profiles.data?.map((p) => (
-          <Chip
-            key={p.profile_id}
-            label={p.label}
-            selected={a === p.profile_id}
-            onPress={() => setA(p.profile_id)}
-          />
-        ))}
-      </Choices>
-      <Button
-        secondary
-        label={t("swapPeople")}
+      <Row
+        label={`${t("personA")} · ${profiles.data?.find((p) => p.profile_id === a)?.label ?? t("choosePerson")} ▾`}
+        onPress={() => setPicker("a")}
+      />
+      <IconButton
+        accessibilityLabel={t("swapPeople")}
+        icon={<ArrowUpDown size={22} color={c.ink} />}
         onPress={() => {
           setA(b);
           setB(a);
         }}
       />
-      <Txt kind="title">{t("personB")}</Txt>
-      <Choices>
-        {profiles.data?.map((p) => (
-          <Chip
-            key={p.profile_id}
-            label={p.label}
-            selected={b === p.profile_id}
-            onPress={() => selectB(p.profile_id)}
-          />
-        ))}
-      </Choices>
-      <Button
-        secondary
-        label={t("addPerson")}
-        onPress={() => router.push(`/profile/charts/new?returnTo=match&a=${a}`)}
+      <Row
+        label={`${t("personB")} · ${profiles.data?.find((p) => p.profile_id === b)?.label ?? t("choosePerson")} ▾`}
+        onPress={() => setPicker("b")}
+      />
+      <ProfilePicker
+        open={!!picker}
+        selectedId={picker === "a" ? a : b}
+        disabledId={picker === "a" ? b : a}
+        onSelect={(value) => (picker === "a" ? setA(value) : selectB(value))}
+        onClose={() => setPicker(null)}
       />
       <Choices>
         {(["love", "family", "work"] as const)

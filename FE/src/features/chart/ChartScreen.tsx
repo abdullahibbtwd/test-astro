@@ -1,9 +1,12 @@
+import { Segmented } from "../../design/components/Segmented";
+import { InlineReading } from "./InlineReading";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useNetInfo } from "@react-native-community/netinfo";
 import {
+  Screen,
   Txt,
   Button,
   Choices,
@@ -12,7 +15,6 @@ import {
   ErrorNotice,
 } from "../../design/components";
 import { AspectGlyph } from "../../design/components/AspectGlyph";
-import { useTheme } from "../../design/theme";
 import { useApp } from "../../lib/state";
 import { useProfiles, useCatalogue, useChart } from "../../api/hooks";
 import { InteractiveWheel } from "./InteractiveWheel";
@@ -22,7 +24,6 @@ import type { BirthProfile } from "../../../contracts/spec-types";
 import type { Selection } from "./facts";
 export default function ChartScreen() {
   const { t } = useTranslation(),
-    colors = useTheme(),
     app = useApp(),
     profiles = useProfiles(),
     network = useNetInfo();
@@ -31,30 +32,10 @@ export default function ChartScreen() {
       (p) => p.profile_id === (app.activeProfileId ?? app.me?.self_profile_id),
     ) ?? profiles.data?.find((p) => p.is_self);
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: colors.bg }}
-      contentContainerStyle={{
-        padding: 20,
-        gap: 24,
-        maxWidth: 680,
-        width: "100%",
-        alignSelf: "center",
-        paddingBottom: 40,
-      }}
-    >
+    <Screen embedded>
       {network.isConnected === false && (
         <Txt kind="caption">{t("offline")}</Txt>
       )}
-      <Choices>
-        {profiles.data?.map((p) => (
-          <Chip
-            key={p.profile_id}
-            label={p.label}
-            selected={p.profile_id === active?.profile_id}
-            onPress={() => app.update({ activeProfileId: p.profile_id })}
-          />
-        ))}
-      </Choices>
       {profiles.isPending ? (
         <Skeleton />
       ) : active ? (
@@ -71,7 +52,7 @@ export default function ChartScreen() {
           void profiles.refetch();
         }}
       />
-    </ScrollView>
+    </Screen>
   );
 }
 function ChartWorkspace({ profile }: { profile: BirthProfile }) {
@@ -83,20 +64,11 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
   const c = catalogue.data;
   return (
     <>
-      <Txt kind="display">{profile.label}</Txt>
-      <Button
-        secondary
-        label={t("exportShare")}
-        onPress={() =>
-          router.push(`/chart/export?profile=${profile.profile_id}`)
-        }
-      />
-      <Choices>
-        {(["sun", "moon", "ascendant"] as const).map((key) => (
-          <Chip
+      <View style={{ flexDirection: "row", gap: 8 }}>
+        {(["sun", "moon", "ascendant"] as const).map((key, i) => (
+          <Pressable
             key={key}
-            label={`${t(key === "ascendant" ? "rising" : key)} · ${c.signs[profile.big_three[key]]}`}
-            selected={false}
+            accessibilityRole="button"
             onPress={() =>
               select(
                 key === "ascendant"
@@ -104,27 +76,35 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
                   : { kind: "body", body: key },
               )
             }
-          />
+            style={{ flex: 1, minHeight: 44, gap: 4 }}
+          >
+            <Txt kind="caption">
+              {["☉", "☽", "↑"][i]} {t(key === "ascendant" ? "rising" : key)}
+            </Txt>
+            <Txt kind="caption">{c.signs[profile.big_three[key]]}</Txt>
+          </Pressable>
         ))}
-      </Choices>
+      </View>
       {chart.data ? (
         <InteractiveWheel
           chart={chart.data}
           catalogue={c}
           selection={selection}
           select={select}
+          onExpand={() =>
+            router.push(`/chart/focus?profile=${profile.profile_id}`)
+          }
         />
       ) : (
         <Skeleton />
       )}
-      <Button
-        secondary
-        label={t("focusMode")}
-        onPress={() =>
-          router.push(`/chart/focus?profile=${profile.profile_id}`)
-        }
-      />
-      <View style={{ gap: 8 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          gap: 4,
+        }}
+      >
         {(
           [
             ["square", "tenseAspects"],
@@ -134,35 +114,35 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
         ).map(([type, label]) => (
           <View
             key={type}
-            style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 4,
+            }}
           >
             <AspectGlyph type={type} size={20} />
-            <Txt kind="caption" muted>
-              {t(label)}
+            <Txt kind="caption" muted style={{ fontSize: 11, flexShrink: 1 }}>
+              {t(
+                label === "tenseAspects"
+                  ? "tenseShort"
+                  : label === "flowingAspects"
+                    ? "flowingShort"
+                    : "conjunctionShort",
+              )}
             </Txt>
           </View>
         ))}
       </View>
-      <Choices>
-        {(["reading", "planets", "houses", "aspects"] as const).map((value) => (
-          <Chip
-            key={value}
-            label={t(value)}
-            selected={tab === value}
-            onPress={() => setTab(value)}
-          />
-        ))}
-      </Choices>
+      <Segmented
+        value={tab}
+        onChange={setTab}
+        items={(["reading", "planets", "houses", "aspects"] as const).map(
+          (value) => ({ value, label: t(value) }),
+        )}
+      />
       {tab === "reading" ? (
-        <>
-          <Txt muted>{t("readingIntro")}</Txt>
-          <Button
-            label={t("openReading")}
-            onPress={() =>
-              router.push(`/chart/reading?profile=${profile.profile_id}`)
-            }
-          />
-        </>
+        <InlineReading profile={profile} />
       ) : chart.data ? (
         <ChartTables
           chart={chart.data}

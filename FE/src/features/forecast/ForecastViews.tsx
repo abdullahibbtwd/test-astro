@@ -1,4 +1,8 @@
-import { Alert } from "react-native";
+import { Pressable, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Sheet } from "../../design/components/Sheet";
+import { BandChip } from "../../design/components/BandChip";
+import { useTheme } from "../../design/theme";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useApi } from "../../api/resource";
@@ -48,6 +52,19 @@ export function DayView({
       "DayForecast",
     ),
     data = query.data;
+  const [area, setArea] = useState<Goal | null>(
+      focusArea && Object.hasOwn(cat.data.goals, focusArea)
+        ? (focusArea as Goal)
+        : null,
+    ),
+    colors = useTheme();
+  const linkedArea =
+    focusArea && Object.hasOwn(cat.data.goals, focusArea)
+      ? (focusArea as Goal)
+      : null;
+  useEffect(() => {
+    if (linkedArea) setArea(linkedArea);
+  }, [linkedArea]);
   const first: Goal[] = ["love", "family", "career", "money"],
     goals = [
       ...first,
@@ -55,8 +72,7 @@ export function DayView({
         (key) => !first.includes(key as Goal),
       ),
     ] as Goal[];
-  if (focusArea && goals.includes(focusArea as Goal))
-    goals.unshift(...goals.splice(goals.indexOf(focusArea as Goal), 1));
+  // A deep-linked area is available in its sheet without changing the familiar tile order.
   return (
     <>
       {query.isPending && <Skeleton />}
@@ -87,39 +103,75 @@ export function DayView({
             {(part) => <Txt kind="reading">{part.text}</Txt>}
           </Generated>
           <Txt kind="title">{t("lifeAreas")}</Txt>
-          {goals.map(
-            (goal) =>
-              data.areas[goal] && (
-                <Card key={goal}>
-                  <Score
-                    label={cat.data.goals[goal]}
-                    score={data.areas[goal].score_10}
-                    band={data.areas[goal].label}
-                    bandKey={data.areas[goal].band}
-                  />
-                  <Button
-                    secondary
-                    label={t("exploreArea", { area: cat.data.goals[goal] })}
-                    onPress={() =>
-                      Alert.alert(
-                        cat.data.goals[goal],
-                        data.areas[goal].drivers.join("\n"),
-                        [
-                          { text: t("close"), style: "cancel" },
-                          {
-                            text: t("calendar"),
-                            onPress: () =>
-                              router.push(
-                                `/calendar/day/${date}?profile=${profile}`,
-                              ),
-                          },
-                        ],
-                      )
-                    }
-                  />
-                </Card>
-              ),
-          )}
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+            {goals.map(
+              (goal) =>
+                data.areas[goal] && (
+                  <Pressable
+                    key={goal}
+                    accessibilityRole="button"
+                    accessibilityLabel={`${cat.data.goals[goal]}, ${data.areas[goal].label}`}
+                    onPress={() => setArea(goal)}
+                    style={{
+                      width: "48.5%",
+                      minHeight: 88,
+                      padding: 12,
+                      gap: 8,
+                      borderRadius: 12,
+                      borderWidth: 1,
+                      borderColor: colors.hair,
+                      backgroundColor: colors.surface,
+                    }}
+                  >
+                    <Txt>{cat.data.goals[goal]}</Txt>
+                    <BandChip
+                      band={data.areas[goal].band}
+                      label={data.areas[goal].label}
+                    />
+                    {flags.dayScoreNumbers && (
+                      <View
+                        accessibilityLabel={`${data.areas[goal].score_10} / 10`}
+                        style={{ flexDirection: "row", gap: 2 }}
+                      >
+                        {Array.from({ length: 10 }, (_, i) => (
+                          <View
+                            key={i}
+                            style={{
+                              flex: 1,
+                              height: 4,
+                              backgroundColor:
+                                i < data.areas[goal].score_10
+                                  ? colors.accent
+                                  : colors.hair,
+                            }}
+                          />
+                        ))}
+                      </View>
+                    )}
+                  </Pressable>
+                ),
+            )}
+          </View>
+          <Sheet
+            open={!!area}
+            title={area ? cat.data.goals[area] : ""}
+            onClose={() => {
+              setArea(null);
+              if (focusArea) router.setParams({ area: undefined });
+            }}
+          >
+            {area &&
+              data.areas[area]?.drivers.map((driver, i) => (
+                <Txt key={i}>{driver}</Txt>
+              ))}
+            <Button
+              label={t("openInCalendar")}
+              onPress={() => {
+                setArea(null);
+                router.push(`/calendar/day/${date}?profile=${profile}`);
+              }}
+            />
+          </Sheet>
           <Domains items={data.domains} />
           <Txt kind="title">{t("importantTransits")}</Txt>
           {!data.transits.length && !data.events.length && (

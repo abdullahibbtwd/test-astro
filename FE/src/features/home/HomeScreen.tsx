@@ -1,6 +1,6 @@
 import { TimezoneNotice } from "../shared/TimezoneNotice";
 import { useCallback, useEffect } from "react";
-import { AppState, RefreshControl, ScrollView, View } from "react-native";
+import { AppState, RefreshControl, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useCatalogue } from "../../api/hooks";
@@ -9,8 +9,8 @@ import { useApp } from "../../lib/state";
 import { useFlags } from "../../lib/flags";
 import { greetingKey, notificationRoute } from "../../lib/calendar";
 import { formatDate } from "../../lib/dates";
-import { useTheme } from "../../design/theme";
 import {
+  Screen,
   Txt,
   Card,
   Button,
@@ -26,7 +26,6 @@ export default function HomeScreen() {
     app = useApp(),
     catalogue = useCatalogue(),
     flags = useFlags(),
-    c = useTheme(),
     query = useApi<HomeSummary>("/home", "HomeSummary"),
     data = query.data;
   const today = () =>
@@ -56,17 +55,18 @@ export default function HomeScreen() {
     return () => sub.remove();
   }, [refetch, data]);
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: c.bg }}
-      contentContainerStyle={{ padding: 20, gap: 24 }}
-      refreshControl={
-        <RefreshControl
-          refreshing={query.isRefetching}
-          onRefresh={() => {
-            void query.refetch();
-          }}
-        />
-      }
+    <Screen
+      embedded
+      scrollProps={{
+        refreshControl: (
+          <RefreshControl
+            refreshing={query.isRefetching}
+            onRefresh={() => {
+              void query.refetch();
+            }}
+          />
+        ),
+      }}
     >
       <TimezoneNotice />
       {query.isPending && <Skeleton />}
@@ -194,6 +194,6 @@ export default function HomeScreen() {
           void query.refetch();
         }}
       />
-    </ScrollView>
+    </Screen>
   );
 }

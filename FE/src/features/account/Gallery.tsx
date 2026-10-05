@@ -29,7 +29,9 @@ import {
 } from "../../design/components";
 import { useApp } from "../../lib/state";
 export default function Gallery() {
-  const [sheet, setSheet] = useState(false), [segment, setSegment] = useState("today"), c = useTheme();
+  const [sheet, setSheet] = useState(false),
+    [segment, setSegment] = useState("today"),
+    c = useTheme();
   const { fx } = useLocalSearchParams<{ fx?: string }>();
   const { t } = useTranslation(),
     app = useApp(),
@@ -94,13 +96,53 @@ export default function Gallery() {
           />
         ))}
       </Choices>
-      <Segmented value={segment} onChange={setSegment} items={["today", "month", "year", "calendar"].map(value => ({ value, label: t(value) }))} />
-      <DatePager label={new Intl.DateTimeFormat(app.language, { dateStyle: "long" }).format(new Date())} onPrevious={() => {}} onNext={() => {}} onPick={() => setSheet(true)} />
+      <Segmented
+        value={segment}
+        onChange={setSegment}
+        items={["today", "month", "year", "calendar"].map((value) => ({
+          value,
+          label: t(value),
+        }))}
+      />
+      <DatePager
+        label={new Intl.DateTimeFormat(app.language, {
+          dateStyle: "long",
+        }).format(new Date())}
+        onPrevious={() => {}}
+        onNext={() => {}}
+        onPick={() => setSheet(true)}
+      />
       <ProfileSwitcher />
       <BandChip band="supportive" label={t("supportive")} />
-      <IconButton accessibilityLabel={t("more")} icon={<MoreHorizontal color={c.ink} size={24} />} onPress={() => setSheet(true)} />
-      <ActionSheet open={sheet} title={t("gallery")} onClose={() => setSheet(false)} actions={[{ label: t("delete"), destructive: true, onPress: () => showSnackbar(t("removed"), { action: { label: t("undo"), onPress: () => {} } }) }]} />
-      <Button secondary label={t("undo")} onPress={() => showSnackbar(t("removed"), { action: { label: t("undo"), onPress: () => {} } })} />
+      <IconButton
+        accessibilityLabel={t("more")}
+        icon={<MoreHorizontal color={c.ink} size={24} />}
+        onPress={() => setSheet(true)}
+      />
+      <ActionSheet
+        open={sheet}
+        title={t("gallery")}
+        onClose={() => setSheet(false)}
+        actions={[
+          {
+            label: t("delete"),
+            destructive: true,
+            onPress: () =>
+              showSnackbar(t("removed"), {
+                action: { label: t("undo"), onPress: () => {} },
+              }),
+          },
+        ]}
+      />
+      <Button
+        secondary
+        label={t("undo")}
+        onPress={() =>
+          showSnackbar(t("removed"), {
+            action: { label: t("undo"), onPress: () => {} },
+          })
+        }
+      />
       <Skeleton variant="lines" />
       <Txt kind="display">{t("welcome")}</Txt>
       <Txt kind="reading">{t("disclaimer")}</Txt>

@@ -1,3 +1,4 @@
+import { showSnackbar } from "../../design/components/Snackbar";
 import { shareAccountData } from "../exports/data-file";
 import Constants from "expo-constants";
 import { useState } from "react";
@@ -40,11 +41,15 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
   const link = (kind: "terms" | "privacy" | "support") => {
     const url = config.data?.links[kind];
     if (url) void Linking.openURL(url);
-    else Alert.alert(t(kind), t("legalUnavailable"));
+    else showSnackbar(t("legalUnavailable"));
   };
   const details = me.data ?? app.me;
   return (
-    <Screen back title={t(page === "location" ? "currentLocation" : page)}>
+    <Screen
+      largeTitle
+      back
+      title={t(page === "location" ? "currentLocation" : page)}
+    >
       {page === "profile" && (
         <>
           <Txt kind="display">{details?.display_name}</Txt>
@@ -124,7 +129,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
                 const permission =
                   await Location.requestForegroundPermissionsAsync();
                 if (!permission.granted) {
-                  Alert.alert(t("currentLocation"), t("locationHint"));
+                  showSnackbar(t("locationHint"));
                   return;
                 }
                 const position = await Location.getCurrentPositionAsync({
@@ -135,7 +140,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
                   position.coords.longitude,
                 );
                 if (!place) {
-                  Alert.alert(t("currentLocation"), t("locationHint"));
+                  showSnackbar(t("locationHint"));
                   return;
                 }
                 await actions.patchMe({ current_place_id: place.place_id });
@@ -213,7 +218,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
                 const data = await actions.exportData();
                 if (process.env.EXPO_PUBLIC_BACKEND_MODE === "local")
                   await shareAccountData(data);
-                else Alert.alert(t("downloadData"), t("exportSent"));
+                else showSnackbar(t("exportSent"));
               })
             }
           />

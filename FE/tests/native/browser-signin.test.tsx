@@ -7,6 +7,9 @@ import {
   cancelBrowserSignIn,
 } from "../../src/lib/browser-signin";
 jest.mock("expo-router", () => ({
+  useFocusEffect: (callback: () => void) =>
+    require("react").useEffect(callback, [callback]),
+  Stack: { Screen: () => null },
   router: { replace: jest.fn(), back: jest.fn() },
   useLocalSearchParams: () => ({ provider: "email" }),
 }));

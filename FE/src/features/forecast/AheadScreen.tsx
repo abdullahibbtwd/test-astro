@@ -1,23 +1,18 @@
 import CalendarScreen from "../calendar/CalendarScreen";
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { Platform } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useApp } from "../../lib/state";
 import { useProfiles, useCatalogue } from "../../api/hooks";
 import { mockToday } from "../../api/client";
-import { todayLocal } from "../../lib/dates";
+import { todayLocal, formatDate } from "../../lib/dates";
 import { shiftDate, shiftMonth } from "../../lib/calendar";
 import { privateStorage } from "../../lib/storage";
-import { useTheme } from "../../design/theme";
-import {
-  Txt,
-  Choices,
-  Chip,
-  Button,
-  ErrorNotice,
-} from "../../design/components";
-import { DateTimeField } from "../../design/components/DateTimeField";
+import { Screen, Button, ErrorNotice } from "../../design/components";
+import { Segmented } from "../../design/components/Segmented";
+import { DatePager } from "../../design/components/DatePager";
 import { DayView, MonthView, YearView } from "./ForecastViews";
 import type { Lens } from "../../../contracts/spec-types";
 export default function AheadScreen() {
@@ -32,13 +27,16 @@ export default function AheadScreen() {
     { t } = useTranslation(),
     app = useApp(),
     profiles = useProfiles(),
-    cat = useCatalogue(),
-    c = useTheme();
+    cat = useCatalogue();
   const profile = profiles.data?.find(
     (p) =>
       p.profile_id ===
-      (params.profile ?? app.activeProfileId ?? app.me?.self_profile_id),
+      (app.activeProfileId ?? params.profile ?? app.me?.self_profile_id),
   );
+  const update = app.update;
+  useEffect(() => {
+    if (params.profile) update({ activeProfileId: params.profile });
+  }, [params.profile, update]);
   const today = todayLocal(
     profile?.is_self
       ? app.me?.current_place?.tz
@@ -47,10 +45,15 @@ export default function AheadScreen() {
   );
   const view = params.view ?? (params.month ? "month" : "day");
   const [date, setDate] = useState(params.date ?? today),
-    [month, setMonth] = useState(params.month ?? today.slice(0, 7));
-  const [lenses, setLenses] = useState<Record<string, Lens>>(() =>
-    JSON.parse(privateStorage.getItem("forecast-lenses") ?? "{}"),
-  );
+    [month, setMonth] = useState(params.month ?? today.slice(0, 7)),
+    [picker, setPicker] = useState(false);
+  const [lenses, setLenses] = useState<Record<string, Lens>>(() => {
+    try {
+      return JSON.parse(privateStorage.getItem("forecast-lenses") ?? "{}");
+    } catch {
+      return {};
+    }
+  });
   useEffect(() => {
     if (params.date) setDate(params.date);
     if (params.month) setMonth(params.month);
@@ -60,110 +63,123 @@ export default function AheadScreen() {
   )
     ? (params.lens as Lens)
     : (lenses[view] ?? "general");
-  if (view === "calendar") return <CalendarScreen />;
+  const monthLabel = (m: string) =>
+    new Intl.DateTimeFormat(app.language, {
+      month: "short",
+      year: "numeric",
+    }).format(new Date(`${m}-15T12:00:00`));
+  const label =
+    view === "day"
+      ? formatDate(date, app.language)
+      : view === "year"
+        ? `${monthLabel(month)} – ${monthLabel(shiftMonth(month, 11))}`
+        : monthLabel(month);
+  const changeDate = (value: string) => {
+    setDate(value);
+    router.setParams({ date: value });
+  };
+  const changeMonth = (value: string) => {
+    setMonth(value);
+    router.setParams({ month: value, view });
+  };
+  const page = (n: number) => {
+    if (view === "day") {
+      const next = shiftDate(date, n);
+      if (next >= shiftDate(today, -7) && next <= shiftDate(today, 365))
+        changeDate(next);
+    } else {
+      const next = shiftMonth(month, n);
+      if (
+        next >= today.slice(0, 7) &&
+        next <= shiftMonth(today.slice(0, 7), 11)
+      )
+        changeMonth(next);
+    }
+  };
+  const pinned = (
+    <>
+      <Segmented
+        value={view}
+        onChange={(value) => {
+          setPicker(false);
+          router.setParams({ view: value, lens: undefined });
+        }}
+        items={["day", "month", "year", "calendar"].map((value) => ({
+          value,
+          label: t(value === "day" ? "today" : value),
+        }))}
+      />
+      {view !== "calendar" && (
+        <DatePager
+          label={label}
+          onPrevious={() => page(-1)}
+          onNext={() => page(1)}
+          onPick={() => setPicker(true)}
+          onToday={
+            (view === "day" ? date !== today : month !== today.slice(0, 7))
+              ? () => {
+                  if (view === "day") changeDate(today);
+                  else changeMonth(today.slice(0, 7));
+                }
+              : undefined
+          }
+        />
+      )}
+      {view !== "calendar" && (
+        <Segmented
+          value={lens}
+          items={(["general", "personal", "professional"] as const).map(
+            (value) => ({
+              value,
+              label: t(
+                value === "general"
+                  ? "generalShort"
+                  : value === "personal"
+                    ? "loveShort"
+                    : "workShort",
+              ),
+              accessibilityLabel: cat.data.lenses[value],
+            }),
+          )}
+          onChange={(value) => {
+            const next = { ...lenses, [view]: value };
+            setLenses(next);
+            router.setParams({ lens: value });
+            privateStorage.setItem("forecast-lenses", JSON.stringify(next));
+          }}
+        />
+      )}
+      {picker && (
+        <DateTimePicker
+          value={new Date(`${view === "day" ? date : month + "-15"}T12:00:00`)}
+          mode="date"
+          minimumDate={
+            new Date(
+              `${view === "day" ? shiftDate(today, -7) : today}T00:00:00`,
+            )
+          }
+          maximumDate={new Date(`${shiftDate(today, 365)}T23:59:59`)}
+          onChange={(_, value) => {
+            if (Platform.OS !== "ios") setPicker(false);
+            if (value) {
+              const day = `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
+              if (view === "day") changeDate(day);
+              else changeMonth(day.slice(0, 7));
+            }
+          }}
+        />
+      )}
+      {picker && Platform.OS === "ios" && (
+        <Button label={t("done")} onPress={() => setPicker(false)} />
+      )}
+    </>
+  );
   return (
-    <ScrollView
-      style={{ flex: 1, backgroundColor: c.bg }}
-      contentContainerStyle={{ padding: 20, gap: 24 }}
-    >
-      <Choices>
-        {profiles.data?.map((p) => (
-          <Chip
-            key={p.profile_id}
-            label={p.label}
-            selected={p.profile_id === profile?.profile_id}
-            onPress={() => {
-              app.update({ activeProfileId: p.profile_id });
-              router.setParams({ profile: p.profile_id });
-            }}
-          />
-        ))}
-      </Choices>
-      <Choices>
-        {["day", "month", "year", "calendar"].map((value) => (
-          <Chip
-            key={value}
-            label={t(value === "day" ? "today" : value)}
-            selected={view === value}
-            onPress={() => {
-              if (value === "calendar")
-                router.push(`/calendar?profile=${profile?.profile_id ?? ""}`);
-              else router.setParams({ view: value, lens: undefined });
-            }}
-          />
-        ))}
-      </Choices>
-      <Choices>
-        {(["general", "personal", "professional"] as const).map((value) => (
-          <Chip
-            key={value}
-            label={cat.data.lenses[value]}
-            selected={lens === value}
-            onPress={() => {
-              const next = { ...lenses, [view]: value };
-              setLenses(next);
-              router.setParams({ lens: value });
-              privateStorage.setItem("forecast-lenses", JSON.stringify(next));
-            }}
-          />
-        ))}
-      </Choices>
-      {view === "day" && (
-        <>
-          <Choices>
-            <Button
-              secondary
-              label={t("previous")}
-              disabled={date <= shiftDate(today, -7)}
-              onPress={() => setDate(shiftDate(date, -1))}
-            />
-            <Button
-              secondary
-              label={t("today")}
-              onPress={() => setDate(today)}
-            />
-            <Button
-              secondary
-              label={t("next")}
-              disabled={date >= shiftDate(today, 365)}
-              onPress={() => setDate(shiftDate(date, 1))}
-            />
-          </Choices>
-          <DateTimeField
-            mode="date"
-            value={date}
-            onChange={setDate}
-            label={t("today")}
-            minimumDate={new Date(`${shiftDate(today, -7)}T12:00:00`)}
-            maximumDate={new Date(`${shiftDate(today, 365)}T12:00:00`)}
-          />
-        </>
-      )}
-      {view === "month" && (
-        <>
-          <Txt kind="title">
-            {new Intl.DateTimeFormat(app.language, {
-              month: "long",
-              year: "numeric",
-            }).format(new Date(`${month}-15T12:00:00`))}
-          </Txt>
-          <Choices>
-            <Button
-              secondary
-              label={t("previous")}
-              disabled={month <= today.slice(0, 7)}
-              onPress={() => setMonth(shiftMonth(month, -1))}
-            />
-            <Button
-              secondary
-              label={t("next")}
-              disabled={month >= shiftMonth(today.slice(0, 7), 11)}
-              onPress={() => setMonth(shiftMonth(month, 1))}
-            />
-          </Choices>
-        </>
-      )}
-      {profile &&
+    <Screen embedded pinned={pinned}>
+      {view === "calendar" ? (
+        <CalendarScreen embedded />
+      ) : (
+        profile &&
         (view === "day" ? (
           <DayView
             profile={profile.profile_id}
@@ -175,13 +191,12 @@ export default function AheadScreen() {
           <MonthView profile={profile.profile_id} month={month} lens={lens} />
         ) : (
           <YearView profile={profile.profile_id} month={month} lens={lens} />
-        ))}
+        ))
+      )}
       <ErrorNotice
         error={profiles.error}
-        retry={() => {
-          void profiles.refetch();
-        }}
+        retry={() => void profiles.refetch()}
       />
-    </ScrollView>
+    </Screen>
   );
 }

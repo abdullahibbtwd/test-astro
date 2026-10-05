@@ -24,6 +24,9 @@ jest.mock("../../src/features/map/selection", () => ({
   useMapSelection: { getState: () => ({ select: jest.fn() }) },
 }));
 jest.mock("expo-router", () => ({
+  useFocusEffect: (callback: () => void) =>
+    require("react").useEffect(callback, [callback]),
+  Stack: { Screen: () => null },
   useLocalSearchParams: () => ({ date: "2026-09-29", placeId: "gn-1819729" }),
   router: { push: jest.fn(), setParams: jest.fn() },
 }));

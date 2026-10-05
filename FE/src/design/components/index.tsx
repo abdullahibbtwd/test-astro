@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useSnackbarLayout } from "./snackbar-store";
+import { useCallback, useEffect, useState } from "react";
 import { onlineManager } from "@tanstack/react-query";
 import { describeError } from "../../api/errors";
 import { ContractError } from "../../api/contract-validation";
@@ -18,7 +19,7 @@ import {
   type ViewStyle,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { Stack, router, useFocusEffect } from "expo-router";
 import { ArrowLeft, ChevronRight } from "lucide-react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme";
@@ -87,6 +88,10 @@ export function Screen({
   scrollRef,
   scrollProps,
   embedded = false,
+  pinned,
+  scroll = true,
+  largeTitle = false,
+  headerless = false,
 }: {
   children: React.ReactNode;
   title?: string;
@@ -95,45 +100,88 @@ export function Screen({
   scrollRef?: React.RefObject<ScrollView | null>;
   scrollProps?: ScrollViewProps;
   embedded?: boolean;
+  pinned?: React.ReactNode;
+  scroll?: boolean;
+  largeTitle?: boolean;
+  headerless?: boolean;
 }) {
   const c = useTheme(),
     { t } = useTranslation();
+  const [footerHeight, setFooterHeight] = useState(0);
+  useFocusEffect(
+    useCallback(() => {
+      useSnackbarLayout.setState({ footerHeight });
+      return () => useSnackbarLayout.setState({ footerHeight: 0 });
+    }, [footerHeight]),
+  );
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: c.bg }}
-      edges={embedded ? ["left", "right"] : ["top", "left", "right", "bottom"]}
+      edges={
+        headerless
+          ? ["top", "left", "right", "bottom"]
+          : embedded
+            ? ["left", "right"]
+            : ["left", "right", "bottom"]
+      }
     >
+      {title && !headerless && (
+        <Stack.Screen
+          options={{
+            title,
+            headerShown: true,
+            headerBackVisible: back,
+            headerLargeTitle: largeTitle,
+          }}
+        />
+      )}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView
-          ref={scrollRef}
-          {...scrollProps}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={styles.screen}
-        >
-          {back && (
-            <Pressable
-              accessibilityLabel={t("back")}
-              accessibilityRole="button"
-              onPress={() =>
-                router.canGoBack() ? router.back() : router.replace("/")
-              }
-              style={{
-                minHeight: 44,
-                justifyContent: "center",
-                alignSelf: "flex-start",
-              }}
-            >
-              <ArrowLeft color={c.ink} size={24} />
-            </Pressable>
-          )}
-          {title && <Txt kind="title">{title}</Txt>}
-          {children}
-        </ScrollView>
+        {headerless && back && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("back")}
+            onPress={() =>
+              router.canGoBack() ? router.back() : router.replace("/")
+            }
+            style={{
+              width: 44,
+              height: 44,
+              marginLeft: 16,
+              justifyContent: "center",
+            }}
+          >
+            <ArrowLeft color={c.ink} size={24} />
+          </Pressable>
+        )}
+        {pinned && (
+          <View style={{ paddingHorizontal: 16, paddingVertical: 8, gap: 4 }}>
+            {pinned}
+          </View>
+        )}
+        {scroll ? (
+          <ScrollView
+            ref={scrollRef}
+            {...scrollProps}
+            contentInsetAdjustmentBehavior="automatic"
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={[
+              styles.screen,
+              scrollProps?.contentContainerStyle,
+            ]}
+          >
+            {children}
+          </ScrollView>
+        ) : (
+          children
+        )}
         {footer && (
-          <View style={{ padding: 20, borderTopWidth: 1, borderColor: c.hair }}>
+          <View
+            onLayout={(e) => setFooterHeight(e.nativeEvent.layout.height)}
+            style={{ padding: 20, borderTopWidth: 1, borderColor: c.hair }}
+          >
             {footer}
           </View>
         )}
@@ -395,11 +443,22 @@ export function ErrorNotice({
   );
 }
 
-export function Skeleton({ variant = "block", lines = 3 }: { variant?: "lines" | "block"; lines?: number }) {
+export function Skeleton({
+  variant = "block",
+  lines = 3,
+}: {
+  variant?: "lines" | "block";
+  lines?: number;
+}) {
   const { t } = useTranslation();
   const c = useTheme();
   return (
-    <View accessible accessibilityLabel={t("loading")} accessibilityState={{ busy: true }} style={{ gap: 16 }}>
+    <View
+      accessible
+      accessibilityLabel={t("loading")}
+      accessibilityState={{ busy: true }}
+      style={{ gap: 16 }}
+    >
       {Array.from({ length: variant === "lines" ? lines : 1 }, (_, i) => (
         <View
           key={i}

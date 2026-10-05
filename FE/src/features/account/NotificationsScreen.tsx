@@ -59,7 +59,7 @@ export default function NotificationsScreen() {
     }
   };
   return (
-    <Screen back title={t("notifications")}>
+    <Screen largeTitle back title={t("notifications")}>
       <Txt muted>{t("notificationHint")}</Txt>
       {prefs && (
         <>

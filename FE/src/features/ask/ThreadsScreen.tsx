@@ -1,5 +1,9 @@
+import { removeDeletedReference } from "../../api/deleted-cache";
 import { useCallback, useState } from "react";
-import { Alert } from "react-native";
+import {
+  deferDelete,
+  useDeletedItems,
+} from "../../design/components/deferred-delete";
 import { router, useLocalSearchParams, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -28,6 +32,7 @@ export default function ThreadsScreen() {
     ),
     [busy, setBusy] = useState(false),
     [error, setError] = useState<unknown>();
+  const hidden = useDeletedItems((s) => s.hidden);
   const refetch = query.refetch;
   useFocusEffect(
     useCallback(() => {
@@ -67,28 +72,31 @@ export default function ThreadsScreen() {
         }}
       />
       {query.isPending && <Skeleton />}
-      {query.items.map((thread) => (
-        <Row
-          key={thread.thread_id}
-          label={thread.title || t("newConversation")}
-          detail={thread.updated_at.slice(0, 10)}
-          onPress={() => router.push(`/ask/${thread.thread_id}`)}
-          onLongPress={() =>
-            Alert.alert(t("deleteConversation"), thread.title, [
-              { text: t("cancel"), style: "cancel" },
-              {
-                text: t("delete"),
-                style: "destructive",
-                onPress: () => {
-                  void request("DELETE", `/ask/threads/${thread.thread_id}`)
-                    .then(() => refetch())
-                    .catch(setError);
+      {query.items
+        .filter((thread) => !hidden[`thread:${thread.thread_id}`])
+        .map((thread) => (
+          <Row
+            key={thread.thread_id}
+            label={thread.title || t("newConversation")}
+            detail={thread.updated_at.slice(0, 10)}
+            onPress={() => router.push(`/ask/${thread.thread_id}`)}
+            onLongPress={() =>
+              deferDelete(
+                `thread:${thread.thread_id}`,
+                async () => {
+                  await request("DELETE", `/ask/threads/${thread.thread_id}`);
+                  removeDeletedReference("thread_id", thread.thread_id);
+                  await refetch();
                 },
-              },
-            ])
-          }
-        />
-      ))}
+                {
+                  removed: t("removed"),
+                  undo: t("undo"),
+                  failed: t("deleteFailed"),
+                },
+              )
+            }
+          />
+        ))}
       {query.hasNextPage && (
         <Button
           secondary

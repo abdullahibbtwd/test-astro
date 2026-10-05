@@ -1,12 +1,10 @@
+import { Keyboard, ScrollView, TextInput, View } from "react-native";
+import { Search, X } from "lucide-react-native";
+import { IconButton } from "../../design/components/IconButton";
+import { useTheme } from "../../design/theme";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Field,
-  Txt,
-  Row,
-  ErrorNotice,
-  Skeleton,
-} from "../../design/components";
+import { Txt, Row, ErrorNotice, Skeleton } from "../../design/components";
 import { useApi } from "../../api/resource";
 import type { PlaceCandidate } from "../../../contracts/spec-types";
 export function MapSearch({
@@ -16,6 +14,7 @@ export function MapSearch({
   onSelect: (place: PlaceCandidate) => void;
   areasOnly?: boolean;
 }) {
+  const c = useTheme();
   const { t } = useTranslation(),
     [input, setInput] = useState(""),
     [search, setSearch] = useState("");
@@ -34,10 +33,59 @@ export function MapSearch({
     search.length >= 2,
   );
   return (
-    <>
-      <Field label={t("searchMap")} value={input} onChangeText={setInput} />
+    <View style={{ zIndex: 20 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          minHeight: 48,
+          borderRadius: 28,
+          backgroundColor: c.surface,
+          paddingLeft: 16,
+          paddingRight: 4,
+          gap: 8,
+          borderWidth: 1,
+          borderColor: c.hair,
+        }}
+      >
+        <Search size={20} color={c.ink2} />
+        <TextInput
+          accessibilityLabel={t("searchMap")}
+          placeholder={t("searchMap")}
+          placeholderTextColor={c.ink3}
+          value={input}
+          onChangeText={setInput}
+          style={{
+            flex: 1,
+            minHeight: 44,
+            color: c.ink,
+            fontFamily: "Inter",
+            fontSize: 16,
+          }}
+        />
+        {!!input && (
+          <IconButton
+            accessibilityLabel={t("clear")}
+            icon={<X size={20} color={c.ink} />}
+            onPress={() => {
+              setInput("");
+              setSearch("");
+            }}
+          />
+        )}
+      </View>
       {search.length >= 2 && (
-        <>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          style={{
+            marginTop: 4,
+            height: 320,
+            backgroundColor: c.surface,
+            borderRadius: 16,
+            elevation: 8,
+          }}
+          contentContainerStyle={{ padding: 16, gap: 12 }}
+        >
           {[
             ...(!areasOnly ? [{ query: cities, label: "cities" }] : []),
             { query: areas, label: "areas" },
@@ -51,13 +99,14 @@ export function MapSearch({
               onSelect={(p) => {
                 setInput("");
                 setSearch("");
+                Keyboard.dismiss();
                 onSelect(p);
               }}
             />
           ))}
-        </>
+        </ScrollView>
       )}
-    </>
+    </View>
   );
 }
 function ViewResults({
