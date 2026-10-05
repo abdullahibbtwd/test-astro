@@ -119,7 +119,7 @@ class Dossier:
 
     def register(self, chart_key, chart, birth=None, aliases=None):
         folder = self.folder(chart_key)
-        with locked(folder / '.lock'):
+        with locked(self.root / '.locks' / (chart_key + '.lock')):
             path = folder / 'manifest.json'
             if path.exists():
                 manifest = self.manifest(chart_key)
@@ -166,7 +166,7 @@ class Dossier:
         value = self._cached(chart_key, product, dependencies)
         if value is not None:
             return value
-        with locked(self.folder(chart_key) / '.lock'):
+        with locked(self.root / '.locks' / (chart_key + '.lock')):
             value = self._cached(chart_key, product, dependencies)
             if value is not None:
                 return value
@@ -200,7 +200,7 @@ class Dossier:
 
     def publish_section(self, chart_key, section):
         """First finalized text wins; translations add a language, never replace TR."""
-        with locked(self.folder(chart_key) / '.lock'):
+        with locked(self.root / '.locks' / (chart_key + '.lock')):
             index = self.readings(chart_key)
             existing = index.get(section['key'], {})
             value = {**section, **existing}
@@ -211,3 +211,36 @@ class Dossier:
             index[section['key']] = value
             atomic(self.folder(chart_key) / 'readings.json', index)
             return value
+
+    def retain(self, chart_key, reference):
+        if not re.fullmatch(r'[a-f0-9]{64}', reference):
+            raise ValueError('Invalid profile reference')
+        folder = self.folder(chart_key)
+        with locked(self.root / '.locks' / (chart_key + '.lock')):
+            if not (folder / 'manifest.json').exists():
+                raise ValueError('Unknown dossier')
+            path = folder / 'references.json'
+            refs = json.loads(path.read_text()) if path.exists() else []
+            atomic(path, sorted(set(refs + [reference])))
+
+    def release(self, chart_key, reference):
+        """Remove only a known reference; only its last release removes this chart."""
+        import shutil
+        folder = self.folder(chart_key)
+        with locked(self.root / '.locks' / (chart_key + '.lock')):
+            path = folder / 'references.json'
+            if not path.exists():
+                return False  # Untracked legacy data is never erased by inference.
+            refs = json.loads(path.read_text())
+            if reference not in refs:
+                return False
+            remaining = [r for r in refs if r != reference]
+            if remaining:
+                atomic(path, remaining)
+                return False
+            # Resolve immediately before deletion, including symlinks/junctions.
+            target, root = folder.resolve(), self.root.resolve()
+            if target.parent != root or target == root:
+                raise ValueError('Dossier deletion escaped its chart directory')
+            shutil.rmtree(target)
+            return True
