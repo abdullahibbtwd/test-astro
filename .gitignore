@@ -107,3 +107,7 @@ principles_grounding/validation_report.merged.json
 
 # Local Android preview tooling
 .tooling/
+
+# Private Personal Astrologist runs and deterministic caches
+ask_run/
+astrologist/eval/
