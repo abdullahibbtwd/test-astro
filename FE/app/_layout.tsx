@@ -37,6 +37,10 @@ const persister = createSyncStoragePersister({
 });
 export default function RootLayout() {
   const [loaded, fontError] = useFonts({
+    "Aboreto-Regular": require("../assets/fonts/design-system/Aboreto-Regular.ttf"),
+    "Poppins-Regular": require("../assets/fonts/design-system/Poppins-Regular.ttf"),
+    "Poppins-Medium": require("../assets/fonts/design-system/Poppins-Medium.ttf"),
+    "Poppins-SemiBold": require("../assets/fonts/design-system/Poppins-SemiBold.ttf"),
     Inter: require("../assets/fonts/Inter-Regular.ttf"),
     "Inter-SemiBold": require("../assets/fonts/Inter-SemiBold.ttf"),
     SourceSerif4: require("../assets/fonts/SourceSerif4-Regular.ttf"),
@@ -77,6 +81,7 @@ export default function RootLayout() {
   }, [loaded, fontError, ready, error]);
   useEffect(() => {
     if (!ready) return;
+    if (__DEV__ && segments[0] === "design-system-gallery") return;
     const section = segments[0];
     if (!app.signedIn && section !== "(auth)" && section !== undefined)
       router.replace("/(auth)/welcome");
