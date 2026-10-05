@@ -407,5 +407,18 @@
   "refresh": "Yenile",
   "requestReading": "Yorum hazırla",
   "diagnostics": "Tanılama",
-  "readTodayForecast": "Bugünün öngörüsünü oku"
+  "readTodayForecast": "Bugünün öngörüsünü oku",
+  "loading": "Yükleniyor",
+  "choosePerson": "Kişi seçin",
+  "showingPerson": "Gösterilen kişi: {name}. Kişiyi değiştir",
+  "undo": "Geri al",
+  "removed": "Kaldırıldı",
+  "workShort": "İş",
+  "loveShort": "Aşk",
+  "generalShort": "Genel",
+  "prepareMyReading": "Yorumumu hazırla",
+  "usuallyMinutes": "Genellikle yaklaşık {minutes} dakika sürer",
+  "usuallyMinute": "Genellikle yaklaşık 1 dakika sürer",
+  "usuallySeconds": "Genellikle yaklaşık {seconds} saniye sürer",
+  "leavePreparing": "Bu ekrandan ayrılabilirsiniz. Hazır olduğunda size haber vereceğiz."
 }

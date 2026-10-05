@@ -4,6 +4,8 @@ jest.mock("../../src/lib/state", () => ({
     select({ theme: "light", language: "en", recent: [], update: jest.fn() }),
 }));
 jest.mock("expo-router", () => ({
+  useSegments: () => ["(tabs)"],
+  Stack: { Screen: () => null },
   router: {
     push: jest.fn(),
     back: jest.fn(),

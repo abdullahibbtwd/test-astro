@@ -31,6 +31,7 @@ type State = {
   me: Me | null;
   draft: Draft;
   recent: Place[];
+  recentProfileIds: string[];
   update: (
     values: Partial<Omit<State, "update" | "editDraft" | "hydrate">>,
   ) => void;
@@ -47,9 +48,10 @@ export const useApp = create<State>((set, get) => ({
   me: null,
   draft: emptyDraft,
   recent: [],
+  recentProfileIds: [],
   update: (values) => {
     set(values);
-    const { language, languageChosen, theme, activeProfileId, draft, recent } =
+    const { language, languageChosen, theme, activeProfileId, draft, recent, recentProfileIds } =
       get();
     privateStorage.setItem(
       "preferences",
@@ -60,6 +62,7 @@ export const useApp = create<State>((set, get) => ({
         activeProfileId,
         draft,
         recent,
+        recentProfileIds,
       }),
     );
   },
@@ -83,5 +86,6 @@ export function resetLocalState() {
     activeProfileId: null,
     draft: { ...emptyDraft },
     recent: [],
+  recentProfileIds: [],
   });
 }

@@ -1,3 +1,4 @@
+import { Snackbar } from "../src/design/components/Snackbar";
 import {
   CACHE_MAX_AGE,
   CACHE_BUSTER,
@@ -150,6 +151,7 @@ export default function RootLayout() {
               ))}
             </Stack>
             <JobLifecycle />
+            <Snackbar />
           </BottomSheetModalProvider>
         </PersistQueryClientProvider>
       </SafeAreaProvider>

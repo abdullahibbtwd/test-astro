@@ -395,15 +395,17 @@ export function ErrorNotice({
   );
 }
 
-export function Skeleton() {
+export function Skeleton({ variant = "block", lines = 3 }: { variant?: "lines" | "block"; lines?: number }) {
+  const { t } = useTranslation();
   const c = useTheme();
   return (
-    <View accessible accessibilityLabel="Loading" style={{ gap: 16 }}>
-      {[1, 2, 3].map((i) => (
+    <View accessible accessibilityLabel={t("loading")} accessibilityState={{ busy: true }} style={{ gap: 16 }}>
+      {Array.from({ length: variant === "lines" ? lines : 1 }, (_, i) => (
         <View
           key={i}
           style={{
-            height: 64,
+            height: variant === "lines" ? 16 : 96,
+            width: variant === "lines" && i === lines - 1 ? "60%" : "100%",
             borderRadius: 12,
             backgroundColor: c.surfaceAlt,
           }}

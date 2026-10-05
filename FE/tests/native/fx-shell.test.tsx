@@ -1,0 +1,46 @@
+import React from "react";
+import { act, fireEvent, render, screen } from "@testing-library/react-native";
+import { AccessibilityInfo, AppState, StyleSheet } from "react-native";
+import { Segmented } from "../../src/design/components/Segmented";
+import { Snackbar } from "../../src/design/components/Snackbar";
+import { showSnackbar, dismissSnackbar, useSnackbar } from "../../src/design/components/snackbar-store";
+import "../../src/i18n";
+afterEach(() => { dismissSnackbar("timeout"); jest.useRealTimers(); });
+test("four Turkish segments stay equal width, nowrap, accessible and selectable at large fonts", async () => {
+  const change = jest.fn();
+  await render(<Segmented value="0" onChange={change} items={["Bugün", "Ay", "Yıl", "Takvim"].map((label, i) => ({ value: String(i), label }))} />);
+  expect(StyleSheet.flatten(screen.getByTestId("segmented").props.style).flexWrap).toBe("nowrap");
+  const tabs = screen.getAllByRole("tab");
+  expect(tabs).toHaveLength(4);
+  for (const tab of tabs) expect(StyleSheet.flatten(tab.props.style).flex).toBe(1);
+  expect(tabs[0]).toBeSelected();
+  expect(screen.getByText("Takvim").props.maxFontSizeMultiplier).toBe(2);
+  expect(screen.getByText("Takvim").props.numberOfLines).toBe(1);
+  await fireEvent.press(tabs[3]);
+  expect(change).toHaveBeenCalledWith("3");
+});
+test("replacement settles the previous message once; undo never commits deletion", () => {
+  const commit = jest.fn(), undo = jest.fn();
+  showSnackbar("First", { onDismiss: commit });
+  const id = showSnackbar("Deleted", { action: { label: "Undo", onPress: undo }, onDismiss: reason => { if (reason !== "action") commit(); } });
+  expect(commit).toHaveBeenCalledWith("replaced");
+  commit.mockClear();
+  dismissSnackbar("action", id);
+  dismissSnackbar("timeout", id);
+  expect(undo).toHaveBeenCalledTimes(1);
+  expect(commit).not.toHaveBeenCalled();
+  expect(useSnackbar.getState().current).toBeNull();
+});
+test("snackbar timeout commits exactly once after five seconds", async () => {
+  jest.useFakeTimers();
+  AppState.currentState = "active";
+  jest.spyOn(AccessibilityInfo, "isScreenReaderEnabled").mockResolvedValue(false);
+  const commit = jest.fn();
+  await render(<Snackbar />);
+  await act(async () => { showSnackbar("Deleted", { onDismiss: commit }); });
+  await act(async () => { jest.advanceTimersByTime(4999); });
+  expect(commit).not.toHaveBeenCalled();
+  await act(async () => { jest.advanceTimersByTime(1); });
+  expect(commit).toHaveBeenCalledTimes(1);
+  expect(commit).toHaveBeenCalledWith("timeout");
+});

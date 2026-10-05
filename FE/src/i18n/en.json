@@ -407,5 +407,18 @@
   "refresh": "Refresh",
   "requestReading": "Prepare reading",
   "diagnostics": "Diagnostics",
-  "readTodayForecast": "Read today's forecast"
+  "readTodayForecast": "Read today's forecast",
+  "loading": "Loading",
+  "choosePerson": "Choose a person",
+  "showingPerson": "Showing {name}. Change person",
+  "undo": "Undo",
+  "removed": "Removed",
+  "workShort": "Work",
+  "loveShort": "Love",
+  "generalShort": "General",
+  "prepareMyReading": "Prepare my reading",
+  "usuallyMinutes": "Usually takes about {minutes} minutes",
+  "usuallyMinute": "Usually takes about 1 minute",
+  "usuallySeconds": "Usually takes about {seconds} seconds",
+  "leavePreparing": "You can leave this screen. We’ll let you know when it’s ready."
 }
