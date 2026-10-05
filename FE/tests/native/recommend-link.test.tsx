@@ -25,7 +25,7 @@ test.each(["broken-json", JSON.stringify({ goal: "invented" })])(
     mockRequest = value;
     await i18n.changeLanguage("en");
     await render(<RecommendResultScreen />);
-    expect(screen.getByText(i18n.t("error"))).toBeOnTheScreen();
+    expect(screen.getByText(i18n.t("errorServer"))).toBeOnTheScreen();
     expect(screen.queryByLabelText("Loading")).toBeNull();
     expect(useApi).toHaveBeenCalledWith(
       "/profiles/p/acg/recommendations",

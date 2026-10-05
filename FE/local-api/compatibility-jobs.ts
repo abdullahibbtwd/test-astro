@@ -1,3 +1,4 @@
+import { busyProblem, paused, problemError } from "./job-problems";
 import { randomUUID, createHash } from "node:crypto";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
@@ -16,6 +17,12 @@ const issue = (statusCode: number) =>
   Object.assign(new Error("Compatibility unavailable"), { statusCode });
 export class CompatibilityJobs {
   private running = new Set<Promise<void>>();
+  private blockingJob() {
+    return this.store
+      .list<{ job: Job }>("compat:")
+      .find((r) => r.job.status === "running" || r.job.status === "queued")!.job
+      .job_id;
+  }
   constructor(
     private store: Store,
     private enabled = false,
@@ -85,7 +92,12 @@ export class CompatibilityJobs {
       .list<any>("compat:")
       .find((r) => hash(r.context) === hash(context));
     if (existing) return this.get(existing.id, lang);
-    if (!this.enabled || this.running.size) throw issue(503);
+    if (!this.enabled)
+      throw Object.assign(new Error("generation_paused"), {
+        statusCode: 200,
+        absence: paused(),
+      });
+    if (this.running.size) throw problemError(busyProblem(this.blockingJob()));
     const created = new Date().toISOString();
     const job: Job = {
       job_id: randomUUID(),
@@ -183,7 +195,13 @@ export class CompatibilityJobs {
     const r = this.store.get("compat:" + id);
     if (!r || !this.valid(r)) throw issue(404);
     if (retry && r.job.status === "failed") {
-      if (!this.enabled || this.running.size) throw issue(503);
+      if (!this.enabled)
+        throw Object.assign(new Error("generation_paused"), {
+          statusCode: 200,
+          absence: paused(),
+        });
+      if (this.running.size)
+        throw problemError(busyProblem(this.blockingJob()));
       const now = new Date().toISOString();
       r.job = {
         ...r.job,

@@ -1,3 +1,4 @@
+import { useParentJobs } from "../../api/use-parent-jobs";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as Crypto from "expo-crypto";
 import { router, useLocalSearchParams } from "expo-router";
@@ -84,6 +85,13 @@ export default function NewMatchScreen() {
       setBusy(false);
     }
   };
+  useParentJobs(
+    undefined,
+    error,
+    JSON.stringify([a, b, type, family]),
+    !!a && !!b && !!type && !busy,
+    create,
+  );
   return (
     <Screen back title={t("newCompatibility")}>
       <Txt kind="title">{t("personA")}</Txt>

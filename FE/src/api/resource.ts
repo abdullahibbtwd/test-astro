@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
-import { AppState } from "react-native";
-import { useFocusEffect } from "expo-router";
-import { useQuery, useQueries, useQueryClient } from "@tanstack/react-query";
+import { useOfflineError } from "./online";
+import { keepsReading } from "./cache-policy";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { request } from "./client";
 import { useApp } from "../lib/state";
 import type { Job } from "../../contracts/spec-types";
-import { pollingDelay } from "./job-policy";
+import { useParentJobs } from "./use-parent-jobs";
 export function pendingJobs(value: unknown): Job[] {
   if (!value || typeof value !== "object") return [];
   if ("status" in value && value.status === "pending" && "job" in value)
@@ -20,21 +20,7 @@ export function useApi<T>(
 ) {
   const lang = useApp((s) => s.language),
     client = useQueryClient();
-  const [focused, setFocused] = useState(true),
-    [active, setActive] = useState(AppState.currentState === "active"),
-    [retryError, setRetryError] = useState<unknown>();
-  useFocusEffect(
-    useCallback(() => {
-      setFocused(true);
-      return () => setFocused(false);
-    }, []),
-  );
-  useEffect(() => {
-    const sub = AppState.addEventListener("change", (s) =>
-      setActive(s === "active"),
-    );
-    return () => sub.remove();
-  }, []);
+  const [retryError, setRetryError] = useState<unknown>();
   const queryKey = [
     "resource",
     lang,
@@ -43,6 +29,9 @@ export function useApi<T>(
   ];
   const query = useQuery<T>({
     queryKey,
+    ...(keepsReading(queryKey)
+      ? { gcTime: Infinity, staleTime: Infinity }
+      : {}),
     queryFn: () =>
       request<T>(postBody ? "POST" : "GET", path, schema, postBody),
     enabled,
@@ -54,37 +43,13 @@ export function useApi<T>(
         ? previous
         : undefined,
   });
-  const jobs = [
-    ...new Map(
-      pendingJobs(query.data).map((job) => [job.job_id, job]),
-    ).values(),
-  ];
-  const polls = useQueries({
-    queries: jobs.map((job) => ({
-      queryKey: ["job", lang, job.job_id],
-      queryFn: () => request<Job>("GET", `/jobs/${job.job_id}`, "Job"),
-      enabled:
-        enabled &&
-        focused &&
-        active &&
-        Date.now() - Date.parse(job.created_at) < 600000,
-      refetchInterval: (q: {
-        state: { data?: Job; dataUpdateCount: number };
-      }) =>
-        Date.now() - Date.parse(job.created_at) >= 600000 ||
-        q.state.data?.status === "succeeded" ||
-        q.state.data?.status === "failed"
-          ? false
-          : pollingDelay(Math.max(0, q.state.dataUpdateCount - 1)),
-      refetchIntervalInBackground: false,
-    })),
-  });
-  const finished = polls.map((p) => p.data?.status).join(","),
-    refetch = query.refetch;
-  useEffect(() => {
-    if (finished.includes("succeeded") || finished.includes("failed"))
-      void refetch();
-  }, [finished, refetch]);
+  useParentJobs(
+    query.data,
+    query.error,
+    JSON.stringify(queryKey),
+    enabled,
+    query.refetch,
+  );
   const retry = async () => {
     setRetryError(undefined);
     try {
@@ -99,5 +64,11 @@ export function useApi<T>(
       setRetryError(e);
     }
   };
-  return { ...query, error: retryError ?? query.error, retry };
+  const offlineError = useOfflineError(!!query.data);
+  return {
+    ...query,
+    isPending: query.isPending && !offlineError,
+    error: offlineError ?? retryError ?? query.error,
+    retry,
+  };
 }

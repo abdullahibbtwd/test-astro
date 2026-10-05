@@ -98,7 +98,7 @@ export function ChartDetailSheet({
         : selection.kind === "sign"
           ? c.signs[selection.sign]
           : selection.kind === "axis"
-            ? c.angles[selection.axis].name
+            ? c.angles[selection.axis]?.name ?? ""
             : t("chartDetails");
   const bodyChip = (body: Body) => (
     <Chip

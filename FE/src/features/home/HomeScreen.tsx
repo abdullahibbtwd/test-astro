@@ -1,8 +1,7 @@
-import LocalHomeScreen from "./LocalHomeScreen";
 import { TimezoneNotice } from "../shared/TimezoneNotice";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { AppState, RefreshControl, ScrollView, View } from "react-native";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useCatalogue } from "../../api/hooks";
 import { useApi } from "../../api/resource";
@@ -22,7 +21,7 @@ import {
 } from "../../design/components";
 import { Generated, Score } from "../shared/Blocks";
 import type { HomeSummary } from "../../../contracts/spec-types";
-function DemoHomeScreen() {
+export default function HomeScreen() {
   const { t } = useTranslation(),
     app = useApp(),
     catalogue = useCatalogue(),
@@ -35,16 +34,27 @@ function DemoHomeScreen() {
       `/(tabs)/ahead?view=day&profile=${app.me?.self_profile_id ?? ""}`,
     );
   const refetch = query.refetch;
+  useFocusEffect(
+    useCallback(() => {
+      void refetch();
+    }, [refetch]),
+  );
   useEffect(() => {
     const sub = AppState.addEventListener("change", (s) => {
-      if (s === "active") void refetch();
+      if (
+        s === "active" &&
+        data &&
+        new Intl.DateTimeFormat("en-CA", {
+          timeZone: data.tz,
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date()) !== data.date
+      )
+        void refetch();
     });
-    const timer = setInterval(() => void refetch(), 60000);
-    return () => {
-      sub.remove();
-      clearInterval(timer);
-    };
-  }, [refetch]);
+    return () => sub.remove();
+  }, [refetch, data]);
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: c.bg }}
@@ -93,7 +103,7 @@ function DemoHomeScreen() {
                     <Score
                       label={tile.label}
                       score={tile.score_10}
-                      band={catalogue.data.day_bands[tile.band]}
+                      band={catalogue.data.day_bands[tile.band] ?? tile.label}
                       bandKey={tile.band}
                     />
                     <Button
@@ -110,21 +120,20 @@ function DemoHomeScreen() {
             </View>
           </Card>
           <Txt kind="title">{t("todayAstrology")}</Txt>
-          <Generated
-            part={data.today}
-            retry={() => {
-              void query.retry();
-            }}
-          >
-            {(reading) => (
-              <>
-                <Txt kind="reading" numberOfLines={5}>
-                  {reading.text}
-                </Txt>
-                <Button label={t("readMore")} onPress={today} />
-              </>
-            )}
-          </Generated>
+          {data.today.status === "absent" ? (
+            <Row label={t("readTodayForecast")} onPress={today} />
+          ) : (
+            <Generated part={data.today} retry={today}>
+              {(reading) => (
+                <>
+                  <Txt kind="reading" numberOfLines={5}>
+                    {reading.text}
+                  </Txt>
+                  <Button label={t("readMore")} onPress={today} />
+                </>
+              )}
+            </Generated>
+          )}
           {!!data.next_up.length && (
             <>
               <Txt kind="title">{t("comingUp")}</Txt>
@@ -186,13 +195,5 @@ function DemoHomeScreen() {
         }}
       />
     </ScrollView>
-  );
-}
-
-export default function HomeScreen() {
-  return process.env.EXPO_PUBLIC_BACKEND_MODE === "local" ? (
-    <LocalHomeScreen />
-  ) : (
-    <DemoHomeScreen />
   );
 }

@@ -1,10 +1,11 @@
+import { keepsReading } from "./cache-policy";
 import { QueryClient } from "@tanstack/react-query";
 import { ApiError } from "./client";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 300000,
-      gcTime: 86400000,
+      gcTime: 7 * 24 * 60 * 60 * 1000,
       retry: (count, error) =>
         count < 2 &&
         (!(error instanceof ApiError) ||
@@ -17,6 +18,14 @@ export const queryClient = new QueryClient({
     },
     mutations: { retry: false },
   },
+});
+queryClient.setQueryDefaults(["generated"], {
+  gcTime: Infinity,
+  staleTime: Infinity,
+});
+queryClient.getQueryCache().subscribe((event) => {
+  if (event.type === "added" && keepsReading(event.query.queryKey))
+    event.query.setOptions({ ...event.query.options, gcTime: Infinity });
 });
 export const keys = {
   resource: (name: string, lang: string, ...params: unknown[]) =>

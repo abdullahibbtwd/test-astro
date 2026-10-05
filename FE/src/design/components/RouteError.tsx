@@ -1,8 +1,11 @@
+import { useEffect } from "react";
+import { reportError } from "../../lib/telemetry";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { ErrorBoundaryProps } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Screen, Txt, Button } from "./index";
-export function RouteError({ retry }: ErrorBoundaryProps) {
+export function RouteError({ error, retry }: ErrorBoundaryProps) {
+  useEffect(() => reportError(error, { area: "route" }), [error]);
   const { t } = useTranslation();
   return (
     <SafeAreaProvider>

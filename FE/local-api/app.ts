@@ -1,3 +1,4 @@
+import { homeSummary } from "./home";
 import { registerBrowserSignIn } from "./browser-auth-routes";
 import type { SupabaseAuth, VerifiedSession } from "./supabase-auth";
 import { MapJobs, mapContext } from "./map-jobs";
@@ -14,7 +15,7 @@ import { Store } from "./store";
 import { bridge, computeBirthChart } from "./engine";
 import { fixture } from "../mock-api/fixtures";
 import { endpoints } from "../scripts/endpoints";
-import { validate } from "../src/api/zod";
+import { validate, schemas } from "../src/api/zod";
 import type { BirthProfile, Me } from "../contracts/spec-types";
 const digest = (s: string) => createHash("sha256").update(s).digest("hex");
 const issue = (status: number, message = "Request unavailable") =>
@@ -22,12 +23,16 @@ const issue = (status: number, message = "Request unavailable") =>
 export function buildLocalApp({
   dbPath,
   allowPaid = false,
+  generateForecast,
+  calculateCalendar = computeCalendar,
   generateCompatibility,
   auth,
 }: {
   auth?: SupabaseAuth;
   dbPath: string;
   allowPaid?: boolean;
+  calculateCalendar?: typeof computeCalendar;
+  generateForecast?: (data: any) => Promise<any>;
   generateCompatibility?: (data: unknown) => Promise<any>;
 }) {
   const app = Fastify({ logger: false, bodyLimit: 65536 });
@@ -50,7 +55,7 @@ export function buildLocalApp({
   const maps = new LiveMap(store);
   const mapJobs = new MapJobs(store, allowPaid);
   const readings = new ReadingJobs(store, undefined, allowPaid);
-  const forecasts = new ForecastJobs(store, allowPaid);
+  const forecasts = new ForecastJobs(store, allowPaid, generateForecast);
   const compatibility = new CompatibilityJobs(
     store,
     allowPaid,
@@ -82,6 +87,17 @@ export function buildLocalApp({
     store.close();
   });
   app.setErrorHandler((error: any, _request, reply) => {
+    if (error.absence) {
+      void reply.code(200).send(error.absence);
+      return;
+    }
+    if (error.problem) {
+      void reply
+        .code(error.problem.status)
+        .type("application/problem+json")
+        .send(error.problem);
+      return;
+    }
     const status = error.statusCode ?? 500;
     reply
       .code(status)
@@ -169,7 +185,7 @@ export function buildLocalApp({
     const key = context.prefix + start;
     let saved = store.get(key);
     if (!saved) {
-      saved = await computeCalendar(profile, current, start);
+      saved = await calculateCalendar(profile, current, start);
       store.put(key, saved);
     }
     return saved[lang];
@@ -221,7 +237,7 @@ export function buildLocalApp({
           let body: any = request.body ?? {};
           if (endpoint.body) {
             try {
-              body = validate(endpoint.body, body);
+              body = schemas[endpoint.body]!.parse(body);
             } catch {
               throw issue(400);
             }
@@ -639,6 +655,44 @@ export function buildLocalApp({
             case "get /profiles/{id}/chart":
               result = store.get("chart:" + p.id);
               break;
+            case "get /home": {
+              const me = store.get<Me>("me")!;
+              const self = store.get<BirthProfile>(
+                "profile:" + me.self_profile_id,
+              );
+              if (!self) throw issue(404);
+              const context = calendarContext(self);
+              const cal = await calendarFor(
+                self,
+                lang,
+                context.start.slice(0, 7) + "-01",
+              );
+              const catalogue = fixture(`catalogue.${lang}`);
+              const day = dayForecast(
+                cal,
+                catalogue,
+                self.profile_id,
+                context.start,
+              );
+              if (!day) throw issue(400);
+              result = homeSummary(
+                day as never,
+                self.label,
+                catalogue,
+                forecasts.peek(
+                  forecastContext(
+                    self,
+                    context.current,
+                    context.start,
+                    "day",
+                    "general",
+                  ),
+                  lang as "en" | "tr",
+                ),
+                cal.notifications,
+              );
+              break;
+            }
             case "get /profiles/{id}/forecast/day":
             case "get /profiles/{id}/forecast/month":
             case "get /profiles/{id}/forecast/year": {
@@ -749,6 +803,10 @@ export function buildLocalApp({
                 lang as "en" | "tr",
                 q.retry === "true",
               );
+              if (value.absence)
+                return reply
+                  .code(200)
+                  .send({ status: "absent", absence: value.absence });
               if (value.reading) {
                 result = value.reading;
                 break;

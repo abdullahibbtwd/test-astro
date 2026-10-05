@@ -43,14 +43,16 @@ export default function DayScreen() {
           </Generated>
           <MoonBlock moon={data.moon} />
           <Choices>
-            {data.retrograde.map((body) => (
-              <Chip
-                key={body}
-                label={`${cat.data.bodies[body]} · ${cat.data.terms.retrograde}`}
-                selected={false}
-                onPress={() => router.push("/(tabs)/chart")}
-              />
-            ))}
+            {data.retrograde
+              .filter((body) => !!cat.data.bodies[body])
+              .map((body) => (
+                <Chip
+                  key={body}
+                  label={`${cat.data.bodies[body]} · ${cat.data.terms.retrograde}`}
+                  selected={false}
+                  onPress={() => router.push("/(tabs)/chart")}
+                />
+              ))}
           </Choices>
           <ItemRows profile={id} items={[...data.events, ...data.transits]} />
           {data.active_periods.map((period) => (

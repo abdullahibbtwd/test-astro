@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Astrology mobile API",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "FE_02 contract. Outstanding ambiguities are recorded in FE_EXPLORATION_REPORT.md."
   },
   "servers": [
@@ -1953,11 +1953,18 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Reading or paused generation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NatalReading"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NatalReading"
+                    },
+                    {
+                      "$ref": "#/components/schemas/GenerationAbsent"
+                    }
+                  ]
                 }
               }
             },
@@ -2010,6 +2017,34 @@
           },
           "304": {
             "description": "Not modified",
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Another reading is being prepared",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
             "headers": {
               "X-Mock-Today": {
                 "schema": {
@@ -2883,12 +2918,75 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "Reading or paused generation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Compatibility"
+                    },
+                    {
+                      "$ref": "#/components/schemas/GenerationAbsent"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
           "201": {
             "description": "Success",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Compatibility"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Another reading is being prepared",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             },
@@ -3120,11 +3218,18 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "Reading or paused generation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Compatibility"
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Compatibility"
+                    },
+                    {
+                      "$ref": "#/components/schemas/GenerationAbsent"
+                    }
+                  ]
                 }
               }
             },
@@ -3149,6 +3254,34 @@
           },
           "304": {
             "description": "Not modified",
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Another reading is being prepared",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
             "headers": {
               "X-Mock-Today": {
                 "schema": {
@@ -7131,8 +7264,12 @@
               "generation_failed",
               "absent",
               "upstream_unavailable",
-              "internal"
+              "internal",
+              "busy"
             ]
+          },
+          "blocking_job_id": {
+            "type": "string"
           },
           "detail": {
             "type": "string"
@@ -8188,12 +8325,12 @@
             }
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_046162632930"
+            "$ref": "#/components/schemas/GeneratedPart_bbfb9b59e6a2"
           },
           "day_note": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_d7e5a3a4e9d9"
+                "$ref": "#/components/schemas/GeneratedPart_bdbd840c6400"
               },
               {
                 "type": "null"
@@ -8502,7 +8639,7 @@
           "has_text"
         ]
       },
-      "GeneratedPart_046162632930": {
+      "GeneratedPart_bbfb9b59e6a2": {
         "anyOf": [
           {
             "type": "object",
@@ -8570,7 +8707,7 @@
           }
         ]
       },
-      "GeneratedPart_d7e5a3a4e9d9": {
+      "GeneratedPart_bdbd840c6400": {
         "anyOf": [
           {
             "type": "object",
@@ -8697,7 +8834,7 @@
             "$ref": "#/components/schemas/MoonInfo"
           },
           "today": {
-            "$ref": "#/components/schemas/GeneratedPart_4d2143258e20"
+            "$ref": "#/components/schemas/GeneratedPart_d3da6a981b06"
           },
           "next_up": {
             "type": "array",
@@ -8719,7 +8856,7 @@
           "next_up"
         ]
       },
-      "GeneratedPart_4d2143258e20": {
+      "GeneratedPart_d3da6a981b06": {
         "anyOf": [
           {
             "type": "object",
@@ -8870,7 +9007,7 @@
             ]
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_d9339541c9df"
+            "$ref": "#/components/schemas/GeneratedPart_e1e4bbbbd973"
           },
           "highlights": {
             "type": "object",
@@ -8985,7 +9122,7 @@
           "to"
         ]
       },
-      "GeneratedPart_d9339541c9df": {
+      "GeneratedPart_e1e4bbbbd973": {
         "anyOf": [
           {
             "type": "object",
@@ -9206,7 +9343,7 @@
             }
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_8ff0a0999206"
+            "$ref": "#/components/schemas/GeneratedPart_b063f32978d8"
           },
           "highlights": {
             "type": "object",
@@ -9307,7 +9444,7 @@
           "months"
         ]
       },
-      "GeneratedPart_8ff0a0999206": {
+      "GeneratedPart_b063f32978d8": {
         "anyOf": [
           {
             "type": "object",
@@ -9418,7 +9555,7 @@
             "$ref": "#/components/schemas/ChartData"
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_c675f7c91092"
+            "$ref": "#/components/schemas/GeneratedPart_e211d43cc4ad"
           }
         },
         "required": [
@@ -9430,7 +9567,7 @@
           "reading"
         ]
       },
-      "GeneratedPart_c675f7c91092": {
+      "GeneratedPart_e211d43cc4ad": {
         "anyOf": [
           {
             "type": "object",
@@ -9555,7 +9692,7 @@
             "$ref": "#/components/schemas/ISODateTime"
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_51a02d6004ba"
+            "$ref": "#/components/schemas/GeneratedPart_1073d530f425"
           },
           "score": {
             "anyOf": [
@@ -9625,7 +9762,7 @@
           "big_three"
         ]
       },
-      "GeneratedPart_51a02d6004ba": {
+      "GeneratedPart_1073d530f425": {
         "anyOf": [
           {
             "type": "object",
@@ -9774,10 +9911,10 @@
             "type": "string"
           },
           "lines": {
-            "$ref": "#/components/schemas/FeatureCollection_97a3ee364327"
+            "$ref": "#/components/schemas/FeatureCollection_da8e50111c92"
           },
           "parans": {
-            "$ref": "#/components/schemas/FeatureCollection_df3170df015f"
+            "$ref": "#/components/schemas/FeatureCollection_47e15528cfa3"
           }
         },
         "required": [
@@ -9786,7 +9923,7 @@
           "parans"
         ]
       },
-      "FeatureCollection_97a3ee364327": {
+      "FeatureCollection_da8e50111c92": {
         "type": "object",
         "properties": {
           "type": {
@@ -9801,7 +9938,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_cd2da8a39c27"
+              "$ref": "#/components/schemas/Feature_4c199a2f139a"
             }
           }
         },
@@ -9832,7 +9969,7 @@
         ],
         "description": "Bounding box https://tools.ietf.org/html/rfc7946#section-5"
       },
-      "Feature_cd2da8a39c27": {
+      "Feature_4c199a2f139a": {
         "type": "object",
         "properties": {
           "type": {
@@ -9918,7 +10055,7 @@
         },
         "description": "A Position is an array of coordinates. https://tools.ietf.org/html/rfc7946#section-3.1.1 Array should contain between two and three elements. The previous GeoJSON specification allowed more elements (e.g., which could be used to represent M values), but the current specification only allows X, Y, and (optionally) Z to be defined.\n\nNote: the type will not be narrowed down to `[number, number] | [number, number, number]` due to marginal benefits and the large impact of breaking change.\n\nSee previous discussions on the type narrowing:\n-  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/pull/21590 Nov 2017 } \n-  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/67773 Dec 2023 } \n-  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/71441 Dec 2024 } \n\nOne can use a  {@link  https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates user-defined type guard that returns a type predicate }  to determine if a position is a 2D or 3D position."
       },
-      "FeatureCollection_df3170df015f": {
+      "FeatureCollection_47e15528cfa3": {
         "type": "object",
         "properties": {
           "type": {
@@ -9933,7 +10070,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_bf82d1c8c96d"
+              "$ref": "#/components/schemas/Feature_5c2936757627"
             }
           }
         },
@@ -9943,7 +10080,7 @@
         ],
         "description": "A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3"
       },
-      "Feature_bf82d1c8c96d": {
+      "Feature_5c2936757627": {
         "type": "object",
         "properties": {
           "type": {
@@ -10238,7 +10375,7 @@
             }
           },
           "goal_scores": {
-            "$ref": "#/components/schemas/Record_12f150c6b513"
+            "$ref": "#/components/schemas/Record_6398f2559375"
           },
           "cards": {
             "type": "array",
@@ -10247,7 +10384,7 @@
             }
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_bf39251466df"
+            "$ref": "#/components/schemas/GeneratedPart_30a57a1c137a"
           },
           "footer": {
             "type": "string"
@@ -10366,7 +10503,7 @@
           "label"
         ]
       },
-      "Record_12f150c6b513": {
+      "Record_6398f2559375": {
         "type": "object",
         "properties": {
           "love": {
@@ -10592,7 +10729,7 @@
           "text"
         ]
       },
-      "GeneratedPart_bf39251466df": {
+      "GeneratedPart_30a57a1c137a": {
         "anyOf": [
           {
             "type": "object",
@@ -10738,7 +10875,7 @@
             "$ref": "#/components/schemas/Absence"
           },
           "bands": {
-            "$ref": "#/components/schemas/Record_8b9bcb8ff27a"
+            "$ref": "#/components/schemas/Record_2969b51bd271"
           },
           "lines_crossing": {
             "type": "array",
@@ -10767,7 +10904,7 @@
             }
           },
           "best_cities": {
-            "$ref": "#/components/schemas/Record_2f91539c5997"
+            "$ref": "#/components/schemas/Record_033ec0d3b351"
           },
           "varies_by_region": {
             "type": "boolean"
@@ -10791,7 +10928,7 @@
             }
           },
           "overview": {
-            "$ref": "#/components/schemas/GeneratedPart_1111e27a2841"
+            "$ref": "#/components/schemas/GeneratedPart_bf32e89325d9"
           },
           "footer": {
             "type": "string"
@@ -10808,7 +10945,7 @@
           "footer"
         ]
       },
-      "Record_8b9bcb8ff27a": {
+      "Record_2969b51bd271": {
         "type": "object",
         "properties": {
           "love": {
@@ -10991,7 +11128,7 @@
           "relocation"
         ]
       },
-      "Record_2f91539c5997": {
+      "Record_033ec0d3b351": {
         "type": "object",
         "properties": {
           "love": {
@@ -11295,7 +11432,7 @@
           "relocation"
         ]
       },
-      "GeneratedPart_1111e27a2841": {
+      "GeneratedPart_bf32e89325d9": {
         "anyOf": [
           {
             "type": "object",
@@ -11730,7 +11867,7 @@
             }
           },
           "explanations": {
-            "$ref": "#/components/schemas/GeneratedPart_2aac3f7f2951"
+            "$ref": "#/components/schemas/GeneratedPart_70944d90d3c9"
           },
           "footer": {
             "type": "string"
@@ -11880,7 +12017,7 @@
           "band_label"
         ]
       },
-      "GeneratedPart_2aac3f7f2951": {
+      "GeneratedPart_70944d90d3c9": {
         "anyOf": [
           {
             "type": "object",
@@ -12208,7 +12345,7 @@
           "day_note": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_3106d987264a"
+                "$ref": "#/components/schemas/GeneratedPart_4cb145db3f8b"
               },
               {
                 "type": "null"
@@ -12262,7 +12399,7 @@
           "transits"
         ]
       },
-      "GeneratedPart_3106d987264a": {
+      "GeneratedPart_4cb145db3f8b": {
         "anyOf": [
           {
             "type": "object",
@@ -12425,7 +12562,7 @@
           "text": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_7053bdb2175a"
+                "$ref": "#/components/schemas/GeneratedPart_e963ee6ababe"
               },
               {
                 "type": "null"
@@ -12441,7 +12578,7 @@
           "text"
         ]
       },
-      "GeneratedPart_7053bdb2175a": {
+      "GeneratedPart_e963ee6ababe": {
         "anyOf": [
           {
             "type": "object",
@@ -12687,7 +12824,7 @@
           "text": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_0ba364afd744"
+                "$ref": "#/components/schemas/GeneratedPart_bb21fabcc0a2"
               },
               {
                 "type": "null"
@@ -12705,7 +12842,7 @@
           "text"
         ]
       },
-      "GeneratedPart_0ba364afd744": {
+      "GeneratedPart_bb21fabcc0a2": {
         "anyOf": [
           {
             "type": "object",
@@ -12888,7 +13025,7 @@
             "$ref": "#/components/schemas/Record_59346cab62ba"
           },
           "angles": {
-            "$ref": "#/components/schemas/Record_45c1a4251f2f"
+            "$ref": "#/components/schemas/Record_acf1a258f39d"
           },
           "signs": {
             "$ref": "#/components/schemas/Record_f2cc4e6e0113"
@@ -12897,7 +13034,7 @@
             "$ref": "#/components/schemas/Record_c475ac0fd7db"
           },
           "houses": {
-            "$ref": "#/components/schemas/Record_f69047c4a7f0"
+            "$ref": "#/components/schemas/Record_2260eaec4707"
           },
           "goals": {
             "$ref": "#/components/schemas/Record_0172c8cfe496"
@@ -13085,7 +13222,7 @@
           "south_node"
         ]
       },
-      "Record_45c1a4251f2f": {
+      "Record_acf1a258f39d": {
         "type": "object",
         "properties": {
           "ASC": {
@@ -13254,7 +13391,7 @@
           "opposition"
         ]
       },
-      "Record_f69047c4a7f0": {
+      "Record_2260eaec4707": {
         "type": "object",
         "additionalProperties": {
           "type": "object",
@@ -14531,10 +14668,26 @@
           "job"
         ]
       },
-      "CountryGeometry": {
-        "$ref": "#/components/schemas/FeatureCollection_dc4f7d84cb46"
+      "GenerationAbsent": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "absent"
+          },
+          "absence": {
+            "$ref": "#/components/schemas/Absence"
+          }
+        },
+        "required": [
+          "status",
+          "absence"
+        ]
       },
-      "FeatureCollection_dc4f7d84cb46": {
+      "CountryGeometry": {
+        "$ref": "#/components/schemas/FeatureCollection_a1e765c5a673"
+      },
+      "FeatureCollection_a1e765c5a673": {
         "type": "object",
         "properties": {
           "type": {
@@ -14549,7 +14702,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_51dd05808136"
+              "$ref": "#/components/schemas/Feature_f2ce4b4b3815"
             }
           }
         },
@@ -14559,7 +14712,7 @@
         ],
         "description": "A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3"
       },
-      "Feature_51dd05808136": {
+      "Feature_f2ce4b4b3815": {
         "type": "object",
         "properties": {
           "type": {
@@ -14677,9 +14830,9 @@
         "description": "MultiPolygon geometry object. https://tools.ietf.org/html/rfc7946#section-3.1.7"
       },
       "RegionGeometry": {
-        "$ref": "#/components/schemas/FeatureCollection_e916946a5c15"
+        "$ref": "#/components/schemas/FeatureCollection_9f60fe6563a8"
       },
-      "FeatureCollection_e916946a5c15": {
+      "FeatureCollection_9f60fe6563a8": {
         "type": "object",
         "properties": {
           "type": {
@@ -14694,7 +14847,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_7898f96a457d"
+              "$ref": "#/components/schemas/Feature_15604b33a688"
             }
           }
         },
@@ -14704,7 +14857,7 @@
         ],
         "description": "A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3"
       },
-      "Feature_7898f96a457d": {
+      "Feature_15604b33a688": {
         "type": "object",
         "properties": {
           "type": {

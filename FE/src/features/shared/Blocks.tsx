@@ -3,7 +3,14 @@ import type { ReactNode } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Card, Txt, Row, Choices, Chip } from "../../design/components";
+import {
+  Card,
+  Txt,
+  Row,
+  Choices,
+  Chip,
+  ErrorNotice,
+} from "../../design/components";
 import { JobProgress } from "../../design/components/JobProgress";
 import { useTheme } from "../../design/theme";
 import { useFlags } from "../../lib/flags";
@@ -28,6 +35,16 @@ export function Generated<T>({
 }) {
   const { t } = useTranslation();
   if (!part) return null;
+  if (
+    part.status === "absent" &&
+    ["generation_paused", "not_generated"].includes(part.absence.reason)
+  )
+    return (
+      <ErrorNotice
+        error={{ code: "absent", absence: part.absence }}
+        retry={part.absence.reason === "not_generated" ? retry : undefined}
+      />
+    );
   if (part.status === "absent")
     return (
       <Txt muted>
@@ -41,17 +58,11 @@ export function Generated<T>({
       </Txt>
     );
   if (part.status === "ready") return <>{children(part)}</>;
-  const expired =
-    part.status === "pending" &&
-    Date.now() - Date.parse(part.job.created_at) >= 600000;
   return (
     <JobProgress
       job={part.status === "pending" ? part.job : undefined}
-      failed={part.status === "failed" || expired}
-      slow={
-        part.status === "pending" &&
-        Date.now() - Date.parse(part.job.created_at) >= 180000
-      }
+      failed={part.status === "failed"}
+      error={part.status === "failed" ? part.error : undefined}
       retry={retry}
     />
   );

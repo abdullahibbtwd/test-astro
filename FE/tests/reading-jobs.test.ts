@@ -67,7 +67,7 @@ test("a deleted profile does not receive a late reading and an interrupted job n
     });
     const restarted = new ReadingJobs(store, undefined, false);
     assert.equal(restarted.get(profile, "en").job!.status, "failed");
-    assert.throws(() => restarted.get(profile, "en", true));
+    assert.equal(restarted.get(profile, "en", true).absence?.reason, "generation_paused");
   } finally {
     await jobs.close();
     store.close();

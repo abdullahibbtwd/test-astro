@@ -16,6 +16,7 @@ export function Glyph({
   const color = overrideColor ?? theme.ink;
   const key =
     name === "north_node" ? "node-n" : name === "south_node" ? "node-s" : name;
+  if (!definitions.includes(`id="g-${key}"`)) return null;
   return (
     <SvgXml
       accessible={false}

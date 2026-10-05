@@ -70,14 +70,14 @@ function expression(s: any): string {
   throw new Error(`Unsupported schema: ${JSON.stringify(s)}`);
 }
 const source =
-  `// Generated from openapi.yaml. Do not edit.\nimport { z } from 'zod';\nexport const schemas: Record<string,z.ZodTypeAny> = {};\n` +
+  `// Generated from openapi.yaml. Do not edit.\nimport { z } from 'zod';\nimport { validateContract } from '../contract-validation';\nexport const schemas: Record<string,z.ZodTypeAny> = {};\n` +
   names
     .map(
       (name) =>
         `schemas[${JSON.stringify(name)}] = ${expression(api.components.schemas[name])};`,
     )
     .join("\n") +
-  `\nexport function validate<T = unknown>(name: string, value: unknown): T {\n const schema = schemas[name];\n if (!schema) throw new Error('Unknown contract schema: '+name);\n return schema.parse(value) as T;\n}\n`;
+  `\nexport function validate<T = unknown>(name: string, value: unknown): T {\n const schema = schemas[name];\n if (!schema) throw new Error('Unknown contract schema: '+name);\n return validateContract<T>(name, value, schema);\n}\n`;
 fs.mkdirSync("src/api/zod", { recursive: true });
 fs.writeFileSync("src/api/zod/index.ts", source);
 console.log(`Generated ${names.length} Zod schemas`);

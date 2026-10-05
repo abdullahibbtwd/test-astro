@@ -1,3 +1,6 @@
+import { ApiError, NetworkError } from "./errors";
+export { ApiError, NetworkError } from "./errors";
+import type { Problem } from "../../contracts/spec-types";
 import { useCapabilities } from "../lib/capabilities";
 import createClient from "openapi-fetch";
 import type { paths } from "./schema";
@@ -10,15 +13,6 @@ export const apiBase =
 let session: Session | null = null;
 let refreshing: Promise<boolean> | null = null;
 export let mockToday: string | undefined;
-export class ApiError extends Error {
-  constructor(
-    public status: number,
-    public code: string,
-    public retryAfter = 0,
-  ) {
-    super(code);
-  }
-}
 export async function setSession(value: Session | null) {
   session = value;
   if (value) await tokenStorage.set(value);
@@ -95,18 +89,23 @@ export async function request<T>(
 ): Promise<T> {
   const url = new URL(`${apiBase}${path}`);
   url.searchParams.set("lang", useApp.getState().language);
-  const response = await client.request(
-    method as never,
-    path.split("?")[0] as never,
-    {
-      params: { query: Object.fromEntries(url.searchParams) },
-      body,
-      headers: {
-        ...(body ? { "Content-Type": "application/json" } : {}),
-        ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
-      },
-    } as never,
-  );
+  const response = await client
+    .request(
+      method as never,
+      path.split("?")[0] as never,
+      {
+        params: { query: Object.fromEntries(url.searchParams) },
+        body,
+        headers: {
+          ...(body ? { "Content-Type": "application/json" } : {}),
+          ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
+        },
+      } as never,
+    )
+    .catch((error: unknown) => {
+      if (error instanceof TypeError) throw new NetworkError();
+      throw error;
+    });
   if (response.response.status === 401 && retry && !path.startsWith("/auth/")) {
     if (await refreshSession())
       return request(method, path, schema, body, false, idempotencyKey);
@@ -121,14 +120,34 @@ export async function request<T>(
       if (path.includes("/chart/elements"))
         useCapabilities.getState().mark("elementNotes");
     }
-    const error = response.error as { code?: string } | undefined;
+    const error = response.error as Problem | undefined;
     throw new ApiError(
       response.response.status,
       error?.code ?? "upstream_unavailable",
       Number(response.response.headers.get("Retry-After") ?? 0),
+      error,
     );
   }
   const data: unknown = response.data;
+  if (
+    data &&
+    typeof data === "object" &&
+    "status" in data &&
+    data.status === "absent" &&
+    "absence" in data
+  ) {
+    const absence = validate<{ status: "absent"; absence: Problem["absence"] }>(
+      "GenerationAbsent",
+      data,
+    );
+    throw new ApiError(200, "absent", 0, {
+      type: "about:blank",
+      title: "Reading unavailable",
+      status: 200,
+      code: "absent",
+      absence: absence.absence,
+    });
+  }
   if (schema?.endsWith("[]") && Array.isArray(data))
     return data.map((value) => validate(schema.slice(0, -2), value)) as T;
   return schema && data !== undefined ? validate<T>(schema, data) : (data as T);

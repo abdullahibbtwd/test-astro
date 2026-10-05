@@ -4,7 +4,10 @@ import { useQueries } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { queryClient } from "../api/query";
+import { ApiError } from "../api/errors";
 import { request } from "../api/client";
+import { jobAgeMs } from "../api/job-timing";
+import { pollingDelay } from "../api/job-policy";
 import { pendingJobs } from "../api/resource";
 import { useApp } from "./state";
 import { Txt, Button, Choices } from "../design/components";
@@ -80,11 +83,7 @@ export function JobLifecycle() {
               ? [data.job as Job]
               : pendingJobs(data);
           return jobs
-            .filter(
-              (j) =>
-                !seen.current.has(j.job_id) &&
-                Date.now() - Date.parse(j.created_at) < 600000,
-            )
+            .filter((j) => !seen.current.has(j.job_id))
             .map((job) => ({
               job,
               key: q.queryKey,
@@ -130,26 +129,44 @@ export function JobLifecycle() {
       queryKey: ["job", app.language, p.job.job_id],
       queryFn: () => request<Job>("GET", `/jobs/${p.job.job_id}`, "Job"),
       enabled: active && app.signedIn,
-      refetchInterval: (q: { state: { data?: Job } }) =>
-        Date.now() - Date.parse(p.job.created_at) >= 600000 ||
+      refetchInterval: (q: {
+        state: { data?: Job; dataUpdateCount: number; error: unknown };
+      }) =>
+        (q.state.error instanceof ApiError && q.state.error.status === 404) ||
         q.state.data?.status === "succeeded" ||
         q.state.data?.status === "failed"
           ? false
-          : 4000,
+          : pollingDelay(
+              Math.max(0, q.state.dataUpdateCount - 1),
+              jobAgeMs(p.job),
+            ),
+      refetchOnMount: "always" as const,
       refetchIntervalInBackground: false,
     })),
   });
-  const statuses = polls.map((p) => p.data?.status).join();
+  const statuses = polls
+    .map((p) =>
+      p.error instanceof ApiError && p.error.status === 404
+        ? "missing"
+        : p.data?.status,
+    )
+    .join();
   useEffect(() => {
     pending.forEach((p, i) => {
       const status = statuses.split(",")[i];
       if (
-        (status !== "succeeded" && status !== "failed") ||
+        (status !== "succeeded" &&
+          status !== "failed" &&
+          status !== "missing") ||
         seen.current.has(p.job.job_id)
       )
         return;
       seen.current.add(p.job.job_id);
-      void queryClient.invalidateQueries({ queryKey: p.key, exact: true });
+      void queryClient.invalidateQueries({
+        queryKey: p.key,
+        exact: true,
+        refetchType: "none",
+      });
       if (status === "succeeded") {
         setToast(p.route);
         AccessibilityInfo.announceForAccessibility(t("reportReady"));

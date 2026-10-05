@@ -1,3 +1,4 @@
+import { busyProblem, paused, problemError } from "./job-problems";
 import { randomUUID } from "node:crypto";
 import { Store } from "./store";
 import { generateReading } from "./readings";
@@ -10,6 +11,12 @@ import type {
 } from "../contracts/spec-types";
 export class ReadingJobs {
   private running = new Set<Promise<void>>();
+  private blockingJob() {
+    return this.store
+      .list<{ job: Job }>("reading-job:")
+      .find((r) => r.job.status === "running" || r.job.status === "queued")!.job
+      .job_id;
+  }
   constructor(
     private store: Store,
     private generate = generateReading,
@@ -45,7 +52,7 @@ export class ReadingJobs {
     profile: BirthProfile,
     lang: Lang,
     retry = false,
-  ): { reading?: NatalReading; job?: Job } {
+  ): { reading?: NatalReading; job?: Job; absence?: { reason: string } } {
     const key = profile.chart_key;
     const cached = this.store.get("reading:" + key);
     if (cached)
@@ -53,15 +60,8 @@ export class ReadingJobs {
     const previous = this.store.get("reading-job:" + key);
     if (previous && !(retry && previous.job.status === "failed"))
       return { job: previous.job };
-    if (!this.enabled)
-      throw Object.assign(new Error("Paid generation disabled"), {
-        statusCode: 503,
-      });
-    // One paid report at a time; all provider calls also share the durable dollar cap.
-    if (this.running.size)
-      throw Object.assign(new Error("Another reading is running"), {
-        statusCode: 503,
-      });
+    if (!this.enabled) return { absence: paused().absence };
+    if (this.running.size) throw problemError(busyProblem(this.blockingJob()));
     const created = new Date().toISOString();
     const job: Job = {
       job_id: randomUUID(),
@@ -116,13 +116,8 @@ export class ReadingJobs {
             updated_at: new Date().toISOString(),
             stages: [{ name: "reading", status: "ok" }],
           });
-        } catch (error) {
-          save(
-            this.failed(
-              job,
-              error instanceof Error ? error.message : "generation_failed",
-            ),
-          );
+        } catch {
+          save(this.failed(job, "generation_failed"));
         }
       })
       .finally(() => this.running.delete(task));

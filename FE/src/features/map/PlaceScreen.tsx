@@ -85,7 +85,7 @@ export default function PlaceScreen() {
           <Txt kind="title">{t("otherAreas")}</Txt>
           <Choices>
             {(Object.keys(d.goal_scores) as Goal[])
-              .filter((g) => !d.cards.some((c) => c.goal === g))
+              .filter((g) => !!catalogue.goals[g] && !d.cards.some((c) => c.goal === g))
               .map((g) => (
                 <Chip
                   key={g}

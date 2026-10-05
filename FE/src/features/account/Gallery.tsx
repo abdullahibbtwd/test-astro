@@ -1,3 +1,8 @@
+import { useLocalSearchParams } from "expo-router";
+import { JobProgress } from "../../design/components/JobProgress";
+import { NetworkError } from "../../api/errors";
+import type { Job } from "../../../contracts/spec-types";
+import { diagnosticReports } from "../../lib/telemetry";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,10 +20,50 @@ import {
 } from "../../design/components";
 import { useApp } from "../../lib/state";
 export default function Gallery() {
+  const { fx } = useLocalSearchParams<{ fx?: string }>();
   const { t } = useTranslation(),
     app = useApp(),
     [value, setValue] = useState("");
   if (!__DEV__) return null;
+  if (fx) {
+    const job: Job = {
+      job_id: "gallery",
+      kind: "natal_reading",
+      status: "running",
+      created_at: new Date(
+        Date.now() - (fx === "very-slow" ? 30 : 4) * 60_000,
+      ).toISOString(),
+      updated_at: new Date().toISOString(),
+      stages: [],
+      error: null,
+      eta_seconds: null,
+    };
+    const errors: Record<string, unknown> = {
+      offline: new NetworkError(),
+      paused: { absence: { reason: "generation_paused" } },
+      busy: { code: "busy" },
+      server: { status: 503 },
+    };
+    return (
+      <Screen back title={t("gallery")}>
+        <Choices>
+          {(["light", "dark"] as const).map((theme) => (
+            <Chip
+              key={theme}
+              label={t(theme)}
+              selected={app.theme === theme}
+              onPress={() => app.update({ theme })}
+            />
+          ))}
+        </Choices>
+        {fx === "slow" || fx === "very-slow" ? (
+          <JobProgress job={job} retry={() => {}} />
+        ) : (
+          <ErrorNotice error={errors[fx]} retry={() => {}} />
+        )}
+      </Screen>
+    );
+  }
   return (
     <Screen back title={t("gallery")}>
       <Choices>
@@ -51,6 +96,12 @@ export default function Gallery() {
       <Button disabled label={t("save")} onPress={() => {}} />
       <Button loading label={t("save")} onPress={() => {}} />
       <Button danger label={t("delete")} onPress={() => {}} />
+      <Txt>{t("diagnostics")}</Txt>
+      {diagnosticReports().map((report, i) => (
+        <Txt key={i} kind="caption">
+          {JSON.stringify(report)}
+        </Txt>
+      ))}
       <Progress step={3} total={9} />
       <Skeleton />
       <ErrorNotice error={true} retry={() => {}} />

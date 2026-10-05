@@ -1,3 +1,4 @@
+import { busyProblem, paused } from "./job-problems";
 import { createHash, randomUUID } from "node:crypto";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
@@ -31,6 +32,12 @@ const hash = (value: unknown) =>
   createHash("sha256").update(JSON.stringify(value)).digest("hex");
 export class ForecastJobs {
   private running = new Set<Promise<void>>();
+  private blockingJob() {
+    return this.store
+      .list<{ job: Job }>("forecast-job:")
+      .find((r) => r.job.status === "running" || r.job.status === "queued")!.job
+      .job_id;
+  }
   constructor(
     private store: Store,
     private enabled = false,
@@ -133,7 +140,15 @@ export class ForecastJobs {
   async close() {
     await Promise.all(this.running);
   }
-  get(context: ForecastContext, lang: Lang, retry = false): any {
+  peek(context: ForecastContext, lang: Lang): any {
+    return this.get(context, lang, false, true);
+  }
+  get(
+    context: ForecastContext,
+    lang: Lang,
+    retry = false,
+    peekOnly = false,
+  ): any {
     const key = hash(context),
       cached = this.store.get("forecast-reading:" + key);
     if (cached) {
@@ -154,17 +169,13 @@ export class ForecastJobs {
       return previous.status === "failed"
         ? { status: "failed", error: previous.error }
         : { status: "pending", job: previous };
-    if (!this.enabled)
+    if (peekOnly)
       return { status: "absent", absence: { reason: "not_generated" } };
+    if (!this.enabled) return paused();
     if (this.running.size)
       return {
         status: "failed",
-        error: {
-          type: "about:blank",
-          title: "Another forecast is being prepared",
-          status: 503,
-          code: "generation_failed",
-        },
+        error: busyProblem(this.blockingJob()),
       };
     const created = new Date().toISOString();
     const job: Job = {

@@ -196,7 +196,7 @@ export default function MapScreen() {
             <Txt
               key={body}
               style={{
-                color: planetColors[body as keyof typeof planetColors][0],
+                color: planetColors[body as keyof typeof planetColors]?.[0] ?? "#6B7180",
               }}
             >
               {catalogue.bodies[body]}
@@ -225,7 +225,7 @@ export default function MapScreen() {
             {(["ASC", "DSC", "MC", "IC"] as Angle[]).map((angle) => (
               <Row
                 key={angle}
-                label={catalogue.angles[angle].line}
+                label={catalogue.angles[angle]?.line ?? ""}
                 onPress={() => line(body, angle)}
               />
             ))}

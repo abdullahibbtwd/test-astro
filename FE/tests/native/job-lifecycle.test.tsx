@@ -51,6 +51,7 @@ test("completion notifier ignores render-time observer events and opens the comp
   expect(queryClient.invalidateQueries).toHaveBeenCalledWith({
     queryKey: key,
     exact: true,
+    refetchType: "none",
   });
   await view.unmount();
   queryClient.clear();

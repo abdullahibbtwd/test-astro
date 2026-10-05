@@ -180,7 +180,7 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
             {(["ASC", "DSC", "MC", "IC"] as const).map((axis) => (
               <Chip
                 key={axis}
-                label={c.angles[axis].name}
+                label={c.angles[axis]?.name ?? ""}
                 selected={false}
                 onPress={() => select({ kind: "axis", axis })}
               />

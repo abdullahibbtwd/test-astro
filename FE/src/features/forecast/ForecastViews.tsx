@@ -136,14 +136,16 @@ export function DayView({
           <ItemRows profile={profile} items={data.events} />
           <MoonBlock moon={data.moon} />
           <Choices>
-            {data.retrograde.map((body) => (
-              <Chip
-                key={body}
-                label={`${cat.data.bodies[body]} · ${cat.data.terms.retrograde}`}
-                selected={false}
-                onPress={() => router.push("/(tabs)/chart")}
-              />
-            ))}
+            {data.retrograde
+              .filter((body) => !!cat.data.bodies[body])
+              .map((body) => (
+                <Chip
+                  key={body}
+                  label={`${cat.data.bodies[body]} · ${cat.data.terms.retrograde}`}
+                  selected={false}
+                  onPress={() => router.push("/(tabs)/chart")}
+                />
+              ))}
           </Choices>
           {data.advice && (
             <Card>

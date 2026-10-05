@@ -13,12 +13,17 @@ test("birth validation rejects missing time, rollover dates and future dates", (
   assert.equal(upper("istanbul", "tr"), "İSTANBUL");
   assert.match(formatDate("2000-01-01", "en"), /January 1, 2000/);
 });
-test("job polling follows required backoff and expires at ten minutes", () => {
+test("job polling backs off without turning elapsed time into failure", () => {
   assert.deepEqual(
-    [0, 1, 2, 3, 4].map(pollingDelay),
+    [0, 1, 2, 3, 4].map((n) => pollingDelay(n, 0)),
     [1000, 2000, 3000, 4000, 4000],
   );
-  assert.equal(jobState(undefined, 0, 600000), "failed");
+  assert.equal(pollingDelay(4, 90_000), 4000);
+  assert.equal(pollingDelay(4, 5 * 60_000), 10000);
+  assert.equal(pollingDelay(4, 25 * 60_000), 30000);
+  assert.equal(jobState(undefined), "loading");
+  assert.equal(jobState({ status: "running" } as never), "pending");
+  assert.equal(jobState({ status: "succeeded" } as never), "ready");
 });
 test("telemetry omits birth data and strips personal route IDs", () => {
   const event = safeEvent("screen_view", {

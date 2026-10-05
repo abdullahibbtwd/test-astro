@@ -1,3 +1,8 @@
+import { useEffect, useState } from "react";
+import { onlineManager } from "@tanstack/react-query";
+import { describeError } from "../../api/errors";
+import { ContractError } from "../../api/contract-validation";
+import { reportError } from "../../lib/telemetry";
 import {
   Pressable,
   Text,
@@ -341,13 +346,55 @@ export function ErrorNotice({
   retry?: () => void;
 }) {
   const { t } = useTranslation();
-  return error ? (
+  const [online, setOnline] = useState(onlineManager.isOnline());
+  const description = describeError(error, online);
+  const [remaining, setRemaining] = useState(0);
+  useEffect(() => onlineManager.subscribe(setOnline), []);
+  useEffect(() => {
+    setRemaining(description.retryAfterSec ?? 0);
+    const timer = setInterval(
+      () => setRemaining((n) => Math.max(0, n - 1)),
+      1000,
+    );
+    return () => clearInterval(timer);
+  }, [error, description.retryAfterSec]);
+  useEffect(() => {
+    if (
+      error &&
+      (description.kind === "invalid" || error instanceof ContractError)
+    )
+      reportError(error);
+  }, [error, description.kind]);
+  if (!error || description.kind === "unauthorized") return null;
+  return (
     <Card>
-      <Txt>{t("error")}</Txt>
-      {retry && <Button secondary label={t("retry")} onPress={retry} />}
+      <Txt>{t(description.titleKey)}</Txt>
+      {description.action === "back" && (
+        <Button secondary label={t("back")} onPress={() => router.back()} />
+      )}
+      {retry &&
+        ["retry", "refresh", "request"].includes(description.action) && (
+          <Button
+            secondary
+            disabled={remaining > 0}
+            label={
+              remaining > 0
+                ? t("retryCountdown", { seconds: remaining })
+                : t(
+                    description.action === "refresh"
+                      ? "refresh"
+                      : description.action === "request"
+                        ? "requestReading"
+                        : "retry",
+                  )
+            }
+            onPress={retry}
+          />
+        )}
     </Card>
-  ) : null;
+  );
 }
+
 export function Skeleton() {
   const c = useTheme();
   return (

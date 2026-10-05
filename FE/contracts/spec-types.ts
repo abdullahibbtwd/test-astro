@@ -66,7 +66,8 @@ export interface Problem {
   type: string; title: string; status: number;
   code: 'validation_error' | 'unauthorized' | 'forbidden' | 'not_found' | 'conflict'
       | 'out_of_range' | 'rate_limited' | 'generation_failed' | 'absent'
-      | 'upstream_unavailable' | 'internal';
+      | 'upstream_unavailable' | 'internal' | 'busy';
+  blocking_job_id?: string;
   detail?: string;                               // developer text, never shown to users
   fields?: { field: string; issue: string }[];   // validation_error
   absence?: Absence;                             // code = 'absent'
@@ -517,5 +518,6 @@ export interface ThreadPage { items: ThreadSummary[]; next_cursor: string | null
 export interface FeedbackInput { rating: 'up' | 'down'; reason?: string }
 export interface ReportPage { items: ReportRef[]; next_cursor: string | null }
 export interface JobAccepted { job: Job }
+export interface GenerationAbsent { status: "absent"; absence: Absence }
 export type CountryGeometry = GeoJSON.FeatureCollection<GeoJSON.Polygon | GeoJSON.MultiPolygon, { iso2: string; name_tr: string; name_en: string }>;
 export type RegionGeometry = GeoJSON.FeatureCollection<GeoJSON.Polygon | GeoJSON.MultiPolygon, { admin1_id: string; iso2: string; name_tr: string; name_en: string }>;

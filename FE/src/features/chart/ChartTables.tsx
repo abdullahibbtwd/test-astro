@@ -27,21 +27,23 @@ export function ChartTables({
   if (tab === "planets")
     return (
       <View>
-        {chart.points.map((point) => (
-          <Row
-            key={point.body}
-            leading={<Glyph name={point.body} />}
-            label={c.bodies[point.body]}
-            detail={[
-              `${degrees(point.degree_in_sign)} ${c.signs[point.sign]}`,
-              c.houses[String(point.house)]?.ordinal,
-              isRetrograde(point) ? c.terms.retrograde : null,
-            ]
-              .filter(Boolean)
-              .join(" · ")}
-            onPress={() => select({ kind: "body", body: point.body })}
-          />
-        ))}
+        {chart.points
+          .filter((point) => !!c.bodies[point.body])
+          .map((point) => (
+            <Row
+              key={point.body}
+              leading={<Glyph name={point.body} />}
+              label={c.bodies[point.body]}
+              detail={[
+                `${degrees(point.degree_in_sign)} ${c.signs[point.sign]}`,
+                c.houses[String(point.house)]?.ordinal,
+                isRetrograde(point) ? c.terms.retrograde : null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
+              onPress={() => select({ kind: "body", body: point.body })}
+            />
+          ))}
       </View>
     );
   if (tab === "houses")

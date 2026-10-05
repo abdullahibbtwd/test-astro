@@ -18,6 +18,7 @@ export function AspectGlyph({
   size?: number;
 }) {
   const color = useTheme().ink;
+  if (!paths[type]) return null;
   return (
     <SvgXml
       accessible={false}

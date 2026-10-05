@@ -1,3 +1,4 @@
+import { busyProblem, paused } from "./job-problems";
 import { createHash, randomUUID } from "node:crypto";
 import { fileURLToPath, URL } from "node:url";
 import { Store } from "./store";
@@ -59,6 +60,12 @@ function apply(context: MapContext, facts: any, value: any) {
 }
 export class MapJobs {
   private running = new Set<Promise<void>>();
+  private blockingJob() {
+    return this.store
+      .list<{ job: Job }>("map-reading-job:")
+      .find((r) => r.job.status === "running" || r.job.status === "queued")!.job
+      .job_id;
+  }
   constructor(
     private store: Store,
     private enabled = false,
@@ -122,18 +129,13 @@ export class MapJobs {
             ? { status: "failed", error: previous.error }
             : { status: "pending", job: previous },
       };
-    if (!this.enabled) return facts;
+    if (!this.enabled) return { ...facts, [field(context)]: paused() };
     if (this.running.size)
       return {
         ...facts,
         [field(context)]: {
           status: "failed",
-          error: {
-            type: "about:blank",
-            title: "Another map reading is being prepared",
-            status: 503,
-            code: "generation_failed",
-          },
+          error: busyProblem(this.blockingJob()),
         },
       };
     const created = new Date().toISOString();

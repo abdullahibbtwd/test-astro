@@ -1,3 +1,10 @@
+import {
+  CACHE_MAX_AGE,
+  CACHE_BUSTER,
+  shouldPersistQuery,
+  serializeCache,
+} from "../src/api/cache-policy";
+import { initTelemetry, reportError } from "../src/lib/telemetry";
 import { JobLifecycle } from "../src/lib/JobLifecycle";
 import "../src/i18n";
 import "../src/lib/notification-background";
@@ -21,9 +28,11 @@ import { queryClient } from "../src/api/query";
 import i18n from "../src/i18n";
 import { useTheme } from "../src/design/theme";
 void SplashScreen.preventAutoHideAsync();
+void initTelemetry();
 const persister = createSyncStoragePersister({
   storage: privateStorage,
   key: "query-cache",
+  serialize: serializeCache,
 });
 export default function RootLayout() {
   const [loaded, fontError] = useFonts({
@@ -43,7 +52,10 @@ export default function RootLayout() {
         await restoreSession();
         setReady(true);
       })
-      .catch(() => setError(true));
+      .catch((error) => {
+        reportError(error, { area: "storage" });
+        setError(true);
+      });
     const listener = AppState.addEventListener("change", (state) =>
       focusManager.setFocused(state === "active"),
     );
@@ -100,8 +112,12 @@ export default function RootLayout() {
           client={queryClient}
           persistOptions={{
             persister,
-            maxAge: 86400000,
-            buster: "phase1-map-readings-v1",
+            maxAge: CACHE_MAX_AGE,
+            buster: CACHE_BUSTER,
+            dehydrateOptions: {
+              shouldDehydrateQuery: (q) =>
+                shouldPersistQuery(q, queryClient.getQueryCache().getAll()),
+            },
           }}
         >
           <BottomSheetModalProvider>

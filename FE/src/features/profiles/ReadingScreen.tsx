@@ -85,6 +85,7 @@ function ReadingContent({
           <Skeleton />
         ) : (
           <JobProgress
+            error={reading.error}
             job={reading.job}
             slow={reading.slow}
             failed={reading.state === "failed"}

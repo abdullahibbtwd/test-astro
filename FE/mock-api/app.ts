@@ -509,6 +509,7 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
               )
                 return fixtureOnly();
               result = fixture(`home.${lang}`);
+              if (q.variant === "not_generated") result.today = { status: "absent", absence: { reason: "not_generated" } };
               result.greeting_name = me.display_name;
               break;
             case "get /profiles/{id}/forecast/day":
