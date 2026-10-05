@@ -335,6 +335,7 @@ export class AskService {
             this.store.put("ask-audit:" + answer.message_id, {
               calls: audit.calls ?? [],
               plan: audit.plan,
+              plan_drops: audit.plan_drops ?? [],
               validation: audit.validation,
               usage: audit.usage,
               answer_kind: final.message.answer_kind,

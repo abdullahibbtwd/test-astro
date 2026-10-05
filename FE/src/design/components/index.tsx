@@ -302,7 +302,7 @@ export function Row({
   );
 }
 export function Field({ label, ...props }: TextInputProps & { label: string }) {
-  return <View style={{ gap: dsSpace[2] }}><AppText variant="label" color="inkSoft">{label}</AppText><TextInputField {...props} value={props.value ?? ""} onChangeText={props.onChangeText ?? (() => {})} accessibilityLabel={label} /></View>;
+  return <View style={{ gap: dsSpace[2] }}><AppText variant="label" color="inkSoft">{label}</AppText><View style={{ flexDirection: "row" }}><TextInputField {...props} value={props.value ?? ""} onChangeText={props.onChangeText ?? (() => {})} accessibilityLabel={label} /></View></View>;
 }
 
 export function Chip({

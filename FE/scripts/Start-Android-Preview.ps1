@@ -1,8 +1,16 @@
-param([switch]$RealCharts, [switch]$EnableReadings, [switch]$RestartApi)
+param([switch]$RealCharts, [switch]$EnableReadings, [switch]$RestartApi, [switch]$EnableAstrologist)
 $ErrorActionPreference = 'Stop'
 if ($EnableReadings -and !$RealCharts) { throw 'EnableReadings requires RealCharts' }
 $frontend = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $project = (Resolve-Path (Join-Path $frontend '..')).Path
+$env:ASTRO_PA_ROOT = $project
+$env:ASTRO_ASK_ENABLED = if ($EnableAstrologist) { '1' } else { '0' }
+if ($EnableAstrologist) {
+ if (!$RealCharts -or !$EnableReadings) { throw 'EnableAstrologist requires RealCharts and EnableReadings.' }
+ $missingAgentFiles = @('ask_bridge.py', 'astrologist/pa_engine.py') | Where-Object { !(Test-Path -LiteralPath (Join-Path $project $_)) }
+ if ($missingAgentFiles) { throw "Astro agent is incomplete in ${project}: missing $($missingAgentFiles -join ', '). Copy the completed backend before enabling chat." }
+ if ((Get-NetTCPConnection -LocalPort 4020 -State Listen -ErrorAction SilentlyContinue) -and !$RestartApi) { throw 'Use RestartApi when enabling the Astro agent so the running API receives its configuration.' }
+}
 $tools = Join-Path $project '.tooling'
 $env:JAVA_HOME = (Get-ChildItem $tools -Directory -Filter 'jdk-*' | Select-Object -First 1).FullName
 $env:ANDROID_HOME = Join-Path $tools 'android'

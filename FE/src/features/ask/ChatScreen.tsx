@@ -395,7 +395,6 @@ export default function ChatScreen() {
         windowSize={7}
         ListEmptyComponent={
           <>
-            {" "}
             {!messages.length &&
               !query.isPending &&
               [1, 2, 3, 4, 5, 6].map((number) => (

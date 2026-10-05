@@ -1,0 +1,121 @@
+{
+  "crisis_support": {
+    "tr": "Bunu yaşadığınız için gerçekten üzgünüm. Bununla tek başınıza yüzleşmek zorunda değilsiniz: lütfen güvendiğiniz biriyle ya da bir ruh sağlığı uzmanıyla konuşun. Acil bir tehlike varsa hemen 112'yi arayın.",
+    "en": "I'm really sorry you're going through this. You don't have to face it alone: please reach out to someone you trust or to a mental health professional. If you're in immediate danger, call 112 now."
+  },
+  "decline_harm": {
+    "tr": "Ölüm, hastalık, kaza ya da zarar hakkında öngörüde bulunmuyorum. İsterseniz bir dönemin sizin için duygusal olarak neyi öne çıkardığına birlikte bakabiliriz.",
+    "en": "I don't make predictions about death, illness, accidents or harm. If you like, we can look at what a period brings forward for you emotionally."
+  },
+  "decline_medical": {
+    "tr": "Sağlık ya da tıbbi konularda yardımcı olamıyorum. Sağlığınızla ilgili her konuda lütfen bir doktora veya uzman birine danışın. İsterseniz haritanızın günlük ritimleriniz ve alışkanlıklarınız hakkında söylediklerine bakabiliriz.",
+    "en": "I can't help with health or medical questions. For anything about your health, please talk to a doctor or another qualified professional. If you like, we can look at what your chart says about your daily rhythms and habits."
+  },
+  "decline_legal": {
+    "tr": "Hukuki tavsiye veremiyorum. Hukuki konular için lütfen bir avukata danışın. İsterseniz bu dönemin sizin için hangi temaları öne çıkardığına bakabiliriz.",
+    "en": "I can't give legal advice. For legal matters, please consult a lawyer. If you like, we can look at the themes this period brings forward for you."
+  },
+  "decline_financial": {
+    "tr": "Finansal ya da yatırım tavsiyesi veremiyorum. Bu tür kararlar için yetkin bir finans danışmanına başvurmanız en doğrusu. İsterseniz haritanızın ve takviminizin para konularında genel olarak neyi öne çıkardığına bakabiliriz.",
+    "en": "I can't give financial or investment advice. For decisions like this, a qualified financial adviser is the right person to ask. If you like, we can look at what your chart and calendar bring forward for money matters in general."
+  },
+  "decline_birth_data": {
+    "tr": "Gizlilik ve doğruluk için sohbette doğum bilgisi almıyorum. Kişiyi Haritalarım'a eklerseniz haritasına birlikte bakabiliriz.",
+    "en": "For privacy and accuracy, I don't take birth details in the chat. Add the person to My Charts and we can look at their chart together.",
+    "links": [
+      "add_person"
+    ]
+  },
+  "decline_third_party": {
+    "tr": "Yalnızca Haritalarım'a kayıtlı kişilerin hesaplanmış haritaları üzerinden yorum yapabiliyorum. Başka biri hakkında sormak isterseniz önce onu Haritalarım'a ekleyin.",
+    "en": "I can only talk about people saved in My Charts, using their computed charts. To ask about someone else, add them to My Charts first.",
+    "links": [
+      "add_person"
+    ]
+  },
+  "decline_non_astrology": {
+    "tr": "Haritanız, önünüzdeki dönem, yerler ve ilişkileriniz hakkındaki sorular için buradayım. Bu konularda dilediğinizi sorabilirsiniz.",
+    "en": "I'm here for questions about your chart, the time ahead, places and your relationships. Ask me anything along those lines."
+  },
+  "decline_past": {
+    "tr": "Son yedi günü ve önümüzdeki on iki ayı inceleyebiliyorum. Daha eski dönemler henüz kapsamımda değil.",
+    "en": "I can look at the last seven days and the next twelve months. Earlier periods aren't covered yet."
+  },
+  "out_of_range_future": {
+    "tr": "Takviminiz önümüzdeki on iki ayı, En İyi Günler ise önümüzdeki doksan günü kapsıyor. Bu aralıktaki bir tarih için sorabilirsiniz.",
+    "en": "Your calendar covers the next twelve months, and Best Days the next ninety days. Ask me about a date within that range."
+  },
+  "no_data": {
+    "tr": "Bu soru için haritanızda dayanabileceğim bir veri bulamadım. Soruyu biraz farklı sorabilir misiniz?",
+    "en": "I couldn't find anything in your chart data to base an answer on for that. Could you ask it a little differently?"
+  },
+  "not_ready": {
+    "tr": "Bu soru için verileriniz hâlâ hazırlanıyor. Lütfen bir dakika sonra yeniden sorun.",
+    "en": "Your data for this is still being prepared. Please ask again in a minute."
+  },
+  "smalltalk_hello": {
+    "tr": "Merhaba! Haritanız, önünüzdeki günler, yerler ya da ilişkileriniz hakkında dilediğinizi sorabilirsiniz.",
+    "en": "Hello! Ask me anything about your chart, the days ahead, places or your relationships."
+  },
+  "smalltalk_thanks": {
+    "tr": "Rica ederim. Başka bir şeye bakmak istediğinizde buradayım.",
+    "en": "You're welcome. I'm here whenever you want to look at something else."
+  },
+  "ai_identity": {
+    "tr": "Ben bir yapay zekâ asistanıyım. Hesaplanmış harita verilerinizi açıklarım; gezegen konumlarını kendim hesaplamam ya da uydurmam.",
+    "en": "I'm an AI assistant. I explain your computed chart data; I don't calculate planetary positions myself or make them up."
+  },
+  "clarify_rephrase": {
+    "tr": "Sorunuzu tam anlayamadım. Biraz farklı ifade edebilir misiniz?",
+    "en": "I'm not sure I understood. Could you put your question another way?"
+  },
+  "clarify_place": {
+    "tr": "Hangi yeri kastediyorsunuz: {options}?",
+    "en": "Which place do you mean: {options}?"
+  },
+  "clarify_place_missing": {
+    "tr": "Hangi yere bakmamı istersiniz? Şehrin adını yazabilirsiniz.",
+    "en": "Which place would you like me to look at? Just write the city name."
+  },
+  "clarify_place_not_found": {
+    "tr": "Bu yeri bulamadım. Şehrin adını, gerekirse ülkesiyle birlikte yeniden yazabilir misiniz?",
+    "en": "I couldn't find that place. Could you write the city name again, with its country if needed?"
+  },
+  "clarify_person": {
+    "tr": "Kimin haritasıyla karşılaştırmak istersiniz? Haritalarım'dan birini seçebilir ya da yeni bir kişi ekleyebilirsiniz.",
+    "en": "Whose chart would you like to compare with? Choose someone from My Charts or add a new person.",
+    "links": [
+      "add_person"
+    ]
+  },
+  "fallback_unreliable": {
+    "tr": "Bu soruya güvenle dayanabileceğim bir yanıt oluşturamadım. Aşağıdaki ayrıntılar doğrudan hesaplanmış verilerinizden geliyor.",
+    "en": "I couldn't put together an answer I can stand behind for that question. The details below come straight from your computed data.",
+    "tr_no_cards": "Bu soruya güvenle dayanabileceğim bir yanıt oluşturamadım. Soruyu biraz farklı sorabilir misiniz?",
+    "en_no_cards": "I couldn't put together an answer I can stand behind for that question. Could you ask it a little differently?"
+  },
+  "note_coverage_calendar": {
+    "tr": "Takviminiz önümüzdeki on iki ayı kapsadığı için yanıt bu aralıkla sınırlı.",
+    "en": "Your calendar covers the next twelve months, so this answer stays within that range."
+  },
+  "note_coverage_best_days": {
+    "tr": "En İyi Günler önümüzdeki doksan günü kapsadığı için yanıt bu aralıkla sınırlı.",
+    "en": "Best Days covers the next ninety days, so this answer stays within that range."
+  },
+  "note_partial": {
+    "tr": "Bu sorunun bir kısmı için verileriniz henüz hazır değil ya da kapsam dışında.",
+    "en": "For part of this question your data isn't ready yet or is outside the covered range."
+  },
+  "note_thin_result": {
+    "tr": "Bu hedef için öne çıkan yer sayısı az; liste bilerek kısa tutuldu.",
+    "en": "Few places stand out for this goal, so the list is deliberately short."
+  },
+  "note_financial": {
+    "tr": "Bu sembolik bir yansımadır, finansal tavsiye değildir.",
+    "en": "This is a symbolic reflection, not financial advice."
+  },
+  "note_health": {
+    "tr": "Bu sembolik bir yansımadır, tıbbi tavsiye değildir.",
+    "en": "This is a symbolic reflection, not medical advice."
+  }
+}
