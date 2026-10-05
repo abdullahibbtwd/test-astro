@@ -1,3 +1,7 @@
+import { radius as dsRadius } from "../../design-system/theme/tokens";
+import { shadow as dsShadow } from "../../design-system/theme/tokens";
+import { space as dsSpace } from "../../design-system/theme/tokens";
+import { Divider } from "../../design-system/components/Ornament";
 import { resolveRoute } from "../../lib/routes";
 import { useFlags } from "../../lib/flags";
 import {
@@ -127,11 +131,14 @@ function ReadingContent({
                 ref={contents}
                 snapPoints={["60%", "90%"]}
                 enableDynamicSizing={false}
-                backgroundStyle={{ backgroundColor: c.surface }}
+                backgroundStyle={{ backgroundColor: c.surface, borderTopLeftRadius: dsRadius.lg, borderTopRightRadius: dsRadius.lg }}
+                style={dsShadow.sheet[c.dark ? "night" : "parchment"]}
                 handleIndicatorStyle={{ backgroundColor: c.ink2 }}
                 backdropComponent={(props) => (
                   <BottomSheetBackdrop
                     {...props}
+                    style={[props.style, { backgroundColor: c.scrim }]}
+                    opacity={1}
                     appearsOnIndex={0}
                     disappearsOnIndex={-1}
                   />
@@ -139,9 +146,9 @@ function ReadingContent({
               >
                 <BottomSheetScrollView
                   contentContainerStyle={{
-                    padding: 24,
-                    paddingBottom: 48,
-                    gap: 12,
+                    padding: dsSpace[6],
+                    paddingBottom: dsSpace[12],
+                    gap: dsSpace[3],
                   }}
                 >
                   <Txt kind="title">{t("contents")}</Txt>
@@ -168,7 +175,7 @@ function ReadingContent({
           )}
           {!sections?.length && <Txt>{t("missingSection")}</Txt>}
           {reading.data.parts.map((part) => (
-            <View key={part.movement} style={{ gap: 24 }}>
+            <View key={part.movement} style={{ gap: dsSpace[6] }}>
               {sections?.some(
                 (section) => section.movement === part.movement,
               ) && <Txt kind="title">{part.title}</Txt>}
@@ -217,7 +224,7 @@ export function ReadingSection({
     }
   };
   return (
-    <View style={{ gap: 16 }}>
+    <View style={{ gap: dsSpace[4] }}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={section.title}
@@ -261,6 +268,7 @@ export function ReadingSection({
         </Choices>
       )}
       <ErrorNotice error={error} />
+      <Divider width={240} />
     </View>
   );
 }

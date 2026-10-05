@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { FlatList } from "react-native";
 import { Screen } from "../../design/components";
 import { SavedReportRow } from "./ReportsScreen";
@@ -20,7 +21,7 @@ export function ListAudit() {
         initialNumToRender={8}
         maxToRenderPerBatch={8}
         windowSize={7}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: dsSpace[8] }}
         renderItem={({ item }) => (
           <SavedReportRow item={item} onRemove={noop} onMenu={noop} />
         )}

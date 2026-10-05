@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { useCallback, useState } from "react";
 import { AppState, View } from "react-native";
 import { useFocusEffect } from "expo-router";
@@ -124,7 +125,7 @@ export function JobProgress({
       {job &&
         job.stages.length > 1 &&
         job.stages.map((stage) => (
-          <View key={stage.name} style={{ flexDirection: "row", gap: 12 }}>
+          <View key={stage.name} style={{ flexDirection: "row", gap: dsSpace[3] }}>
             <Txt>
               {stage.status === "ok" || stage.status === "skipped"
                 ? "✓"

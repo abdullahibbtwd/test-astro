@@ -1,3 +1,4 @@
+import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
 import { resolveRoute } from "../../lib/routes";
 import { formatDay, formatMonth } from "../../lib/dates";
 import {
@@ -277,7 +278,7 @@ export default function ChatScreen() {
       title={subject?.label ?? t("ask")}
       scroll={false}
       footer={
-        <View style={{ gap: 8 }}>
+        <View style={{ gap: dsSpace[2] }}>
           {Object.keys(context).length > 0 && (
             <Choices>
               <Txt kind="caption">
@@ -414,7 +415,7 @@ export default function ChatScreen() {
         inverted
         data={[...messages].reverse()}
         keyExtractor={(message) => message.message_id}
-        contentContainerStyle={{ padding: 20, gap: 16 }}
+        contentContainerStyle={{ padding: 20, gap: dsSpace[4] }}
         onScroll={({ nativeEvent: e }) => {
           follow.current = e.contentOffset.y < 140;
           setShowLatest(!follow.current);
@@ -424,16 +425,17 @@ export default function ChatScreen() {
           <View
             key={message.message_id}
             style={{
-              gap: 12,
-              padding: message.role === "user" ? 16 : 0,
+              gap: dsSpace[3],
+              paddingVertical: dsSpace[3],
+              paddingHorizontal: dsSpace[4],
               backgroundColor:
-                message.role === "user" ? colors.surfaceAlt : undefined,
-              borderRadius: 12,
+                message.role === "user" ? colors.primary : colors.surface,
+              borderRadius: dsRadius.md,
               alignSelf: message.role === "user" ? "flex-end" : "stretch",
               maxWidth: message.role === "user" ? "90%" : "100%",
             }}
           >
-            <Txt kind={message.role === "assistant" ? "reading" : "body"}>
+            <Txt kind={message.role === "assistant" ? "reading" : "body"} style={{ color: message.role === "user" ? colors.onPrimary : colors.ink }}>
               {message.text}
             </Txt>
             {message.role === "assistant" && (

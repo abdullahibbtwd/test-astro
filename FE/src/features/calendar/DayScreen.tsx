@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { BandChip } from "../../design/components/BandChip";
 import { View } from "react-native";
 import { useApp } from "../../lib/state";
@@ -71,7 +72,7 @@ export default function DayScreen() {
           ))}
           <Txt kind="title">{t("lifeAreas")}</Txt>
           {Object.entries(data.goals).map(([goal, band]) => (
-            <View key={goal} style={{ gap: 8 }}>
+            <View key={goal} style={{ gap: dsSpace[2] }}>
               <Txt>{cat.data.goals[goal as keyof typeof cat.data.goals]}</Txt>
               <BandChip band={band} label={cat.data.day_bands[band]} />
             </View>

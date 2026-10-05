@@ -29,8 +29,8 @@ export function AppText({
     console.warn("Uppercase AppText expects string children");
   return (
     <Text
-      {...props}
       maxFontSizeMultiplier={variant.startsWith("display") ? 1.2 : 1.5}
+      {...props}
       style={[
         font,
         { color: colors[color], textAlign: align, includeFontPadding: false },

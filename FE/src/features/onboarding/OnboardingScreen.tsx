@@ -1,3 +1,5 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
+import { ChartWheel } from "../../design-system/components/Ornament";
 import { resolveRoute } from "../../lib/routes";
 import { showSnackbar } from "../../design/components/Snackbar";
 import { WheelPreview } from "../profiles/WheelPreview";
@@ -113,12 +115,13 @@ export default function OnboardingScreen() {
   return (
     <Screen headerless back>
       <Progress step={steps.indexOf(step) + 1} total={steps.length} />
+      {["birth-date", "birth-time", "birth-place"].includes(step) && <View style={{ alignItems: "center" }}><ChartWheel width={180} /></View>}
       {step === "consent" ? (
         <>
           <Txt kind="display">{t("consentTitle")}</Txt>
           <Card>
             <View
-              style={{ flexDirection: "row", gap: 12, alignItems: "center" }}
+              style={{ flexDirection: "row", gap: dsSpace[3], alignItems: "center" }}
             >
               <Switch
                 accessibilityLabel={t("consent.birthData.placeholder")}
@@ -130,7 +133,7 @@ export default function OnboardingScreen() {
               </Txt>
             </View>
           </Card>
-          <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
+          <View style={{ flexDirection: "row", gap: dsSpace[3], alignItems: "center" }}>
             <Switch
               accessibilityLabel={t("marketing")}
               value={draft.marketing}

@@ -1,3 +1,4 @@
+import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
 import { View } from "react-native";
 import { Txt } from ".";
 import { bandColor } from "../bands";
@@ -24,11 +25,11 @@ export function BandChip({ band, label }: { band: string; label: string }) {
         maxWidth: "100%",
         flexDirection: "row",
         alignItems: "center",
-        gap: 4,
-        borderRadius: 12,
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        backgroundColor: bandColor(band, c.bg === "#1A2030") + "25",
+        gap: dsSpace[1],
+        borderRadius: dsRadius.md,
+        paddingHorizontal: dsSpace[2],
+        paddingVertical: dsSpace[1],
+        backgroundColor: bandColor(band, c.dark) + "25",
       }}
     >
       <Txt kind="caption" style={{ flexShrink: 1 }}>

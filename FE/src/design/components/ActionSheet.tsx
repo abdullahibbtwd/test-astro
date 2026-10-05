@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import { Txt } from ".";
@@ -36,7 +37,7 @@ export function ActionSheet({
             minHeight: 52,
             flexDirection: "row",
             alignItems: "center",
-            gap: 12,
+            gap: dsSpace[3],
           }}
         >
           <View>{action.icon}</View>

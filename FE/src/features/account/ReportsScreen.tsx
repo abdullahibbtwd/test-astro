@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { resolveRoute } from "../../lib/routes";
 import { removeDeletedReference } from "../../api/deleted-cache";
 import Swipeable from "react-native-gesture-handler/ReanimatedSwipeable";
@@ -57,7 +58,7 @@ export const SavedReportRow = memo(function SavedReportRow({
         <Button danger label={t("delete")} onPress={() => onRemove(item)} />
       )}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: dsSpace[2] }}>
         <View style={{ flex: 1 }}>
           <Row
             label={item.title}
@@ -123,7 +124,7 @@ export default function ReportsScreen() {
             style={{ flexGrow: 0 }}
             showsHorizontalScrollIndicator={false}
           >
-            <View style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flexDirection: "row", gap: dsSpace[2] }}>
               {types
                 .filter(
                   (value) => value !== "solar_return" || flags.solarReturn,
@@ -147,7 +148,7 @@ export default function ReportsScreen() {
         initialNumToRender={8}
         windowSize={7}
         maxToRenderPerBatch={8}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: dsSpace[8] }}
         onEndReachedThreshold={0.5}
         onEndReached={() => {
           if (reports.hasNextPage && !reports.isFetchingNextPage)

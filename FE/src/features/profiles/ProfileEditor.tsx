@@ -1,5 +1,6 @@
+import { ChartWheel } from "../../design-system/components/Ornament";
 import { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useProfiles, useActions } from "../../api/hooks";
@@ -97,6 +98,7 @@ function Editor({ original, id }: { original?: BirthProfile; id?: string }) {
   return (
     <Screen back title={t(id ? "edit" : "addPerson")}>
       <Progress step={step + 1} total={6} />
+      {step >= 2 && step <= 4 && <View style={{ alignItems: "center" }}><ChartWheel width={180} /></View>}
       {step === 0 ? (
         <>
           <Txt kind="title">{t("relation")}</Txt>

@@ -1,7 +1,9 @@
+import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
+import { Info } from "../../design-system/LegacyIcons";
 import { routes } from "../../lib/routes";
 import Layers from "lucide-react-native/icons/layers";
 import List from "lucide-react-native/icons/list";
-import Info from "lucide-react-native/icons/info";
+
 import { Sheet } from "../../design/components/Sheet";
 import { ActionSheet } from "../../design/components/ActionSheet";
 import { IconButton } from "../../design/components/IconButton";
@@ -131,11 +133,11 @@ export default function MapScreen() {
       />
       <View
         pointerEvents="box-none"
-        style={{ position: "absolute", top: 12, left: 12, right: 12, gap: 8 }}
+        style={{ position: "absolute", top: 12, left: 12, right: 12, gap: dsSpace[2] }}
       >
         <MapSearch onSelect={place} />
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={{ flexDirection: "row", gap: 8 }}>
+          <View style={{ flexDirection: "row", gap: dsSpace[2] }}>
             <Chip
               label={t("lines")}
               selected={!goal}
@@ -157,7 +159,7 @@ export default function MapScreen() {
           position: "absolute",
           right: 12,
           top: 132,
-          borderRadius: 24,
+          borderRadius: dsRadius.lg,
           backgroundColor: colors.surface,
         }}
       >
@@ -214,14 +216,14 @@ export default function MapScreen() {
           (body) => (
             <View
               key={body}
-              style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
+              style={{ flexDirection: "row", alignItems: "center", gap: dsSpace[3] }}
             >
               <View
                 style={{
                   width: 40,
                   height: 3,
                   backgroundColor:
-                    planetColors[body][colors.bg === "#1A2030" ? 1 : 0],
+                    planetColors[body][colors.dark ? 1 : 0],
                 }}
               />
               <Txt>{catalogue.bodies[body]}</Txt>
@@ -231,7 +233,7 @@ export default function MapScreen() {
         {(["ASC", "DSC", "MC", "IC"] as const).map((angle, i) => (
           <View
             key={angle}
-            style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
+            style={{ flexDirection: "row", alignItems: "center", gap: dsSpace[3] }}
           >
             <View
               style={{
@@ -249,13 +251,13 @@ export default function MapScreen() {
             (b) => (
               <View
                 key={b}
-                style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
+                style={{ flexDirection: "row", alignItems: "center", gap: dsSpace[3] }}
               >
                 <View
                   style={{
                     width: 24,
                     height: 24,
-                    backgroundColor: bandColor(b, colors.bg === "#1A2030"),
+                    backgroundColor: bandColor(b, colors.dark),
                   }}
                 />
                 <BandChip

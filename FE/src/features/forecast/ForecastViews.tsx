@@ -1,3 +1,4 @@
+import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
 import { useApp } from "../../lib/state";
 import { formatRange } from "../../lib/dates";
 import { Pressable, View } from "react-native";
@@ -105,7 +106,7 @@ export function DayView({
             {(part) => <Txt kind="reading">{part.text}</Txt>}
           </Generated>
           <Txt kind="title">{t("lifeAreas")}</Txt>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: dsSpace[2] }}>
             {goals.map(
               (goal) =>
                 data.areas[goal] && (
@@ -117,9 +118,9 @@ export function DayView({
                     style={{
                       width: "48.5%",
                       minHeight: 88,
-                      padding: 12,
-                      gap: 8,
-                      borderRadius: 12,
+                      padding: dsSpace[3],
+                      gap: dsSpace[2],
+                      borderRadius: dsRadius.md,
                       borderWidth: 1,
                       borderColor: colors.hair,
                       backgroundColor: colors.surface,

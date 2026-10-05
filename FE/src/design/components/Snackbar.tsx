@@ -1,3 +1,4 @@
+import { type as dsType, space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
 import { useTranslation } from "react-i18next";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -91,13 +92,13 @@ export function Snackbar() {
           segments[0] === "(tabs)"
             ? 78 + insets.bottom
             : 12 + insets.bottom + footerHeight,
-        backgroundColor: c.ink,
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 12,
+        backgroundColor: c.surface,
+        paddingHorizontal: dsSpace[4],
+        paddingVertical: dsSpace[2],
+        borderRadius: dsRadius.md,
         flexDirection: "row",
         alignItems: "center",
-        gap: 12,
+        gap: dsSpace[3],
         elevation: 12,
       }}
     >
@@ -111,7 +112,7 @@ export function Snackbar() {
         }}
         style={{ flex: 1 }}
       >
-        <Txt style={{ color: c.bg }}>{current.message}</Txt>
+        <Txt style={{ color: c.ink }}>{current.message}</Txt>
       </View>
       {current.action && (
         <Pressable
@@ -121,11 +122,11 @@ export function Snackbar() {
           style={{
             minHeight: 44,
             minWidth: 44,
-            paddingHorizontal: 8,
+            paddingHorizontal: dsSpace[2],
             justifyContent: "center",
           }}
         >
-          <Txt style={{ color: c.bg, fontFamily: "Inter-SemiBold" }}>
+          <Txt style={{ color: c.accent, fontFamily: dsType.input.fontFamily }}>
             {current.action.label}
           </Txt>
         </Pressable>

@@ -1,3 +1,4 @@
+import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
 import { useCountries } from "./countries";
 import type { StyleSpecification } from "@maplibre/maplibre-react-native";
 import { useMapStyle } from "./style";
@@ -158,7 +159,7 @@ export function MapCanvas({
     ];
   if (!style && !preview)
     return (
-      <View style={{ padding: 24, backgroundColor: theme.surfaceAlt, gap: 12 }}>
+      <View style={{ padding: dsSpace[6], backgroundColor: theme.surfaceAlt, gap: dsSpace[3] }}>
         <Txt>{t("mapStyleMissing")}</Txt>
         <Txt kind="caption">{t("mapSearchAvailable")}</Txt>
       </View>
@@ -177,7 +178,7 @@ export function MapCanvas({
       style={
         fill
           ? { flex: 1, overflow: "hidden" }
-          : { height: 420, borderRadius: 12, overflow: "hidden" }
+          : { height: 420, borderRadius: dsRadius.md, overflow: "hidden" }
       }
     >
       <Map
@@ -395,7 +396,7 @@ export function MapCanvas({
             bottom: fill ? 76 : 8,
             left: 8,
             backgroundColor: theme.surface,
-            padding: 4,
+            padding: dsSpace[1],
           }}
         >
           <Txt kind="caption">{t("previewMap")}</Txt>

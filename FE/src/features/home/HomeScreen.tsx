@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { resolveRoute } from "../../lib/routes";
 import { TimezoneNotice } from "../shared/TimezoneNotice";
 import { useCallback, useEffect } from "react";
@@ -88,7 +89,7 @@ export default function HomeScreen() {
               band={data.tone_label}
               bandKey={data.tone}
             />
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 16 }}>
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: dsSpace[4] }}>
               {data.tiles
                 .filter((tile) => tile.key !== "energy" || flags.homeEnergyTile)
                 .filter(
@@ -100,7 +101,7 @@ export default function HomeScreen() {
                     ),
                 )
                 .map((tile) => (
-                  <View key={tile.key} style={{ gap: 8, width: "47%" }}>
+                  <View key={tile.key} style={{ gap: dsSpace[2], width: "47%" }}>
                     <Score
                       label={tile.label}
                       score={tile.score_10}

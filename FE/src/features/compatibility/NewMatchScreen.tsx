@@ -1,3 +1,4 @@
+import { Field as DesignField, SelectField } from "../../design-system/components/Fields";
 import ArrowUpDown from "lucide-react-native/icons/arrow-up-down";
 import { ProfilePicker } from "../../design/components/ProfileSwitcher";
 import { IconButton } from "../../design/components/IconButton";
@@ -9,7 +10,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
   Screen,
-  Row,
   Txt,
   Choices,
   Chip,
@@ -101,10 +101,12 @@ export default function NewMatchScreen() {
   );
   return (
     <Screen back title={t("newCompatibility")}>
-      <Row
-        label={`${t("personA")} · ${profiles.data?.find((p) => p.profile_id === a)?.label ?? t("choosePerson")} ▾`}
+      <DesignField label={t("personA")}><SelectField
+        accessibilityLabel={t("personA")}
+        valueLabel={profiles.data?.find((p) => p.profile_id === a)?.label}
+        placeholder={t("choosePerson")}
         onPress={() => setPicker("a")}
-      />
+      /></DesignField>
       <IconButton
         accessibilityLabel={t("swapPeople")}
         icon={<ArrowUpDown size={22} color={c.ink} />}
@@ -113,10 +115,12 @@ export default function NewMatchScreen() {
           setB(a);
         }}
       />
-      <Row
-        label={`${t("personB")} · ${profiles.data?.find((p) => p.profile_id === b)?.label ?? t("choosePerson")} ▾`}
+      <DesignField label={t("personB")}><SelectField
+        accessibilityLabel={t("personB")}
+        valueLabel={profiles.data?.find((p) => p.profile_id === b)?.label}
+        placeholder={t("choosePerson")}
         onPress={() => setPicker("b")}
-      />
+      /></DesignField>
       <ProfilePicker
         open={!!picker}
         selectedId={picker === "a" ? a : b}

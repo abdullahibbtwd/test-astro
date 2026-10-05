@@ -1,3 +1,5 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
+import { Glyph } from "../../design/components/Glyph";
 import { Segmented } from "../../design/components/Segmented";
 import { InlineReading } from "./InlineReading";
 import { useState } from "react";
@@ -64,8 +66,8 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
   const c = catalogue.data;
   return (
     <>
-      <View style={{ flexDirection: "row", gap: 8 }}>
-        {(["sun", "moon", "ascendant"] as const).map((key, i) => (
+      <View style={{ flexDirection: "row", gap: dsSpace[2] }}>
+        {(["sun", "moon", "ascendant"] as const).map((key) => (
           <Pressable
             key={key}
             accessibilityRole="button"
@@ -76,11 +78,9 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
                   : { kind: "body", body: key },
               )
             }
-            style={{ flex: 1, minHeight: 44, gap: 4 }}
+            style={{ flex: 1, minHeight: 44, gap: dsSpace[1] }}
           >
-            <Txt kind="caption">
-              {["☉", "☽", "↑"][i]} {t(key === "ascendant" ? "rising" : key)}
-            </Txt>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: dsSpace[1] }}>{key !== "ascendant" && <Glyph name={key} size={20} />}<Txt kind="caption">{t(key === "ascendant" ? "rising" : key)}</Txt></View>
             <Txt kind="caption">{c.signs[profile.big_three[key]]}</Txt>
           </Pressable>
         ))}
@@ -102,7 +102,7 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          gap: 4,
+          gap: dsSpace[1],
         }}
       >
         {(
@@ -118,11 +118,11 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
               flex: 1,
               flexDirection: "row",
               alignItems: "center",
-              gap: 4,
+              gap: dsSpace[1],
             }}
           >
             <AspectGlyph type={type} size={20} />
-            <Txt kind="caption" muted style={{ fontSize: 11, flexShrink: 1 }}>
+            <Txt kind="caption" muted style={{ flexShrink: 1 }}>
               {t(
                 label === "tenseAspects"
                   ? "tenseShort"

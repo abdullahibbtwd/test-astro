@@ -17,7 +17,7 @@ export function WheelPreview({
     c = useTheme(),
     { width } = useWindowDimensions(),
     { t } = useTranslation();
-  const theme = c.bg === "#1A2030" ? "dark" : "light";
+  const theme = c.dark ? "dark" : "light";
   const xml = useMemo(
     () => (chart.data ? nativeWheelSvg(chart.data, theme) : null),
     [chart.data, theme],

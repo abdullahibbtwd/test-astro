@@ -1,6 +1,8 @@
+import { type as dsType, space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
+import { Search, X } from "../../design-system/LegacyIcons";
 import { Keyboard, SectionList, TextInput, View } from "react-native";
-import Search from "lucide-react-native/icons/search";
-import X from "lucide-react-native/icons/x";
+
+
 import { IconButton } from "../../design/components/IconButton";
 import { useTheme } from "../../design/theme";
 import { useEffect, useState } from "react";
@@ -40,13 +42,13 @@ export function MapSearch({
           flexDirection: "row",
           alignItems: "center",
           minHeight: 48,
-          borderRadius: 28,
+          borderRadius: dsRadius.md,
           backgroundColor: c.surface,
-          paddingLeft: 16,
-          paddingRight: 4,
-          gap: 8,
+          paddingLeft: dsSpace[4],
+          paddingRight: dsSpace[1],
+          gap: dsSpace[2],
           borderWidth: 1,
-          borderColor: c.hair,
+          borderColor: c.borderControl,
         }}
       >
         <Search size={20} color={c.ink2} />
@@ -54,14 +56,16 @@ export function MapSearch({
           accessibilityLabel={t("searchMap")}
           placeholder={t("searchMap")}
           placeholderTextColor={c.ink3}
+          selectionColor={c.accent}
+          cursorColor={c.accent}
           value={input}
           onChangeText={setInput}
           style={{
             flex: 1,
             minHeight: 44,
             color: c.ink,
-            fontFamily: "Inter",
-            fontSize: 16,
+            fontFamily: dsType.input.fontFamily,
+            fontSize: dsType.input.fontSize,
           }}
         />
         {!!input && (
@@ -79,13 +83,13 @@ export function MapSearch({
         <SectionList<PlaceCandidate>
           keyboardShouldPersistTaps="handled"
           style={{
-            marginTop: 4,
+            marginTop: dsSpace[1],
             height: 320,
             backgroundColor: c.surface,
-            borderRadius: 16,
+            borderRadius: dsRadius.md,
             elevation: 8,
           }}
-          contentContainerStyle={{ padding: 16 }}
+          contentContainerStyle={{ padding: dsSpace[4] }}
           sections={[
             ...(!areasOnly
               ? [

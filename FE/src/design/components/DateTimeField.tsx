@@ -1,8 +1,9 @@
+import { Field, SelectField } from "../../design-system/components/Fields";
 import { useState } from "react";
 import { Platform } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
-import { Button, Row } from "./index";
+import { Button } from "./index";
 import { formatDate } from "../../lib/dates";
 import { useApp } from "../../lib/state";
 export function DateTimeField({
@@ -29,9 +30,9 @@ export function DateTimeField({
       : new Date(`2000-01-01T${value || "12:00"}:00`);
   return (
     <>
-      <Row
-        label={label ?? t(mode === "date" ? "birthDate" : "birthTime")}
-        detail={
+      <Field label={label ?? t(mode === "date" ? "birthDate" : "birthTime")}><SelectField
+        accessibilityLabel={label ?? t(mode === "date" ? "birthDate" : "birthTime")}
+        valueLabel={
           value
             ? mode === "date"
               ? formatDate(value, lang)
@@ -39,7 +40,7 @@ export function DateTimeField({
             : t(mode === "date" ? "selectDate" : "selectTime")
         }
         onPress={() => setOpen(true)}
-      />
+      /></Field>
       {open && (
         <>
           <DateTimePicker

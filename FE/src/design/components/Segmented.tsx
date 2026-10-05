@@ -1,4 +1,6 @@
-import { Pressable, Text, View } from "react-native";
+import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
+import { AppText } from "../../design-system/text/AppText";
+import { Pressable, View } from "react-native";
 import { useTheme } from "../theme";
 export function Segmented<T extends string>({
   items,
@@ -22,7 +24,7 @@ export function Segmented<T extends string>({
         flexWrap: "nowrap",
         width: "100%",
         backgroundColor: c.surfaceAlt,
-        borderRadius: 12,
+        borderRadius: dsRadius.md,
       }}
     >
       {items.map((item) => (
@@ -36,7 +38,7 @@ export function Segmented<T extends string>({
             flex: 1,
             minWidth: 0,
             minHeight: 44,
-            paddingVertical: 4,
+            paddingVertical: dsSpace[1],
             paddingHorizontal: 2,
           }}
         >
@@ -46,24 +48,22 @@ export function Segmented<T extends string>({
               flex: 1,
               justifyContent: "center",
               borderRadius: 10,
-              paddingHorizontal: 4,
+              paddingHorizontal: dsSpace[1],
               backgroundColor: value === item.value ? c.surface : "transparent",
             }}
           >
-            <Text
+            <AppText variant="label" maxFontSizeMultiplier={undefined}
               numberOfLines={1}
               adjustsFontSizeToFit
               minimumFontScale={13 / 16}
 
               style={{
-                fontSize: 16,
-                fontFamily: value === item.value ? "Inter-SemiBold" : "Inter",
                 color: value === item.value ? c.accent : c.ink2,
                 textAlign: "center",
               }}
             >
               {item.label}
-            </Text>
+            </AppText>
           </View>
         </Pressable>
       ))}

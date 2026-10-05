@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { resolveRoute } from "../../lib/routes";
 import { ContentList } from "../../design/components/ContentList";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -93,7 +94,7 @@ export default function CalendarScreen({
         style={{ flexGrow: 0 }}
         showsHorizontalScrollIndicator={false}
       >
-        <View style={{ flexDirection: "row", gap: 8 }}>
+        <View style={{ flexDirection: "row", gap: dsSpace[2] }}>
           <Chip
             label={t("all")}
             selected={!goal}

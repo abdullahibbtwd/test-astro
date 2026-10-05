@@ -1,3 +1,8 @@
+import { ArrowLeft, ChevronRight } from "../../design-system/LegacyIcons";
+import { AppText } from "../../design-system/text/AppText";
+import { size as dsSize, space as dsSpace, radius as dsRadius, opacity as dsOpacity } from "../../design-system/theme/tokens";
+import { TextInputField } from "../../design-system/components/Fields";
+import { ScreenBackdrop } from "../../design-system/components/ScreenBackdrop";
 import { ContentList, type ContentListProps } from "./ContentList";
 import { useSnackbarLayout } from "./snackbar-store";
 import { useCallback, useEffect, useState } from "react";
@@ -7,9 +12,7 @@ import { ContractError } from "../../api/contract-validation";
 import { reportError } from "../../lib/telemetry";
 import {
   Pressable,
-  Text,
   View,
-  TextInput,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -21,8 +24,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, router, useFocusEffect } from "expo-router";
-import ArrowLeft from "lucide-react-native/icons/arrow-left";
-import ChevronRight from "lucide-react-native/icons/chevron-right";
+
+
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme";
 import type { PropsWithChildren } from "react";
@@ -40,48 +43,14 @@ export function Txt({
   numberOfLines?: number;
 }) {
   const c = useTheme();
-  return (
-    <Text
-      numberOfLines={numberOfLines}
-      selectable={kind === "reading"}
-
-      style={[
-        {
-          color: muted ? c.ink2 : c.ink,
-          fontFamily:
-            kind === "reading"
-              ? "SourceSerif4"
-              : kind === "title" || kind === "display"
-                ? "Inter-SemiBold"
-                : "Inter",
-          fontSize:
-            kind === "display"
-              ? 32
-              : kind === "title"
-                ? 24
-                : kind === "caption"
-                  ? 13
-                  : kind === "reading"
-                    ? 18
-                    : 16,
-          lineHeight:
-            kind === "display"
-              ? 40
-              : kind === "title"
-                ? 32
-                : kind === "caption"
-                  ? 20
-                  : kind === "reading"
-                    ? 29
-                    : 24,
-        },
-        style,
-      ]}
-    >
-      {children}
-    </Text>
-  );
+  const variant = kind === "reading" ? "bodyLg" : kind === "title" ? "displaySection" : kind === "display" ? "displayTitle" : kind === "caption" ? "caption" : "body";
+  const content = Array.isArray(children) && children.every(child => typeof child === "string" || typeof child === "number") ? children.join("") : typeof children === "number" ? String(children) : children;
+  return <AppText variant={variant} color={muted ? "inkSoft" : kind === "title" || kind === "display" ? "accent" : "ink"}
+    accessibilityRole={kind === "title" || kind === "display" ? "header" : undefined}
+    selectable={kind === "reading"} numberOfLines={numberOfLines}
+    style={[{ color: muted ? c.ink2 : kind === "title" || kind === "display" ? c.accent : c.ink }, style]}>{content}</AppText>;
 }
+
 export function Screen({
   children,
   title,
@@ -96,6 +65,8 @@ export function Screen({
   listProps,
   largeTitle = false,
   headerless = false,
+  arch = false,
+  grain = false,
 }: {
   children: React.ReactNode;
   title?: string;
@@ -110,6 +81,8 @@ export function Screen({
   listProps?: ContentListProps;
   largeTitle?: boolean;
   headerless?: boolean;
+  arch?: boolean;
+  grain?: boolean;
 }) {
   const c = useTheme(),
     { t } = useTranslation();
@@ -131,6 +104,7 @@ export function Screen({
             : ["left", "right", "bottom"]
       }
     >
+      <ScreenBackdrop arch={arch} grain={grain} />
       {title && !headerless && (
         <Stack.Screen
           options={{
@@ -155,7 +129,7 @@ export function Screen({
             style={{
               width: 44,
               height: 44,
-              marginLeft: 16,
+              marginLeft: dsSpace[4],
               justifyContent: "center",
             }}
           >
@@ -163,7 +137,7 @@ export function Screen({
           </Pressable>
         )}
         {pinned && (
-          <View style={{ paddingHorizontal: 16, paddingVertical: 8, gap: 4 }}>
+          <View style={{ paddingHorizontal: dsSpace[4], paddingVertical: dsSpace[2], gap: dsSpace[1] }}>
             {pinned}
           </View>
         )}
@@ -177,6 +151,7 @@ export function Screen({
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={[
               styles.screen,
+              arch && { paddingHorizontal: dsSize.screenPaddingX + dsSize.archInset },
               scrollProps?.contentContainerStyle,
             ]}
           >
@@ -216,34 +191,29 @@ export function Button({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={label}
       accessibilityState={{ disabled: disabled || loading, busy: loading }}
       disabled={disabled || loading}
       onPress={onPress}
       style={({ pressed }) => [
         {
-          minHeight: 52,
-          padding: 14,
-          borderRadius: 12,
+          minHeight: dsSize.buttonLg,
+          paddingHorizontal: dsSpace[6],
+          paddingVertical: dsSpace[2],
+          borderRadius: dsRadius.md,
           alignItems: "center",
           justifyContent: "center",
           borderWidth: 1,
-          borderColor: danger ? c.danger : c.accent,
-          backgroundColor: secondary ? c.bg : danger ? c.danger : c.accent,
-          opacity: disabled ? 0.4 : pressed ? 0.75 : 1,
+          borderColor: danger ? c.danger : secondary ? c.borderControl : c.primary,
+          backgroundColor: secondary ? undefined : danger ? c.danger : c.primary,
+          opacity: disabled || loading ? dsOpacity.disabled : pressed ? .88 : 1,
         },
       ]}
     >
       {loading ? (
         <ActivityIndicator color={secondary ? c.accent : c.onAccent} />
       ) : (
-        <Txt
-          style={{
-            color: secondary ? (danger ? c.danger : c.accent) : c.onAccent,
-            fontFamily: "Inter-SemiBold",
-          }}
-        >
-          {label}
-        </Txt>
+        <AppText variant="button" align="center" color={secondary ? danger ? "danger" : "accent" : "onPrimary"}>{label}</AppText>
       )}
     </Pressable>
   );
@@ -260,11 +230,11 @@ export function Card({
     <View
       style={[
         {
-          padding: 20,
-          gap: 12,
+          padding: dsSpace[6],
+          gap: dsSpace[3],
           borderWidth: 1,
           borderColor: c.hair,
-          borderRadius: 16,
+          borderRadius: dsRadius.card,
           backgroundColor: c.surface,
         },
         style,
@@ -296,12 +266,12 @@ export function Row({
       onPress={onPress}
       onLongPress={onLongPress}
       style={{
-        minHeight: 64,
-        paddingVertical: 16,
+        minHeight: dsSize.buttonLg,
+        paddingVertical: dsSpace[4],
         borderBottomWidth: 1,
         borderColor: c.hair,
         flexDirection: "row",
-        gap: 12,
+        gap: dsSpace[3],
         alignItems: "center",
       }}
     >
@@ -319,7 +289,7 @@ export function Row({
           {leading}
         </View>
       )}
-      <View style={{ flex: 1, gap: 4 }}>
+      <View style={{ flex: 1, gap: dsSpace[1] }}>
         <Txt>{label}</Txt>
         {detail && (
           <Txt kind="caption" muted>
@@ -332,33 +302,9 @@ export function Row({
   );
 }
 export function Field({ label, ...props }: TextInputProps & { label: string }) {
-  const c = useTheme();
-  return (
-    <View style={{ gap: 8 }}>
-      <Txt kind="caption">{label}</Txt>
-      <TextInput
-        {...props}
-        accessibilityLabel={label}
-        placeholderTextColor={c.ink3}
-
-        style={[
-          {
-            minHeight: 52,
-            padding: 16,
-            borderWidth: 1,
-            borderColor: c.hair,
-            borderRadius: 12,
-            color: c.ink,
-            backgroundColor: c.surfaceAlt,
-            fontFamily: "Inter",
-            fontSize: 16,
-          },
-          props.style,
-        ]}
-      />
-    </View>
-  );
+  return <View style={{ gap: dsSpace[2] }}><AppText variant="label" color="inkSoft">{label}</AppText><TextInputField {...props} value={props.value ?? ""} onChangeText={props.onChangeText ?? (() => {})} accessibilityLabel={label} /></View>;
 }
+
 export function Chip({
   role = "radio",
   label,
@@ -379,15 +325,15 @@ export function Chip({
       onPress={onPress}
       style={{
         minHeight: 44,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        borderRadius: 30,
+        paddingHorizontal: dsSpace[4],
+        paddingVertical: dsSpace[3],
+        borderRadius: dsRadius.md,
         borderWidth: 1,
-        borderColor: selected ? c.accent : c.hair,
-        backgroundColor: selected ? c.accentSoft : c.surface,
+        borderColor: selected ? c.primary : c.borderControl,
+        backgroundColor: selected ? c.primary : undefined,
       }}
     >
-      <Txt style={{ color: selected ? c.accent : c.ink }}>{label}</Txt>
+      <Txt style={{ color: selected ? c.onPrimary : c.ink }}>{label}</Txt>
     </Pressable>
   );
 }
@@ -398,7 +344,7 @@ export function Choices({
   return (
     <View
       accessibilityRole={multi ? undefined : "radiogroup"}
-      style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}
+      style={{ flexDirection: "row", flexWrap: "wrap", gap: dsSpace[2] }}
     >
       {children}
     </View>
@@ -475,7 +421,7 @@ export function Skeleton({
       accessible
       accessibilityLabel={t("loading")}
       accessibilityState={{ busy: true }}
-      style={{ gap: 16 }}
+      style={{ gap: dsSpace[4] }}
     >
       {Array.from({ length: variant === "lines" ? lines : 1 }, (_, i) => (
         <View
@@ -483,7 +429,7 @@ export function Skeleton({
           style={{
             height: variant === "lines" ? 16 : 96,
             width: variant === "lines" && i === lines - 1 ? "60%" : "100%",
-            borderRadius: 12,
+            borderRadius: dsRadius.md,
             backgroundColor: c.surfaceAlt,
           }}
         />
@@ -512,8 +458,10 @@ export function Progress({ step, total }: { step: number; total: number }) {
 const styles = StyleSheet.create({
   screen: {
     flexGrow: 1,
-    padding: 20,
-    gap: 24,
+    paddingHorizontal: dsSize.screenPaddingX,
+    paddingTop: dsSize.screenPaddingTop,
+    paddingBottom: dsSpace[8],
+    gap: dsSpace[6],
     width: "100%",
     maxWidth: 680,
     alignSelf: "center",

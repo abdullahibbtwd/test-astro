@@ -1,4 +1,7 @@
-import { View, Text } from "react-native";
+import { AppText } from "../../src/design-system/text/AppText";
+import { type as dsType } from "../../src/design-system/theme/tokens";
+import { CalendarDays, MapPin, CircleUserRound, MessageCircle } from "../../src/design-system/LegacyIcons";
+import { View } from "react-native";
 import Share2 from "lucide-react-native/icons/share-2";
 import { ProfileSwitcher } from "../../src/design/components/ProfileSwitcher";
 import { IconButton } from "../../src/design/components/IconButton";
@@ -8,11 +11,11 @@ import { Tabs, router } from "expo-router";
 import { Pressable } from "react-native";
 import House from "lucide-react-native/icons/house";
 import CircleDot from "lucide-react-native/icons/circle-dot";
-import CalendarDays from "lucide-react-native/icons/calendar-days";
+
 import Users from "lucide-react-native/icons/users";
-import MapPin from "lucide-react-native/icons/map-pin";
-import CircleUserRound from "lucide-react-native/icons/circle-user-round";
-import MessageCircle from "lucide-react-native/icons/message-circle";
+
+
+
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../src/design/theme";
 export default function TabLayout() {
@@ -26,22 +29,18 @@ export default function TabLayout() {
       screenOptions={{
         headerStyle: { backgroundColor: c.bg },
         headerShadowVisible: false,
-        headerTitleStyle: { fontFamily: "Inter-SemiBold", color: c.ink },
+        headerTitleStyle: { ...dsType.displaySection, color: c.accent },
+        headerTitle: ({ children }) => <AppText variant="displaySection" color="accent" numberOfLines={1}>{children}</AppText>,
         tabBarStyle: {
-          backgroundColor: c.surface,
+          backgroundColor: c.bg,
           borderTopColor: c.hair,
           height: 70,
           paddingBottom: 8,
         },
         tabBarActiveTintColor: c.accent,
-        tabBarInactiveTintColor: c.ink2,
+        tabBarInactiveTintColor: c.ink3,
         tabBarLabel: ({ children, color }) => (
-          <Text
-            maxFontSizeMultiplier={1.3}
-            style={{ fontFamily: "Inter", fontSize: 12, color }}
-          >
-            {children}
-          </Text>
+          <AppText variant="caption" numberOfLines={1} adjustsFontSizeToFit style={{ color }}>{children}</AppText>
         ),
         headerLeft: () => (
           <Pressable

@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { useFlags } from "../../lib/flags";
 import { View } from "react-native";
 import { Sheet } from "../../design/components/Sheet";
@@ -204,7 +205,7 @@ export function ChartDetailSheet({
       {flags.elementNotes && note && <Txt kind="reading">{note.text}</Txt>}
       {!!sections.length && <Txt kind="title">{t("relatedReading")}</Txt>}
       {sections.map((section) => (
-        <View key={section.key} style={{ gap: 12 }}>
+        <View key={section.key} style={{ gap: dsSpace[3] }}>
           <Row label={section.title} onPress={() => openSection(section.key)} />
           <Txt
             kind="reading"

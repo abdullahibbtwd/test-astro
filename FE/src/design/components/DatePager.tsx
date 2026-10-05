@@ -1,6 +1,8 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
+import { ChevronLeft, ChevronRight } from "../../design-system/LegacyIcons";
 import { Pressable, View } from "react-native";
-import ChevronLeft from "lucide-react-native/icons/chevron-left";
-import ChevronRight from "lucide-react-native/icons/chevron-right";
+
+
 import { useTranslation } from "react-i18next";
 import { Txt } from ".";
 import { IconButton } from "./IconButton";
@@ -57,7 +59,7 @@ export function DatePager({
           onPress={onToday}
           style={{
             minHeight: 44,
-            paddingHorizontal: 8,
+            paddingHorizontal: dsSpace[2],
             flexShrink: 1,
             maxWidth: "28%",
             justifyContent: "center",

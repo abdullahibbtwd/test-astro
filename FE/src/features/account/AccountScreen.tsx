@@ -106,11 +106,11 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
           </Choices>
           <Txt kind="title">{t("appearance")}</Txt>
           <Choices>
-            {(["system", "light", "dark"] as const).map((theme) => (
+            {(["light", "dark"] as const).map((theme) => (
               <Chip
                 key={theme}
                 label={t(theme)}
-                selected={app.theme === theme}
+                selected={app.theme === theme || (theme === "dark" && app.theme === "system")}
                 onPress={() => void run(() => actions.patchMe({ theme }))}
               />
             ))}

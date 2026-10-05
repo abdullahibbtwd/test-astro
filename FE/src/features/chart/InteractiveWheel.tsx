@@ -59,8 +59,8 @@ export function InteractiveWheel({
   }, []);
   const model = useMemo(() => computeWheel(toWheelInput(chart)), [chart]),
     xml = useMemo(
-      () => nativeWheelSvg(chart, c.bg === "#1A2030" ? "dark" : "light"),
-      [chart, c.bg],
+      () => nativeWheelSvg(chart, c.dark ? "dark" : "light"),
+      [chart, c.dark],
     );
   const tap = (
     px: number,

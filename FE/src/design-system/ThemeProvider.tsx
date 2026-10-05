@@ -11,12 +11,14 @@ type ThemeValue = {
   colors: ThemeColors;
   setTheme: (name: ThemeName) => void;
 };
-const ThemeContext = createContext<ThemeValue | null>(null);
+const ThemeContext = createContext<ThemeValue>({ name: "night", colors: themes.night, setTheme: () => {} });
 export function ThemeProvider({
   children,
   initialTheme = "night",
-}: PropsWithChildren<{ initialTheme?: ThemeName }>) {
-  const [name, setTheme] = useState<ThemeName>(initialTheme);
+  theme,
+}: PropsWithChildren<{ initialTheme?: ThemeName; theme?: ThemeName }>) {
+  const [selected, setTheme] = useState<ThemeName>(initialTheme);
+  const name = theme ?? selected;
   const value = useMemo(
     () => ({ name, colors: themes[name], setTheme }),
     [name],
@@ -27,6 +29,5 @@ export function ThemeProvider({
 }
 export function useTheme() {
   const value = useContext(ThemeContext);
-  if (!value) throw new Error("Design-system components require ThemeProvider");
   return value;
 }

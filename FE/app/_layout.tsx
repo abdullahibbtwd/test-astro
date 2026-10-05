@@ -1,3 +1,6 @@
+import { AppText } from "../src/design-system/text/AppText";
+import { ThemeProvider } from "../src/design-system/ThemeProvider";
+import { type as dsType } from "../src/design-system/theme/tokens";
 import { Snackbar } from "../src/design/components/Snackbar";
 import {
   CACHE_MAX_AGE,
@@ -14,7 +17,7 @@ import { Stack, router, useSegments } from "expo-router";
 import { useFonts } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useEffect, useState } from "react";
-import { AppState, View, Text, StatusBar } from "react-native";
+import { AppState, View, StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
@@ -107,12 +110,13 @@ export default function RootLayout() {
   if (error)
     return (
       <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
-        <Text>Secure storage could not be opened. Restart the app.</Text>
+        <AppText>Secure storage could not be opened. Restart the app.</AppText>
       </View>
     );
   if (!ready || (!loaded && !fontError)) return null;
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <ThemeProvider theme={c.dark ? "night" : "parchment"}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: c.bg }}>
       <SafeAreaProvider>
         <PersistQueryClientProvider
           client={queryClient}
@@ -129,14 +133,15 @@ export default function RootLayout() {
           <BottomSheetModalProvider>
             <NotificationLifecycle />
             <StatusBar
-              barStyle={c.bg === "#1A2030" ? "light-content" : "dark-content"}
+              barStyle={c.dark ? "light-content" : "dark-content"}
             />
             <Stack
               screenOptions={{
                 headerShown: true,
                 headerStyle: { backgroundColor: c.bg },
-                headerTintColor: c.ink,
-                headerTitleStyle: { fontFamily: "Inter-SemiBold" },
+                headerTintColor: c.accent,
+                headerTitleStyle: { ...dsType.displaySection, color: c.accent },
+                headerTitle: ({ children }) => <AppText variant="displaySection" color="accent" numberOfLines={1}>{children}</AppText>,
                 headerShadowVisible: false,
                 headerBackButtonDisplayMode: "minimal",
                 contentStyle: { backgroundColor: c.bg },
@@ -190,6 +195,7 @@ export default function RootLayout() {
         </PersistQueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
+    </ThemeProvider>
   );
 }
 

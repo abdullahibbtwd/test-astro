@@ -1,3 +1,4 @@
+import { radius as dsRadius } from "../../design-system/theme/tokens";
 import type { ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import { useTheme } from "../theme";
@@ -40,7 +41,7 @@ export function IconButton({
             top: 6,
             width: 8,
             height: 8,
-            borderRadius: 4,
+            borderRadius: dsRadius.card,
             backgroundColor: c.accent,
           }}
         />

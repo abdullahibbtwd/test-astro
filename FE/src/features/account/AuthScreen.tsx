@@ -1,3 +1,6 @@
+import { Title } from "../../design-system/components/Title";
+import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
+import { Emblem } from "../../design-system/components/Ornament";
 import { showSnackbar } from "../../design/components/Snackbar";
 import Constants from "expo-constants";
 import * as Linking from "expo-linking";
@@ -80,9 +83,9 @@ export default function AuthScreen() {
   };
   if (!app.languageChosen)
     return (
-      <Screen headerless>
-        <Txt kind="caption">{Constants.expoConfig?.name ?? "Astrology"}</Txt>
-        <View style={{ height: 64 }} />
+      <Screen headerless arch grain>
+        <Title variant="displayHero">{Constants.expoConfig?.name ?? "Astrology"}</Title>
+        <View style={{ alignItems: "center" }}><Emblem width={180} /></View>
         <Txt kind="display">{t("chooseLanguage")}</Txt>
         <Txt muted>{t("languageHint")}</Txt>
         <Choices>
@@ -139,7 +142,7 @@ export default function AuthScreen() {
               onPress={() => input.current?.focus()}
               accessibilityLabel={t("code")}
             >
-              <View style={{ flexDirection: "row", gap: 8 }}>
+              <View style={{ flexDirection: "row", gap: dsSpace[2] }}>
                 {Array.from({ length: 6 }, (_, i) => (
                   <View
                     key={i}
@@ -148,7 +151,7 @@ export default function AuthScreen() {
                       height: 58,
                       borderWidth: 1,
                       borderColor: c.hair,
-                      borderRadius: 12,
+                      borderRadius: dsRadius.md,
                       alignItems: "center",
                       justifyContent: "center",
                     }}
@@ -199,9 +202,9 @@ export default function AuthScreen() {
       </Screen>
     );
   return (
-    <Screen headerless>
+    <Screen headerless arch grain>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Txt kind="caption">{Constants.expoConfig?.name ?? "Astrology"}</Txt>
+        <Title variant="displayHero">{Constants.expoConfig?.name ?? "Astrology"}</Title>
         <Chip role="button"
           label={app.language === "tr" ? "TR" : "EN"}
           selected={false}
@@ -210,7 +213,7 @@ export default function AuthScreen() {
           }
         />
       </View>
-      <View style={{ height: 40 }} />
+      <View style={{ alignItems: "center" }}><Emblem width={180} /></View>
       <Txt kind="display">{t("welcome")}</Txt>
       <Txt muted>{t("welcomeBody")}</Txt>
       <View>
@@ -222,7 +225,7 @@ export default function AuthScreen() {
         ))}
       </View>
       <ErrorNotice error={providerError} />
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: dsSpace[3] }}>
         {Platform.OS === "ios" && demoAuth && (
           <Button
             secondary

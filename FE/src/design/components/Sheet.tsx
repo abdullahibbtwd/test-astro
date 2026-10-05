@@ -1,3 +1,7 @@
+import { radius as dsRadius } from "../../design-system/theme/tokens";
+import { shadow as dsShadow } from "../../design-system/theme/tokens";
+import { space as dsSpace } from "../../design-system/theme/tokens";
+import { X } from "../../design-system/LegacyIcons";
 import { ContentList } from "./ContentList";
 import { useEffect, useRef, type ReactNode } from "react";
 import { BackHandler, View } from "react-native";
@@ -7,7 +11,7 @@ import {
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
 import { ReduceMotion } from "react-native-reanimated";
-import X from "lucide-react-native/icons/x";
+
 import Maximize2 from "lucide-react-native/icons/maximize-2";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme";
@@ -63,11 +67,14 @@ export function Sheet({
         presented.current = false;
         closeRef.current();
       }}
-      backgroundStyle={{ backgroundColor: c.surface }}
+      backgroundStyle={{ backgroundColor: c.surface, borderTopLeftRadius: dsRadius.lg, borderTopRightRadius: dsRadius.lg }}
+                style={dsShadow.sheet[c.dark ? "night" : "parchment"]}
       handleIndicatorStyle={{ backgroundColor: c.ink2 }}
       backdropComponent={(props) => (
         <BottomSheetBackdrop
           {...props}
+                    style={[props.style, { backgroundColor: c.scrim }]}
+                    opacity={1}
           appearsOnIndex={0}
           disappearsOnIndex={-1}
           pressBehavior="close"
@@ -79,12 +86,12 @@ export function Sheet({
           style={{
             flexDirection: "row",
             alignItems: "center",
-            paddingHorizontal: 16,
+            paddingHorizontal: dsSpace[4],
             borderBottomWidth: 1,
             borderColor: c.hair,
           }}
         >
-          <Txt style={{ flex: 1, fontFamily: "Inter-SemiBold" }}>{title}</Txt>
+          <Txt kind="title" style={{ flex: 1 }}>{title}</Txt>
           {onExpand && (
             <IconButton
               accessibilityLabel={t("expand")}
@@ -103,7 +110,7 @@ export function Sheet({
         ) : (
           <BottomSheetScrollView
             keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ padding: 20, paddingBottom: 48, gap: 16 }}
+            contentContainerStyle={{ padding: 20, paddingBottom: dsSpace[12], gap: dsSpace[4] }}
           >
             {children}
           </BottomSheetScrollView>

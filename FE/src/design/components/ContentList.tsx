@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import {
   Children,
   Fragment,
@@ -20,7 +21,7 @@ function flatten(children: ReactNode, prefix = ""): ReactElement[] {
   });
 }
 const ContentRow = memo(({ item }: { item: ReactElement }) => (
-  <View style={{ marginBottom: 16 }}>{item}</View>
+  <View style={{ marginBottom: dsSpace[4] }}>{item}</View>
 ));
 const renderItem = ({ item }: { item: ReactElement }) => (
   <ContentRow item={item} />
@@ -51,7 +52,7 @@ export function ContentList({
       windowSize={7}
       onEndReachedThreshold={0.5}
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ padding: 20, paddingBottom: 48 }}
+      contentContainerStyle={{ paddingHorizontal: dsSpace[8], paddingTop: dsSpace[6], paddingBottom: dsSpace[12] }}
       {...props}
     />
   );
@@ -81,7 +82,7 @@ export function ContentSections({
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       renderSectionHeader={({ section }) => (
-        <View style={{ marginBottom: 16 }}>{section.header}</View>
+        <View style={{ marginBottom: dsSpace[4] }}>{section.header}</View>
       )}
       ListHeaderComponent={header}
       ListFooterComponent={footer}
@@ -89,7 +90,7 @@ export function ContentSections({
       initialNumToRender={8}
       maxToRenderPerBatch={8}
       windowSize={7}
-      contentContainerStyle={{ padding: 20, paddingBottom: 48 }}
+      contentContainerStyle={{ paddingHorizontal: dsSpace[8], paddingTop: dsSpace[6], paddingBottom: dsSpace[12] }}
       keyboardShouldPersistTaps="handled"
     />
   );

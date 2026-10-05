@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import Constants from "expo-constants";
 import { useState } from "react";
 import { Alert, Linking, Switch, View } from "react-native";
@@ -87,7 +88,7 @@ export default function NotificationsScreen() {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-                gap: 12,
+                gap: dsSpace[3],
               }}
             >
               <View style={{ flex: 1 }}>

@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { Row, Txt } from "../../design/components";
@@ -68,7 +69,7 @@ export function ChartTables({
     );
   if (tab === "aspects")
     return (
-      <View style={{ gap: 24 }}>
+      <View style={{ gap: dsSpace[6] }}>
         {aspectOrder.map((type) => {
           const items = chart.aspects
             .map((aspect, index) => ({ aspect, index }))

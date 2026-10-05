@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { View, AppState } from "react-native";
 import * as Linking from "expo-linking";
@@ -145,7 +146,7 @@ export default function BrowserSignInScreen() {
       </Txt>
       <ErrorNotice error={error} />
       {ticket ? (
-        <View style={{ gap: 12 }}>
+        <View style={{ gap: dsSpace[3] }}>
           {ticket.url && (
             <Button
               secondary

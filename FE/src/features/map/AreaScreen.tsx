@@ -1,3 +1,4 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { useCountries } from "./countries";
 import { BandChip } from "../../design/components/BandChip";
 import { View } from "react-native";
@@ -59,7 +60,7 @@ export default function AreaScreen() {
       {d && (
         <>
           {(Object.keys(d.bands) as Goal[]).map((g) => (
-            <View key={g} style={{ gap: 8 }}>
+            <View key={g} style={{ gap: dsSpace[2] }}>
               <Txt>{catalogue.goals[g]}</Txt>
               <BandChip band={d.bands[g].band} label={d.bands[g].label} />
             </View>

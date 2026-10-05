@@ -1,3 +1,5 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
+import { Divider } from "../../design-system/components/Ornament";
 import { routes } from "../../lib/routes";
 import { BandChip } from "../../design/components/BandChip";
 import { bandColor } from "../../design/bands";
@@ -90,7 +92,7 @@ export function Score({
     <View
       accessible
       accessibilityLabel={`${label}${flags.dayScoreNumbers ? `, ${score} / 10` : ""}, ${band}`}
-      style={{ gap: 8 }}
+      style={{ gap: dsSpace[2] }}
     >
       <Txt>{label}</Txt>
       {flags.dayScoreNumbers && (
@@ -105,7 +107,7 @@ export function Score({
                   height: 5,
                   backgroundColor:
                     i < score
-                      ? bandColor(bandKey ?? "quiet", c.bg === "#1A2030")
+                      ? bandColor(bandKey ?? "quiet", c.dark)
                       : c.hair,
                   borderRadius: 2,
                 }}
@@ -198,7 +200,7 @@ export function Domains({
       {items?.map((item) => (
         <Card key={item.key}>
           <Txt kind="title">{item.title}</Txt>
-          <Txt kind="reading">{item.text}</Txt>
+          <Txt kind="reading">{item.text}</Txt><Divider width={180} />
         </Card>
       ))}
     </>

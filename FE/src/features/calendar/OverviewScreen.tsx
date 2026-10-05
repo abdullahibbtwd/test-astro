@@ -1,3 +1,4 @@
+import { radius as dsRadius } from "../../design-system/theme/tokens";
 import { ContentSections } from "../../design/components/ContentList";
 import { useApp } from "../../lib/state";
 import { formatMonth, formatRange } from "../../lib/dates";
@@ -213,9 +214,9 @@ export default function OverviewScreen({
                                 height: period.strength === "strong" ? 22 : 14,
                                 backgroundColor: bandColor(
                                   period.kind,
-                                  c.bg === "#1A2030",
+                                  c.dark,
                                 ),
-                                borderRadius: 4,
+                                borderRadius: dsRadius.card,
                               }}
                             />
                           );

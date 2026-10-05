@@ -1,3 +1,5 @@
+import { Glyph as KitGlyph } from "../../design-system/components/Glyph";
+import { glyphs } from "../../design-system/glyphs/glyphs";
 import { SvgXml } from "react-native-svg";
 import { glyphDefs } from "../../../packages/wheel-core/glyphs";
 import { useTheme } from "../theme";
@@ -13,7 +15,9 @@ export function Glyph({
   color?: string;
 }) {
   const theme = useTheme();
-  const color = overrideColor ?? theme.ink;
+  const color = overrideColor ?? theme.accent;
+  if ((!overrideColor || [theme.ink, theme.accent, theme.ink2].includes(overrideColor as any)) && (name in glyphs.zodiac || name in glyphs.planets))
+    return <KitGlyph name={name as any} set={name in glyphs.zodiac ? "zodiac" : "planets"} size={size} />;
   const key =
     name === "north_node" ? "node-n" : name === "south_node" ? "node-s" : name;
   if (!definitions.includes(`id="g-${key}"`)) return null;

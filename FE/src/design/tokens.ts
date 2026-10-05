@@ -1,45 +1,9 @@
-export const colors = {
-  light: {
-    bg: "#FAFAF8",
-    surface: "#FFFFFF",
-    surfaceAlt: "#F3F3EF",
-    ink: "#232A38",
-    ink2: "#4A5163",
-    ink3: "#6B7180",
-    hair: "#DEDED7",
-    accent: "#2E4A7D",
-    accentSoft: "#E8EDF5",
-    onAccent: "#FFFFFF",
-    danger: "#962F22",
-  },
-  dark: {
-    bg: "#1A2030",
-    surface: "#222A3C",
-    surfaceAlt: "#283146",
-    ink: "#E7E9EE",
-    ink2: "#B4BAC6",
-    ink3: "#8A91A0",
-    hair: "#3A4256",
-    accent: "#7FA0D8",
-    accentSoft: "#26324A",
-    onAccent: "#1A2030",
-    danger: "#E07A60",
-  },
-} as const;
-export const spacing = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  gutter: 20,
-  xl: 24,
-  xxl: 32,
-  hero: 40,
-  section: 56,
-} as const;
-export const typography = {
-  display: { fontSize: 32, lineHeight: 38, fontFamily: "Inter-SemiBold" },
-  title1: { fontSize: 24, lineHeight: 30, fontFamily: "Inter-SemiBold" },
-  body: { fontSize: 16, lineHeight: 24, fontFamily: "Inter" },
-  reading: { fontSize: 18, lineHeight: 29, fontFamily: "SourceSerif4" },
-} as const;
+import { themes, space, type as textStyles } from "../design-system/theme/tokens";
+/** Compatibility names for existing screens; values come only from the immutable kit. */
+function legacy(c: typeof themes.night | typeof themes.parchment, dark: boolean) {
+  return { ...c, dark, bg: c.surface, surface: c.surfaceRaised, surfaceAlt: c.surfaceDeep,
+    ink2: c.inkSoft, ink3: c.inkFaint, hair: c.hairline, accentSoft: c.surfaceRaised, onAccent: c.onPrimary };
+}
+export const colors = { dark: legacy(themes.night, true), light: legacy(themes.parchment, false) };
+export const spacing = { xs: space[1], sm: space[2], md: space[3], lg: space[4], gutter: space[8], xl: space[6], xxl: space[8], hero: space[8] + space[2], section: space[12] + space[2] };
+export const typography = { display: textStyles.displayTitle, title1: textStyles.displaySection, body: textStyles.body, reading: textStyles.bodyLg };

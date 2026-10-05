@@ -1,7 +1,9 @@
+import { type as dsType, space as dsSpace } from "../../design-system/theme/tokens";
+import { ChevronDown, Check } from "../../design-system/LegacyIcons";
 import { useState } from "react";
 import { Pressable, View } from "react-native";
-import ChevronDown from "lucide-react-native/icons/chevron-down";
-import Check from "lucide-react-native/icons/check";
+
+
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import type { BirthProfile } from "../../../contracts/spec-types";
@@ -62,7 +64,7 @@ export function ProfilePicker({
               minHeight: 64,
               opacity: p.profile_id === disabledId ? 0.4 : 1,
               flexDirection: "row",
-              gap: 12,
+              gap: dsSpace[3],
               alignItems: "center",
             }}
           >
@@ -118,7 +120,7 @@ export function ProfileSwitcher({
           minHeight: 44,
           flexDirection: "row",
           alignItems: "center",
-          gap: 8,
+          gap: dsSpace[2],
         }}
       >
         <View
@@ -135,7 +137,7 @@ export function ProfileSwitcher({
         </View>
         <Txt
           numberOfLines={1}
-          style={{ maxWidth: 160, fontFamily: "Inter-SemiBold" }}
+          style={{ maxWidth: 160, fontFamily: dsType.input.fontFamily }}
         >
           {label}
         </Txt>

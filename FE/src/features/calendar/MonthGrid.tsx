@@ -1,3 +1,4 @@
+import { type as dsType, space as dsSpace } from "../../design-system/theme/tokens";
 import { useTranslation } from "react-i18next";
 import { formatDay } from "../../lib/dates";
 import { Pressable, View } from "react-native";
@@ -90,7 +91,7 @@ export function MonthGrid({
                 style={{
                   minWidth: 40,
                   minHeight: 40,
-                  padding: 4,
+                  padding: dsSpace[1],
                   borderRadius: 20,
                   borderWidth:
                     day &&
@@ -108,7 +109,7 @@ export function MonthGrid({
                       ? 1.5
                       : 0,
                   borderStyle: day?.band === "avoid" ? "dashed" : "solid",
-                  borderColor: bandColor(day?.band ?? "", c.bg === "#1A2030"),
+                  borderColor: bandColor(day?.band ?? "", c.dark),
                   backgroundColor: date === selected ? c.accentSoft : undefined,
                   alignItems: "center",
                   justifyContent: "center",
@@ -117,7 +118,7 @@ export function MonthGrid({
                 <Txt
                   style={
                     date === today
-                      ? { fontFamily: "Inter-SemiBold" }
+                      ? { fontFamily: dsType.input.fontFamily }
                       : undefined
                   }
                 >
@@ -142,12 +143,12 @@ export function MonthGrid({
           );
         })}
       </View>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: dsSpace[2] }}>
         {(bestDays
           ? ["excellent", "good", "avoid"]
           : ["favorable", "challenging"]
         ).map((band) => (
-          <View key={band} accessible accessibilityLabel={t(band)} style={{flexDirection:"row",alignItems:"center",gap:6}}><View style={{width:20,height:20,borderRadius:10,borderWidth:1.5,borderStyle:band === "avoid" ? "dashed" : "solid",borderColor:bandColor(band,c.bg === "#1A2030")}}/><Txt kind="caption">{t(band)}</Txt></View>
+          <View key={band} accessible accessibilityLabel={t(band)} style={{flexDirection:"row",alignItems:"center",gap:6}}><View style={{width:20,height:20,borderRadius:10,borderWidth:1.5,borderStyle:band === "avoid" ? "dashed" : "solid",borderColor:bandColor(band,c.dark)}}/><Txt kind="caption">{t(band)}</Txt></View>
         ))}
         {[...new Set(days.flatMap((d) => (d.icons ?? "").split(" ")))]
           .filter((icon) => iconNames(icon))

@@ -43,9 +43,9 @@ export default function SolarReturnScreen() {
   const xml = useMemo(
     () =>
       data
-        ? nativeWheelSvg(data.chart, c.bg === "#1A2030" ? "dark" : "light")
+        ? nativeWheelSvg(data.chart, c.dark ? "dark" : "light")
         : null,
-    [data, c.bg],
+    [data, c.dark],
   );
   return (
     <Screen back title={`${t("solar_return")} ${params.year}`}>
