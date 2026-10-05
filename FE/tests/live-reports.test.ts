@@ -96,7 +96,7 @@ test("compatibility reports omit pending, stale and deleted readings", async () 
   await jobs.close();
   const r = jobs.reports("tr")[0]!;
   validate("ReportRef", r);
-  assert.equal(r.title, "tr");
+  assert.equal(r.title, "İş uyumu");
   assert.equal(r.route, "/match/" + c.compatibility_id);
   store.put("profile:b", { ...b, chart_key: "edited" });
   assert.equal(jobs.reports("en").length, 0);

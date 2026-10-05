@@ -1,3 +1,5 @@
+import { BandChip } from "../../design/components/BandChip";
+import { View } from "react-native";
 import { ReportSurface as Screen } from "./ReportSurface";
 import type { FeatureCollection, Polygon, MultiPolygon } from "geojson";
 import { useMapSelection } from "./selection";
@@ -54,9 +56,10 @@ export default function AreaScreen() {
       {d && (
         <>
           {(Object.keys(d.bands) as Goal[]).map((g) => (
-            <Txt key={g}>
-              {catalogue.goals[g]} · {d.bands[g].label}
-            </Txt>
+            <View key={g} style={{ gap: 8 }}>
+              <Txt>{catalogue.goals[g]}</Txt>
+              <BandChip band={d.bands[g].band} label={d.bands[g].label} />
+            </View>
           ))}
           {d.varies_by_region && <Txt>{t("variesByRegion")}</Txt>}
           <Generated part={d.overview} retry={q.retry}>
@@ -84,16 +87,17 @@ export default function AreaScreen() {
             ))}
           </Choices>
           {d.best_cities[goal]?.map((p) => (
-            <Row
-              key={p.place_id}
-              label={p.name}
-              detail={p.band_label}
-              onPress={() =>
-                router.push(
-                  `/map/place/${p.place_id}?profile=${id}&goal=${goal}`,
-                )
-              }
-            />
+            <View key={p.place_id}>
+              <BandChip band={p.band} label={p.band_label} />
+              <Row
+                label={p.name}
+                onPress={() =>
+                  router.push(
+                    `/map/place/${p.place_id}?profile=${id}&goal=${goal}`,
+                  )
+                }
+              />
+            </View>
           ))}
           {d.regions?.map((r) => (
             <Row

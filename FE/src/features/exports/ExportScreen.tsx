@@ -1,3 +1,4 @@
+import { formatDate } from "../../lib/dates";
 import { showSnackbar } from "../../design/components/Snackbar";
 import { Glyph } from "../../design/components/Glyph";
 import Constants from "expo-constants";
@@ -97,7 +98,7 @@ export default function ExportScreen() {
         chart.data!,
         [
           profile.label,
-          `${profile.birth.date} · ${profile.birth.time}`,
+          `${formatDate(profile.birth.date, app.language)} · ${profile.birth.time}`,
           profile.birth.place.name,
           brand,
         ],
@@ -235,7 +236,7 @@ export default function ExportScreen() {
             {details && (
               <Txt
                 style={{ color: ink, fontSize: 9, lineHeight: 12 }}
-              >{`${profile.birth.date} · ${profile.birth.time} · ${profile.birth.place.name}`}</Txt>
+              >{`${formatDate(profile.birth.date, app.language)} · ${profile.birth.time} · ${profile.birth.place.name}`}</Txt>
             )}
             <Txt style={{ color: ink, fontSize: 10, lineHeight: 14 }}>
               {brand}

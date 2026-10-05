@@ -1,3 +1,5 @@
+import { useApp } from "../../lib/state";
+import { formatDay, formatRange } from "../../lib/dates";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -13,6 +15,7 @@ import { useProfile } from "../shared/useProfile";
 import { Generated } from "../shared/Blocks";
 import type { CalendarItem } from "../../../contracts/spec-types";
 export default function ItemScreen() {
+  const lang = useApp((s) => s.language);
   const { id: item } = useLocalSearchParams<{ id: string }>(),
     { id } = useProfile(),
     { t } = useTranslation(),
@@ -28,13 +31,19 @@ export default function ItemScreen() {
       {query.isPending && <Skeleton />}
       {data && (
         <>
-          <Txt muted>{[data.start, data.end].filter(Boolean).join(" – ")}</Txt>
+          <Txt muted>
+            {data.start && data.end
+              ? formatRange(data.start, data.end, lang)
+              : data.start
+                ? formatDay(data.start, lang)
+                : ""}
+          </Txt>
           {data.exact_dates?.map((date) => (
-            <Txt key={date}>{date}</Txt>
+            <Txt key={date}>{formatDay(date, lang)}</Txt>
           ))}
           {data.peak && (
             <Txt>
-              {t("peak")}: {data.peak}
+              {t("peak")}: {formatDay(data.peak, lang)}
             </Txt>
           )}
           {data.goal_label && (

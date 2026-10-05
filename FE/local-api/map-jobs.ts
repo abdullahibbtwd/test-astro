@@ -1,3 +1,4 @@
+import { countryName } from "../src/lib/countries";
 import { busyProblem, paused } from "./job-problems";
 import { createHash, randomUUID } from "node:crypto";
 import { fileURLToPath, URL } from "node:url";
@@ -246,9 +247,9 @@ export class MapJobs {
             report_id: `map-${key}-${lang}`,
             type: context.kind,
             title:
-              title ??
+              context.kind === "place" ? `${input.place.name}, ${countryName(input.place.country_code, lang, input.place.country_name)}` : title ??
               (lang === "tr" ? "Yer önerileri" : "Destination recommendations"),
-            subtitle: p.label,
+            subtitle: context.kind === "place" ? (lang === "tr" ? "Yer raporu" : "Place report") : p.label,
             profile_id: p.profile_id,
             created_at,
             route,

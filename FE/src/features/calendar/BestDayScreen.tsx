@@ -1,3 +1,5 @@
+import { formatDay } from "../../lib/dates";
+import { BandChip } from "../../design/components/BandChip";
 import { showSnackbar } from "../../design/components/Snackbar";
 import { useState } from "react";
 import { Alert } from "react-native";
@@ -60,7 +62,7 @@ export default function BestDayScreen() {
           priority: 1,
           trigger_date: date,
           suggested_time: "09:00",
-          text: `${data.activity_label} · ${date}`,
+          text: `${data.activity_label} · ${formatDay(date, app.language)}`,
           deep_link: {
             view: "best_days",
             ref: `win:${activity as Activity}:${date}`,
@@ -76,11 +78,11 @@ export default function BestDayScreen() {
   };
   return (
     <Screen back title={data?.activity_label ?? t("bestDays")}>
-      <Txt>{date}</Txt>
+      <Txt>{formatDay(date, app.language, { weekday: true })}</Txt>
       {query.isPending && <Skeleton />}
       {data && (
         <>
-          <Txt kind="title">{data.grade_label}</Txt>
+          <BandChip band={data.grade} label={data.grade_label} />
           {data.reasons.positive.length > 0 && (
             <Card>
               <Txt kind="title">{t("whatHelps")}</Txt>
@@ -106,11 +108,25 @@ export default function BestDayScreen() {
             {(part) => <Txt kind="reading">{part.text}</Txt>}
           </Generated>
           <Button
-            secondary
             label={t("remindMe")}
             onPress={() => {
               void remind();
             }}
+          />
+          <Button
+            secondary
+            label={t("seeInCalendar")}
+            onPress={() =>
+              router.push({
+                pathname: "/(tabs)/ahead",
+                params: {
+                  view: "calendar",
+                  month: date.slice(0, 7),
+                  date,
+                  profile: id,
+                },
+              })
+            }
           />
           {flags.askAstrology && (
             <Button

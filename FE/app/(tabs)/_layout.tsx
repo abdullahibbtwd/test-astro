@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { Share2 } from "lucide-react-native";
 import { ProfileSwitcher } from "../../src/design/components/ProfileSwitcher";
 import { IconButton } from "../../src/design/components/IconButton";
@@ -37,7 +37,7 @@ export default function TabLayout() {
         },
         tabBarActiveTintColor: c.accent,
         tabBarInactiveTintColor: c.ink2,
-        tabBarLabelStyle: { fontFamily: "Inter", fontSize: 12 },
+        tabBarLabel: ({ children, color }) => <Text maxFontSizeMultiplier={1.3} style={{ fontFamily: "Inter", fontSize: 12, color }}>{children}</Text>,
         headerLeft: () => (
           <Pressable
             accessibilityRole="button"

@@ -33,7 +33,7 @@ test("inputs and choice chips expose accessible names and state", async () => {
     </>,
   );
   expect(screen.getByLabelText("Name")).toHaveDisplayValue("Ada");
-  expect(screen.getByRole("radio", { name: "English" })).toBeSelected();
+  expect(screen.getByRole("radio", { name: "English" })).toBeChecked();
 });
 test("place selection requires explicit confirmation after candidate tap", async () => {
   await i18n.changeLanguage("en");

@@ -35,6 +35,7 @@ export function InlineReading({ profile }: { profile: BirthProfile }) {
             askRoute={`/ask?profile=${profile.profile_id}&section_key=${section.key}`}
           />
         ))}
+        <Txt kind="caption" muted>{t("readingIntro")}</Txt>
       </>
     );
   if (!enabled)

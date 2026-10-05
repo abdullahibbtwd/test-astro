@@ -1,3 +1,8 @@
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Platform } from "react-native";
+import { DatePager } from "../../design/components/DatePager";
+import { useApp } from "../../lib/state";
+import { formatMonth } from "../../lib/dates";
 import { ScrollView, View } from "react-native";
 import { Fragment, useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -25,8 +30,10 @@ export default function CalendarScreen({
 }: {
   embedded?: boolean;
 }) {
+  const lang = useApp((s) => s.language);
+  const [picking, setPicking] = useState(false);
   const Surface = embedded ? Fragment : Screen;
-  const params = useLocalSearchParams<{ month?: string }>(),
+  const params = useLocalSearchParams<{ month?: string; date?: string }>(),
     { t } = useTranslation(),
     { id, tz } = useProfile(),
     cat = useCatalogue();
@@ -44,21 +51,39 @@ export default function CalendarScreen({
     data = query.data;
   return (
     <Surface {...(embedded ? {} : { back: true, title: t("calendar") })}>
-      <Choices>
-        <Button
-          secondary
-          label={t("previous")}
-          disabled={month <= today.slice(0, 7)}
-          onPress={() => setMonth(shiftMonth(month, -1))}
+      <DatePager
+        label={formatMonth(month, lang)}
+        previousDisabled={month <= today.slice(0, 7)}
+        nextDisabled={month >= shiftMonth(today.slice(0, 7), 11)}
+        onPrevious={() => setMonth(shiftMonth(month, -1))}
+        onNext={() => setMonth(shiftMonth(month, 1))}
+        onPick={() => setPicking(true)}
+        onToday={
+          month === today.slice(0, 7)
+            ? undefined
+            : () => setMonth(today.slice(0, 7))
+        }
+      />
+      {picking && (
+        <DateTimePicker
+          mode="date"
+          value={new Date(`${month}-15T12:00:00`)}
+          minimumDate={new Date(`${today}T12:00:00`)}
+          maximumDate={
+            new Date(`${shiftMonth(today.slice(0, 7), 11)}-28T12:00:00`)
+          }
+          onChange={(_, date) => {
+            if (Platform.OS !== "ios") setPicking(false);
+            if (date)
+              setMonth(
+                `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`,
+              );
+          }}
         />
-        <Txt kind="title">{month}</Txt>
-        <Button
-          secondary
-          label={t("next")}
-          disabled={month >= shiftMonth(today.slice(0, 7), 11)}
-          onPress={() => setMonth(shiftMonth(month, 1))}
-        />
-      </Choices>
+      )}
+      {picking && Platform.OS === "ios" && (
+        <Button label={t("done")} onPress={() => setPicking(false)} />
+      )}
       <ScrollView
         horizontal
         style={{ flexGrow: 0 }}
@@ -104,14 +129,13 @@ export default function CalendarScreen({
             <MonthGrid
               month={month}
               today={today}
+              selected={params.date}
               days={data.days.map((day) => ({
                 date: day.date,
                 band: goal ? day.goals[goal] : day.tone,
                 label: goal
                   ? cat.data.day_bands[day.goals[goal]]
                   : day.tone_label,
-                tinted:
-                  !!goal && day.active_periods.some((p) => p.goal === goal),
                 icons: day.events
                   .slice()
                   .sort(
@@ -124,7 +148,9 @@ export default function CalendarScreen({
                     e.kind === "eclipse"
                       ? "◐"
                       : e.kind === "lunation"
-                        ? "○"
+                        ? e.id.endsWith(":full")
+                          ? "●"
+                          : "○"
                         : e.kind === "station"
                           ? "↺"
                           : "·",

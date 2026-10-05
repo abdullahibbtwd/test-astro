@@ -202,7 +202,7 @@ export default function AuthScreen() {
     <Screen headerless>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Txt kind="caption">{Constants.expoConfig?.name ?? "Astrology"}</Txt>
-        <Chip
+        <Chip role="button"
           label={app.language === "tr" ? "TR" : "EN"}
           selected={false}
           onPress={() =>
@@ -257,7 +257,7 @@ export default function AuthScreen() {
       )}
       <Choices>
         {["terms", "privacy"].map((key) => (
-          <Chip
+          <Chip role="button"
             key={key}
             label={t(key)}
             selected={false}

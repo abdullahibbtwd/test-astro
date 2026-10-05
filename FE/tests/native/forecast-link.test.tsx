@@ -18,7 +18,7 @@ jest.mock("expo-router", () => ({
 }));
 jest.mock("../../src/lib/state", () => ({
   useApp: (selector: any) => {
-    const state = { activeProfileId: "p", theme: "light", update: jest.fn() };
+    const state = { activeProfileId: "p", language: "en", theme: "light", update: jest.fn() };
     return selector ? selector(state) : state;
   },
 }));

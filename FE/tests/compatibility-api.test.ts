@@ -107,7 +107,7 @@ test("compatibility endpoints authenticate, replay safely, paginate and delete",
     ).json();
     validate("ReportPage", reports);
     assert.equal(reports.items.length, 1);
-    assert.equal(reports.items[0].title, "tr");
+    assert.equal(reports.items[0].title, "Aşk uyumu");
     const deleteReport = {
       method: "DELETE" as const,
       url: "/v1/reports/" + reports.items[0].report_id,

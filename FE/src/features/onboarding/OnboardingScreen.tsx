@@ -139,7 +139,7 @@ export default function OnboardingScreen() {
           </View>
           <Choices>
             {(["privacy", "terms"] as const).map((kind) => (
-              <Chip
+              <Chip role="button"
                 key={kind}
                 label={t(kind)}
                 selected={false}
@@ -278,7 +278,7 @@ export default function OnboardingScreen() {
           <Txt muted>{t("optional")}</Txt>
           <Choices>
             {(["female", "male", "other", null] as const).map((gender) => (
-              <Chip
+              <Chip role="button"
                 key={gender ?? "none"}
                 label={t(gender ?? "preferNot")}
                 selected={false}

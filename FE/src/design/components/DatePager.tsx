@@ -5,12 +5,16 @@ import { Txt } from ".";
 import { IconButton } from "./IconButton";
 import { useTheme } from "../theme";
 export function DatePager({
+  previousDisabled = false,
+  nextDisabled = false,
   label,
   onPrevious,
   onNext,
   onPick,
   onToday,
 }: {
+  previousDisabled?: boolean;
+  nextDisabled?: boolean;
   label: string;
   onPrevious: () => void;
   onNext: () => void;
@@ -25,6 +29,7 @@ export function DatePager({
         accessibilityLabel={t("previous")}
         icon={<ChevronLeft color={c.ink} size={22} />}
         onPress={onPrevious}
+        disabled={previousDisabled}
       />
       <Pressable
         accessibilityRole="button"
@@ -37,12 +42,13 @@ export function DatePager({
           alignItems: "center",
         }}
       >
-        <Txt numberOfLines={1}>{label}</Txt>
+        <Txt style={{ textAlign: "center" }}>{label}</Txt>
       </Pressable>
       <IconButton
         accessibilityLabel={t("next")}
         icon={<ChevronRight color={c.ink} size={22} />}
         onPress={onNext}
+        disabled={nextDisabled}
       />
       {onToday && (
         <Pressable
@@ -51,6 +57,8 @@ export function DatePager({
           style={{
             minHeight: 44,
             paddingHorizontal: 8,
+            flexShrink: 1,
+            maxWidth: "28%",
             justifyContent: "center",
           }}
         >

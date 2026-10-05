@@ -240,7 +240,7 @@ export class CompatibilityJobs {
       .map((r) => ({
         report_id: `compatibility-${r.id}-${lang}`,
         type: "compatibility",
-        title: r.readings[lang].title,
+        title: ({ en: { love: "Love compatibility", work: "Work compatibility", family: "Family compatibility" }, tr: { love: "Aşk uyumu", work: "İş uyumu", family: "Aile uyumu" } }[lang])[r.context.type as "love" | "work" | "family"],
         subtitle: r.context.people.map((p: any) => p.label).join(" & "),
         profile_id: r.context.people[0].profile_id,
         created_at: r.created_at,

@@ -81,7 +81,7 @@ export default function ProfileDetail() {
       <Row label={t("timeZone")} detail={profile.birth.tz} />
       <Choices>
         {(["chart", "ahead", "map"] as const).map((tab) => (
-          <Chip
+          <Chip role="button"
             key={tab}
             label={t(tab)}
             selected={false}

@@ -1,3 +1,4 @@
+import { formatDate } from "../../lib/dates";
 import { removeDeletedReference } from "../../api/deleted-cache";
 import { useCallback, useState } from "react";
 import {
@@ -78,7 +79,7 @@ export default function ThreadsScreen() {
           <Row
             key={thread.thread_id}
             label={thread.title || t("newConversation")}
-            detail={thread.updated_at.slice(0, 10)}
+            detail={formatDate(thread.updated_at.slice(0, 10), app.language)}
             onPress={() => router.push(`/ask/${thread.thread_id}`)}
             onLongPress={() =>
               deferDelete(

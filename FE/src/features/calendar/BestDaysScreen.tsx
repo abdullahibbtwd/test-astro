@@ -1,3 +1,10 @@
+import { useApp } from "../../lib/state";
+import {
+  formatDay,
+  formatMonth,
+  formatShort,
+  formatRange,
+} from "../../lib/dates";
 import { mockToday } from "../../api/client";
 import { todayLocal } from "../../lib/dates";
 import { Fragment } from "react";
@@ -18,6 +25,7 @@ import { useProfile } from "../shared/useProfile";
 import { MonthGrid } from "./MonthGrid";
 import type { BestDaysOverview } from "../../../contracts/spec-types";
 export default function BestDaysScreen() {
+  const lang = useApp((s) => s.language);
   const { activity } = useLocalSearchParams<{ activity?: string }>(),
     { id, tz } = useProfile(),
     { t } = useTranslation(),
@@ -42,7 +50,14 @@ export default function BestDaysScreen() {
           <Row
             key={item.activity}
             label={item.label}
-            detail={`${item.top_days.find((date) => date >= today) ?? ""} · ${t("goodDaysCount", { count: item.days.filter((d) => d.grade === "good" || d.grade === "excellent").length })}`}
+            detail={`${
+              item.top_days.find((date) => date >= today)
+                ? formatDay(
+                    item.top_days.find((date) => date >= today)!,
+                    lang,
+                  )
+                : ""
+            } · ${t("goodDaysCount", { count: item.days.filter((d) => d.grade === "good" || d.grade === "excellent").length })}`}
             onPress={() =>
               router.push(`/best-days/${item.activity}?profile=${id}`)
             }
@@ -54,11 +69,12 @@ export default function BestDaysScreen() {
             (month) => (
               <Fragment key={month}>
                 <Txt key={`title${month}`} kind="title">
-                  {month}
+                  {formatMonth(month, lang)}
                 </Txt>
                 <MonthGrid
-                  key={month}
-                  month={month}
+                  bestDays
+                  key={formatMonth(month, lang)}
+                  month={formatMonth(month, lang)}
                   days={selected.days
                     .filter((day) => day.date >= today)
                     .map((day) => ({
@@ -79,8 +95,9 @@ export default function BestDaysScreen() {
                   .filter((date) => date >= today)
                   .map((date) => (
                     <Chip
+                      role="button"
                       key={date}
-                      label={date}
+                      label={formatShort(date, lang)}
                       selected={false}
                       onPress={() => open(date)}
                     />
@@ -94,7 +111,7 @@ export default function BestDaysScreen() {
               {selected.windows.map((window) => (
                 <Row
                   key={window.start}
-                  label={`${window.start} – ${window.end}`}
+                  label={formatRange(window.start, window.end, lang)}
                   onPress={() => open(window.start)}
                 />
               ))}
@@ -106,8 +123,9 @@ export default function BestDaysScreen() {
               <Choices>
                 {selected.avoid_days.map((date) => (
                   <Chip
+                    role="button"
                     key={date}
-                    label={date}
+                    label={formatShort(date, lang)}
                     selected={false}
                     onPress={() => open(date)}
                   />

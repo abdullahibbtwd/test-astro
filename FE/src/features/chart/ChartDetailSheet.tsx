@@ -91,7 +91,7 @@ export function ChartDetailSheet({
             ? (c.angles[selection.axis]?.name ?? "")
             : t("chartDetails");
   const bodyChip = (body: Body) => (
-    <Chip
+    <Chip role="button"
       key={body}
       label={c.bodies[body]}
       selected={false}
@@ -111,12 +111,12 @@ export function ChartDetailSheet({
         <>
           <Glyph name={point.body} size={40} />
           <Choices>
-            <Chip
+            <Chip role="button"
               label={`${degrees(point.degree_in_sign)} ${c.signs[point.sign]}`}
               selected={false}
               onPress={() => select({ kind: "sign", sign: point.sign })}
             />
-            <Chip
+            <Chip role="button"
               label={
                 c.houses[String(point.house)]?.ordinal ?? String(point.house)
               }
@@ -141,7 +141,7 @@ export function ChartDetailSheet({
       )}
       {house && (
         <>
-          <Chip
+          <Chip role="button"
             label={`${t("cusp")}: ${degrees(inSign(house.cusp_longitude))} ${c.signs[house.sign]}`}
             selected={false}
             onPress={() => select({ kind: "sign", sign: house.sign })}
@@ -175,7 +175,7 @@ export function ChartDetailSheet({
             {chart.houses
               .filter((h) => h.sign === selection.sign)
               .map((h) => (
-                <Chip
+                <Chip role="button"
                   key={h.house}
                   label={c.houses[String(h.house)]?.ordinal ?? String(h.house)}
                   selected={false}
@@ -195,7 +195,7 @@ export function ChartDetailSheet({
         </>
       )}
       {axis && (
-        <Chip
+        <Chip role="button"
           label={`${degrees(axis.degree_in_sign)} ${c.signs[axis.sign]}`}
           selected={false}
           onPress={() => select({ kind: "sign", sign: axis.sign })}

@@ -54,7 +54,7 @@ export function Segmented<T extends string>({
               numberOfLines={1}
               adjustsFontSizeToFit
               minimumFontScale={13 / 16}
-              maxFontSizeMultiplier={2}
+
               style={{
                 fontSize: 16,
                 fontFamily: value === item.value ? "Inter-SemiBold" : "Inter",

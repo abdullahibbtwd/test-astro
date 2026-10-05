@@ -1,3 +1,5 @@
+import { BandChip } from "../../design/components/BandChip";
+import { CountryLabel } from "../../design/components/CountryLabel";
 import { ReportSurface as Screen } from "./ReportSurface";
 import { Share } from "react-native";
 import { useMapSelection } from "./selection";
@@ -59,7 +61,7 @@ export default function PlaceScreen() {
       <ErrorNotice error={error ?? q.error} />
       {d && (
         <>
-          <Txt muted>{d.place.country_code}</Txt>
+          <CountryLabel code={d.place.country_code} />
           {d.lines_display[0] && (
             <Txt>
               {d.lines_display[0].planet_label} ·{" "}
@@ -74,25 +76,35 @@ export default function PlaceScreen() {
           {d.cards.map((card) => (
             <Card key={card.card}>
               <Txt kind="title">{card.title}</Txt>
-              <Txt>{card.band_label}</Txt>
+              {card.band !== "no_emphasis" && (
+                <BandChip band={card.band} label={card.band_label} />
+              )}
               {card.text ? (
                 <Txt kind="reading">{card.text}</Txt>
               ) : d.reading.status === "pending" ? (
-                <Skeleton />
+                <Skeleton variant="lines" lines={2} />
               ) : null}
             </Card>
           ))}
           <Txt kind="title">{t("otherAreas")}</Txt>
           <Choices>
             {(Object.keys(d.goal_scores) as Goal[])
-              .filter((g) => !!catalogue.goals[g] && !d.cards.some((c) => c.goal === g))
+              .filter(
+                (g) =>
+                  !!catalogue.goals[g] && !d.cards.some((c) => c.goal === g),
+              )
               .map((g) => (
-                <Chip
-                  key={g}
-                  label={`${catalogue.goals[g]} · ${d.goal_scores[g].label}`}
-                  selected={params.goal === g}
-                  onPress={() => router.setParams({ goal: g })}
-                />
+                <Card key={g}>
+                  <Chip
+                    label={catalogue.goals[g]}
+                    selected={params.goal === g}
+                    onPress={() => router.setParams({ goal: g })}
+                  />
+                  <BandChip
+                    band={d.goal_scores[g].band}
+                    label={d.goal_scores[g].label}
+                  />
+                </Card>
               ))}
           </Choices>
           <Txt kind="title">{t("nearbyLines")}</Txt>

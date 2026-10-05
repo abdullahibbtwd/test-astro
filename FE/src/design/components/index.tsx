@@ -42,7 +42,7 @@ export function Txt({
     <Text
       numberOfLines={numberOfLines}
       selectable={kind === "reading"}
-      maxFontSizeMultiplier={kind === "reading" ? 2 : 1.6}
+
       style={[
         {
           color: muted ? c.ink2 : c.ink,
@@ -283,6 +283,7 @@ export function Row({
   return (
     <Pressable
       accessibilityRole={onPress ? "button" : undefined}
+      accessibilityLabel={[label, detail].filter(Boolean).join(", ")}
       disabled={!onPress && !onLongPress}
       onPress={onPress}
       onLongPress={onLongPress}
@@ -331,7 +332,7 @@ export function Field({ label, ...props }: TextInputProps & { label: string }) {
         {...props}
         accessibilityLabel={label}
         placeholderTextColor={c.ink3}
-        maxFontSizeMultiplier={1.6}
+
         style={[
           {
             minHeight: 52,
@@ -351,19 +352,22 @@ export function Field({ label, ...props }: TextInputProps & { label: string }) {
   );
 }
 export function Chip({
+  role = "radio",
   label,
   selected,
   onPress,
 }: {
   label: string;
   selected: boolean;
+  role?: "radio" | "checkbox" | "button";
   onPress: () => void;
 }) {
   const c = useTheme();
   return (
     <Pressable
-      accessibilityRole="radio"
-      accessibilityState={{ selected }}
+      accessibilityRole={role}
+      accessibilityLabel={label}
+      accessibilityState={role === "button" ? {} : { checked: selected }}
       onPress={onPress}
       style={{
         minHeight: 44,
@@ -379,9 +383,15 @@ export function Chip({
     </Pressable>
   );
 }
-export function Choices({ children }: PropsWithChildren) {
+export function Choices({
+  children,
+  multi = false,
+}: PropsWithChildren<{ multi?: boolean }>) {
   return (
-    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+    <View
+      accessibilityRole={multi ? undefined : "radiogroup"}
+      style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}
+    >
       {children}
     </View>
   );

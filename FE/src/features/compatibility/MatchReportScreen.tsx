@@ -1,3 +1,4 @@
+import { formatDate } from "../../lib/dates";
 import Constants from "expo-constants";
 import { exportPdf } from "../exports/native";
 import { escapeHtml, paragraphs } from "../exports/document";
@@ -73,7 +74,7 @@ export default function MatchReportScreen() {
       {data && (
         <>
           <Txt muted>
-            {cat.data.compat_types[data.type]} · {data.created_at.slice(0, 10)}
+            {cat.data.compat_types[data.type]} · {formatDate(data.created_at.slice(0, 10), app.language)}
           </Txt>
           <View style={{ gap: 12 }}>
             {[data.people.a, data.people.b].map((person) => (
@@ -119,7 +120,7 @@ export default function MatchReportScreen() {
           >
             {(reading) => (
               <>
-                <Txt kind="title">{reading.title}</Txt>
+                
                 {reading.sections.map((section, index) => (
                   <View key={section.key} style={{ gap: 16 }}>
                     <ReadingSection

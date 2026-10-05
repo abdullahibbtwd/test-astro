@@ -158,7 +158,7 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
           <Txt kind="caption">{t("axes")}</Txt>
           <Choices>
             {(["ASC", "DSC", "MC", "IC"] as const).map((axis) => (
-              <Chip
+              <Chip role="button"
                 key={axis}
                 label={c.angles[axis]?.name ?? ""}
                 selected={false}

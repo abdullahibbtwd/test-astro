@@ -172,9 +172,9 @@ export default function MapScreen() {
         />
       </View>
       <Sheet open={layers} title={t("layers")} onClose={() => setLayers(false)}>
-        <Choices>
+        <Choices multi>
           {(Object.keys(planetColors) as Body[]).map((body) => (
-            <Chip
+            <Chip role="checkbox"
               key={body}
               label={catalogue.bodies[body]}
               selected={bodies.includes(body)}
@@ -187,12 +187,12 @@ export default function MapScreen() {
               }
             />
           ))}
-          <Chip
+          <Chip role="checkbox"
             label={t("nodes")}
             selected={nodes}
             onPress={() => setNodes(!nodes)}
           />
-          <Chip
+          <Chip role="checkbox"
             label={t("latitudeCrossings")}
             selected={parans}
             onPress={() => setParans(!parans)}

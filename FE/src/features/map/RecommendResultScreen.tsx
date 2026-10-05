@@ -1,3 +1,7 @@
+import { BandChip } from "../../design/components/BandChip";
+import { CountryLabel } from "../../design/components/CountryLabel";
+import { countryName } from "../../lib/countries";
+import { useApp } from "../../lib/state";
 import { useMemo, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -28,6 +32,7 @@ import type {
   AcgLines,
 } from "../../../contracts/spec-types";
 export default function RecommendResultScreen() {
+  const lang = useApp((s) => s.language);
   const params = useLocalSearchParams<{ request: string }>(),
     { id } = useProfile(),
     { t } = useTranslation(),
@@ -62,22 +67,22 @@ export default function RecommendResultScreen() {
         `/map/place/${p.place_id}?profile=${id}${d?.goal && d.goal !== "overall" ? `&goal=${d.goal}` : ""}`,
       ),
     area = (a: AreaRef) => (
-      <Row
-        key={`${a.kind}-${a.id}`}
-        label={a.name}
-        detail={a.band_label}
-        onPress={() =>
-          router.push(`/map/area/${a.id}?kind=${a.kind}&profile=${id}`)
-        }
-      />
+      <Card key={`${a.kind}-${a.id}`}>
+        <BandChip band={a.band} label={a.band_label} />
+        <Row
+          label={a.name}
+          onPress={() =>
+            router.push(`/map/area/${a.id}?kind=${a.kind}&profile=${id}`)
+          }
+        />
+      </Card>
     );
   const item = (p: Destination) => (
     <Card key={p.place_id}>
-      <Row
-        label={p.name}
-        detail={`${p.country_code} · ${t(p.size)} · ${p.summary_label ?? p.band_label}`}
-        onPress={() => place(p)}
-      />
+      <Row label={p.name} detail={t(p.size)} onPress={() => place(p)} />
+      <CountryLabel code={p.country_code} />
+      <BandChip band={p.band} label={p.band_label} />
+      {p.summary_label && <Txt>{p.summary_label}</Txt>}
       {p.dominant_line && (
         <Txt>{distanceLabel(p.dominant_line.distance_km_rounded)}</Txt>
       )}
@@ -86,7 +91,9 @@ export default function RecommendResultScreen() {
         d.explanations.items[p.place_id] && (
           <Txt kind="reading">{d.explanations.items[p.place_id]}</Txt>
         )}
-      {d?.explanations.status === "pending" && <Skeleton />}
+      {d?.explanations.status === "pending" && (
+        <Skeleton variant="lines" lines={2} />
+      )}
     </Card>
   );
   return (
@@ -101,6 +108,7 @@ export default function RecommendResultScreen() {
               <Choices>
                 {d.goal_options?.map((g) => (
                   <Chip
+                    role="button"
                     key={g.goal}
                     label={g.label}
                     selected={false}
@@ -120,14 +128,28 @@ export default function RecommendResultScreen() {
           ) : (
             <>
               {d.status === "thin_result" && <Txt>{t("thinResult")}</Txt>}
-              <Txt>{d.scope === "world" ? t("world") : d.scope}</Txt>
+              <Txt>
+                {d.scope === "world" ? t("world") : countryName(d.scope, lang)}
+              </Txt>
               <Choices>
                 {Object.entries(d.filters_applied)
                   .filter(([k, v]) => k !== "policy" && v != null)
                   .map(([key, value]) => (
                     <Chip
                       key={key}
-                      label={`${t(key)}: ${Array.isArray(value) ? value.map((v) => t(String(v))).join(", ") : t(String(value))} ×`}
+                      label={
+                        key === "purpose" && value === "both"
+                          ? t("livingTravel")
+                          : key === "city_size"
+                            ? Array.isArray(value)
+                              ? value
+                                  .map((v) =>
+                                    t(v === "big" ? "largeCities" : String(v)),
+                                  )
+                                  .join(", ")
+                              : t(String(value))
+                            : `${t(key)}: ${Array.isArray(value) ? value.map((v) => t(String(v))).join(", ") : t(String(value))}`
+                      }
                       selected
                       onPress={() => {
                         const filters = { ...body?.filters };

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useApp } from "../../lib/state";
 import { useProfiles, useCatalogue } from "../../api/hooks";
 import { mockToday } from "../../api/client";
-import { todayLocal, formatDate } from "../../lib/dates";
+import { todayLocal, formatDate, formatMonth } from "../../lib/dates";
 import { shiftDate, shiftMonth } from "../../lib/calendar";
 import { privateStorage } from "../../lib/storage";
 import { Screen, Button, ErrorNotice } from "../../design/components";
@@ -63,11 +63,7 @@ export default function AheadScreen() {
   )
     ? (params.lens as Lens)
     : (lenses[view] ?? "general");
-  const monthLabel = (m: string) =>
-    new Intl.DateTimeFormat(app.language, {
-      month: "short",
-      year: "numeric",
-    }).format(new Date(`${m}-15T12:00:00`));
+  const monthLabel = (m: string) => formatMonth(m, app.language);
   const label =
     view === "day"
       ? formatDate(date, app.language)

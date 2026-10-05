@@ -1,3 +1,5 @@
+import { BandChip } from "../../design/components/BandChip";
+import { formatShort, formatRange } from "../../lib/dates";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Card, Txt, Button } from "../../design/components";
@@ -27,20 +29,18 @@ export function AskCardView({
     case "best_days":
       title = c.activities[card.activity];
       detail = card.days
-        .map((d) => `${d.date} · ${c.grades[d.grade]}`)
+        .map((d) => `${formatShort(d.date, app.language)} · ${c.grades[d.grade]}`)
         .join("\n");
       route = `/best-days/${card.activity}?profile=${profile}`;
       break;
     case "place":
       title = card.name;
-      detail = card.cards
-        .map((item) => `${c.goals[item.goal]} · ${item.band_label}`)
-        .join("\n");
+      detail = "";
       route = `/map/place/${encodeURIComponent(card.place_id)}?profile=${profile}`;
       break;
     case "period":
       title = card.period.label;
-      detail = `${card.period.start} – ${card.period.end}`;
+      detail = formatRange(card.period.start, card.period.end, app.language);
       route = `/calendar/item/${encodeURIComponent(card.period.id)}?profile=${profile}`;
       break;
     case "transit":
@@ -62,6 +62,7 @@ export function AskCardView({
     <Card>
       <Txt>{title}</Txt>
       {!!detail && <Txt muted>{detail}</Txt>}
+      {card.type === "place" && card.cards.map(item => <Card key={item.goal}><Txt>{c.goals[item.goal]}</Txt><BandChip band={item.band} label={item.band_label} /></Card>)}
       <Button
         secondary
         label={t("open")}

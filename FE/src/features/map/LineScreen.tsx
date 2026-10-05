@@ -1,3 +1,7 @@
+import { countryName } from "../../lib/countries";
+import { CountryLabel } from "../../design/components/CountryLabel";
+import { useApp } from "../../lib/state";
+import { View } from "react-native";
 import { ReportSurface as Screen } from "./ReportSurface";
 import { useLocalSearchParams, router } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -9,6 +13,7 @@ import { useProfile } from "../shared/useProfile";
 import { distanceLabel } from "./geometry";
 import type { Body, Angle, LinePlaces } from "../../../contracts/spec-types";
 export default function LineScreen() {
+  const lang = useApp((s) => s.language);
   const { body, angle, goal } = useLocalSearchParams<{
       body: Body;
       angle: Angle;
@@ -37,16 +42,18 @@ export default function LineScreen() {
           {q.isPending && <Skeleton />}
           <ErrorNotice error={q.error} />
           {q.data?.places.map((p) => (
-            <Row
-              key={p.place_id}
-              label={p.name}
-              detail={`${p.country_code} · ${distanceLabel(p.distance_km_rounded)} · ${p.tier_label}`}
-              onPress={() =>
-                router.push(
-                  `/map/place/${p.place_id}?profile=${id}${goal ? `&goal=${goal}` : ""}`,
-                )
-              }
-            />
+            <View key={p.place_id}>
+              <CountryLabel code={p.country_code} />
+              <Row
+                label={p.name}
+                detail={`${countryName(p.country_code, lang)} · ${distanceLabel(p.distance_km_rounded)} · ${p.tier_label}`}
+                onPress={() =>
+                  router.push(
+                    `/map/place/${p.place_id}?profile=${id}${goal ? `&goal=${goal}` : ""}`,
+                  )
+                }
+              />
+            </View>
           ))}
           {q.data?.places.length === 0 && <Txt>{t("noResults")}</Txt>}
         </>

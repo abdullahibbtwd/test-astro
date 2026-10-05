@@ -6,11 +6,13 @@ export function BandChip({ band, label }: { band: string; label: string }) {
   const c = useTheme();
   const shape = ["strongly_supportive", "excellent"].includes(band)
     ? "▲▲"
-    : ["supportive", "favorable", "good"].includes(band)
+    : ["supportive", "favorable", "plus", "good"].includes(band)
       ? "▲"
       : band === "mixed"
         ? "◆"
-        : ["challenging", "strongly_challenging", "avoid"].includes(band)
+        : ["challenging", "strongly_challenging", "minus", "avoid"].includes(
+              band,
+            )
           ? "▼"
           : "○";
   return (

@@ -1,9 +1,11 @@
+import { BandChip } from "../../design/components/BandChip";
 import { bandColor } from "../../design/bands";
 import type { ReactNode } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
+  Skeleton,
   Card,
   Txt,
   Row,
@@ -59,12 +61,15 @@ export function Generated<T>({
     );
   if (part.status === "ready") return <>{children(part)}</>;
   return (
-    <JobProgress
-      job={part.status === "pending" ? part.job : undefined}
-      failed={part.status === "failed"}
-      error={part.status === "failed" ? part.error : undefined}
-      retry={retry}
-    />
+    <>
+      <Skeleton variant="lines" lines={3} />
+      <JobProgress
+        job={part.status === "pending" ? part.job : undefined}
+        failed={part.status === "failed"}
+        error={part.status === "failed" ? part.error : undefined}
+        retry={retry}
+      />
+    </>
   );
 }
 export function Score({
@@ -108,9 +113,7 @@ export function Score({
           </View>
         </>
       )}
-      <Txt kind="caption" muted>
-        {band}
-      </Txt>
+      <BandChip band={bandKey ?? "quiet"} label={band} />
     </View>
   );
 }
@@ -171,6 +174,7 @@ export function DateLinks({
     <Choices>
       {dates.map((date) => (
         <Chip
+          role="button"
           key={date}
           label={formatDate(date, lang)}
           selected={false}

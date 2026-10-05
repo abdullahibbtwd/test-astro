@@ -135,9 +135,9 @@ export default function RecommendScreen() {
       {refine && (
         <>
           <Txt>{t("regions")}</Txt>
-          <Choices>
+          <Choices multi>
             {regions.map((r) => (
-              <Chip
+              <Chip role="checkbox"
                 key={r}
                 label={t(r)}
                 selected={(filters.regions ?? regions).includes(r)}
@@ -146,9 +146,9 @@ export default function RecommendScreen() {
             ))}
           </Choices>
           <Txt>{t("citySize")}</Txt>
-          <Choices>
+          <Choices multi>
             {(["big", "mid", "small"] as const).map((s) => (
-              <Chip
+              <Chip role="checkbox"
                 key={s}
                 label={t(s)}
                 selected={(filters.city_size ?? ["big", "mid"]).includes(s)}
@@ -170,9 +170,9 @@ export default function RecommendScreen() {
             ))}
           </Choices>
           <Txt>{t("climate")}</Txt>
-          <Choices>
+          <Choices multi>
             {(["warm", "mild", "cold"] as const).map((c) => (
-              <Chip
+              <Chip role="checkbox"
                 key={c}
                 label={t(c)}
                 selected={(filters.climate ?? []).includes(c)}
@@ -185,7 +185,7 @@ export default function RecommendScreen() {
             {(["auto", "living", "travel", "both"] as const).map((p) => (
               <Chip
                 key={p}
-                label={t(p)}
+                label={t(p === "both" ? "livingTravel" : p)}
                 selected={(filters.purpose ?? "auto") === p}
                 onPress={() => {
                   const next = { ...filters };

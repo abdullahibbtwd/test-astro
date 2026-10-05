@@ -211,7 +211,7 @@ export default function ChatScreen() {
                 ...app.me,
                 ask_quota: { ...app.me.ask_quota, ...data.quota },
               });
-            AccessibilityInfo.announceForAccessibility(t("ready"));
+            AccessibilityInfo.announceForAccessibility(draft.current.find(message => message.message_id === data.message_id)?.text || t("ready"));
           } else if (event === "error") throw new Error("Answer failed");
         },
       );
@@ -434,7 +434,7 @@ export default function ChatScreen() {
                       !link.route.startsWith("//"),
                   )
                   .map((link, index) => (
-                    <Chip
+                    <Chip role="button"
                       key={index}
                       label={link.label}
                       selected={false}

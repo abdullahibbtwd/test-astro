@@ -1,3 +1,6 @@
+import { useTranslation } from "react-i18next";
+import { formatDay } from "../../lib/dates";
+import { BandChip } from "../../design/components/BandChip";
 import { Pressable, View } from "react-native";
 import { useApp } from "../../lib/state";
 import { useTheme } from "../../design/theme";
@@ -8,6 +11,8 @@ export function MonthGrid({
   month,
   days,
   today,
+  selected,
+  bestDays = false,
   onSelect,
 }: {
   month: string;
@@ -19,8 +24,25 @@ export function MonthGrid({
     tinted?: boolean;
   }[];
   today?: string;
+  selected?: string;
+  bestDays?: boolean;
   onSelect: (date: string) => void;
 }) {
+  const { t } = useTranslation();
+  const iconNames = (icons = "") =>
+    icons
+      .split(" ")
+      .map(
+        (icon) =>
+          ({
+            "○": t("newMoon"),
+            "●": t("fullMoon"),
+            "◐": t("eclipse"),
+            "↺": t("station"),
+          })[icon],
+      )
+      .filter(Boolean)
+      .join(", ");
   const lang = useApp((s) => s.language),
     c = useTheme(),
     grid = monthDays(month),
@@ -49,8 +71,11 @@ export function MonthGrid({
             <Pressable
               key={date}
               accessibilityRole="button"
-              accessibilityLabel={`${date}${day ? `, ${day.label}${day.icons ? `, ${day.icons}` : ""}` : ""}`}
-              accessibilityState={{ disabled: !day, selected: date === today }}
+              accessibilityLabel={`${formatDay(date, lang)}${day ? `, ${day.label}${day.icons ? `, ${iconNames(day.icons)}` : ""}` : ""}`}
+              accessibilityState={{
+                disabled: !day,
+                selected: date === selected,
+              }}
               disabled={!day}
               onPress={() => onSelect(date)}
               style={{
@@ -69,24 +94,46 @@ export function MonthGrid({
                   padding: 4,
                   borderRadius: 20,
                   borderWidth:
-                    date === today
-                      ? 3
-                      : day &&
-                          !["quiet", "neutral", "no_emphasis"].includes(
-                            day.band,
-                          )
-                        ? 1.5
-                        : 0,
-                  borderColor:
-                    date === today
-                      ? c.accent
-                      : bandColor(day?.band ?? "", c.bg === "#1A2030"),
-                  backgroundColor: day?.tinted ? c.accentSoft : undefined,
+                    day &&
+                    [
+                      "plus",
+                      "minus",
+                      "favorable",
+                      "supportive",
+                      "strongly_supportive",
+                      "challenging",
+                      "excellent",
+                      "good",
+                      "avoid",
+                    ].includes(day.band)
+                      ? 1.5
+                      : 0,
+                  borderStyle: day?.band === "avoid" ? "dashed" : "solid",
+                  borderColor: bandColor(day?.band ?? "", c.bg === "#1A2030"),
+                  backgroundColor: date === selected ? c.accentSoft : undefined,
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Txt>{Number(date.slice(-2))}</Txt>
+                <Txt
+                  style={
+                    date === today
+                      ? { fontFamily: "Inter-SemiBold" }
+                      : undefined
+                  }
+                >
+                  {Number(date.slice(-2))}
+                </Txt>
+                {date === today && (
+                  <View
+                    style={{
+                      width: 4,
+                      height: 4,
+                      borderRadius: 2,
+                      backgroundColor: c.accent,
+                    }}
+                  />
+                )}
               </View>
               <Txt kind="caption" muted>
                 {day?.icons ?? ""}
@@ -95,6 +142,21 @@ export function MonthGrid({
             </Pressable>
           );
         })}
+      </View>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+        {(bestDays
+          ? ["excellent", "good", "avoid"]
+          : ["favorable", "challenging"]
+        ).map((band) => (
+          <BandChip key={band} band={band} label={t(band)} />
+        ))}
+        {[...new Set(days.flatMap((d) => (d.icons ?? "").split(" ")))]
+          .filter((icon) => iconNames(icon))
+          .map((icon) => (
+            <Txt key={icon} kind="caption">
+              {icon} {iconNames(icon)}
+            </Txt>
+          ))}
       </View>
     </View>
   );

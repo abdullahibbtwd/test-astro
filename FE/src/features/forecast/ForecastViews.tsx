@@ -1,3 +1,5 @@
+import { useApp } from "../../lib/state";
+import { formatRange } from "../../lib/dates";
 import { Pressable, View } from "react-native";
 import { useEffect, useState } from "react";
 import { Sheet } from "../../design/components/Sheet";
@@ -191,7 +193,7 @@ export function DayView({
             {data.retrograde
               .filter((body) => !!cat.data.bodies[body])
               .map((body) => (
-                <Chip
+                <Chip role="button"
                   key={body}
                   label={`${cat.data.bodies[body]} · ${cat.data.terms.retrograde}`}
                   selected={false}
@@ -210,7 +212,7 @@ export function DayView({
               <Txt kind="title">{t("goodFor")}</Txt>
               <Choices>
                 {data.best_activities.map((activity) => (
-                  <Chip
+                  <Chip role="button"
                     key={activity.activity}
                     label={`${activity.label} · ${cat.data.grades[activity.grade]}`}
                     selected={false}
@@ -353,6 +355,7 @@ export function YearView({
   month: string;
   lens: Lens;
 }) {
+  const lang = useApp(s => s.language);
   const { t } = useTranslation(),
     flags = useFlags(),
     query = useApi<YearForecast>(
@@ -366,7 +369,7 @@ export function YearView({
       {data && (
         <>
           <Txt kind="title">
-            {data.from} – {data.to}
+            {formatRange(data.from, data.to, lang)}
           </Txt>
           <Generated
             part={data.reading}
@@ -382,7 +385,7 @@ export function YearView({
                 {data.quarters.map((q) => (
                   <Card key={q.key}>
                     <Txt muted>
-                      {q.from} – {q.to}
+                      {formatRange(q.from, q.to, lang)}
                     </Txt>
                     <Txt kind="reading">{part[q.key]}</Txt>
                   </Card>

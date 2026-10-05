@@ -1,3 +1,5 @@
+import { formatDate } from "../../lib/dates";
+import { useApp } from "../../lib/state";
 import { removeDeletedReference } from "../../api/deleted-cache";
 import {
   deferDelete,
@@ -19,6 +21,7 @@ import { request } from "../../api/client";
 import { useCatalogue } from "../../api/hooks";
 import type { CompatibilityPage } from "../../../contracts/spec-types";
 export default function MatchScreen() {
+  const lang = useApp(s => s.language);
   const { other } = useLocalSearchParams<{ other?: string }>(),
     { t } = useTranslation(),
     cat = useCatalogue(),
@@ -56,7 +59,7 @@ export default function MatchScreen() {
               <Row
                 key={item.compatibility_id}
                 label={`${item.people.a.label} & ${item.people.b.label}`}
-                detail={`${cat.data.compat_types[item.type]} · ${t(item.status === "pending" ? "preparing" : item.status === "failed" ? "error" : "ready")} · ${item.created_at.slice(0, 10)}`}
+                detail={`${cat.data.compat_types[item.type]} · ${t(item.status === "pending" ? "preparing" : item.status === "failed" ? "error" : "ready")} · ${formatDate(item.created_at.slice(0, 10), lang)}`}
                 onPress={() => router.push(`/match/${item.compatibility_id}`)}
                 onLongPress={() => remove(item.compatibility_id)}
               />

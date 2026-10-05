@@ -1,3 +1,5 @@
+import { useApp } from "../../lib/state";
+import { formatMonth, formatRange } from "../../lib/dates";
 import { mockToday } from "../../api/client";
 import { todayLocal } from "../../lib/dates";
 import { shiftMonth } from "../../lib/calendar";
@@ -25,6 +27,7 @@ export default function OverviewScreen({
 }: {
   periods?: boolean;
 }) {
+  const lang = useApp((s) => s.language);
   const { id, tz } = useProfile(),
     { t } = useTranslation(),
     cat = useCatalogue(),
@@ -67,7 +70,10 @@ export default function OverviewScreen({
                 <View style={{ flexDirection: "row" }}>
                   {Array.from({ length: 12 }, (_, i) => (
                     <Txt key={i} kind="caption" style={{ width: 1000 / 12 }}>
-                      {shiftMonth(data.horizon.from.slice(0, 7), i)}
+                      {formatMonth(
+                        shiftMonth(data.horizon.from.slice(0, 7), i),
+                        lang,
+                      )}
                     </Txt>
                   ))}
                 </View>
@@ -126,7 +132,7 @@ export default function OverviewScreen({
                               hitSlop={12}
                               key={period.id}
                               accessibilityRole="button"
-                              accessibilityLabel={`${period.label}, ${period.start} – ${period.end}`}
+                              accessibilityLabel={`${period.label}, ${formatRange(period.start, period.end, lang)}`}
                               onPress={() =>
                                 router.push(
                                   `/calendar/item/${encodeURIComponent(period.id)}?profile=${id}`,
