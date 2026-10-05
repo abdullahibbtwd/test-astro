@@ -59,6 +59,33 @@ export const endpoints: Endpoint[] = [
   endpoint("get", "/profiles/{id}/natal-reading", "NatalReading", "WRAP", {
     generated: true,
   }),
+  endpoint(
+    "get",
+    "/profiles/{id}/natal-reading/outline",
+    "ReadingOutline",
+    "NEW",
+  ),
+  endpoint(
+    "get",
+    "/profiles/{id}/natal-reading/sections/{key}",
+    "NatalSection",
+    "NEW",
+    { generated: true },
+  ),
+  endpoint("post", "/profiles/{id}/natal-reading/progress", undefined, "NEW", {
+    body: "ReadingProgressInput",
+    status: 204,
+  }),
+  endpoint(
+    "post",
+    "/profiles/{id}/natal-reading/complete",
+    "JobAccepted",
+    "NEW",
+    { status: 202 },
+  ),
+  endpoint("post", "/feedback/reading", "ReadingAccuracy", "NEW", {
+    body: "ReadingFeedbackInput",
+  }),
   endpoint("get", "/profiles/{id}/chart/elements", "ChartElements", "NEW", {
     generated: true,
   }),

@@ -244,6 +244,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/profiles/{id}/natal-reading/outline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get__profiles_id_natal_reading_outline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/profiles/{id}/natal-reading/sections/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get__profiles_id_natal_reading_sections_key_"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/profiles/{id}/natal-reading/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post__profiles_id_natal_reading_progress"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/profiles/{id}/natal-reading/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post__profiles_id_natal_reading_complete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/feedback/reading": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["post__feedback_reading"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/profiles/{id}/chart/elements": {
         parameters: {
             query?: never;
@@ -862,7 +942,7 @@ export interface components {
         Job: {
             job_id: string;
             /** @enum {string} */
-            kind: "natal_reading" | "element_notes" | "day_reading" | "month_reading" | "year_reading" | "solar_return" | "compatibility" | "place_reading" | "area_reading" | "recommendation" | "calendar_text" | "best_day_text";
+            kind: "natal_section" | "dossier" | "natal_reading" | "element_notes" | "day_reading" | "month_reading" | "year_reading" | "solar_return" | "compatibility" | "place_reading" | "area_reading" | "recommendation" | "calendar_text" | "best_day_text";
             /** @enum {string} */
             status: "queued" | "running" | "succeeded" | "failed";
             stages: {
@@ -881,7 +961,7 @@ export interface components {
             title: string;
             status: number;
             /** @enum {string} */
-            code: "validation_error" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "out_of_range" | "rate_limited" | "generation_failed" | "absent" | "upstream_unavailable" | "internal" | "busy";
+            code: "validation_error" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "out_of_range" | "rate_limited" | "generation_failed" | "absent" | "upstream_unavailable" | "internal" | "busy" | "account_required" | "read_ahead_limit";
             blocking_job_id?: string;
             detail?: string;
             fields?: {
@@ -1135,8 +1215,8 @@ export interface components {
             retrograde: components["schemas"]["Body"][];
             events: components["schemas"]["CalendarEventRef"][];
             transits: components["schemas"]["TransitEpisode"][];
-            reading: components["schemas"]["GeneratedPart_bbfb9b59e6a2"];
-            day_note: components["schemas"]["GeneratedPart_bdbd840c6400"] | null;
+            reading: components["schemas"]["GeneratedPart_647cee4d89da"];
+            day_note: components["schemas"]["GeneratedPart_7b71e302251e"] | null;
             best_activities: {
                 activity: components["schemas"]["Activity"];
                 label: string;
@@ -1203,7 +1283,7 @@ export interface components {
             phase_label: string;
             has_text: boolean;
         };
-        GeneratedPart_bbfb9b59e6a2: {
+        GeneratedPart_647cee4d89da: {
             text: string;
             /** @constant */
             status: "ready";
@@ -1220,7 +1300,7 @@ export interface components {
             status: "absent";
             absence: components["schemas"]["Absence"];
         };
-        GeneratedPart_bdbd840c6400: {
+        GeneratedPart_7b71e302251e: {
             text: string;
             /** @constant */
             status: "ready";
@@ -1251,10 +1331,10 @@ export interface components {
                 score_10: number;
             }[];
             moon: components["schemas"]["MoonInfo"];
-            today: components["schemas"]["GeneratedPart_d3da6a981b06"];
+            today: components["schemas"]["GeneratedPart_1f335660c600"];
             next_up: components["schemas"]["UpcomingItem"][];
         };
-        GeneratedPart_d3da6a981b06: {
+        GeneratedPart_1f335660c600: {
             text: string;
             /** @constant */
             status: "ready";
@@ -1292,7 +1372,7 @@ export interface components {
                 mid: components["schemas"]["DateRange"];
                 late: components["schemas"]["DateRange"];
             };
-            reading: components["schemas"]["GeneratedPart_e1e4bbbbd973"];
+            reading: components["schemas"]["GeneratedPart_769db4fd8b32"];
             highlights: {
                 favorable_days: components["schemas"]["ISODate"][];
                 challenging_days: components["schemas"]["ISODate"][];
@@ -1313,7 +1393,7 @@ export interface components {
             from: components["schemas"]["ISODate"];
             to: components["schemas"]["ISODate"];
         };
-        GeneratedPart_e1e4bbbbd973: {
+        GeneratedPart_769db4fd8b32: {
             overview: string;
             early: string;
             mid: string;
@@ -1369,7 +1449,7 @@ export interface components {
                 from: components["schemas"]["ISODate"];
                 to: components["schemas"]["ISODate"];
             }[];
-            reading: components["schemas"]["GeneratedPart_b063f32978d8"];
+            reading: components["schemas"]["GeneratedPart_bdf0ead3a538"];
             highlights: {
                 strongest_periods: components["schemas"]["PeriodRef"][];
                 challenging_periods: components["schemas"]["PeriodRef"][];
@@ -1387,7 +1467,7 @@ export interface components {
                 text: string;
             }[];
         };
-        GeneratedPart_b063f32978d8: {
+        GeneratedPart_bdf0ead3a538: {
             overview: string;
             q1: string;
             q2: string;
@@ -1416,9 +1496,9 @@ export interface components {
             return_utc: components["schemas"]["ISODateTime"];
             place: components["schemas"]["Place"];
             chart: components["schemas"]["ChartData"];
-            reading: components["schemas"]["GeneratedPart_e211d43cc4ad"];
+            reading: components["schemas"]["GeneratedPart_a499c92bec70"];
         };
-        GeneratedPart_e211d43cc4ad: {
+        GeneratedPart_a499c92bec70: {
             sections: {
                 key: string;
                 title: string;
@@ -1448,7 +1528,7 @@ export interface components {
                 b: components["schemas"]["PersonRef"];
             };
             created_at: components["schemas"]["ISODateTime"];
-            reading: components["schemas"]["GeneratedPart_1073d530f425"];
+            reading: components["schemas"]["GeneratedPart_38f80c413e15"];
             score: null | {
                 value: number;
                 label: string;
@@ -1463,7 +1543,7 @@ export interface components {
                 ascendant: components["schemas"]["Sign"];
             };
         };
-        GeneratedPart_1073d530f425: {
+        GeneratedPart_38f80c413e15: {
             title: string;
             sections: components["schemas"]["CompatSection"][];
             /** @constant */
@@ -1500,11 +1580,11 @@ export interface components {
         };
         AcgLines: {
             chart_key: string;
-            lines: components["schemas"]["FeatureCollection_da8e50111c92"];
-            parans: components["schemas"]["FeatureCollection_47e15528cfa3"];
+            lines: components["schemas"]["FeatureCollection_d8d219493b88"];
+            parans: components["schemas"]["FeatureCollection_cdfc34cddaa3"];
         };
         /** @description A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3 */
-        FeatureCollection_da8e50111c92: {
+        FeatureCollection_d8d219493b88: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -1512,12 +1592,12 @@ export interface components {
             type: "FeatureCollection";
             /** @description Bounding box of the coordinate range of the object's Geometries, Features, or Feature Collections. The value of the bbox member is an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries. https://tools.ietf.org/html/rfc7946#section-5 */
             bbox?: components["schemas"]["BBox"];
-            features: components["schemas"]["Feature_4c199a2f139a"][];
+            features: components["schemas"]["Feature_f728d7099806"][];
         };
         /** @description Bounding box https://tools.ietf.org/html/rfc7946#section-5 */
         BBox: number[] | number[];
         /** @description A feature object which contains a geometry and associated properties. https://tools.ietf.org/html/rfc7946#section-3.2 */
-        Feature_4c199a2f139a: {
+        Feature_f728d7099806: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -1561,7 +1641,7 @@ export interface components {
          */
         Position: number[];
         /** @description A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3 */
-        FeatureCollection_47e15528cfa3: {
+        FeatureCollection_cdfc34cddaa3: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -1569,10 +1649,10 @@ export interface components {
             type: "FeatureCollection";
             /** @description Bounding box of the coordinate range of the object's Geometries, Features, or Feature Collections. The value of the bbox member is an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries. https://tools.ietf.org/html/rfc7946#section-5 */
             bbox?: components["schemas"]["BBox"];
-            features: components["schemas"]["Feature_5c2936757627"][];
+            features: components["schemas"]["Feature_fd8161c0c5a4"][];
         };
         /** @description A feature object which contains a geometry and associated properties. https://tools.ietf.org/html/rfc7946#section-3.2 */
-        Feature_5c2936757627: {
+        Feature_fd8161c0c5a4: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -1647,9 +1727,9 @@ export interface components {
             focus_goal: components["schemas"]["Goal"] | null;
             lines_display: components["schemas"]["LineDisplay"][];
             parans_display: components["schemas"]["ParanDisplay"][];
-            goal_scores: components["schemas"]["Record_6398f2559375"];
+            goal_scores: components["schemas"]["Record_1966522505b5"];
             cards: components["schemas"]["SuitabilityCard"][];
-            reading: components["schemas"]["GeneratedPart_30a57a1c137a"];
+            reading: components["schemas"]["GeneratedPart_8a62f6496936"];
             footer: string;
         };
         LineDisplay: {
@@ -1671,7 +1751,7 @@ export interface components {
             distance_km_rounded: number | "<10";
             label: string;
         };
-        Record_6398f2559375: {
+        Record_1966522505b5: {
             love: {
                 band: components["schemas"]["PlaceBand"];
                 label: string;
@@ -1726,7 +1806,7 @@ export interface components {
             band_label: string;
             text: string | null;
         };
-        GeneratedPart_30a57a1c137a: {
+        GeneratedPart_8a62f6496936: {
             sections: components["schemas"]["PlaceSection"][];
             /** @constant */
             status: "ready";
@@ -1762,23 +1842,23 @@ export interface components {
             /** @enum {string} */
             status: "ok" | "absent";
             absence?: components["schemas"]["Absence"];
-            bands: components["schemas"]["Record_2969b51bd271"];
+            bands: components["schemas"]["Record_0a7c1966e26e"];
             lines_crossing: {
                 body: components["schemas"]["Body"];
                 angle: components["schemas"]["Angle"];
                 planet_label: string;
                 angle_label: string;
             }[];
-            best_cities: components["schemas"]["Record_033ec0d3b351"];
+            best_cities: components["schemas"]["Record_23ba98325e80"];
             varies_by_region: boolean;
             regions?: {
                 admin1_id: string;
                 name: string;
             }[];
-            overview: components["schemas"]["GeneratedPart_bf32e89325d9"];
+            overview: components["schemas"]["GeneratedPart_49ffdf0ec851"];
             footer: string;
         };
-        Record_2969b51bd271: {
+        Record_0a7c1966e26e: {
             love: {
                 band: components["schemas"]["PlaceBand"];
                 label: string;
@@ -1824,7 +1904,7 @@ export interface components {
                 label: string;
             };
         };
-        Record_033ec0d3b351: {
+        Record_23ba98325e80: {
             love: {
                 place_id: string;
                 name: string;
@@ -1892,7 +1972,7 @@ export interface components {
                 band_label: string;
             }[];
         };
-        GeneratedPart_bf32e89325d9: {
+        GeneratedPart_49ffdf0ec851: {
             text: string;
             /** @constant */
             status: "ready";
@@ -1971,7 +2051,7 @@ export interface components {
             };
             countries: components["schemas"]["AreaRef"][];
             regions: components["schemas"]["AreaRef"][];
-            explanations: components["schemas"]["GeneratedPart_70944d90d3c9"];
+            explanations: components["schemas"]["GeneratedPart_05185422062c"];
             footer: string;
         };
         Destination: {
@@ -2001,7 +2081,7 @@ export interface components {
             band: components["schemas"]["PlaceBand"];
             band_label: string;
         };
-        GeneratedPart_70944d90d3c9: {
+        GeneratedPart_05185422062c: {
             intro: string;
             turkey_intro: string | null;
             groups: components["schemas"]["Record_14902eed9d8e"];
@@ -2077,7 +2157,7 @@ export interface components {
                 kind: "favorable" | "challenging";
             }[];
             goals: components["schemas"]["Record_7e571529d2c5"];
-            day_note: components["schemas"]["GeneratedPart_4cb145db3f8b"] | null;
+            day_note: components["schemas"]["GeneratedPart_535af0824db7"] | null;
             transits: components["schemas"]["TransitEpisode"][];
             best_activities: {
                 activity: components["schemas"]["Activity"];
@@ -2086,7 +2166,7 @@ export interface components {
                 grade: "excellent" | "good";
             }[];
         };
-        GeneratedPart_4cb145db3f8b: {
+        GeneratedPart_535af0824db7: {
             text: string;
             /** @constant */
             status: "ready";
@@ -2129,9 +2209,9 @@ export interface components {
             /** @enum {string} */
             eclipse_kind?: "solar" | "lunar";
             body?: components["schemas"]["Body"];
-            text: components["schemas"]["GeneratedPart_e963ee6ababe"] | null;
+            text: components["schemas"]["GeneratedPart_e5397bfe9a52"] | null;
         };
-        GeneratedPart_e963ee6ababe: {
+        GeneratedPart_e5397bfe9a52: {
             text: string;
             /** @constant */
             status: "ready";
@@ -2185,9 +2265,9 @@ export interface components {
                 positive: string[];
                 negative: string[];
             };
-            text: components["schemas"]["GeneratedPart_bb21fabcc0a2"] | null;
+            text: components["schemas"]["GeneratedPart_2fac0fc1a76a"] | null;
         };
-        GeneratedPart_bb21fabcc0a2: {
+        GeneratedPart_2fac0fc1a76a: {
             text: string;
             /** @constant */
             status: "ready";
@@ -2232,10 +2312,10 @@ export interface components {
             version: string;
             lang: components["schemas"]["Lang"];
             bodies: components["schemas"]["Record_59346cab62ba"];
-            angles: components["schemas"]["Record_acf1a258f39d"];
+            angles: components["schemas"]["Record_3a0fbe3f2bdb"];
             signs: components["schemas"]["Record_f2cc4e6e0113"];
             aspects: components["schemas"]["Record_c475ac0fd7db"];
-            houses: components["schemas"]["Record_2260eaec4707"];
+            houses: components["schemas"]["Record_83a159540316"];
             goals: components["schemas"]["Record_0172c8cfe496"];
             place_bands: components["schemas"]["Record_a8c29b72061b"];
             day_bands: components["schemas"]["Record_0f124b5e2117"];
@@ -2281,7 +2361,7 @@ export interface components {
             north_node: string;
             south_node: string;
         };
-        Record_acf1a258f39d: {
+        Record_3a0fbe3f2bdb: {
             ASC: {
                 short: string;
                 name: string;
@@ -2324,7 +2404,7 @@ export interface components {
             trine: string;
             opposition: string;
         };
-        Record_2260eaec4707: {
+        Record_83a159540316: {
             [key: string]: {
                 ordinal: string;
                 name: string;
@@ -2564,6 +2644,61 @@ export interface components {
             feedback?: "up" | "down";
             created_at: components["schemas"]["ISODateTime"];
         };
+        ReadingOutline: {
+            profile_id: string;
+            chart_key: string;
+            lang: components["schemas"]["Lang"];
+            title: string;
+            parts: {
+                /** @enum {number} */
+                movement: 1 | 2;
+                title: string;
+            }[];
+            sections: {
+                /** @enum {string} */
+                key: "core_identity" | "sun_house" | "moon_house" | "inner_drives" | "chart_shape" | "identity" | "values_money" | "communication_learning" | "family_home" | "joy_creativity_children" | "health_routine_pets" | "partnerships" | "transformation_intimacy" | "travel_philosophy" | "status_vocation" | "friendships_future" | "subconscious_solitude";
+                /** @enum {number} */
+                movement: 1 | 2;
+                house: number | null;
+                title: string;
+                /** @enum {string} */
+                status: "not_started" | "generating" | "ready" | "failed";
+                /** @enum {string} */
+                access: "open" | "account_required";
+            }[];
+            big_three: {
+                sun: components["schemas"]["Sign"];
+                moon: components["schemas"]["Sign"];
+                rising: components["schemas"]["Sign"];
+            };
+            accuracy: {
+                score: number;
+                n: number;
+            } | null;
+        };
+        ReadingProgressInput: {
+            /** @enum {string} */
+            key: "core_identity" | "sun_house" | "moon_house" | "inner_drives" | "chart_shape" | "identity" | "values_money" | "communication_learning" | "family_home" | "joy_creativity_children" | "health_routine_pets" | "partnerships" | "transformation_intimacy" | "travel_philosophy" | "status_vocation" | "friendships_future" | "subconscious_solitude";
+            /** @enum {string} */
+            event: "opened" | "finished";
+        };
+        ReadingFeedbackInput: {
+            profile_id: string;
+            target: {
+                /** @enum {string} */
+                type: "reading" | "section" | "big_three";
+                key?: string;
+            };
+            /** @enum {string} */
+            rating: "spot_on" | "partly" | "not_me";
+            comment?: string;
+        };
+        ReadingAccuracy: {
+            accuracy: {
+                score: number;
+                n: number;
+            };
+        };
         EmailStart: {
             email: string;
             lang: components["schemas"]["Lang"];
@@ -2653,9 +2788,9 @@ export interface components {
             status: "absent";
             absence: components["schemas"]["Absence"];
         };
-        CountryGeometry: components["schemas"]["FeatureCollection_a1e765c5a673"];
+        CountryGeometry: components["schemas"]["FeatureCollection_a24d680ff555"];
         /** @description A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3 */
-        FeatureCollection_a1e765c5a673: {
+        FeatureCollection_a24d680ff555: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -2663,10 +2798,10 @@ export interface components {
             type: "FeatureCollection";
             /** @description Bounding box of the coordinate range of the object's Geometries, Features, or Feature Collections. The value of the bbox member is an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries. https://tools.ietf.org/html/rfc7946#section-5 */
             bbox?: components["schemas"]["BBox"];
-            features: components["schemas"]["Feature_f2ce4b4b3815"][];
+            features: components["schemas"]["Feature_3fc6c0769891"][];
         };
         /** @description A feature object which contains a geometry and associated properties. https://tools.ietf.org/html/rfc7946#section-3.2 */
-        Feature_f2ce4b4b3815: {
+        Feature_3fc6c0769891: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -2707,9 +2842,9 @@ export interface components {
             bbox?: components["schemas"]["BBox"];
             coordinates: components["schemas"]["Position"][][][];
         };
-        RegionGeometry: components["schemas"]["FeatureCollection_9f60fe6563a8"];
+        RegionGeometry: components["schemas"]["FeatureCollection_74cf602ee437"];
         /** @description A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3 */
-        FeatureCollection_9f60fe6563a8: {
+        FeatureCollection_74cf602ee437: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -2717,10 +2852,10 @@ export interface components {
             type: "FeatureCollection";
             /** @description Bounding box of the coordinate range of the object's Geometries, Features, or Feature Collections. The value of the bbox member is an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries. https://tools.ietf.org/html/rfc7946#section-5 */
             bbox?: components["schemas"]["BBox"];
-            features: components["schemas"]["Feature_15604b33a688"][];
+            features: components["schemas"]["Feature_5406b5942a1b"][];
         };
         /** @description A feature object which contains a geometry and associated properties. https://tools.ietf.org/html/rfc7946#section-3.2 */
-        Feature_15604b33a688: {
+        Feature_5406b5942a1b: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -3709,6 +3844,276 @@ export interface operations {
                 };
                 content: {
                     "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description RFC 7807 problem */
+            default: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    get__profiles_id_natal_reading_outline: {
+        parameters: {
+            query?: {
+                lang?: components["schemas"]["Lang"];
+                retry?: boolean;
+            };
+            header?: {
+                "If-None-Match"?: string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReadingOutline"];
+                };
+            };
+            /** @description Not modified */
+            304: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description RFC 7807 problem */
+            default: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    get__profiles_id_natal_reading_sections_key_: {
+        parameters: {
+            query?: {
+                lang?: components["schemas"]["Lang"];
+                retry?: boolean;
+            };
+            header?: {
+                "If-None-Match"?: string;
+            };
+            path: {
+                id: string;
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reading or paused generation */
+            200: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NatalSection"] | components["schemas"]["GenerationAbsent"];
+                };
+            };
+            /** @description Generation queued or running */
+            202: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobAccepted"];
+                };
+            };
+            /** @description Not modified */
+            304: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Another reading is being prepared */
+            409: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+            /** @description RFC 7807 problem */
+            default: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    post__profiles_id_natal_reading_progress: {
+        parameters: {
+            query?: {
+                lang?: components["schemas"]["Lang"];
+            };
+            header?: {
+                "Idempotency-Key"?: string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReadingProgressInput"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            204: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description RFC 7807 problem */
+            default: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    post__profiles_id_natal_reading_complete: {
+        parameters: {
+            query?: {
+                lang?: components["schemas"]["Lang"];
+            };
+            header?: {
+                "Idempotency-Key"?: string;
+            };
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Success */
+            202: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobAccepted"];
+                };
+            };
+            /** @description RFC 7807 problem */
+            default: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["Problem"];
+                };
+            };
+        };
+    };
+    post__feedback_reading: {
+        parameters: {
+            query?: {
+                lang?: components["schemas"]["Lang"];
+            };
+            header?: {
+                "Idempotency-Key"?: string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReadingFeedbackInput"];
+            };
+        };
+        responses: {
+            /** @description Success */
+            200: {
+                headers: {
+                    /** @description Development-only fixture date */
+                    "X-Mock-Today"?: string;
+                    ETag?: string;
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReadingAccuracy"];
                 };
             };
             /** @description RFC 7807 problem */

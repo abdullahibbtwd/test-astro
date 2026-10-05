@@ -14,11 +14,13 @@ export function generateReading(
 export function runReadingBridge(
   script:
     | "reading_bridge.py"
+    | "reading_section_bridge.py"
     | "forecast_bridge.py"
     | "compatibility_bridge.py"
     | "map_bridge.py"
     | "map_reading_bridge.py",
   payload: unknown,
+  onStage?: (stage: string) => void,
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     const child = spawn(
@@ -35,7 +37,18 @@ export function runReadingBridge(
       output += chunk;
       if (output.length > 4000000) child.kill();
     });
-    child.stderr.resume();
+    let stageBuffer = "";
+    child.stderr.on("data", (chunk) => {
+      if (!onStage) return;
+      stageBuffer = (stageBuffer + String(chunk)).slice(-4096);
+      let end: number;
+      while ((end = stageBuffer.indexOf("\n")) >= 0) {
+        const line = stageBuffer.slice(0, end).trim();
+        stageBuffer = stageBuffer.slice(end + 1);
+        if (/^ONB_STAGE:(reading|synthesis|validate|translation)$/.test(line))
+          onStage(line.slice(10));
+      }
+    });
     child.on("error", (error) => {
       clearTimeout(timer);
       reject(error);

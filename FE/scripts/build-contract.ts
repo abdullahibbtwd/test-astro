@@ -14,6 +14,21 @@ const blocks = [
   ),
 );
 const supplement = `
+export interface ReadingOutline {
+  profile_id: string; chart_key: string; lang: Lang; title: string;
+  parts: { movement: 1 | 2; title: string }[];
+  sections: { key: NatalSection['key']; movement: 1 | 2; house: number | null; title: string;
+    status: 'not_started' | 'generating' | 'ready' | 'failed'; access: 'open' | 'account_required' }[];
+  big_three: { sun: Sign; moon: Sign; rising: Sign };
+  accuracy: { score: number; n: number } | null;
+}
+export interface ReadingProgressInput { key: NatalSection['key']; event: 'opened' | 'finished' }
+export interface ReadingFeedbackInput {
+  profile_id: string; target: { type: 'reading' | 'section' | 'big_three'; key?: string };
+  rating: 'spot_on' | 'partly' | 'not_me'; comment?: string;
+}
+export interface ReadingAccuracy { accuracy: { score: number; n: number } }
+
 export interface EmailStart { email: string; lang: Lang }
 export interface EmailVerify { email: string; code: string }
 export interface AppleSignIn { identity_token: string; authorization_code: string; full_name?: string }
@@ -42,8 +57,12 @@ fs.writeFileSync(
     blocks
       .join("\n")
       .replace(
+        "kind: 'natal_reading'",
+        "kind: 'natal_section' | 'dossier' | 'natal_reading'",
+      )
+      .replace(
         "| 'upstream_unavailable' | 'internal';",
-        "| 'upstream_unavailable' | 'internal' | 'busy';",
+        "| 'upstream_unavailable' | 'internal' | 'busy' | 'account_required' | 'read_ahead_limit';",
       )
       .replace(
         "detail?: string;",
@@ -157,6 +176,7 @@ for (const route of endpoints) {
   };
   if (
     route.path.endsWith("natal-reading") ||
+    route.path.includes("/natal-reading/sections/") ||
     (route.path.startsWith("/compatibility") &&
       route.method !== "delete" &&
       (route.path.endsWith("{id}") || route.method === "post"))

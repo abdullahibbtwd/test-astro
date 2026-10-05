@@ -2095,6 +2095,596 @@
         }
       }
     },
+    "/profiles/{id}/natal-reading/outline": {
+      "get": {
+        "operationId": "get__profiles_id_natal_reading_outline",
+        "tags": [
+          "profiles"
+        ],
+        "x-backend-status": "NEW",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Lang"
+            }
+          },
+          {
+            "name": "retry",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "If-None-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingOutline"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not modified",
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 7807 problem",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{id}/natal-reading/sections/{key}": {
+      "get": {
+        "operationId": "get__profiles_id_natal_reading_sections_key_",
+        "tags": [
+          "profiles"
+        ],
+        "x-backend-status": "NEW",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Lang"
+            }
+          },
+          {
+            "name": "retry",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "If-None-Match",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reading or paused generation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NatalSection"
+                    },
+                    {
+                      "$ref": "#/components/schemas/GenerationAbsent"
+                    }
+                  ]
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Generation queued or running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "Not modified",
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Another reading is being prepared",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 7807 problem",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{id}/natal-reading/progress": {
+      "post": {
+        "operationId": "post__profiles_id_natal_reading_progress",
+        "tags": [
+          "profiles"
+        ],
+        "x-backend-status": "NEW",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Lang"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success",
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 7807 problem",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReadingProgressInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/profiles/{id}/natal-reading/complete": {
+      "post": {
+        "operationId": "post__profiles_id_natal_reading_complete",
+        "tags": [
+          "profiles"
+        ],
+        "x-backend-status": "NEW",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Lang"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 7807 problem",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedback/reading": {
+      "post": {
+        "operationId": "post__feedback_reading",
+        "tags": [
+          "feedback"
+        ],
+        "x-backend-status": "NEW",
+        "parameters": [
+          {
+            "name": "lang",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Lang"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadingAccuracy"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "RFC 7807 problem",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "X-Mock-Today": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Development-only fixture date"
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReadingFeedbackInput"
+              }
+            }
+          }
+        }
+      }
+    },
     "/profiles/{id}/chart/elements": {
       "get": {
         "operationId": "get__profiles_id_chart_elements",
@@ -7154,6 +7744,8 @@
           "kind": {
             "type": "string",
             "enum": [
+              "natal_section",
+              "dossier",
               "natal_reading",
               "element_notes",
               "day_reading",
@@ -7265,7 +7857,9 @@
               "absent",
               "upstream_unavailable",
               "internal",
-              "busy"
+              "busy",
+              "account_required",
+              "read_ahead_limit"
             ]
           },
           "blocking_job_id": {
@@ -8325,12 +8919,12 @@
             }
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_bbfb9b59e6a2"
+            "$ref": "#/components/schemas/GeneratedPart_647cee4d89da"
           },
           "day_note": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_bdbd840c6400"
+                "$ref": "#/components/schemas/GeneratedPart_7b71e302251e"
               },
               {
                 "type": "null"
@@ -8639,7 +9233,7 @@
           "has_text"
         ]
       },
-      "GeneratedPart_bbfb9b59e6a2": {
+      "GeneratedPart_647cee4d89da": {
         "anyOf": [
           {
             "type": "object",
@@ -8707,7 +9301,7 @@
           }
         ]
       },
-      "GeneratedPart_bdbd840c6400": {
+      "GeneratedPart_7b71e302251e": {
         "anyOf": [
           {
             "type": "object",
@@ -8834,7 +9428,7 @@
             "$ref": "#/components/schemas/MoonInfo"
           },
           "today": {
-            "$ref": "#/components/schemas/GeneratedPart_d3da6a981b06"
+            "$ref": "#/components/schemas/GeneratedPart_1f335660c600"
           },
           "next_up": {
             "type": "array",
@@ -8856,7 +9450,7 @@
           "next_up"
         ]
       },
-      "GeneratedPart_d3da6a981b06": {
+      "GeneratedPart_1f335660c600": {
         "anyOf": [
           {
             "type": "object",
@@ -9007,7 +9601,7 @@
             ]
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_e1e4bbbbd973"
+            "$ref": "#/components/schemas/GeneratedPart_769db4fd8b32"
           },
           "highlights": {
             "type": "object",
@@ -9122,7 +9716,7 @@
           "to"
         ]
       },
-      "GeneratedPart_e1e4bbbbd973": {
+      "GeneratedPart_769db4fd8b32": {
         "anyOf": [
           {
             "type": "object",
@@ -9343,7 +9937,7 @@
             }
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_b063f32978d8"
+            "$ref": "#/components/schemas/GeneratedPart_bdf0ead3a538"
           },
           "highlights": {
             "type": "object",
@@ -9444,7 +10038,7 @@
           "months"
         ]
       },
-      "GeneratedPart_b063f32978d8": {
+      "GeneratedPart_bdf0ead3a538": {
         "anyOf": [
           {
             "type": "object",
@@ -9555,7 +10149,7 @@
             "$ref": "#/components/schemas/ChartData"
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_e211d43cc4ad"
+            "$ref": "#/components/schemas/GeneratedPart_a499c92bec70"
           }
         },
         "required": [
@@ -9567,7 +10161,7 @@
           "reading"
         ]
       },
-      "GeneratedPart_e211d43cc4ad": {
+      "GeneratedPart_a499c92bec70": {
         "anyOf": [
           {
             "type": "object",
@@ -9692,7 +10286,7 @@
             "$ref": "#/components/schemas/ISODateTime"
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_1073d530f425"
+            "$ref": "#/components/schemas/GeneratedPart_38f80c413e15"
           },
           "score": {
             "anyOf": [
@@ -9762,7 +10356,7 @@
           "big_three"
         ]
       },
-      "GeneratedPart_1073d530f425": {
+      "GeneratedPart_38f80c413e15": {
         "anyOf": [
           {
             "type": "object",
@@ -9911,10 +10505,10 @@
             "type": "string"
           },
           "lines": {
-            "$ref": "#/components/schemas/FeatureCollection_da8e50111c92"
+            "$ref": "#/components/schemas/FeatureCollection_d8d219493b88"
           },
           "parans": {
-            "$ref": "#/components/schemas/FeatureCollection_47e15528cfa3"
+            "$ref": "#/components/schemas/FeatureCollection_cdfc34cddaa3"
           }
         },
         "required": [
@@ -9923,7 +10517,7 @@
           "parans"
         ]
       },
-      "FeatureCollection_da8e50111c92": {
+      "FeatureCollection_d8d219493b88": {
         "type": "object",
         "properties": {
           "type": {
@@ -9938,7 +10532,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_4c199a2f139a"
+              "$ref": "#/components/schemas/Feature_f728d7099806"
             }
           }
         },
@@ -9969,7 +10563,7 @@
         ],
         "description": "Bounding box https://tools.ietf.org/html/rfc7946#section-5"
       },
-      "Feature_4c199a2f139a": {
+      "Feature_f728d7099806": {
         "type": "object",
         "properties": {
           "type": {
@@ -10055,7 +10649,7 @@
         },
         "description": "A Position is an array of coordinates. https://tools.ietf.org/html/rfc7946#section-3.1.1 Array should contain between two and three elements. The previous GeoJSON specification allowed more elements (e.g., which could be used to represent M values), but the current specification only allows X, Y, and (optionally) Z to be defined.\n\nNote: the type will not be narrowed down to `[number, number] | [number, number, number]` due to marginal benefits and the large impact of breaking change.\n\nSee previous discussions on the type narrowing:\n-  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/pull/21590 Nov 2017 } \n-  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/67773 Dec 2023 } \n-  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/71441 Dec 2024 } \n\nOne can use a  {@link  https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates user-defined type guard that returns a type predicate }  to determine if a position is a 2D or 3D position."
       },
-      "FeatureCollection_47e15528cfa3": {
+      "FeatureCollection_cdfc34cddaa3": {
         "type": "object",
         "properties": {
           "type": {
@@ -10070,7 +10664,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_5c2936757627"
+              "$ref": "#/components/schemas/Feature_fd8161c0c5a4"
             }
           }
         },
@@ -10080,7 +10674,7 @@
         ],
         "description": "A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3"
       },
-      "Feature_5c2936757627": {
+      "Feature_fd8161c0c5a4": {
         "type": "object",
         "properties": {
           "type": {
@@ -10375,7 +10969,7 @@
             }
           },
           "goal_scores": {
-            "$ref": "#/components/schemas/Record_6398f2559375"
+            "$ref": "#/components/schemas/Record_1966522505b5"
           },
           "cards": {
             "type": "array",
@@ -10384,7 +10978,7 @@
             }
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_30a57a1c137a"
+            "$ref": "#/components/schemas/GeneratedPart_8a62f6496936"
           },
           "footer": {
             "type": "string"
@@ -10503,7 +11097,7 @@
           "label"
         ]
       },
-      "Record_6398f2559375": {
+      "Record_1966522505b5": {
         "type": "object",
         "properties": {
           "love": {
@@ -10729,7 +11323,7 @@
           "text"
         ]
       },
-      "GeneratedPart_30a57a1c137a": {
+      "GeneratedPart_8a62f6496936": {
         "anyOf": [
           {
             "type": "object",
@@ -10875,7 +11469,7 @@
             "$ref": "#/components/schemas/Absence"
           },
           "bands": {
-            "$ref": "#/components/schemas/Record_2969b51bd271"
+            "$ref": "#/components/schemas/Record_0a7c1966e26e"
           },
           "lines_crossing": {
             "type": "array",
@@ -10904,7 +11498,7 @@
             }
           },
           "best_cities": {
-            "$ref": "#/components/schemas/Record_033ec0d3b351"
+            "$ref": "#/components/schemas/Record_23ba98325e80"
           },
           "varies_by_region": {
             "type": "boolean"
@@ -10928,7 +11522,7 @@
             }
           },
           "overview": {
-            "$ref": "#/components/schemas/GeneratedPart_bf32e89325d9"
+            "$ref": "#/components/schemas/GeneratedPart_49ffdf0ec851"
           },
           "footer": {
             "type": "string"
@@ -10945,7 +11539,7 @@
           "footer"
         ]
       },
-      "Record_2969b51bd271": {
+      "Record_0a7c1966e26e": {
         "type": "object",
         "properties": {
           "love": {
@@ -11128,7 +11722,7 @@
           "relocation"
         ]
       },
-      "Record_033ec0d3b351": {
+      "Record_23ba98325e80": {
         "type": "object",
         "properties": {
           "love": {
@@ -11432,7 +12026,7 @@
           "relocation"
         ]
       },
-      "GeneratedPart_bf32e89325d9": {
+      "GeneratedPart_49ffdf0ec851": {
         "anyOf": [
           {
             "type": "object",
@@ -11867,7 +12461,7 @@
             }
           },
           "explanations": {
-            "$ref": "#/components/schemas/GeneratedPart_70944d90d3c9"
+            "$ref": "#/components/schemas/GeneratedPart_05185422062c"
           },
           "footer": {
             "type": "string"
@@ -12017,7 +12611,7 @@
           "band_label"
         ]
       },
-      "GeneratedPart_70944d90d3c9": {
+      "GeneratedPart_05185422062c": {
         "anyOf": [
           {
             "type": "object",
@@ -12345,7 +12939,7 @@
           "day_note": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_4cb145db3f8b"
+                "$ref": "#/components/schemas/GeneratedPart_535af0824db7"
               },
               {
                 "type": "null"
@@ -12399,7 +12993,7 @@
           "transits"
         ]
       },
-      "GeneratedPart_4cb145db3f8b": {
+      "GeneratedPart_535af0824db7": {
         "anyOf": [
           {
             "type": "object",
@@ -12562,7 +13156,7 @@
           "text": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_e963ee6ababe"
+                "$ref": "#/components/schemas/GeneratedPart_e5397bfe9a52"
               },
               {
                 "type": "null"
@@ -12578,7 +13172,7 @@
           "text"
         ]
       },
-      "GeneratedPart_e963ee6ababe": {
+      "GeneratedPart_e5397bfe9a52": {
         "anyOf": [
           {
             "type": "object",
@@ -12824,7 +13418,7 @@
           "text": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_bb21fabcc0a2"
+                "$ref": "#/components/schemas/GeneratedPart_2fac0fc1a76a"
               },
               {
                 "type": "null"
@@ -12842,7 +13436,7 @@
           "text"
         ]
       },
-      "GeneratedPart_bb21fabcc0a2": {
+      "GeneratedPart_2fac0fc1a76a": {
         "anyOf": [
           {
             "type": "object",
@@ -13025,7 +13619,7 @@
             "$ref": "#/components/schemas/Record_59346cab62ba"
           },
           "angles": {
-            "$ref": "#/components/schemas/Record_acf1a258f39d"
+            "$ref": "#/components/schemas/Record_3a0fbe3f2bdb"
           },
           "signs": {
             "$ref": "#/components/schemas/Record_f2cc4e6e0113"
@@ -13034,7 +13628,7 @@
             "$ref": "#/components/schemas/Record_c475ac0fd7db"
           },
           "houses": {
-            "$ref": "#/components/schemas/Record_2260eaec4707"
+            "$ref": "#/components/schemas/Record_83a159540316"
           },
           "goals": {
             "$ref": "#/components/schemas/Record_0172c8cfe496"
@@ -13222,7 +13816,7 @@
           "south_node"
         ]
       },
-      "Record_acf1a258f39d": {
+      "Record_3a0fbe3f2bdb": {
         "type": "object",
         "properties": {
           "ASC": {
@@ -13391,7 +13985,7 @@
           "opposition"
         ]
       },
-      "Record_2260eaec4707": {
+      "Record_83a159540316": {
         "type": "object",
         "additionalProperties": {
           "type": "object",
@@ -14327,6 +14921,270 @@
           "created_at"
         ]
       },
+      "ReadingOutline": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          },
+          "chart_key": {
+            "type": "string"
+          },
+          "lang": {
+            "$ref": "#/components/schemas/Lang"
+          },
+          "title": {
+            "type": "string"
+          },
+          "parts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "movement": {
+                  "type": "number",
+                  "enum": [
+                    1,
+                    2
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "movement",
+                "title"
+              ]
+            }
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "enum": [
+                    "core_identity",
+                    "sun_house",
+                    "moon_house",
+                    "inner_drives",
+                    "chart_shape",
+                    "identity",
+                    "values_money",
+                    "communication_learning",
+                    "family_home",
+                    "joy_creativity_children",
+                    "health_routine_pets",
+                    "partnerships",
+                    "transformation_intimacy",
+                    "travel_philosophy",
+                    "status_vocation",
+                    "friendships_future",
+                    "subconscious_solitude"
+                  ]
+                },
+                "movement": {
+                  "type": "number",
+                  "enum": [
+                    1,
+                    2
+                  ]
+                },
+                "house": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "title": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "not_started",
+                    "generating",
+                    "ready",
+                    "failed"
+                  ]
+                },
+                "access": {
+                  "type": "string",
+                  "enum": [
+                    "open",
+                    "account_required"
+                  ]
+                }
+              },
+              "required": [
+                "key",
+                "movement",
+                "house",
+                "title",
+                "status",
+                "access"
+              ]
+            }
+          },
+          "big_three": {
+            "type": "object",
+            "properties": {
+              "sun": {
+                "$ref": "#/components/schemas/Sign"
+              },
+              "moon": {
+                "$ref": "#/components/schemas/Sign"
+              },
+              "rising": {
+                "$ref": "#/components/schemas/Sign"
+              }
+            },
+            "required": [
+              "sun",
+              "moon",
+              "rising"
+            ]
+          },
+          "accuracy": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "score": {
+                    "type": "number"
+                  },
+                  "n": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "score",
+                  "n"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "profile_id",
+          "chart_key",
+          "lang",
+          "title",
+          "parts",
+          "sections",
+          "big_three",
+          "accuracy"
+        ]
+      },
+      "ReadingProgressInput": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "enum": [
+              "core_identity",
+              "sun_house",
+              "moon_house",
+              "inner_drives",
+              "chart_shape",
+              "identity",
+              "values_money",
+              "communication_learning",
+              "family_home",
+              "joy_creativity_children",
+              "health_routine_pets",
+              "partnerships",
+              "transformation_intimacy",
+              "travel_philosophy",
+              "status_vocation",
+              "friendships_future",
+              "subconscious_solitude"
+            ]
+          },
+          "event": {
+            "type": "string",
+            "enum": [
+              "opened",
+              "finished"
+            ]
+          }
+        },
+        "required": [
+          "key",
+          "event"
+        ]
+      },
+      "ReadingFeedbackInput": {
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string"
+          },
+          "target": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "reading",
+                  "section",
+                  "big_three"
+                ]
+              },
+              "key": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "rating": {
+            "type": "string",
+            "enum": [
+              "spot_on",
+              "partly",
+              "not_me"
+            ]
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "profile_id",
+          "target",
+          "rating"
+        ]
+      },
+      "ReadingAccuracy": {
+        "type": "object",
+        "properties": {
+          "accuracy": {
+            "type": "object",
+            "properties": {
+              "score": {
+                "type": "number"
+              },
+              "n": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "score",
+              "n"
+            ]
+          }
+        },
+        "required": [
+          "accuracy"
+        ]
+      },
       "EmailStart": {
         "type": "object",
         "properties": {
@@ -14685,9 +15543,9 @@
         ]
       },
       "CountryGeometry": {
-        "$ref": "#/components/schemas/FeatureCollection_a1e765c5a673"
+        "$ref": "#/components/schemas/FeatureCollection_a24d680ff555"
       },
-      "FeatureCollection_a1e765c5a673": {
+      "FeatureCollection_a24d680ff555": {
         "type": "object",
         "properties": {
           "type": {
@@ -14702,7 +15560,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_f2ce4b4b3815"
+              "$ref": "#/components/schemas/Feature_3fc6c0769891"
             }
           }
         },
@@ -14712,7 +15570,7 @@
         ],
         "description": "A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3"
       },
-      "Feature_f2ce4b4b3815": {
+      "Feature_3fc6c0769891": {
         "type": "object",
         "properties": {
           "type": {
@@ -14830,9 +15688,9 @@
         "description": "MultiPolygon geometry object. https://tools.ietf.org/html/rfc7946#section-3.1.7"
       },
       "RegionGeometry": {
-        "$ref": "#/components/schemas/FeatureCollection_9f60fe6563a8"
+        "$ref": "#/components/schemas/FeatureCollection_74cf602ee437"
       },
-      "FeatureCollection_9f60fe6563a8": {
+      "FeatureCollection_74cf602ee437": {
         "type": "object",
         "properties": {
           "type": {
@@ -14847,7 +15705,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_15604b33a688"
+              "$ref": "#/components/schemas/Feature_5406b5942a1b"
             }
           }
         },
@@ -14857,7 +15715,7 @@
         ],
         "description": "A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3"
       },
-      "Feature_15604b33a688": {
+      "Feature_5406b5942a1b": {
         "type": "object",
         "properties": {
           "type": {

@@ -1,3 +1,4 @@
+import { MockProgressive } from "./progressive";
 import { TZDate } from "@date-fns/tz";
 import Fastify, { type FastifyReply } from "fastify";
 import cors from "@fastify/cors";
@@ -38,6 +39,7 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
     options.now,
     options.jobMs ?? Number(process.env.MOCK_JOB_SECONDS ?? 6) * 1000,
   );
+  const progressive = new MockProgressive(jobs);
   let me = fixture("me.tr");
   let profiles = collection("profile.", "tr");
   const source = new Map(profiles.map((p, i) => [p.profile_id, i]));
@@ -108,8 +110,9 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
   app.setErrorHandler((error, request, reply) =>
     fail(
       reply,
-      (error as any).statusCode === 400 ? "validation_error" : "internal",
-      (error as any).statusCode === 400 ? 400 : 500,
+      (error as any).code ??
+        ((error as any).statusCode === 400 ? "validation_error" : "internal"),
+      (error as any).statusCode ?? 500,
       (request.query as any)?.lang ?? "tr",
     ),
   );
@@ -493,6 +496,65 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
                 tz: profile.birth.tz,
               };
               break;
+            case "get /profiles/{id}/natal-reading/outline":
+              result = progressive.outline(
+                profile,
+                idx!,
+                lang,
+                scenario === "anonymous",
+              );
+              break;
+            case "get /profiles/{id}/natal-reading/sections/{key}": {
+              const value = progressive.section(
+                profile,
+                idx!,
+                lang,
+                p.key!,
+                scenario === "anonymous",
+                scenario,
+                q.retry === "true",
+              );
+              if (value.job)
+                return reply
+                  .code(202)
+                  .send(validate("JobAccepted", { job: value.job }));
+              return reply.send(validate("NatalSection", value.section));
+            }
+            case "post /profiles/{id}/natal-reading/progress":
+              progressive.progress(
+                profile,
+                idx!,
+                lang,
+                body.key,
+                body.event,
+                scenario === "anonymous",
+                scenario,
+              );
+              return noContent();
+            case "post /profiles/{id}/natal-reading/complete":
+              return reply
+                .code(202)
+                .send({
+                  job: progressive.finish(
+                    profile,
+                    idx!,
+                    lang,
+                    scenario === "anonymous",
+                    scenario,
+                  ),
+                });
+            case "post /feedback/reading": {
+              const target = profiles.find(
+                (x) => x.profile_id === body.profile_id,
+              );
+              if (!target) return fail(reply, "not_found", 404, lang);
+              result = progressive.feedback(
+                target,
+                source.get(target.profile_id)!,
+                body,
+              );
+              break;
+            }
             case "get /profiles/{id}/natal-reading":
               result = fixture(`natal.${idx}.${lang}`);
               if (!result) return fixtureOnly();

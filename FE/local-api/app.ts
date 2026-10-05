@@ -1,3 +1,9 @@
+import path from "node:path";
+import { runReadingBridge } from "./readings";
+import {
+  ProgressiveReadings,
+  type SectionRunner,
+} from "./progressive-readings";
 import { AskService } from "./ask";
 import type { AskRunner } from "./ask-bridge";
 import { homeSummary } from "./home";
@@ -25,6 +31,8 @@ const issue = (status: number, message = "Request unavailable") =>
 export function buildLocalApp({
   dbPath,
   allowPaid = false,
+  progressiveReadings = false,
+  sectionRunner,
   generateForecast,
   calculateCalendar = computeCalendar,
   generateCompatibility,
@@ -37,6 +45,8 @@ export function buildLocalApp({
   askReady?: () => boolean;
   dbPath: string;
   allowPaid?: boolean;
+  progressiveReadings?: boolean;
+  sectionRunner?: SectionRunner;
   calculateCalendar?: typeof computeCalendar;
   generateForecast?: (data: any) => Promise<any>;
   generateCompatibility?: (data: unknown) => Promise<any>;
@@ -62,6 +72,21 @@ export function buildLocalApp({
   const maps = new LiveMap(store);
   const mapJobs = new MapJobs(store, allowPaid);
   const readings = new ReadingJobs(store, undefined, allowPaid);
+  const progressive = new ProgressiveReadings(
+    store,
+    allowPaid && progressiveReadings,
+    sectionRunner ??
+      ((data, onStage) =>
+        runReadingBridge(
+          "reading_section_bridge.py",
+          {
+            ...data,
+            dossier_root: path.join(path.dirname(dbPath), "dossier"),
+            reference_id: digest(path.resolve(dbPath) + ":" + data.profile_id),
+          },
+          onStage,
+        )),
+  );
   const forecasts = new ForecastJobs(store, allowPaid, generateForecast);
   const compatibility = new CompatibilityJobs(
     store,
@@ -89,6 +114,7 @@ export function buildLocalApp({
     await ask.close();
     await tail;
     await readings.close();
+    await progressive.close();
     await forecasts.close();
     await compatibility.close();
     await mapJobs.close();
@@ -355,10 +381,22 @@ export function buildLocalApp({
               return reply.code(204).send();
             }
             case "post /me/export":
-              result = exportAccount(store);
+              result = {
+                ...exportAccount(store),
+                dossiers: await progressive.exportDossiers(),
+              };
               break;
             case "delete /me":
               await ask.close();
+              progressive.assertIdle();
+              if (
+                store
+                  .list<any>("job:")
+                  .some((j) => ["queued", "running"].includes(j.status))
+              )
+                throw issue(409);
+              for (const target of store.list<BirthProfile>("profile:"))
+                await progressive.releaseProfile(target);
               deleteAccount(store, dbPath);
               if (auth) store.put("auth-mode", auth.scope);
               initializeAccount();
@@ -467,6 +505,7 @@ export function buildLocalApp({
                     : await place(body.current_place_id, lang)
                   : (profile?.current_place ?? null);
               const id = profile?.profile_id ?? randomUUID();
+              if (profile) progressive.assertIdle(profile.chart_key);
               const computed = await computeBirthChart(
                 { date, time, place: birthPlace },
                 id,
@@ -499,6 +538,7 @@ export function buildLocalApp({
                 updated_at: now(),
               };
               validate("BirthProfile", result);
+              if (progressiveReadings) await progressive.prepare(result);
               store.transaction(() => {
                 store.put("profile:" + id, result);
                 store.put("chart:" + id, chart);
@@ -519,10 +559,16 @@ export function buildLocalApp({
                     expires: Date.now() + 86400000,
                   });
               });
+              if (profile && profile.chart_key !== result.chart_key)
+                await progressive.releaseProfile(profile);
+              if (progressiveReadings && result.is_self)
+                await progressive.start(result);
               break;
             }
             case "delete /profiles/{id}":
               if (profile!.is_self) throw issue(409);
+              progressive.assertIdle(profile!.chart_key);
+              await progressive.releaseProfile(profile!);
               store.transaction(() => {
                 for (const prefix of ["profile:", "chart:", "raw:"])
                   store.remove(prefix + p.id);
@@ -816,12 +862,51 @@ export function buildLocalApp({
                   (!q.to || x.trigger_date <= q.to),
               );
               break;
-            case "get /profiles/{id}/natal-reading": {
-              const value = readings.get(
+            case "get /profiles/{id}/natal-reading/outline":
+              result = await progressive.outline(profile!, lang as "tr" | "en");
+              break;
+            case "get /profiles/{id}/natal-reading/sections/{key}": {
+              const value = await progressive.section(
                 profile!,
-                lang as "en" | "tr",
+                p.key as any,
+                lang as "tr" | "en",
+                false,
                 q.retry === "true",
               );
+              if (value.absence)
+                return reply.send({ status: "absent", absence: value.absence });
+              if (value.job) return reply.code(202).send({ job: value.job });
+              result = value.section;
+              break;
+            }
+            case "post /profiles/{id}/natal-reading/progress":
+              await progressive.opened(profile!, body.key, body.event);
+              return reply.code(204).send();
+            case "post /profiles/{id}/natal-reading/complete":
+              return reply.code(202).send({
+                job: await progressive.complete(profile!, lang as "tr" | "en"),
+              });
+            case "post /feedback/reading": {
+              const target = store.get<BirthProfile>(
+                "profile:" + body.profile_id,
+              );
+              if (!target) throw issue(404);
+              result = await progressive.feedback(target, body);
+              break;
+            }
+            case "get /profiles/{id}/natal-reading": {
+              const value = progressiveReadings
+                ? await progressive.reading(
+                    profile!,
+                    lang as "en" | "tr",
+                    false,
+                    q.retry === "true",
+                  )
+                : readings.get(
+                    profile!,
+                    lang as "en" | "tr",
+                    q.retry === "true",
+                  );
               if (value.absence)
                 return reply
                   .code(200)

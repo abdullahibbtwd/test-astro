@@ -44,7 +44,7 @@ export interface Place {
 
 export interface Job {
   job_id: string;
-  kind: 'natal_reading' | 'element_notes' | 'day_reading' | 'month_reading' | 'year_reading'
+  kind: 'natal_section' | 'dossier' | 'natal_reading' | 'element_notes' | 'day_reading' | 'month_reading' | 'year_reading'
       | 'solar_return' | 'compatibility' | 'place_reading' | 'area_reading' | 'recommendation'
       | 'calendar_text' | 'best_day_text';
   status: 'queued' | 'running' | 'succeeded' | 'failed';
@@ -66,7 +66,7 @@ export interface Problem {
   type: string; title: string; status: number;
   code: 'validation_error' | 'unauthorized' | 'forbidden' | 'not_found' | 'conflict'
       | 'out_of_range' | 'rate_limited' | 'generation_failed' | 'absent'
-      | 'upstream_unavailable' | 'internal' | 'busy';
+      | 'upstream_unavailable' | 'internal' | 'busy' | 'account_required' | 'read_ahead_limit';
   blocking_job_id?: string;
   detail?: string;                               // developer text, never shown to users
   fields?: { field: string; issue: string }[];   // validation_error
@@ -500,6 +500,21 @@ export interface Message { message_id: string; role: 'user' | 'assistant'; text:
                     cards: AskCard[]; links: { label: string; route: string }[];
                     status: 'complete' | 'interrupted' | 'failed'; feedback?: 'up' | 'down';
                     created_at: ISODateTime }
+
+export interface ReadingOutline {
+  profile_id: string; chart_key: string; lang: Lang; title: string;
+  parts: { movement: 1 | 2; title: string }[];
+  sections: { key: NatalSection['key']; movement: 1 | 2; house: number | null; title: string;
+    status: 'not_started' | 'generating' | 'ready' | 'failed'; access: 'open' | 'account_required' }[];
+  big_three: { sun: Sign; moon: Sign; rising: Sign };
+  accuracy: { score: number; n: number } | null;
+}
+export interface ReadingProgressInput { key: NatalSection['key']; event: 'opened' | 'finished' }
+export interface ReadingFeedbackInput {
+  profile_id: string; target: { type: 'reading' | 'section' | 'big_three'; key?: string };
+  rating: 'spot_on' | 'partly' | 'not_me'; comment?: string;
+}
+export interface ReadingAccuracy { accuracy: { score: number; n: number } }
 
 export interface EmailStart { email: string; lang: Lang }
 export interface EmailVerify { email: string; code: string }

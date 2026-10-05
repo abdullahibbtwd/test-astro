@@ -143,6 +143,9 @@ export class AskService {
     const me = this.store.get<Me>("me")!;
     const subject = (p: BirthProfile) => ({
       profile_id: p.profile_id,
+      ...(this.store.get("dossier-ref:" + p.profile_id) === p.chart_key
+        ? { dossier_chart_key: p.chart_key }
+        : {}),
       label: p.label,
       relation: p.relation,
       is_self: p.is_self,
