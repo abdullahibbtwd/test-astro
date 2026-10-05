@@ -1,3 +1,4 @@
+import { ContentList, type ContentListProps } from "./ContentList";
 import { useSnackbarLayout } from "./snackbar-store";
 import { useCallback, useEffect, useState } from "react";
 import { onlineManager } from "@tanstack/react-query";
@@ -20,7 +21,8 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, router, useFocusEffect } from "expo-router";
-import { ArrowLeft, ChevronRight } from "lucide-react-native";
+import ArrowLeft from "lucide-react-native/icons/arrow-left";
+import ChevronRight from "lucide-react-native/icons/chevron-right";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme";
 import type { PropsWithChildren } from "react";
@@ -90,6 +92,8 @@ export function Screen({
   embedded = false,
   pinned,
   scroll = true,
+  list = false,
+  listProps,
   largeTitle = false,
   headerless = false,
 }: {
@@ -102,6 +106,8 @@ export function Screen({
   embedded?: boolean;
   pinned?: React.ReactNode;
   scroll?: boolean;
+  list?: boolean;
+  listProps?: ContentListProps;
   largeTitle?: boolean;
   headerless?: boolean;
 }) {
@@ -161,7 +167,9 @@ export function Screen({
             {pinned}
           </View>
         )}
-        {scroll ? (
+        {list ? (
+          <ContentList {...listProps}>{children}</ContentList>
+        ) : scroll ? (
           <ScrollView
             ref={scrollRef}
             {...scrollProps}

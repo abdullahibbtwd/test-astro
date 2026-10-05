@@ -59,7 +59,7 @@ export default function ThreadsScreen() {
   };
   if (!flags.askAstrology)
     return (
-      <Screen back title={t("ask")}>
+      <Screen list back title={t("ask")}>
         <Txt>{t("featureUnavailable")}</Txt>
       </Screen>
     );

@@ -1,3 +1,4 @@
+import { resolveRoute } from "./routes";
 import { useProfiles } from "../api/hooks";
 import { useEffect } from "react";
 import { AppState } from "react-native";
@@ -80,10 +81,12 @@ export function NotificationLifecycle() {
       if (privateStorage.getItem("last-notification-open") === id) return;
       privateStorage.setItem("last-notification-open", id);
       router.push(
-        notificationRoute(
-          { view: data.view, ref: data.ref },
-          me.self_profile_id ?? undefined,
-        ) as never,
+        resolveRoute(
+          notificationRoute(
+            { view: data.view, ref: data.ref },
+            me.self_profile_id ?? undefined,
+          ),
+        ),
       );
     };
     const listener =

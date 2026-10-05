@@ -1,3 +1,4 @@
+import { ContentList } from "./ContentList";
 import { useEffect, useRef, type ReactNode } from "react";
 import { BackHandler, View } from "react-native";
 import {
@@ -6,7 +7,8 @@ import {
   BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
 import { ReduceMotion } from "react-native-reanimated";
-import { X, Maximize2 } from "lucide-react-native";
+import X from "lucide-react-native/icons/x";
+import Maximize2 from "lucide-react-native/icons/maximize-2";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme";
 import { Txt } from ".";
@@ -17,6 +19,7 @@ export function Sheet({
   onClose,
   onExpand,
   children,
+  list = false,
   snapPoints = ["55%", "92%"],
   index = 0,
 }: {
@@ -25,6 +28,7 @@ export function Sheet({
   onClose: () => void;
   onExpand?: () => void;
   children: ReactNode;
+  list?: boolean;
   snapPoints?: (string | number)[];
   index?: number;
 }) {
@@ -94,12 +98,16 @@ export function Sheet({
             onPress={() => ref.current?.dismiss()}
           />
         </View>
-        <BottomSheetScrollView
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ padding: 20, paddingBottom: 48, gap: 16 }}
-        >
-          {children}
-        </BottomSheetScrollView>
+        {list ? (
+          <ContentList sheet>{children}</ContentList>
+        ) : (
+          <BottomSheetScrollView
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ padding: 20, paddingBottom: 48, gap: 16 }}
+          >
+            {children}
+          </BottomSheetScrollView>
+        )}
       </View>
     </BottomSheetModal>
   );

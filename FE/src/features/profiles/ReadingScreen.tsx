@@ -1,3 +1,4 @@
+import { resolveRoute } from "../../lib/routes";
 import { useFlags } from "../../lib/flags";
 import {
   BottomSheetModal,
@@ -235,7 +236,7 @@ export function ReadingSection({
             <Button
               secondary
               label={t("ask")}
-              onPress={() => router.push(askRoute as never)}
+              onPress={() => router.push(resolveRoute(askRoute))}
             />
           )}
           <Button

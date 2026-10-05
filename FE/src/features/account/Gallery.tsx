@@ -1,3 +1,5 @@
+import { ExportAudit } from "./ExportAudit";
+import { ListAudit } from "./ListAudit";
 import { Segmented } from "../../design/components/Segmented";
 import { IconButton } from "../../design/components/IconButton";
 import { ActionSheet } from "../../design/components/ActionSheet";
@@ -5,7 +7,7 @@ import { BandChip } from "../../design/components/BandChip";
 import { DatePager } from "../../design/components/DatePager";
 import { ProfileSwitcher } from "../../design/components/ProfileSwitcher";
 import { showSnackbar } from "../../design/components/Snackbar";
-import { MoreHorizontal } from "lucide-react-native";
+import MoreHorizontal from "lucide-react-native/icons/ellipsis";
 import { useTheme } from "../../design/theme";
 import { useLocalSearchParams } from "expo-router";
 import { JobProgress } from "../../design/components/JobProgress";
@@ -36,7 +38,9 @@ export default function Gallery() {
   const { t } = useTranslation(),
     app = useApp(),
     [value, setValue] = useState("");
-  if (!__DEV__) return null;
+  if (!__DEV__ && process.env.EXPO_PUBLIC_FX_AUDIT !== "1") return null;
+  if (fx === "export-audit") return <ExportAudit/>;
+  if (fx === "list-audit") return <ListAudit />;
   if (fx) {
     const job: Job = {
       job_id: "gallery",

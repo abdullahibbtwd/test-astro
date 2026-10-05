@@ -1,3 +1,4 @@
+import { routes } from "../../lib/routes";
 import { BandChip } from "../../design/components/BandChip";
 import { bandColor } from "../../design/bands";
 import type { ReactNode } from "react";
@@ -117,34 +118,35 @@ export function Score({
     </View>
   );
 }
+type CalendarRowItem =
+  CalendarEventRef | TransitEpisode | PeriodRef | RetrogradeRef;
+export function calendarRows(
+  items: CalendarRowItem[],
+  profile: string,
+  lang: string,
+) {
+  return items.map((item) => (
+    <Row
+      key={item.id}
+      label={item.label}
+      detail={
+        "start" in item
+          ? `${formatDate(item.start, lang)} – ${formatDate(item.end, lang)}${"phase_label" in item ? ` · ${item.phase_label}` : ""}`
+          : undefined
+      }
+      onPress={() => router.push(routes.calendarItem(item.id, profile))}
+    />
+  ));
+}
 export function ItemRows({
   items,
   profile,
 }: {
-  items: (CalendarEventRef | TransitEpisode | PeriodRef | RetrogradeRef)[];
+  items: CalendarRowItem[];
   profile: string;
 }) {
   const lang = useApp((s) => s.language);
-  return (
-    <View>
-      {items.map((item) => (
-        <Row
-          key={item.id}
-          label={item.label}
-          detail={
-            "start" in item
-              ? `${formatDate(item.start, lang)} – ${formatDate(item.end, lang)}${"phase_label" in item ? ` · ${item.phase_label}` : ""}`
-              : undefined
-          }
-          onPress={() =>
-            router.push(
-              `/calendar/item/${encodeURIComponent(item.id)}?profile=${profile}`,
-            )
-          }
-        />
-      ))}
-    </View>
-  );
+  return <View>{calendarRows(items, profile, lang)}</View>;
 }
 export function MoonBlock({ moon }: { moon: MoonInfo }) {
   const { t } = useTranslation();

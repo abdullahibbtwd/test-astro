@@ -2,10 +2,8 @@ import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { AppState } from "react-native";
 import { useFocusEffect } from "expo-router";
 import { useQueries } from "@tanstack/react-query";
-import { request } from "./client";
+import { jobWatcher } from "./job-watcher";
 import { ApiError } from "./errors";
-import { pollingDelay } from "./job-policy";
-import { jobAgeMs } from "./job-timing";
 import { useApp } from "../lib/state";
 import type { Job } from "../../contracts/spec-types";
 export function parentJobs(
@@ -67,29 +65,18 @@ export function useParentJobs(
     ],
     [value, error],
   );
+  useEffect(() => {
+    if (enabled)
+      for (const job of jobs)
+        jobWatcher.register(lang, job, JSON.parse(identity));
+  }, [enabled, jobs, lang, identity]);
   const polls = useQueries({
     queries: jobs.map((job) => ({
       queryKey: ["job", lang, job.id],
-      queryFn: () => request<Job>("GET", `/jobs/${job.id}`, "Job"),
-      enabled: enabled && active && focused,
-      staleTime: 0,
-      refetchOnMount: "always" as const,
-      refetchIntervalInBackground: false,
-      refetchInterval: (q: {
-        state: { data?: Job; dataUpdateCount: number; error: unknown };
-      }) =>
-        q.state.data?.status === "succeeded" ||
-        q.state.data?.status === "failed" ||
-        (q.state.error instanceof ApiError && q.state.error.status === 404)
-          ? false
-          : pollingDelay(
-              Math.max(0, q.state.dataUpdateCount - 1),
-              q.state.data
-                ? jobAgeMs(q.state.data)
-                : job.created_at
-                  ? jobAgeMs({ created_at: job.created_at })
-                  : 0,
-            ),
+      enabled: false,
+      queryFn: async (): Promise<Job> => {
+        throw new Error("Job polling belongs to the shared watcher");
+      },
     })),
   });
   const changes = polls

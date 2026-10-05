@@ -1,7 +1,9 @@
+import { queryClient } from "../../src/api/query";
+import { jobWatcher } from "../../src/api/job-watcher";
 import React from "react";
 import { AppState, Text } from "react-native";
 import { render, screen, waitFor, act } from "@testing-library/react-native";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { ErrorNotice } from "../../src/design/components";
 import { JobProgress } from "../../src/design/components/JobProgress";
 import { useGenerated } from "../../src/api/jobs";
@@ -31,13 +33,22 @@ const job = {
   error: null,
   stages: [],
 };
-const client = () =>
-  new QueryClient({
-    defaultOptions: { queries: { retry: false, gcTime: Infinity } },
+const client = () => {
+  queryClient.clear();
+  queryClient.setDefaultOptions({
+    queries: { retry: false, gcTime: Infinity },
   });
-afterEach(() => jest.useRealTimers());
+  return queryClient;
+};
+afterEach(() => {
+  jobWatcher.clear();
+  queryClient.clear();
+  jest.useRealTimers();
+});
 beforeEach(async () => {
   jest.clearAllMocks();
+  jobWatcher.clear();
+  jobWatcher.setActive(true);
   Object.defineProperty(AppState, "currentState", {
     value: "active",
     configurable: true,
@@ -86,7 +97,7 @@ test.each(["succeeded", "missing"])(
     const q = client();
     q.setQueryData(["generated", "en", "test"], { kind: "pending", job });
     jest.mocked(request).mockImplementation(async (_method, path) => {
-      if (path === "/jobs/old-job") {
+      if (path.startsWith("/jobs/old-job")) {
         if (outcome === "missing") throw new ApiError(404, "not_found");
         return { ...job, status: "succeeded" };
       }
@@ -112,7 +123,7 @@ function Waiting({ refresh }: { refresh: () => void }) {
   useParentJobs(
     { status: "failed", error: { code: "busy", blocking_job_id: "blocker" } },
     null,
-    "B",
+    JSON.stringify(["resource", "en", "B"]),
     true,
     refresh,
   );

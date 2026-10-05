@@ -509,7 +509,11 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
               )
                 return fixtureOnly();
               result = fixture(`home.${lang}`);
-              if (q.variant === "not_generated") result.today = { status: "absent", absence: { reason: "not_generated" } };
+              if (q.variant === "not_generated")
+                result.today = {
+                  status: "absent",
+                  absence: { reason: "not_generated" },
+                };
               result.greeting_name = me.display_name;
               break;
             case "get /profiles/{id}/forecast/day":
@@ -626,7 +630,7 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
               result = fixture("acg-lines");
               break;
             case "get /geo/countries.geojson":
-              result = fixture("geo-countries");
+              result = fixture("geo-countries-simple");
               break;
             case "get /geo/regions/{iso2}.geojson":
               result = fixture(`geo-regions.${p.iso2}`);

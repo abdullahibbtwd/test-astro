@@ -642,7 +642,7 @@ export function buildLocalApp({
               );
               break;
             case "get /geo/countries.geojson":
-              result = fixture("geo-countries");
+              result = fixture("geo-countries-simple");
               break;
             case "get /geo/regions/{iso2}.geojson":
               if (!/^[A-Z]{2}$/.test(p.iso2 ?? "")) throw issue(400);

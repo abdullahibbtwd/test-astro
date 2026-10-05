@@ -1,3 +1,4 @@
+import { resolveRoute } from "../../lib/routes";
 import { showSnackbar } from "../../design/components/Snackbar";
 import { WheelPreview } from "../profiles/WheelPreview";
 import { useState, useCallback } from "react";
@@ -53,7 +54,7 @@ export default function OnboardingScreen() {
   const [error, setError] = useState<unknown>(null);
   const go = (next: string) => {
     app.editDraft({ step: next });
-    router.push(`/(onboarding)/${next}` as never);
+    router.push(resolveRoute(`/(onboarding)/${next}`));
   };
   const run = async (task: () => Promise<void>) => {
     setError(null);
@@ -139,7 +140,8 @@ export default function OnboardingScreen() {
           </View>
           <Choices>
             {(["privacy", "terms"] as const).map((kind) => (
-              <Chip role="button"
+              <Chip
+                role="button"
                 key={kind}
                 label={t(kind)}
                 selected={false}
@@ -278,7 +280,8 @@ export default function OnboardingScreen() {
           <Txt muted>{t("optional")}</Txt>
           <Choices>
             {(["female", "male", "other", null] as const).map((gender) => (
-              <Chip role="button"
+              <Chip
+                role="button"
                 key={gender ?? "none"}
                 label={t(gender ?? "preferNot")}
                 selected={false}

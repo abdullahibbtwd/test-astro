@@ -1,4 +1,4 @@
-import { ArrowUpDown } from "lucide-react-native";
+import ArrowUpDown from "lucide-react-native/icons/arrow-up-down";
 import { ProfilePicker } from "../../design/components/ProfileSwitcher";
 import { IconButton } from "../../design/components/IconButton";
 import { useTheme } from "../../design/theme";

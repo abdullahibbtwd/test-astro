@@ -1,3 +1,5 @@
+import { CitySizeChip } from "../../design/components/CitySizeChip";
+import { ContentSections } from "../../design/components/ContentList";
 import { BandChip } from "../../design/components/BandChip";
 import { CountryLabel } from "../../design/components/CountryLabel";
 import { countryName } from "../../lib/countries";
@@ -79,7 +81,8 @@ export default function RecommendResultScreen() {
     );
   const item = (p: Destination) => (
     <Card key={p.place_id}>
-      <Row label={p.name} detail={t(p.size)} onPress={() => place(p)} />
+      <Row label={p.name} onPress={() => place(p)} />
+      <CitySizeChip size={p.size}/>
       <CountryLabel code={p.country_code} />
       <BandChip band={p.band} label={p.band_label} />
       {p.summary_label && <Txt>{p.summary_label}</Txt>}
@@ -97,153 +100,199 @@ export default function RecommendResultScreen() {
     </Card>
   );
   return (
-    <Screen back title={d?.goal_label ?? t("whereShouldIGo")}>
-      {!parsed.error && q.isPending && <Skeleton />}
-      <ErrorNotice error={parsed.error ?? q.error} />
-      {d && (
-        <>
-          {d.status === "needs_goal" ? (
-            <>
-              <Txt>{t("whichGoal")}</Txt>
-              <Choices>
-                {d.goal_options?.map((g) => (
-                  <Chip
-                    role="button"
-                    key={g.goal}
-                    label={g.label}
-                    selected={false}
-                    onPress={() =>
-                      router.setParams({
-                        request: JSON.stringify({
-                          ...body,
-                          goal: g.goal,
-                          query_text: undefined,
-                        }),
-                      })
-                    }
-                  />
-                ))}
-              </Choices>
-            </>
-          ) : (
-            <>
-              {d.status === "thin_result" && <Txt>{t("thinResult")}</Txt>}
-              <Txt>
-                {d.scope === "world" ? t("world") : countryName(d.scope, lang)}
-              </Txt>
-              <Choices>
-                {Object.entries(d.filters_applied)
-                  .filter(([k, v]) => k !== "policy" && v != null)
-                  .map(([key, value]) => (
-                    <Chip
-                      key={key}
-                      label={
-                        key === "purpose" && value === "both"
-                          ? t("livingTravel")
-                          : key === "city_size"
-                            ? Array.isArray(value)
-                              ? value
-                                  .map((v) =>
-                                    t(v === "big" ? "largeCities" : String(v)),
-                                  )
-                                  .join(", ")
-                              : t(String(value))
-                            : `${t(key)}: ${Array.isArray(value) ? value.map((v) => t(String(v))).join(", ") : t(String(value))}`
+    <Screen scroll={false} back title={d?.goal_label ?? t("whereShouldIGo")}>
+      <ContentSections
+        header={
+          <>
+            {!parsed.error && q.isPending && <Skeleton />}
+            <ErrorNotice error={parsed.error ?? q.error} />
+            {d && (
+              <>
+                {d.status === "needs_goal" ? (
+                  <>
+                    <Txt>{t("whichGoal")}</Txt>
+                    <Choices>
+                      {d.goal_options?.map((g) => (
+                        <Chip
+                          role="button"
+                          key={g.goal}
+                          label={g.label}
+                          selected={false}
+                          onPress={() =>
+                            router.setParams({
+                              request: JSON.stringify({
+                                ...body,
+                                goal: g.goal,
+                                query_text: undefined,
+                              }),
+                            })
+                          }
+                        />
+                      ))}
+                    </Choices>
+                  </>
+                ) : (
+                  <>
+                    {d.status === "thin_result" && <Txt>{t("thinResult")}</Txt>}
+                    <Txt>
+                      {d.scope === "world"
+                        ? t("world")
+                        : countryName(d.scope, lang)}
+                    </Txt>
+                    <Choices>
+                      {Object.entries(d.filters_applied)
+                        .filter(([k, v]) => k !== "policy" && v != null)
+                        .map(([key, value]) => (
+                          <Chip
+                            key={key}
+                            label={
+                              key === "purpose" && value === "both"
+                                ? t("livingTravel")
+                                : key === "city_size"
+                                  ? Array.isArray(value)
+                                    ? value
+                                        .map((v) =>
+                                          t(
+                                            v === "big"
+                                              ? "largeCities"
+                                              : String(v),
+                                          ),
+                                        )
+                                        .join(", ")
+                                    : t(String(value))
+                                  : `${t(key)}: ${Array.isArray(value) ? value.map((v) => t(String(v))).join(", ") : t(String(value))}`
+                            }
+                            selected
+                            onPress={() => {
+                              const filters = { ...body?.filters };
+                              if (key === "city_size")
+                                filters.city_size = ["big", "mid", "small"];
+                              else if (key === "climate")
+                                filters.climate = null;
+                              else if (key === "max_distance_km")
+                                filters.max_distance_km = null;
+                              else if (key === "purpose")
+                                filters.purpose = "both";
+                              else delete filters[key as keyof typeof filters];
+                              router.setParams({
+                                request: JSON.stringify({ ...body, filters }),
+                              });
+                            }}
+                          />
+                        ))}
+                    </Choices>
+                    <Button
+                      secondary
+                      label={t("changeFilters")}
+                      onPress={() =>
+                        router.replace(
+                          `/map/recommend?profile=${id}&request=${encodeURIComponent(JSON.stringify(body))}`,
+                        )
                       }
-                      selected
-                      onPress={() => {
-                        const filters = { ...body?.filters };
-                        if (key === "city_size")
-                          filters.city_size = ["big", "mid", "small"];
-                        else if (key === "climate") filters.climate = null;
-                        else if (key === "max_distance_km")
-                          filters.max_distance_km = null;
-                        else if (key === "purpose") filters.purpose = "both";
-                        else delete filters[key as keyof typeof filters];
-                        router.setParams({
-                          request: JSON.stringify({ ...body, filters }),
-                        });
-                      }}
                     />
-                  ))}
-              </Choices>
-              <Button
-                secondary
-                label={t("changeFilters")}
-                onPress={() =>
-                  router.replace(
-                    `/map/recommend?profile=${id}&request=${encodeURIComponent(JSON.stringify(body))}`,
-                  )
-                }
-              />
-              <Generated part={d.explanations} retry={q.retry}>
-                {(e) => <Txt kind="reading">{e.intro}</Txt>}
-              </Generated>
-              <Choices>
-                <Chip
-                  label={t("list")}
-                  selected={!map}
-                  onPress={() => setMap(false)}
-                />
-                <Chip
-                  label={t("map")}
-                  selected={map}
-                  onPress={() => setMap(true)}
-                />
-              </Choices>
-              {map && (
-                <MapCanvas
-                  emphasized={d.by_line.flatMap((g) => {
-                    const line = g.line;
-                    return "body" in line
-                      ? [`${line.body}:${line.angle}`]
-                      : line.bodies.map(
-                          (body, i) => `${body}:${line.angles[i]}`,
-                        );
-                  })}
-                  lines={lines.data}
-                  bodies={Object.keys(planetColors) as Body[]}
-                  destinations={d.places}
-                  onDestination={place}
-                />
-              )}
-              {d.goal === "overall"
-                ? d.places.map(item)
-                : d.by_line.map((g) => (
-                    <Card key={g.group_id}>
-                      <Txt kind="title">{g.title}</Txt>
-                      {d.explanations.status === "ready" && (
-                        <Txt kind="reading">
-                          {d.explanations.groups[g.group_id]}
-                        </Txt>
-                      )}
-                      {g.destinations.map(item)}
+                    <Generated part={d.explanations} retry={q.retry}>
+                      {(e) => <Txt kind="reading">{e.intro}</Txt>}
+                    </Generated>
+                    <Choices>
+                      <Chip
+                        label={t("list")}
+                        selected={!map}
+                        onPress={() => setMap(false)}
+                      />
+                      <Chip
+                        label={t("map")}
+                        selected={map}
+                        onPress={() => setMap(true)}
+                      />
+                    </Choices>
+                    {map && (
+                      <MapCanvas
+                        emphasized={d.by_line.flatMap((g) => {
+                          const line = g.line;
+                          return "body" in line
+                            ? [`${line.body}:${line.angle}`]
+                            : line.bodies.map(
+                                (body, i) => `${body}:${line.angles[i]}`,
+                              );
+                        })}
+                        lines={lines.data}
+                        bodies={Object.keys(planetColors) as Body[]}
+                        destinations={d.places}
+                        onDestination={place}
+                      />
+                    )}
+                  </>
+                )}
+              </>
+            )}
+          </>
+        }
+        sections={
+          !d || d.status === "needs_goal"
+            ? []
+            : [
+                ...(d.goal === "overall"
+                  ? [
+                      {
+                        key: "places",
+                        header: null,
+                        children: d.places.map(item),
+                      },
+                    ]
+                  : d.by_line.map((g) => ({
+                      key: g.group_id,
+                      header: (
+                        <>
+                          <Txt kind="title">{g.title}</Txt>
+                          {d.explanations.status === "ready" && (
+                            <Txt kind="reading">
+                              {d.explanations.groups[g.group_id]}
+                            </Txt>
+                          )}
+                        </>
+                      ),
+                      children: g.destinations.map(item),
+                    }))),
+                {
+                  key: "without-destinations",
+                  header: null,
+                  children: d.lines_without_destinations.map((line, index) => (
+                    <Card key={index}>
+                      <Txt>{line.title}</Txt>
+                      <Txt kind="reading">{line.text}</Txt>
                     </Card>
-                  ))}
-              {d.lines_without_destinations.map((l, i) => (
-                <Card key={i}>
-                  <Txt>{l.title}</Txt>
-                  <Txt kind="reading">{l.text}</Txt>
-                </Card>
-              ))}
-              {d.scope === "world" && (
-                <>
-                  <Txt kind="title">{t("inTurkey")}</Txt>
-                  {d.explanations.status === "ready" && (
-                    <Txt kind="reading">{d.explanations.turkey_intro}</Txt>
-                  )}
-                  {d.turkey.places.map(item)}
-                  {d.turkey.regions.map(area)}
-                </>
-              )}
-              <Txt kind="title">{t("areas")}</Txt>
-              {d.countries.map(area)}
-              {d.regions.map(area)}
-              <Txt kind="caption">{d.footer}</Txt>
-            </>
-          )}
-        </>
-      )}
+                  )),
+                },
+                ...(d.scope === "world"
+                  ? [
+                      {
+                        key: "turkey",
+                        header: (
+                          <>
+                            <Txt kind="title">{t("inTurkey")}</Txt>
+                            {d.explanations.status === "ready" && (
+                              <Txt kind="reading">
+                                {d.explanations.turkey_intro}
+                              </Txt>
+                            )}
+                          </>
+                        ),
+                        children: [
+                          ...d.turkey.places.map(item),
+                          ...d.turkey.regions.map(area),
+                        ],
+                      },
+                    ]
+                  : []),
+                {
+                  key: "areas",
+                  header: <Txt kind="title">{t("areas")}</Txt>,
+                  children: [...d.countries.map(area), ...d.regions.map(area)],
+                },
+              ]
+        }
+        footer={d ? <Txt kind="caption">{d.footer}</Txt> : undefined}
+      />
     </Screen>
   );
 }

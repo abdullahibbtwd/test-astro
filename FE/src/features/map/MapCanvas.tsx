@@ -1,5 +1,4 @@
-import { useApi } from "../../api/resource";
-import type { FeatureCollection, Polygon, MultiPolygon } from "geojson";
+import { useCountries } from "./countries";
 import type { StyleSpecification } from "@maplibre/maplibre-react-native";
 import { useMapStyle } from "./style";
 import { useMapSelection } from "./selection";
@@ -75,12 +74,8 @@ export function MapCanvas({
     [zoom, setZoom] = useState(2),
     cells = useMemo(() => (heat ? heatCells(heat) : undefined), [heat]);
   const style = config.data?.map_style_url[dark ? "dark" : "light"];
-  const preview = __DEV__ && !style;
-  const countries = useApi<FeatureCollection<Polygon | MultiPolygon>>(
-    "/geo/countries.geojson",
-    "CountryGeometry",
-    preview,
-  );
+  const preview = (__DEV__ || process.env.EXPO_PUBLIC_FX_AUDIT === "1") && !style;
+  const countries = useCountries(preview);
   const previewStyle = useMemo<StyleSpecification>(
     () => ({
       version: 8,
@@ -214,6 +209,7 @@ export function MapCanvas({
               id="heat-fill"
               type="fill"
               paint={{
+                "fill-antialias": false,
                 "fill-color": [
                   "match",
                   ["get", "level"],

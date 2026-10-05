@@ -1,3 +1,4 @@
+import { jobWatcher } from "../../src/api/job-watcher";
 import { Snackbar } from "../../src/design/components/Snackbar";
 import { dismissSnackbar } from "../../src/design/components/snackbar-store";
 import React from "react";
@@ -21,11 +22,15 @@ test("completion notifier ignores render-time observer events and opens the comp
     configurable: true,
   });
   await i18n.changeLanguage("en");
+  jobWatcher.clear();
   queryClient.clear();
   queryClient.setDefaultOptions({
     queries: { gcTime: Infinity, retry: false },
   });
-  queryClient.setQueryData(["profiles", "en", "/profiles"], [{ profile_id: "self", label: "Test person" }]);
+  queryClient.setQueryData(
+    ["profiles", "en", "/profiles"],
+    [{ profile_id: "self", label: "Test person" }],
+  );
   const key = ["resource", "en", "/profiles/self/forecast/year?from=2026-09"];
   queryClient.setQueryData(key, {
     reading: {
@@ -47,7 +52,9 @@ test("completion notifier ignores render-time observer events and opens the comp
   await waitFor(() =>
     expect(screen.getByRole("button", { name: "Open" })).toBeOnTheScreen(),
   );
-  expect(screen.getByText("Your yearly forecast for Test person is ready")).toBeOnTheScreen();
+  expect(
+    screen.getByText("Your yearly forecast for Test person is ready"),
+  ).toBeOnTheScreen();
   await act(async () => {
     for (let i = 0; i < 30; i++)
       queryClient.getQueryCache().notify({
@@ -63,11 +70,13 @@ test("completion notifier ignores render-time observer events and opens the comp
     refetchType: "none",
   });
   await view.unmount();
+  jobWatcher.clear();
   queryClient.clear();
 });
 
 afterEach(() => {
   dismissSnackbar("timeout");
+  jobWatcher.clear();
   queryClient.clear();
   jest.restoreAllMocks();
 });

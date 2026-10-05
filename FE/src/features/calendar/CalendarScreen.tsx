@@ -1,10 +1,12 @@
+import { resolveRoute } from "../../lib/routes";
+import { ContentList } from "../../design/components/ContentList";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Platform } from "react-native";
 import { DatePager } from "../../design/components/DatePager";
 import { useApp } from "../../lib/state";
 import { formatMonth } from "../../lib/dates";
 import { ScrollView, View } from "react-native";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -22,7 +24,7 @@ import { mockToday } from "../../api/client";
 import { todayLocal } from "../../lib/dates";
 import { shiftMonth } from "../../lib/calendar";
 import { useProfile } from "../shared/useProfile";
-import { ItemRows } from "../shared/Blocks";
+import { calendarRows } from "../shared/Blocks";
 import { MonthGrid } from "./MonthGrid";
 import type { CalendarMonth, Goal } from "../../../contracts/spec-types";
 export default function CalendarScreen({
@@ -32,7 +34,7 @@ export default function CalendarScreen({
 }) {
   const lang = useApp((s) => s.language);
   const [picking, setPicking] = useState(false);
-  const Surface = embedded ? Fragment : Screen;
+  const Surface = embedded ? ContentList : Screen;
   const params = useLocalSearchParams<{ month?: string; date?: string }>(),
     { t } = useTranslation(),
     { id, tz } = useProfile(),
@@ -50,7 +52,9 @@ export default function CalendarScreen({
     ),
     data = query.data;
   return (
-    <Surface {...(embedded ? {} : { back: true, title: t("calendar") })}>
+    <Surface
+      {...(embedded ? {} : { list: true, back: true, title: t("calendar") })}
+    >
       <DatePager
         label={formatMonth(month, lang)}
         previousDisabled={month <= today.slice(0, 7)}
@@ -117,7 +121,7 @@ export default function CalendarScreen({
             key={path}
             secondary
             label={t(label)}
-            onPress={() => router.push(`${path}?profile=${id}` as never)}
+            onPress={() => router.push(resolveRoute(`${path}?profile=${id}`))}
           />
         ))}
       </Choices>
@@ -162,16 +166,17 @@ export default function CalendarScreen({
               }
             />
             <Txt kind="title">{t("thisMonth")}</Txt>
-            <ItemRows
-              profile={id}
-              items={[
+            {calendarRows(
+              [
                 ...data.lunations,
                 ...data.eclipses,
                 ...data.retrograde_periods,
                 ...data.major_transits,
                 ...data.periods,
-              ]}
-            />
+              ],
+              id,
+              lang,
+            )}
           </>
         )
       )}

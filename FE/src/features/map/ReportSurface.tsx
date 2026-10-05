@@ -11,9 +11,11 @@ import { Sheet } from "../../design/components/Sheet";
 export function ReportSurface({
   title,
   children,
+  list = false,
 }: {
   title?: string;
   children: ReactNode;
+  list?: boolean;
   back?: boolean;
 }) {
   const params = useLocalSearchParams(),
@@ -33,12 +35,13 @@ export function ReportSurface({
   );
   if (params.full === "1")
     return (
-      <Screen back title={title ?? t("reading")}>
+      <Screen list={list} back title={title ?? t("reading")}>
         {children}
       </Screen>
     );
   return (
     <Sheet
+      list={list}
       open={focused}
       title={title ?? t("reading")}
       snapPoints={["25%", "55%", "92%"]}

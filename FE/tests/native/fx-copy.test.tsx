@@ -171,3 +171,8 @@ test("place report spells out the country and gives every actionable row a name"
   ))
     expect(node.props.accessibilityLabel || renderedText(node)).toBeTruthy();
 });
+
+test("Best Days activity renders its calendar dates, not an empty grid",async()=>{
+ mockLang="en";mockParams.activity="business";await i18n.changeLanguage("en");await render(<BestDaysScreen/>);
+ expect(screen.getAllByRole("button").filter(node=>/October|November|December/.test(node.props.accessibilityLabel ?? "")).length).toBeGreaterThan(20);
+});

@@ -1,4 +1,5 @@
-import { Maximize2, RotateCcw } from "lucide-react-native";
+import Maximize2 from "lucide-react-native/icons/maximize-2";
+import RotateCcw from "lucide-react-native/icons/rotate-ccw";
 import { IconButton } from "../../design/components/IconButton";
 import { ActionSheet } from "../../design/components/ActionSheet";
 import { useEffect, useMemo, useState } from "react";

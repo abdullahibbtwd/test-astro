@@ -1,5 +1,6 @@
 import { Pressable, View } from "react-native";
-import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
+import ChevronRight from "lucide-react-native/icons/chevron-right";
 import { useTranslation } from "react-i18next";
 import { Txt } from ".";
 import { IconButton } from "./IconButton";

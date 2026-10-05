@@ -1,3 +1,4 @@
+import { routes, routeUrl } from "./routes";
 export function shiftDate(date: string, days: number) {
   const value = new Date(`${date}T12:00:00Z`);
   value.setUTCDate(value.getUTCDate() + days);
@@ -29,8 +30,8 @@ export function notificationRoute(
     return `/best-days/${activity ?? "love"}${suffix}${suffix ? "&" : "?"}date=${date ?? ""}`;
   }
   if (link.view === "period" || link.view === "event")
-    return `/calendar/item/${encodeURIComponent(link.ref)}${suffix}`;
-  return `/(tabs)/ahead?view=calendar${profile ? `&profile=${encodeURIComponent(profile)}` : ""}`;
+    return routeUrl(routes.calendarItem(link.ref, profile));
+  return routeUrl(routes.ahead({ view: "calendar", profile }));
 }
 export function greetingKey(tz: string, now = new Date()) {
   const hour = Number(

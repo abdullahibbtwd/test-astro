@@ -1,3 +1,4 @@
+import { resolveRoute } from "../../lib/routes";
 import { TimezoneNotice } from "../shared/TimezoneNotice";
 import { useCallback, useEffect } from "react";
 import { AppState, RefreshControl, View } from "react-native";
@@ -144,10 +145,12 @@ export default function HomeScreen() {
                   detail={formatDate(item.date, app.language)}
                   onPress={() =>
                     router.push(
-                      notificationRoute(
-                        item.deep_link,
-                        app.me?.self_profile_id ?? undefined,
-                      ) as never,
+                      resolveRoute(
+                        notificationRoute(
+                          item.deep_link,
+                          app.me?.self_profile_id ?? undefined,
+                        ),
+                      ),
                     )
                   }
                 />

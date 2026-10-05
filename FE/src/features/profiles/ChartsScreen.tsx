@@ -20,7 +20,7 @@ export default function ChartsScreen() {
     catalogue = useCatalogue(),
     lang = useApp((s) => s.language);
   return (
-    <Screen largeTitle back title={t("myCharts")}>
+    <Screen list largeTitle back title={t("myCharts")}>
       <Txt muted>{t("homeBody")}</Txt>
       {profiles.isPending ? (
         <Skeleton />

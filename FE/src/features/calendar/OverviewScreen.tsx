@@ -1,3 +1,4 @@
+import { ContentSections } from "../../design/components/ContentList";
 import { useApp } from "../../lib/state";
 import { formatMonth, formatRange } from "../../lib/dates";
 import { mockToday } from "../../api/client";
@@ -18,7 +19,7 @@ import {
 import { useApi } from "../../api/resource";
 import { useCatalogue } from "../../api/hooks";
 import { useProfile } from "../shared/useProfile";
-import { ItemRows } from "../shared/Blocks";
+import { calendarRows } from "../shared/Blocks";
 import { useTheme } from "../../design/theme";
 import { bandColor } from "../../design/bands";
 import type { CalendarYear, PeriodRef } from "../../../contracts/spec-types";
@@ -45,8 +46,74 @@ export default function OverviewScreen({
     !!id && periods,
   );
   const values = periods ? periodQuery.data : data?.periods;
+  if (!periods || list) {
+    const events = periods
+      ? (values ?? [])
+      : data
+        ? [
+            ...data.eclipses,
+            ...data.lunations,
+            ...data.retrograde_periods,
+            ...data.major_transits,
+            ...data.periods,
+          ]
+        : [];
+    const groups = new Map<string, typeof events>();
+    for (const event of events) {
+      const month = String(
+        "start" in event
+          ? event.start
+          : "date" in event
+            ? event.date
+            : (event.id.match(/\d{4}-\d{2}-\d{2}/)?.[0] ?? ""),
+      ).slice(0, 7);
+      groups.set(month, [...(groups.get(month) ?? []), event]);
+    }
+    return (
+      <Screen
+        scroll={false}
+        back
+        title={t(periods ? "periods" : "yearOverview")}
+      >
+        <ContentSections
+          header={
+            <>
+              {periods && (
+                <Button
+                  secondary
+                  label={t("timeline")}
+                  onPress={() => setList(false)}
+                />
+               )}
+              {(query.isPending || (periods && periodQuery.isPending)) && (
+                <Skeleton />
+              )}
+              <ErrorNotice
+                error={query.error ?? periodQuery.error}
+                retry={() => {
+                  void query.refetch();
+                  if (periods) void periodQuery.refetch();
+                }}
+              />
+            </>
+          }
+          sections={[...groups]
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([month, items]) => ({
+              key: month,
+              header: (
+                <Txt kind="title">
+                  {month ? formatMonth(month, lang) : t("periods")}
+                </Txt>
+              ),
+              children: calendarRows(items, id, lang),
+            }))}
+        />
+      </Screen>
+    );
+  }
   return (
-    <Screen back title={t(periods ? "periods" : "yearOverview")}>
+    <Screen list back title={t(periods ? "periods" : "yearOverview")}>
       {(query.isPending || (periods && periodQuery.isPending)) && <Skeleton />}
       {data && (
         <>
@@ -162,24 +229,26 @@ export default function OverviewScreen({
             Object.entries(cat.data.goals).map(([goal, label]) => (
               <View key={goal}>
                 <Txt kind="title">{label}</Txt>
-                <ItemRows
-                  profile={id}
-                  items={values?.filter((p) => p.goal === goal) ?? []}
-                />
+                {calendarRows(
+                  values?.filter((p) => p.goal === goal) ?? [],
+                  id,
+                  lang,
+                )}
               </View>
             ))
           ) : (
             <>
-              <ItemRows
-                profile={id}
-                items={[
+              {calendarRows(
+                [
                   ...data.eclipses,
                   ...data.lunations,
                   ...data.retrograde_periods,
                   ...data.major_transits,
                   ...data.periods,
-                ]}
-              />
+                ],
+                id,
+                lang,
+              )}
             </>
           )}
         </>

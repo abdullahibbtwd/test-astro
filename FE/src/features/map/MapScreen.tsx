@@ -1,4 +1,7 @@
-import { Layers, List, Info } from "lucide-react-native";
+import { routes } from "../../lib/routes";
+import Layers from "lucide-react-native/icons/layers";
+import List from "lucide-react-native/icons/list";
+import Info from "lucide-react-native/icons/info";
 import { Sheet } from "../../design/components/Sheet";
 import { ActionSheet } from "../../design/components/ActionSheet";
 import { IconButton } from "../../design/components/IconButton";
@@ -27,7 +30,7 @@ import { useProfile } from "../shared/useProfile";
 import { MapCanvas, planetColors } from "./MapCanvas";
 import { MapSearch } from "./MapSearch";
 import { countryAt } from "./geometry";
-import type { FeatureCollection, Polygon, MultiPolygon } from "geojson";
+import { loadCountries } from "./countries";
 import type {
   AcgLines,
   AcgHeat,
@@ -68,8 +71,8 @@ export default function MapScreen() {
     place = (p: PlaceCandidate) =>
       router.push(
         p.kind === "country" || p.kind === "region"
-          ? `/map/area/${encodeURIComponent(p.place_id.replace(/^(iso2|admin1):/, ""))}?kind=${p.kind}&profile=${id}`
-          : `/map/place/${p.place_id}?profile=${id}${goal ? `&goal=${goal}` : ""}`,
+          ? routes.area(p.place_id.replace(/^(iso2|admin1):/, ""), p.kind, id)
+          : routes.place(p.place_id, { profile: id, goal: goal || undefined }),
       );
   const point = async (
     [lon, lat]: [number, number],
@@ -86,12 +89,12 @@ export default function MapScreen() {
     }
     try {
       if (zoom < 3.5) {
-        const countries = await request<
-            FeatureCollection<Polygon | MultiPolygon, { iso2: string }>
-          >("GET", "/geo/countries.geojson"),
+        const started = performance.now();
+        const countries = await loadCountries(),
           country = countryAt([lon, lat], countries);
-        if (country)
-          router.push(`/map/area/${country}?kind=country&profile=${id}`);
+        if (__DEV__)
+          console.info("Country tap lookup ms", performance.now() - started);
+        if (country) router.push(routes.area(country, "country", id));
         else setSpotAction(() => spot);
       } else {
         const city = await request<Place | null>(
@@ -100,7 +103,10 @@ export default function MapScreen() {
         );
         if (city)
           router.push(
-            `/map/place/${city.place_id}?profile=${id}${goal ? `&goal=${goal}` : ""}`,
+            routes.place(city.place_id, {
+              profile: id,
+              goal: goal || undefined,
+            }),
           );
         else setSpotAction(() => spot);
       }
@@ -174,7 +180,8 @@ export default function MapScreen() {
       <Sheet open={layers} title={t("layers")} onClose={() => setLayers(false)}>
         <Choices multi>
           {(Object.keys(planetColors) as Body[]).map((body) => (
-            <Chip role="checkbox"
+            <Chip
+              role="checkbox"
               key={body}
               label={catalogue.bodies[body]}
               selected={bodies.includes(body)}
@@ -187,12 +194,14 @@ export default function MapScreen() {
               }
             />
           ))}
-          <Chip role="checkbox"
+          <Chip
+            role="checkbox"
             label={t("nodes")}
             selected={nodes}
             onPress={() => setNodes(!nodes)}
           />
-          <Chip role="checkbox"
+          <Chip
+            role="checkbox"
             label={t("latitudeCrossings")}
             selected={parans}
             onPress={() => setParans(!parans)}

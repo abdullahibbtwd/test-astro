@@ -1,3 +1,4 @@
+import { useCountries } from "./countries";
 import { BandChip } from "../../design/components/BandChip";
 import { View } from "react-native";
 import { ReportSurface as Screen } from "./ReportSurface";
@@ -34,13 +35,15 @@ export default function AreaScreen() {
       !!id,
     ),
     d = q.data;
-  const geometry = useApi<FeatureCollection<Polygon | MultiPolygon>>(
+  const countries = useCountries(kind !== "region");
+  const regions = useApi<FeatureCollection<Polygon | MultiPolygon>>(
     kind === "region"
       ? `/geo/regions/${d?.area.iso2 ?? ""}.geojson`
       : "/geo/countries.geojson",
     kind === "region" ? "RegionGeometry" : "CountryGeometry",
-    kind !== "region" || !!d,
+    kind === "region" && !!d,
   );
+  const geometry = kind === "region" ? regions : countries;
   useEffect(() => {
     const feature = geometry.data?.features.find((f) =>
       kind === "region"
@@ -50,7 +53,7 @@ export default function AreaScreen() {
     if (feature) useMapSelection.getState().selectArea(feature);
   }, [geometry.data, areaId, kind]);
   return (
-    <Screen back title={d?.area.name ?? t("areaReport")}>
+    <Screen list back title={d?.area.name ?? t("areaReport")}>
       {q.isPending && <Skeleton />}
       <ErrorNotice error={q.error} />
       {d && (

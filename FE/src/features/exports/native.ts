@@ -48,13 +48,12 @@ export async function exportPdf(
   });
   return target.uri;
 }
-export async function exportChartImage(
+export async function renderChartImage(
   chart: ChartData,
   caption: string[],
   dark: boolean,
   format: "png" | "jpg",
   filename: string,
-  save: boolean,
 ) {
   const surface = Skia.Surface.MakeOffscreen(2048, 2400);
   if (!surface) throw new Error("Image surface unavailable");
@@ -97,13 +96,11 @@ export async function exportChartImage(
     ),
     { encoding: "base64" },
   );
-  if (save) {
-    const permission = await MediaLibrary.requestPermissionsAsync(true);
-    if (!permission.granted) throw new Error("Photo permission required");
-    await MediaLibrary.saveToLibraryAsync(file.uri);
-  } else
-    await Sharing.shareAsync(file.uri, {
-      mimeType: format === "png" ? "image/png" : "image/jpeg",
-    });
   return file.uri;
+}
+export async function exportChartImage(chart:ChartData,caption:string[],dark:boolean,format:"png"|"jpg",filename:string,save:boolean){
+ const uri=await renderChartImage(chart,caption,dark,format,filename);
+ if(save){const permission=await MediaLibrary.requestPermissionsAsync(true);if(!permission.granted)throw new Error("Photo permission required");await MediaLibrary.saveToLibraryAsync(uri);}
+ else await Sharing.shareAsync(uri,{mimeType:format === "png" ? "image/png" : "image/jpeg"});
+ return uri;
 }

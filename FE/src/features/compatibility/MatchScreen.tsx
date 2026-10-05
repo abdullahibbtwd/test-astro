@@ -21,7 +21,7 @@ import { request } from "../../api/client";
 import { useCatalogue } from "../../api/hooks";
 import type { CompatibilityPage } from "../../../contracts/spec-types";
 export default function MatchScreen() {
-  const lang = useApp(s => s.language);
+  const lang = useApp((s) => s.language);
   const { other } = useLocalSearchParams<{ other?: string }>(),
     { t } = useTranslation(),
     cat = useCatalogue(),
@@ -44,7 +44,7 @@ export default function MatchScreen() {
       { removed: t("removed"), undo: t("undo"), failed: t("deleteFailed") },
     );
   return (
-    <Screen title={t("whoFits")}>
+    <Screen list title={t("whoFits")}>
       <Button
         label={t("newCompatibility")}
         onPress={() =>

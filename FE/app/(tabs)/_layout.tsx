@@ -1,20 +1,18 @@
 import { View, Text } from "react-native";
-import { Share2 } from "lucide-react-native";
+import Share2 from "lucide-react-native/icons/share-2";
 import { ProfileSwitcher } from "../../src/design/components/ProfileSwitcher";
 import { IconButton } from "../../src/design/components/IconButton";
 import { useApp } from "../../src/lib/state";
 import { useFlags } from "../../src/lib/flags";
 import { Tabs, router } from "expo-router";
 import { Pressable } from "react-native";
-import {
-  House,
-  CircleDot,
-  CalendarDays,
-  Users,
-  MapPin,
-  CircleUserRound,
-  MessageCircle,
-} from "lucide-react-native";
+import House from "lucide-react-native/icons/house";
+import CircleDot from "lucide-react-native/icons/circle-dot";
+import CalendarDays from "lucide-react-native/icons/calendar-days";
+import Users from "lucide-react-native/icons/users";
+import MapPin from "lucide-react-native/icons/map-pin";
+import CircleUserRound from "lucide-react-native/icons/circle-user-round";
+import MessageCircle from "lucide-react-native/icons/message-circle";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../src/design/theme";
 export default function TabLayout() {
@@ -37,7 +35,14 @@ export default function TabLayout() {
         },
         tabBarActiveTintColor: c.accent,
         tabBarInactiveTintColor: c.ink2,
-        tabBarLabel: ({ children, color }) => <Text maxFontSizeMultiplier={1.3} style={{ fontFamily: "Inter", fontSize: 12, color }}>{children}</Text>,
+        tabBarLabel: ({ children, color }) => (
+          <Text
+            maxFontSizeMultiplier={1.3}
+            style={{ fontFamily: "Inter", fontSize: 12, color }}
+          >
+            {children}
+          </Text>
+        ),
         headerLeft: () => (
           <Pressable
             accessibilityRole="button"

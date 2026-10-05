@@ -74,7 +74,8 @@ export default function MatchReportScreen() {
       {data && (
         <>
           <Txt muted>
-            {cat.data.compat_types[data.type]} · {formatDate(data.created_at.slice(0, 10), app.language)}
+            {cat.data.compat_types[data.type]} ·{" "}
+            {formatDate(data.created_at.slice(0, 10), app.language)}
           </Txt>
           <View style={{ gap: 12 }}>
             {[data.people.a, data.people.b].map((person) => (
@@ -120,7 +121,6 @@ export default function MatchReportScreen() {
           >
             {(reading) => (
               <>
-                
                 {reading.sections.map((section, index) => (
                   <View key={section.key} style={{ gap: 16 }}>
                     <ReadingSection

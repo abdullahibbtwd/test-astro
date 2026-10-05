@@ -30,6 +30,7 @@ export default function LineScreen() {
     );
   return (
     <Screen
+      list
       back
       title={`${catalogue.bodies[body]} · ${catalogue.angles[angle]?.line}`}
     >

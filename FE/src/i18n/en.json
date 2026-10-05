@@ -485,5 +485,6 @@
   "station": "Station",
   "excellent": "Excellent",
   "good": "Good",
-  "avoid": "Avoid"
+  "avoid": "Avoid",
+  "jumpLatest": "Jump to latest"
 }

@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { formatDay } from "../../lib/dates";
-import { BandChip } from "../../design/components/BandChip";
 import { Pressable, View } from "react-native";
 import { useApp } from "../../lib/state";
 import { useTheme } from "../../design/theme";
@@ -148,7 +147,7 @@ export function MonthGrid({
           ? ["excellent", "good", "avoid"]
           : ["favorable", "challenging"]
         ).map((band) => (
-          <BandChip key={band} band={band} label={t(band)} />
+          <View key={band} accessible accessibilityLabel={t(band)} style={{flexDirection:"row",alignItems:"center",gap:6}}><View style={{width:20,height:20,borderRadius:10,borderWidth:1.5,borderStyle:band === "avoid" ? "dashed" : "solid",borderColor:bandColor(band,c.bg === "#1A2030")}}/><Txt kind="caption">{t(band)}</Txt></View>
         ))}
         {[...new Set(days.flatMap((d) => (d.icons ?? "").split(" ")))]
           .filter((icon) => iconNames(icon))

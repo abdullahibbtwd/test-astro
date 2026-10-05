@@ -171,7 +171,7 @@ export default function AheadScreen() {
     </>
   );
   return (
-    <Screen embedded pinned={pinned}>
+    <Screen scroll={view !== "calendar"} embedded pinned={pinned}>
       {view === "calendar" ? (
         <CalendarScreen embedded />
       ) : (

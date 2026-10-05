@@ -1,5 +1,6 @@
-import { Keyboard, ScrollView, TextInput, View } from "react-native";
-import { Search, X } from "lucide-react-native";
+import { Keyboard, SectionList, TextInput, View } from "react-native";
+import Search from "lucide-react-native/icons/search";
+import X from "lucide-react-native/icons/x";
 import { IconButton } from "../../design/components/IconButton";
 import { useTheme } from "../../design/theme";
 import { useEffect, useState } from "react";
@@ -75,7 +76,7 @@ export function MapSearch({
         )}
       </View>
       {search.length >= 2 && (
-        <ScrollView
+        <SectionList<PlaceCandidate>
           keyboardShouldPersistTaps="handled"
           style={{
             marginTop: 4,
@@ -84,59 +85,50 @@ export function MapSearch({
             borderRadius: 16,
             elevation: 8,
           }}
-          contentContainerStyle={{ padding: 16, gap: 12 }}
-        >
-          {[
-            ...(!areasOnly ? [{ query: cities, label: "cities" }] : []),
-            { query: areas, label: "areas" },
-          ].map(({ query, label }) => (
-            <ViewResults
-              key={label}
-              title={t(label)}
-              data={query.data}
-              loading={query.isFetching}
-              error={query.error}
-              onSelect={(p) => {
+          contentContainerStyle={{ padding: 16 }}
+          sections={[
+            ...(!areasOnly
+              ? [
+                  {
+                    title: t("cities"),
+                    data: cities.data ?? [],
+                    loading: cities.isFetching,
+                    error: cities.error,
+                  },
+                ]
+              : []),
+            {
+              title: t("areas"),
+              data: areas.data ?? [],
+              loading: areas.isFetching,
+              error: areas.error,
+            },
+          ]}
+          keyExtractor={(p) => p.place_id}
+          renderSectionHeader={({ section }) => (
+            <>
+              <Txt kind="title">{section.title}</Txt>
+              {section.loading && <Skeleton variant="lines" lines={2} />}
+              <ErrorNotice error={section.error} />
+              {!section.loading && !section.data.length && (
+                <Txt muted>{t("noResults")}</Txt>
+              )}
+            </>
+          )}
+          renderItem={({ item: p }) => (
+            <Row
+              label={p.name}
+              detail={[p.admin1, p.country_name].filter(Boolean).join(" · ")}
+              onPress={() => {
                 setInput("");
                 setSearch("");
                 Keyboard.dismiss();
                 onSelect(p);
               }}
             />
-          ))}
-        </ScrollView>
+          )}
+        />
       )}
     </View>
-  );
-}
-function ViewResults({
-  title,
-  data,
-  loading,
-  error,
-  onSelect,
-}: {
-  title: string;
-  data?: PlaceCandidate[];
-  loading: boolean;
-  error: unknown;
-  onSelect: (p: PlaceCandidate) => void;
-}) {
-  const { t } = useTranslation();
-  return (
-    <>
-      <Txt kind="title">{title}</Txt>
-      {loading && <Skeleton />}
-      <ErrorNotice error={error} />
-      {data?.map((p) => (
-        <Row
-          key={p.place_id}
-          label={p.name}
-          detail={[p.admin1, p.country_name].filter(Boolean).join(" · ")}
-          onPress={() => onSelect(p)}
-        />
-      ))}
-      {data?.length === 0 && <Txt muted>{t("noResults")}</Txt>}
-    </>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
-import { ChevronDown, Check } from "lucide-react-native";
+import ChevronDown from "lucide-react-native/icons/chevron-down";
+import Check from "lucide-react-native/icons/check";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import type { BirthProfile } from "../../../contracts/spec-types";
@@ -34,7 +35,7 @@ export function ProfilePicker({
         ? recent.indexOf(p.profile_id)
         : recent.length;
   return (
-    <Sheet open={open} title={t("choosePerson")} onClose={onClose}>
+    <Sheet list open={open} title={t("choosePerson")} onClose={onClose}>
       {[...(profiles.data ?? [])]
         .sort((a, b) => rank(a) - rank(b))
         .map((p) => (

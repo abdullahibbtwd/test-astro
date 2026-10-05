@@ -1,3 +1,4 @@
+import { resolveRoute } from "../../lib/routes";
 import { BandChip } from "../../design/components/BandChip";
 import { formatShort, formatRange } from "../../lib/dates";
 import { router } from "expo-router";
@@ -29,7 +30,9 @@ export function AskCardView({
     case "best_days":
       title = c.activities[card.activity];
       detail = card.days
-        .map((d) => `${formatShort(d.date, app.language)} · ${c.grades[d.grade]}`)
+        .map(
+          (d) => `${formatShort(d.date, app.language)} · ${c.grades[d.grade]}`,
+        )
         .join("\n");
       route = `/best-days/${card.activity}?profile=${profile}`;
       break;
@@ -62,13 +65,19 @@ export function AskCardView({
     <Card>
       <Txt>{title}</Txt>
       {!!detail && <Txt muted>{detail}</Txt>}
-      {card.type === "place" && card.cards.map(item => <Card key={item.goal}><Txt>{c.goals[item.goal]}</Txt><BandChip band={item.band} label={item.band_label} /></Card>)}
+      {card.type === "place" &&
+        card.cards.map((item) => (
+          <Card key={item.goal}>
+            <Txt>{c.goals[item.goal]}</Txt>
+            <BandChip band={item.band} label={item.band_label} />
+          </Card>
+        ))}
       <Button
         secondary
         label={t("open")}
         onPress={() => {
           app.update({ activeProfileId: profile });
-          router.push(route as never);
+          router.push(resolveRoute(route));
         }}
       />
     </Card>

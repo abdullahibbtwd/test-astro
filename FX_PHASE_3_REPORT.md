@@ -32,3 +32,7 @@ Review these new/changed chrome keys: `favorable`, `challenging`, `big`, `mid`, 
 - Existing model prose is preserved verbatim even if its own text contains dates or capitals. Chrome formatting is covered separately.
 - Precise timeline geometry and large list performance continue in Phase 4.
 - No backend reason gap was found: dates without contributing reasons legitimately omit those sections.
+
+## Final follow-up in Phase 4
+
+The complete suite now passes: 98 API/logic tests and 47 native tests. The Best Days activity grid received a regression fix for its internal month value and a test that requires actual date buttons. Activity rows now show the next-day grade, recommendation city sizes use neutral chips, and calendar legends display matching ring samples. Updated Android evidence is in the Phase 4 gallery. Spoken/iOS accessibility limitations above remain unchanged.

@@ -1,3 +1,5 @@
+import { resolveRoute } from "../../lib/routes";
+import { formatDay, formatMonth } from "../../lib/dates";
 import {
   ProfileSwitcher,
   ProfilePicker,
@@ -5,7 +7,7 @@ import {
 import { ActionSheet } from "../../design/components/ActionSheet";
 import { showSnackbar } from "../../design/components/Snackbar";
 import { useEffect, useRef, useState } from "react";
-import { AccessibilityInfo, Share, View, ScrollView } from "react-native";
+import { AccessibilityInfo, Share, View, FlatList } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import * as Crypto from "expo-crypto";
 import { Stack, router, useLocalSearchParams } from "expo-router";
@@ -67,7 +69,8 @@ export default function ChatScreen() {
     lastRequest = useRef<{ text: string; context: AskContext } | undefined>(
       undefined,
     );
-  const scroll = useRef<ScrollView>(null);
+  const [showLatest, setShowLatest] = useState(false);
+  const scroll = useRef<FlatList<Message>>(null);
   const follow = useRef(true);
   const key = `ask-draft:${id}`;
   useEffect(() => {
@@ -151,6 +154,7 @@ export default function ChatScreen() {
       },
     ];
     setMessages(draft.current);
+    scroll.current?.scrollToOffset({ offset: 0, animated: false });
     persist();
     const update = (fn: (message: Message) => Message) => {
       draft.current = draft.current.map((message) =>
@@ -211,7 +215,11 @@ export default function ChatScreen() {
                 ...app.me,
                 ask_quota: { ...app.me.ask_quota, ...data.quota },
               });
-            AccessibilityInfo.announceForAccessibility(draft.current.find(message => message.message_id === data.message_id)?.text || t("ready"));
+            AccessibilityInfo.announceForAccessibility(
+              draft.current.find(
+                (message) => message.message_id === data.message_id,
+              )?.text || t("ready"),
+            );
           } else if (event === "error") throw new Error("Answer failed");
         },
       );
@@ -267,28 +275,19 @@ export default function ChatScreen() {
     <Screen
       back
       title={subject?.label ?? t("ask")}
-      scrollRef={scroll}
-      scrollProps={{
-        scrollEventThrottle: 100,
-        onScroll: ({ nativeEvent: e }) => {
-          follow.current =
-            e.contentSize.height -
-              e.contentOffset.y -
-              e.layoutMeasurement.height <
-            140;
-        },
-        onContentSizeChange: () => {
-          if (follow.current) scroll.current?.scrollToEnd({ animated: false });
-        },
-      }}
+      scroll={false}
       footer={
         <View style={{ gap: 8 }}>
           {Object.keys(context).length > 0 && (
             <Choices>
               <Txt kind="caption">
                 {t("contextAttached")}
-                {context.date ? ` · ${context.date}` : ""}
-                {context.month ? ` · ${context.month}` : ""}
+                {context.date
+                  ? ` · ${formatDay(context.date, app.language)}`
+                  : ""}
+                {context.month
+                  ? ` · ${formatMonth(context.month, app.language)}`
+                  : ""}
                 {context.other_profile_id
                   ? ` · ${profiles.data?.find((p) => p.profile_id === context.other_profile_id)?.label ?? t("compatibility")}`
                   : ""}
@@ -381,19 +380,6 @@ export default function ChatScreen() {
         )}
       />
       {query.isPending && <Skeleton />}
-      {!messages.length &&
-        !query.isPending &&
-        [1, 2, 3, 4, 5, 6].map((number) => (
-          <Button
-            key={number}
-            secondary
-            label={t(`starter${number}`)}
-            onPress={() => {
-              setText(t(`starter${number}`));
-              if (number === 4) setChoosePerson(true);
-            }}
-          />
-        ))}
       <ProfilePicker
         open={choosePerson}
         selectedId={context.other_profile_id}
@@ -401,92 +387,137 @@ export default function ChatScreen() {
         onSelect={(id) => setContext({ ...context, other_profile_id: id })}
         onClose={() => setChoosePerson(false)}
       />
-      {messages.map((message) => (
-        <View
-          key={message.message_id}
-          style={{
-            gap: 12,
-            padding: message.role === "user" ? 16 : 0,
-            backgroundColor:
-              message.role === "user" ? colors.surfaceAlt : undefined,
-            borderRadius: 12,
-            alignSelf: message.role === "user" ? "flex-end" : "stretch",
-            maxWidth: message.role === "user" ? "90%" : "100%",
-          }}
-        >
-          <Txt kind={message.role === "assistant" ? "reading" : "body"}>
-            {message.text}
-          </Txt>
-          {message.role === "assistant" && (
-            <>
-              {message.cards.map((card, index) => (
-                <AskCardView
-                  key={index}
-                  card={card}
-                  profile={query.data?.profile_id ?? ""}
+      <FlatList
+        style={{ flex: 1 }}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        ListEmptyComponent={
+          <>
+            {" "}
+            {!messages.length &&
+              !query.isPending &&
+              [1, 2, 3, 4, 5, 6].map((number) => (
+                <Button
+                  key={number}
+                  secondary
+                  label={t(`starter${number}`)}
+                  onPress={() => {
+                    setText(t(`starter${number}`));
+                    if (number === 4) setChoosePerson(true);
+                  }}
                 />
               ))}
-              <Choices>
-                {message.links
-                  .filter(
-                    (link) =>
-                      link.route.startsWith("/") &&
-                      !link.route.startsWith("//"),
-                  )
-                  .map((link, index) => (
-                    <Chip role="button"
-                      key={index}
-                      label={link.label}
-                      selected={false}
-                      onPress={() => router.push(link.route as never)}
-                    />
-                  ))}
-              </Choices>
-              {!busy && (
+          </>
+        }
+        ref={scroll}
+        inverted
+        data={[...messages].reverse()}
+        keyExtractor={(message) => message.message_id}
+        contentContainerStyle={{ padding: 20, gap: 16 }}
+        onScroll={({ nativeEvent: e }) => {
+          follow.current = e.contentOffset.y < 140;
+          setShowLatest(!follow.current);
+        }}
+        scrollEventThrottle={100}
+        renderItem={({ item: message }) => (
+          <View
+            key={message.message_id}
+            style={{
+              gap: 12,
+              padding: message.role === "user" ? 16 : 0,
+              backgroundColor:
+                message.role === "user" ? colors.surfaceAlt : undefined,
+              borderRadius: 12,
+              alignSelf: message.role === "user" ? "flex-end" : "stretch",
+              maxWidth: message.role === "user" ? "90%" : "100%",
+            }}
+          >
+            <Txt kind={message.role === "assistant" ? "reading" : "body"}>
+              {message.text}
+            </Txt>
+            {message.role === "assistant" && (
+              <>
+                {message.cards.map((card, index) => (
+                  <AskCardView
+                    key={index}
+                    card={card}
+                    profile={query.data?.profile_id ?? ""}
+                  />
+                ))}
                 <Choices>
-                  <Button
-                    secondary
-                    label={t("copy")}
-                    onPress={() => {
-                      void Clipboard.setStringAsync(message.text).catch(
-                        setError,
-                      );
-                    }}
-                  />
-                  <Button
-                    secondary
-                    label={t("share")}
-                    onPress={() => {
-                      void Share.share({ message: message.text }).catch(
-                        setError,
-                      );
-                    }}
-                  />
-                  {message.status === "complete" && (
-                    <>
+                  {message.links
+                    .filter(
+                      (link) =>
+                        link.route.startsWith("/") &&
+                        !link.route.startsWith("//"),
+                    )
+                    .map((link, index) => (
                       <Chip
-                        label={t("helpful")}
-                        selected={message.feedback === "up"}
-                        onPress={() => feedback(message, "up")}
+                        role="button"
+                        key={index}
+                        label={link.label}
+                        selected={false}
+                        onPress={() => router.push(resolveRoute(link.route))}
                       />
-                      <Chip
-                        label={t("notHelpful")}
-                        selected={message.feedback === "down"}
-                        onPress={() => setFeedbackMessage(message)}
-                      />
-                    </>
-                  )}
+                    ))}
                 </Choices>
-              )}
-              {message.status !== "complete" && !busy && (
-                <Txt muted>
-                  {t(message.status === "failed" ? "error" : "interrupted")}
-                </Txt>
-              )}
-            </>
-          )}
-        </View>
-      ))}
+                {!busy && (
+                  <Choices>
+                    <Button
+                      secondary
+                      label={t("copy")}
+                      onPress={() => {
+                        void Clipboard.setStringAsync(message.text).catch(
+                          setError,
+                        );
+                      }}
+                    />
+                    <Button
+                      secondary
+                      label={t("share")}
+                      onPress={() => {
+                        void Share.share({ message: message.text }).catch(
+                          setError,
+                        );
+                      }}
+                    />
+                    {message.status === "complete" && (
+                      <>
+                        <Chip
+                          label={t("helpful")}
+                          selected={message.feedback === "up"}
+                          onPress={() => feedback(message, "up")}
+                        />
+                        <Chip
+                          label={t("notHelpful")}
+                          selected={message.feedback === "down"}
+                          onPress={() => setFeedbackMessage(message)}
+                        />
+                      </>
+                    )}
+                  </Choices>
+                )}
+                {message.status !== "complete" && !busy && (
+                  <Txt muted>
+                    {t(message.status === "failed" ? "error" : "interrupted")}
+                  </Txt>
+                )}
+              </>
+            )}
+          </View>
+        )}
+      />
+      {showLatest && (
+        <Button
+          secondary
+          label={t("jumpLatest")}
+          onPress={() =>
+            scroll.current?.scrollToOffset({ offset: 0, animated: false })
+          }
+        />
+      )}
+
       {busy && <Txt muted>{t(status)}</Txt>}
       {!busy &&
         messages.at(-1)?.status !== "complete" &&

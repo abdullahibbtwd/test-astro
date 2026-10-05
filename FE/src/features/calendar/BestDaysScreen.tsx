@@ -1,3 +1,5 @@
+import { View } from "react-native";
+import { BandChip } from "../../design/components/BandChip";
 import { useApp } from "../../lib/state";
 import {
   formatDay,
@@ -47,8 +49,7 @@ export default function BestDaysScreen() {
       {data &&
         !activity &&
         data.activities.map((item) => (
-          <Row
-            key={item.activity}
+          <View key={item.activity} style={{gap:8}}><Row
             label={item.label}
             detail={`${
               item.top_days.find((date) => date >= today)
@@ -62,6 +63,8 @@ export default function BestDaysScreen() {
               router.push(`/best-days/${item.activity}?profile=${id}`)
             }
           />
+          {(() => {const next=item.days.find(day=>day.date === item.top_days.find(date=>date>=today));return next ? <BandChip band={next.grade} label={cat.data.grades[next.grade]}/> : null;})()}
+          </View>
         ))}
       {selected && (
         <>
@@ -73,8 +76,8 @@ export default function BestDaysScreen() {
                 </Txt>
                 <MonthGrid
                   bestDays
-                  key={formatMonth(month, lang)}
-                  month={formatMonth(month, lang)}
+                  key={month}
+                  month={month}
                   days={selected.days
                     .filter((day) => day.date >= today)
                     .map((day) => ({

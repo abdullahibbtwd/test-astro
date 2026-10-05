@@ -91,7 +91,9 @@ export async function request<T>(
   url.searchParams.set("lang", useApp.getState().language);
   const response = await client
     .request(
+      // Runtime contract validation covers this dynamic openapi-fetch boundary.
       method as never,
+      // Path is selected at runtime and validated by the response contract.
       path.split("?")[0] as never,
       {
         params: { query: Object.fromEntries(url.searchParams) },
@@ -100,6 +102,7 @@ export async function request<T>(
           ...(body ? { "Content-Type": "application/json" } : {}),
           ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
         },
+        // openapi-fetch cannot infer options for the runtime-selected method/path.
       } as never,
     )
     .catch((error: unknown) => {

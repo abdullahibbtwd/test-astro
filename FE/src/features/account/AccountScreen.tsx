@@ -1,3 +1,4 @@
+import { resolveRoute } from "../../lib/routes";
 import { showSnackbar } from "../../design/components/Snackbar";
 import { shareAccountData } from "../exports/data-file";
 import Constants from "expo-constants";
@@ -67,7 +68,9 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
               label={t(key)}
               onPress={() =>
                 router.push(
-                  `/profile/${key === "myCharts" ? "charts" : key === "savedReports" ? "reports" : key}` as never,
+                  resolveRoute(
+                    `/profile/${key === "myCharts" ? "charts" : key === "savedReports" ? "reports" : key}`,
+                  ),
                 )
               }
             />
