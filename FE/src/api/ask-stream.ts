@@ -30,7 +30,15 @@ export async function streamAnswer(
   let response = await send();
   if (response.status === 401 && (await refreshSession()))
     response = await send();
-  if (!response.ok) throw new ApiError(response.status, "upstream_unavailable");
+  if (!response.ok) {
+    const problem = await response.json().catch(() => null);
+    throw new ApiError(
+      response.status,
+      problem?.code ?? "upstream_unavailable",
+      Number(response.headers.get("Retry-After")) || 0,
+      problem ?? undefined,
+    );
+  }
   if (!response.body) throw new Error("Missing stream");
   const reader = response.body.getReader(),
     decoder = new TextDecoder(),

@@ -1,3 +1,5 @@
+import { AskService } from "./ask";
+import type { AskRunner } from "./ask-bridge";
 import { homeSummary } from "./home";
 import { registerBrowserSignIn } from "./browser-auth-routes";
 import type { SupabaseAuth, VerifiedSession } from "./supabase-auth";
@@ -27,8 +29,12 @@ export function buildLocalApp({
   calculateCalendar = computeCalendar,
   generateCompatibility,
   auth,
+  askRunner,
+  askReady,
 }: {
   auth?: SupabaseAuth;
+  askRunner?: AskRunner;
+  askReady?: () => boolean;
   dbPath: string;
   allowPaid?: boolean;
   calculateCalendar?: typeof computeCalendar;
@@ -37,6 +43,7 @@ export function buildLocalApp({
 }) {
   const app = Fastify({ logger: false, bodyLimit: 65536 });
   const store = new Store(dbPath);
+  const ask = new AskService(store, allowPaid, askRunner, askReady);
   const previousAuth = store.get<string>("auth-mode");
   if (previousAuth && previousAuth !== auth?.scope) {
     store.close();
@@ -79,6 +86,7 @@ export function buildLocalApp({
   // Serialize handlers so profile edits/idempotency checks cannot interleave across an await.
   let tail = Promise.resolve();
   app.addHook("onClose", async () => {
+    await ask.close();
     await tail;
     await readings.close();
     await forecasts.close();
@@ -134,6 +142,7 @@ export function buildLocalApp({
       expires: Date.now() + 30 * 86400000,
       accessKey: credential("access", access),
     });
+    ask.quota();
     const me = store.get<Me>("me")!;
     if (verified && me.email !== verified.user.email) {
       me.email = verified.user.email;
@@ -214,7 +223,13 @@ export function buildLocalApp({
         let unlock!: () => void;
         const prior = tail;
         tail = new Promise<void>((resolve) => {
-          unlock = resolve;
+          let released = false;
+          unlock = () => {
+            if (!released) {
+              released = true;
+              resolve();
+            }
+          };
         });
         await prior;
         try {
@@ -278,7 +293,7 @@ export function buildLocalApp({
           switch (`${endpoint.method} ${endpoint.path}`) {
             case "get /meta/config":
               result = fixture("config");
-              result.flags.askAstrology = false;
+              result.flags.askAstrology = ask.enabled();
               result.flags.familyCompatibility = false;
               result.flags.solarReturn = false;
               break;
@@ -343,12 +358,13 @@ export function buildLocalApp({
               result = exportAccount(store);
               break;
             case "delete /me":
+              await ask.close();
               deleteAccount(store, dbPath);
               if (auth) store.put("auth-mode", auth.scope);
               initializeAccount();
               return reply.code(202).send();
             case "get /me":
-              result = me;
+              result = { ...me, ask_quota: ask.quota() };
               break;
             case "patch /me": {
               const { current_place_id } = body;
@@ -364,7 +380,7 @@ export function buildLocalApp({
                   .map((k) => [k, body[k]]),
               );
               result = {
-                ...me,
+                ...store.get<Me>("me")!,
                 ...updates,
                 ...(current_place_id !== undefined
                   ? {
@@ -491,7 +507,10 @@ export function buildLocalApp({
                   for (const language of ["tr", "en"])
                     store.remove(`report:${id}:${language}`);
                 if (result.is_self)
-                  store.put("me", { ...me, self_profile_id: id });
+                  store.put("me", {
+                    ...store.get<Me>("me")!,
+                    self_profile_id: id,
+                  });
                 if (cacheKey)
                   store.put(cacheKey, {
                     body: JSON.stringify(body),
@@ -911,8 +930,26 @@ export function buildLocalApp({
               break;
             }
             case "get /ask/threads":
-              result = { items: [], next_cursor: null };
+              result = ask.list(q.cursor, q.limit);
               break;
+            case "post /ask/threads":
+              result = ask.create(body.profile_id);
+              break;
+            case "get /ask/threads/{id}":
+              result = ask.get(p.id!);
+              break;
+            case "delete /ask/threads/{id}":
+              await ask.remove(p.id!);
+              return reply.code(204).send();
+            case "post /ask/threads/{id}/messages": {
+              const streaming = ask.start(p.id!, body, lang, reply);
+              unlock();
+              await streaming;
+              return reply;
+            }
+            case "post /ask/messages/{message_id}/feedback":
+              ask.feedback(p.message_id!, body.rating, body.reason);
+              return reply.code(204).send();
             default:
               throw issue(503);
           }

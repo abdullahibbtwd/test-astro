@@ -20,6 +20,8 @@ export function exportAccount(store: Store) {
       created_at: r.created_at,
       readings: r.readings,
     })),
+    conversations: store.list("ask-thread:"),
+    conversation_feedback: store.list("ask-feedback:"),
     saved_reports: store.list("report:"),
   };
 }
