@@ -394,7 +394,9 @@ export default function ChatScreen() {
         maxToRenderPerBatch={8}
         windowSize={7}
         ListEmptyComponent={
-          <>
+          // FlatList applies its counter-transform to this native container.
+          // A Fragment would leave the suggestions upside down on an inverted list.
+          <View style={{ gap: dsSpace[4] }}>
             {!messages.length &&
               !query.isPending &&
               [1, 2, 3, 4, 5, 6].map((number) => (
@@ -408,7 +410,7 @@ export default function ChatScreen() {
                   }}
                 />
               ))}
-          </>
+          </View>
         }
         ref={scroll}
         inverted
