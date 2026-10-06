@@ -171,58 +171,29 @@ def run_calendar(birth: dict, *, current_location: str | None, mode: str, mode_a
                                     time_precision=birth.get("time_precision", "exact")))
     out("natal_chart.json", natal)
     ck = P.chart_key(natal)
-    cache_dir = os.path.join(CACHE_ROOT, ck, _tz_slug(tz))
     man.data["chart_key"] = ck
     man.stage("2 natal", "ok", chart_key=ck)
 
     corpus_sha = cal_corpus.corpus_sha()
-    aff_sha = _file_sha(BA.OUT)
 
     # 3 events ---------------------------------------------------------------------------------
-    ev_key = _sha({"from": start.isoformat(), "tz": tz, "corpus": corpus_sha, "schema": K.SCHEMA_EVENTS,
-                   "orbs": K.TRANSIT_ORB})[:16]
-    ev_path = os.path.join(cache_dir, f"personal_events_{ev_key}.json")
-    if os.path.exists(ev_path):
-        events = _read(ev_path)
-        man.stage("3 events", "cache_hit")
-    else:
-        events = P.build_personal_events(natal, tz, start)
-        _write(ev_path, events, P.dumps)
-        man.stage("3 events", "built", n=len(events["events"]))
+    events, ev_key, st = ensure_events(natal, tz, start)
+    man.stage("3 events", st, **({} if st == "cache_hit" else {"n": len(events["events"])}))
     out("personal_events.json", events, P.dumps)
 
     # 4 scores + periods -------------------------------------------------------------------------
     scores = periods = None
     if 4 in stages:
-        sc_key = _sha({"ev": ev_key, "aff": aff_sha, "bands": K.BAND})[:16]
-        sc_path = os.path.join(cache_dir, f"scores_{sc_key}.json")
-        if os.path.exists(sc_path):
-            cached = _read(sc_path)
-            scores, periods = cached["scores"], cached["periods"]
-            man.stage("4 scores", "cache_hit")
-        else:
-            full = S.day_scores(events, natal, BA.load())
-            periods = S.periods(full, events)
-            scores = S.public_scores(full)
-            _write(sc_path, {"scores": scores, "periods": periods})
-            man.stage("4 scores", "built", periods=len(periods["periods"]))
+        scores, periods, st = ensure_scores(natal, tz, events, ev_key)
+        man.stage("4 scores", st, **({} if st == "cache_hit" else {"periods": len(periods["periods"])}))
         out("day_scores.json", scores, S.dumps)
         out("periods.json", periods, S.dumps)
 
     # 5 best days --------------------------------------------------------------------------------
     best = None
     if 5 in stages or 6 in stages and mode == "all":
-        cat = BD.load_catalogue()
-        bd_key = _sha({"from": start.isoformat(), "tz": tz, "cat": cat["version"], "grounding":
-                       _sha(cat), "th": BD.GRADE_TH, "corpus": corpus_sha})[:16]
-        bd_path = os.path.join(cache_dir, f"best_days_{bd_key}.json")
-        if os.path.exists(bd_path):
-            best = _read(bd_path)
-            man.stage("5 best_days", "cache_hit")
-        else:
-            best = BD.build_best_days(natal, tz, start, cat=cat)
-            _write(bd_path, best)
-            man.stage("5 best_days", "built")
+        best, st = ensure_best_days(natal, tz, start)
+        man.stage("5 best_days", st)
         if activity:
             best = {**best, "activities": {activity: best["activities"][activity]}}
 
@@ -326,6 +297,59 @@ def run_calendar(birth: dict, *, current_location: str | None, mode: str, mode_a
                 out(f"day_{mode_arg}.{lang}.md", day_text(dv, periods, units, store, corpus_sha, ck, lang), as_text)
         man.stage("8 views", "ok", months=len(months))
     return _finish(man, run_dir, out)
+
+
+# --- cached calendar stages (shared with the Personal Astrologist, PA Phase 0 G5) ------------------
+def _cache_dir(natal: dict, tz: str) -> str:
+    return os.path.join(CACHE_ROOT, P.chart_key(natal), _tz_slug(tz))
+
+
+def ensure_events(natal: dict, tz: str, start: date) -> tuple[dict, str, str]:
+    """personal_events for 12 months from ``start`` -> (doc, ev_key, 'cache_hit' | 'built')."""
+    ev_key = _sha({"from": start.isoformat(), "tz": tz, "corpus": cal_corpus.corpus_sha(),
+                   "schema": K.SCHEMA_EVENTS, "orbs": K.TRANSIT_ORB})[:16]
+    path = os.path.join(_cache_dir(natal, tz), f"personal_events_{ev_key}.json")
+    if os.path.exists(path):
+        return _read(path), ev_key, "cache_hit"
+    events = P.build_personal_events(natal, tz, start)
+    _write(path, events, P.dumps)
+    return events, ev_key, "built"
+
+
+def ensure_scores(natal: dict, tz: str, events: dict, ev_key: str) -> tuple[dict, dict, str]:
+    """day scores + periods for an events doc -> (scores, periods, status)."""
+    sc_key = _sha({"ev": ev_key, "aff": _file_sha(BA.OUT), "bands": K.BAND})[:16]
+    path = os.path.join(_cache_dir(natal, tz), f"scores_{sc_key}.json")
+    if os.path.exists(path):
+        cached = _read(path)
+        return cached["scores"], cached["periods"], "cache_hit"
+    full = S.day_scores(events, natal, BA.load())
+    periods = S.periods(full, events)
+    scores = S.public_scores(full)
+    _write(path, {"scores": scores, "periods": periods})
+    return scores, periods, "built"
+
+
+def ensure_best_days(natal: dict, tz: str, start: date) -> tuple[dict, str]:
+    """Best Days (90 days from ``start``, every activity, with the internal ``_parts``) -> (doc, status)."""
+    cat = BD.load_catalogue()
+    bd_key = _sha({"from": start.isoformat(), "tz": tz, "cat": cat["version"], "grounding": _sha(cat),
+                   "th": BD.GRADE_TH, "corpus": cal_corpus.corpus_sha()})[:16]
+    path = os.path.join(_cache_dir(natal, tz), f"best_days_{bd_key}.json")
+    if os.path.exists(path):
+        return _read(path), "cache_hit"
+    best = BD.build_best_days(natal, tz, start, cat=cat)
+    _write(path, best)
+    return best, "built"
+
+
+def ensure_calendar(natal: dict, tz: str, start: date, *, best_days: bool = True) -> dict:
+    """Every cached calendar product for (chart, tz, start): {events, scores, periods, best, status}."""
+    events, ev_key, s1 = ensure_events(natal, tz, start)
+    scores, periods, s2 = ensure_scores(natal, tz, events, ev_key)
+    best, s3 = ensure_best_days(natal, tz, start) if best_days else (None, "skipped")
+    return {"events": events, "scores": scores, "periods": periods, "best": best,
+            "status": {"events": s1, "scores": s2, "best_days": s3}}
 
 
 def _finish(man: Manifest, run_dir: str, out) -> dict:

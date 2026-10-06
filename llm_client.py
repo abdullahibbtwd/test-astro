@@ -415,12 +415,15 @@ _gemini_complete = _wrap_gemini(_gemini_complete)
 _openai_clients: dict = {}
 
 
-def _openai_client(timeout_s: float):
+def _openai_client(timeout_s: float, api_key: Optional[str] = None):
+    """One cached client per (timeout, key). ``api_key`` = a per-request key (e.g. a
+    user's own OpenAI key, PA_04 llm_route); None = the platform key."""
     import openai
-    key = round(timeout_s, 3)
+    key = (round(timeout_s, 3), api_key or "")
     cli = _openai_clients.get(key)
     if cli is None:
-        api_key = get_api_key("openai")
+        if not api_key:
+            api_key = get_api_key("openai")
         if not api_key:
             require_api_key("openai:x", "OpenAI generation")
         # The generators run their own retry/backoff loop and log each attempt.
@@ -432,8 +435,9 @@ def _openai_client(timeout_s: float):
 def _openai_complete(model: str, system: SystemT, user: str, *,
                      max_tokens: int, temperature: Optional[float],
                      schema: Optional[dict], timeout_s: float,
-                     thinking: Optional[str] = None) -> LLMResponse:
-    client = _openai_client(timeout_s)
+                     thinking: Optional[str] = None, strict: bool = False,
+                     api_key: Optional[str] = None) -> LLMResponse:
+    client = _openai_client(timeout_s, api_key)
     kwargs: dict = dict(model=model, input=user, max_output_tokens=max_tokens)
     sys_text = _system_text(system)
     if sys_text:
@@ -441,10 +445,11 @@ def _openai_complete(model: str, system: SystemT, user: str, *,
     if temperature is not None and supports_temperature(model):
         kwargs["temperature"] = temperature
     if schema is not None:
-        # Non-strict JSON schema: the corpus schemas use features strict mode
-        # forbids (optional keys); the callers parse and validate the JSON anyway.
+        # Non-strict by default: the corpus schemas use features strict mode forbids
+        # (optional keys); the callers parse and validate the JSON anyway. Callers whose
+        # schemas are strict-compatible (PA planner/composer) pass strict=True.
         kwargs["text"] = {"format": {"type": "json_schema", "name": "result",
-                                     "schema": schema, "strict": False}}
+                                     "schema": schema, "strict": bool(strict)}}
     effort = thinking or OPENAI_REASONING_EFFORT
     if effort:
         kwargs["reasoning"] = {"effort": effort}
@@ -500,15 +505,23 @@ _PROVIDERS = {
 def complete(model: str, system: SystemT, user: str, *,
              max_tokens: int, temperature: Optional[float] = None,
              schema: Optional[dict] = None, timeout_s: float = 120.0,
-             label: str = "", thinking: Optional[str] = None) -> LLMResponse:
+             label: str = "", thinking: Optional[str] = None,
+             strict: bool = False, route: Optional[dict] = None) -> LLMResponse:
     """One completion on whichever provider ``model`` belongs to. ``thinking``
     is the reasoning level (Gemini thinking_level / OpenAI reasoning effort);
     None = the provider default from the environment (GEMINI_THINKING_LEVEL /
-    OPENAI_REASONING_EFFORT). Ignored by Anthropic (adaptive thinking)."""
+    OPENAI_REASONING_EFFORT). Ignored by Anthropic (adaptive thinking).
+
+    ``strict`` (OpenAI only): strict Structured Outputs for ``schema``.
+    ``route`` (OpenAI only): per-request routing, e.g. ``{"openai_api_key": ...}`` for a
+    user's own key; absent -> the platform key. Other providers ignore both."""
     provider, bare = split_model(model)
     fn, _ = _PROVIDERS[provider]
+    extra: dict = {}
+    if provider == "openai":
+        extra = {"strict": strict, "api_key": (route or {}).get("openai_api_key")}
     return fn(bare, system, user, max_tokens=max_tokens, temperature=temperature,
-              schema=schema, timeout_s=timeout_s, thinking=thinking)
+              schema=schema, timeout_s=timeout_s, thinking=thinking, **extra)
 
 
 def transient_errors(model: str) -> tuple:
