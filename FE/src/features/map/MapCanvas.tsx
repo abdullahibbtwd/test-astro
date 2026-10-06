@@ -4,6 +4,7 @@ import type { StyleSpecification } from "@maplibre/maplibre-react-native";
 import { useMapStyle } from "./style";
 import { useMapSelection } from "./selection";
 import { mapGlyphImages } from "./glyph-images";
+import { paranCoordinates, paranCrossLayout } from "./paran-symbol";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 import {
@@ -122,6 +123,19 @@ export function MapCanvas({
     if (selectedPoint)
       camera.current?.flyTo({ center: selectedPoint, zoom: 6, duration: 650 });
   }, [selectedPoint]);
+  const paranData = useMemo(() => lines && ({
+    ...lines.parans,
+    features: lines.parans.features.map((feature) => {
+      const points = paranCoordinates(feature.geometry.coordinates);
+      return {
+        ...feature,
+        geometry: {
+          type: "MultiLineString" as const,
+          coordinates: points.slice(1).map((point, index) => [points[index]!, point]),
+        },
+      };
+    }),
+  }), [lines]);
   const filtered = useMemo(
     () =>
       lines
@@ -228,14 +242,14 @@ export function MapCanvas({
           </GeoJSONSource>
         )}
         {parans && lines && (
-          <GeoJSONSource id="parans" data={lines.parans}>
+          <GeoJSONSource id="parans" data={paranData!}>
             <Layer
               id="parans-lines"
+              afterId="nodes"
               type="line"
               paint={{
-                "line-color": theme.ink3,
-                "line-width": 1,
-                "line-dasharray": [1.5, 3],
+                "line-color": theme.ink2,
+                "line-width": 1.5,
               }}
             />
             {[0, 1].map((index) => (
@@ -261,14 +275,7 @@ export function MapCanvas({
             <Layer
               id="paran-cross"
               type="symbol"
-              layout={{
-                "symbol-placement": "line",
-                "symbol-spacing": 280,
-                "text-field": "×",
-                "text-size": 12,
-                "text-rotation-alignment": "viewport",
-              }}
-              paint={{ "text-color": theme.ink3 }}
+              layout={paranCrossLayout(dark)}
             />
           </GeoJSONSource>
         )}

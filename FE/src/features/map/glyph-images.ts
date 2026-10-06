@@ -120,4 +120,6 @@ export const mapGlyphImages = {
   "dark-south_node-DSC": require("../../../assets/map/dark-south_node-DSC.png"),
   "dark-south_node-MC": require("../../../assets/map/dark-south_node-MC.png"),
   "dark-south_node-IC": require("../../../assets/map/dark-south_node-IC.png"),
+  "light-paran-cross": require("../../../assets/map/light-paran-cross.png"),
+  "dark-paran-cross": require("../../../assets/map/dark-paran-cross.png"),
 };
