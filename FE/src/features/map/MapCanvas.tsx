@@ -249,7 +249,7 @@ export function MapCanvas({
               type="line"
               paint={{
                 "line-color": theme.ink2,
-                "line-width": 1.5,
+                "line-width": 0.35,
               }}
             />
             {[0, 1].map((index) => (
