@@ -70,17 +70,19 @@ export default function HomeScreen() {
         ),
       }}
     >
-      <TimezoneNotice />
       {query.isPending && <Skeleton />}
       {data && (
         <>
           <Txt kind="display">
             {t(greetingKey(data.tz), { name: data.greeting_name })}
           </Txt>
-          <Txt muted>
-            {formatDate(data.date, app.language)} · {data.moon.phase_label} ·{" "}
-            {data.moon.sign_label}
-          </Txt>
+          <View style={{ gap: dsSpace[1] }}>
+            <Txt muted>
+              {formatDate(data.date, app.language)} · {data.moon.phase_label} ·{" "}
+              {data.moon.sign_label}
+            </Txt>
+            <TimezoneNotice />
+          </View>
           <Card>
             <Txt kind="title">{t("yourDay")}</Txt>
             <Score
