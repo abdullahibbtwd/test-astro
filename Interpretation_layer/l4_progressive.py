@@ -8,7 +8,7 @@ from l4_generate import SECTION_SCHEMA, DEFAULT_SECTION_SYNTHESIS_MAX_TOKENS
 from l4_prompts import build_progressive_finalize_prompt
 from l4_validate import validate, SCHEMA_VERSION, PRECISION_TIER
 
-PROMPT_VERSION = 'l4p.v1'
+PROMPT_VERSION = 'l4p.v2'
 CONTEXT_CHARS = 18000  # Conservative ~6k-token bound for Turkish prose.
 
 
@@ -90,7 +90,7 @@ def generate_section(plan, key, chart, routed, written, gen, *, on_stage=lambda 
     usage = {}
     on_stage('reading')
     before = dict(getattr(gen, 'usage', {}))
-    draft = gen.section(key, routed, chart)
+    draft = getattr(gen, 'progressive_section', gen.section)(key, routed, chart)
     if draft.key != key or not draft.text_tr.strip():
         raise ValueError('Invalid section draft')
     usage['draft'] = usage_delta(gen, before)

@@ -523,6 +523,8 @@ that a later section has already been read. Do not include a person's name.
 1. VOICE: warm, consistent, second-person Turkish, psychological-primary.
 2. CROSS-SECTION DEDUP: apply the supplied primary-reason ownership map.
 """ + batch_system[exception_start:exception_end] + texture_jobs
+    if section_key == CORE_IDENTITY:
+        system += '\nONBOARDING LENGTH: Preserve a developed opening chapter of about 450 Turkish words (400-500), in 4-6 paragraphs. Do not compress the owned sign and character portrait into a short summary. Do not add claims absent from the draft.\n'
     payload = {
         'SECTION': section_key, 'THEME': SECTION_THEME[section_key],
         'BRIEF': section_brief(section_key, chart), "THIS SECTION'S DRAFT": draft,

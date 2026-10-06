@@ -1,5 +1,7 @@
 # ONB checkpoint — progressive reading API and shared A0 dossier
 
+Historical Phase 2 checkpoint. See [the subsequent Phase 3 review](ONB_PHASE3_REVIEW.md) for current live costs, findings and remaining work.
+
 Date: 2026-10-06. Working checkout: `D:\Dev\astrology-app`.
 
 ## What is ready

@@ -100,3 +100,15 @@ def test_context_only_previous_core_and_nearest(fixtures):
     for r in written:
         r['text_tr'] = 'x' * CONTEXT_CHARS
     assert sum(len(r['text_tr']) for r in written_context(plan, 'inner_drives', written)) <= CONTEXT_CHARS
+
+
+def test_opening_length_instruction_is_progressive_only(fixtures):
+    from l4_generate import LLMGenerator
+    from unittest.mock import patch
+    chart, plan = fixtures[0]
+    generator = LLMGenerator()
+    with patch.object(generator, '_call_json', return_value={'key': 'core_identity', 'text_tr': 'text'}) as call:
+        generator.progressive_section('core_identity', routed_for(plan, 'core_identity'), chart)
+        assert '400-500' in call.call_args.args[1]
+        generator.section('core_identity', routed_for(plan, 'core_identity'), chart)
+        assert 'ONBOARDING LENGTH' not in call.call_args.args[1]

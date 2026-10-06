@@ -154,7 +154,8 @@ class Dossier:
         if product == 'chart':
             return json.loads((self.folder(chart_key) / 'a0/chart.json').read_text(encoding='utf-8'))
         if product not in ('natal_grounding', 'natal_plan', 'pa_dossier'):
-            raise ValueError('Unknown dossier product')
+            from dossier_products import get_product
+            return get_product(self, chart_key, product, anchor)
         # Resolve dependencies outside the product lock (no recursive OS locks).
         grounded = self.get(chart_key, 'natal_grounding') if product != 'natal_grounding' else None
         plan = self.get(chart_key, 'natal_plan') if product == 'pa_dossier' else None
@@ -244,3 +245,58 @@ class Dossier:
                 raise ValueError('Dossier deletion escaped its chart directory')
             shutil.rmtree(target)
             return True
+
+    def memo(self, chart_key, product, anchor, dependencies, build, *, tier='a1', codec=None):
+        """Versioned single-flight for deterministic products, including NPZ arrays."""
+        if not re.fullmatch(r'[a-z0-9_]+', product):
+            raise ValueError('Invalid product name')
+        identity = product + ('-' + digest(anchor)[:24] if anchor is not None else '')
+        relative = f"{tier}/{identity}.{'npz' if codec else 'json'}"
+        path = self.folder(chart_key) / relative
+        dependencies = {**dependencies, 'chart': self.manifest(chart_key)['chart_sha256']}
+        def cached():
+            entry = self.manifest(chart_key)['products'].get(identity)
+            if entry and entry['depends_on'] == dependencies and entry['status'] in ('ok', 'absent') and path.exists() and file_hash(path) == entry['sha256']:
+                return (codec[0](str(path)) if codec else json.loads(path.read_text(encoding='utf-8'))), True
+            return None, False
+        # Producers resolve their dossier dependencies before calling memo. Holding
+        # the chart lifecycle lock through publication prevents last-reference
+        # deletion from racing a build and resurrecting private files.
+        with locked(self.root / '.locks' / (chart_key + '.lock')):
+            value, hit = cached()
+            if hit:
+                return value
+            start = time.perf_counter()
+            try:
+                value = build()
+                if codec:
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    fd, temporary = tempfile.mkstemp(suffix='.npz', dir=path.parent)
+                    os.close(fd)
+                    try:
+                        codec[1](value, temporary)
+                        os.replace(temporary, path)
+                    finally:
+                        if os.path.exists(temporary):
+                            os.unlink(temporary)
+                else:
+                    atomic(path, value)
+            except Exception as error:
+                manifest = self.manifest(chart_key)
+                entry = self._entry(product, relative, None, dependencies, time.perf_counter()-start, anchor)
+                entry.update(status='failed', sha256=None, error_type=type(error).__name__)
+                manifest['products'][identity] = entry
+                atomic(self.folder(chart_key)/'manifest.json', manifest)
+                raise
+            manifest = self.manifest(chart_key)
+            entry = self._entry(product, relative, {} if codec else value, dependencies, time.perf_counter()-start, anchor)
+            entry['sha256'] = file_hash(path)
+            if isinstance(value, dict) and value.get('status') == 'absent':
+                entry.update(status='absent', absence=value.get('absence'))
+            manifest['products'][identity] = entry
+            atomic(self.folder(chart_key)/'manifest.json', manifest)
+            return value
+
+    def product_sha(self, chart_key, product, anchor=None):
+        identity = product + ('-' + digest(anchor)[:24] if anchor is not None else '')
+        return self.manifest(chart_key)['products'][identity]['sha256']
