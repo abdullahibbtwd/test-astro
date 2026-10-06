@@ -161,7 +161,7 @@ def ground_chart(chart: dict, corpus: Optional[list] = None) -> dict:
 
 def build_dossier(chart_key: str, chart: dict, personal_principles: Optional[dict] = None,
                   l4_output: Optional[dict] = None, availability: Optional[dict] = None,
-                  corpus_sha: Optional[str] = None) -> dict:
+                  corpus_sha: Optional[str] = None, routing=None) -> dict:
     pp = personal_principles or ground_chart(chart)
     facts = chart_facts(chart)
     records, bundles = {}, {}
@@ -188,7 +188,7 @@ def build_dossier(chart_key: str, chart: dict, personal_principles: Optional[dic
 
     # by_topic: L4 routing, bundles in routing order
     kept = [r for r in pp["principles"] if f"r:natal:{r['principle_id']}" in records]
-    routed = route(kept, chart)
+    routed = routing if routing is not None else route(kept, chart)
     by_topic = {}
     for key in C.SECTION_KEYS:
         seen = []
@@ -306,3 +306,4 @@ def select_natal(dossier: dict, topics: list[str], bodies: list[str], cap: Optio
         if not progressed:
             break
     return out
+

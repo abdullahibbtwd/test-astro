@@ -105,5 +105,9 @@ principles_grounding/acg_goal_tagging_report.json
 principles_grounding/transit_goal_tagging_report.json
 principles_grounding/validation_report.merged.json
 
-# --- Personal Astrologist run folders + caches (real birth data) ---
+# Local Android preview tooling
+.tooling/
+
+# Private Personal Astrologist runs and deterministic caches
 ask_run/
+astrologist/eval/

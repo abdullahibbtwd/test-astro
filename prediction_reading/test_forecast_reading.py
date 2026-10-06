@@ -216,7 +216,7 @@ def test_astro_detail_levels():
 def test_astro_descriptor_in_serialization():
     e = _ev("transit_aspect", "early", natal="Venus", house=7, aspect="trine",
             transiting="Jupiter", judgment="ilişkide açılım")
-    assert "[Jupiter trine natal Venus" in serialize_event(e, astro_detail="modern")
+    assert "[transiting Jupiter in Aries trine natal Venus" in serialize_event(e, astro_detail="modern")
     assert "house 7" in astro_descriptor(e, "technical")       # numbered only at technical
     assert astro_descriptor(e, "plain") == ""                  # nothing surfaced when plain
     assert "[" not in serialize_event(e, astro_detail="plain")

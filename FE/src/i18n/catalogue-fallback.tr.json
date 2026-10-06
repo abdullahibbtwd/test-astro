@@ -1,0 +1,260 @@
+{
+  "version": "fe-v1",
+  "lang": "tr",
+  "bodies": {
+    "sun": "Güneş",
+    "moon": "Ay",
+    "mercury": "Merkür",
+    "venus": "Venüs",
+    "mars": "Mars",
+    "jupiter": "Jüpiter",
+    "saturn": "Satürn",
+    "uranus": "Uranüs",
+    "neptune": "Neptün",
+    "pluto": "Plüton",
+    "north_node": "Kuzey Ay Düğümü",
+    "south_node": "Güney Ay Düğümü"
+  },
+  "signs": {
+    "aries": "Koç",
+    "taurus": "Boğa",
+    "gemini": "İkizler",
+    "cancer": "Yengeç",
+    "leo": "Aslan",
+    "virgo": "Başak",
+    "libra": "Terazi",
+    "scorpio": "Akrep",
+    "sagittarius": "Yay",
+    "capricorn": "Oğlak",
+    "aquarius": "Kova",
+    "pisces": "Balık"
+  },
+  "houses": {
+    "1": {
+      "ordinal": "1. Ev",
+      "name": "Kimlik"
+    },
+    "2": {
+      "ordinal": "2. Ev",
+      "name": "Değerler ve Para"
+    },
+    "3": {
+      "ordinal": "3. Ev",
+      "name": "İletişim, Öğrenim ve Kardeşler"
+    },
+    "4": {
+      "ordinal": "4. Ev",
+      "name": "Aile ve Yuva"
+    },
+    "5": {
+      "ordinal": "5. Ev",
+      "name": "Neşe, Sanatsal Yetenekler ve Çocuklar"
+    },
+    "6": {
+      "ordinal": "6. Ev",
+      "name": "Sağlık, Rutin ve Evcil Hayvanlar"
+    },
+    "7": {
+      "ordinal": "7. Ev",
+      "name": "Ortaklıklar"
+    },
+    "8": {
+      "ordinal": "8. Ev",
+      "name": "Dönüşüm ve Yakınlık"
+    },
+    "9": {
+      "ordinal": "9. Ev",
+      "name": "Uzak Seyahatler ve Felsefe"
+    },
+    "10": {
+      "ordinal": "10. Ev",
+      "name": "Toplumsal Statü ve Meslek"
+    },
+    "11": {
+      "ordinal": "11. Ev",
+      "name": "Arkadaşlıklar ve Gelecek"
+    },
+    "12": {
+      "ordinal": "12. Ev",
+      "name": "Bilinçaltı ve Yalnızlık"
+    }
+  },
+  "angles": {
+    "ASC": {
+      "short": "AC",
+      "name": "Yükselen",
+      "line": "Yükselen çizgi"
+    },
+    "DSC": {
+      "short": "DC",
+      "name": "Alçalan",
+      "line": "Alçalan çizgi"
+    },
+    "MC": {
+      "short": "MC",
+      "name": "Tepe Noktası",
+      "line": "Tepe çizgisi"
+    },
+    "IC": {
+      "short": "IC",
+      "name": "Dip Noktası",
+      "line": "Dip çizgisi"
+    }
+  },
+  "aspects": {
+    "conjunction": "Kavuşum",
+    "sextile": "Altmışlık",
+    "square": "Kare",
+    "trine": "Üçgen",
+    "opposition": "Karşıt"
+  },
+  "goals": {
+    "love": "Aşk",
+    "career": "Kariyer",
+    "business": "İş ve Ticaret",
+    "money": "Para",
+    "family": "Aile",
+    "education": "Eğitim",
+    "creativity": "Yaratıcılık",
+    "spirituality": "Ruhsal Gelişim",
+    "rest": "Dinlenme",
+    "travel": "Seyahat",
+    "relocation": "Kalıcı Taşınma"
+  },
+  "day_bands": {
+    "strongly_supportive": "Çok destekleyici",
+    "supportive": "Destekleyici",
+    "quiet": "Sakin",
+    "mixed": "Karma",
+    "challenging": "Zorlayıcı",
+    "strongly_challenging": "Çok zorlayıcı"
+  },
+  "place_bands": {
+    "strongly_supportive": "Çok destekleyici",
+    "supportive": "Destekleyici",
+    "mixed": "Karma",
+    "no_emphasis": "Belirgin bir vurgu yok",
+    "challenging": "Zorlayıcı"
+  },
+  "tones": {
+    "favorable": "Destekleyici",
+    "quiet": "Sakin",
+    "mixed": "Karma",
+    "challenging": "Zorlayıcı"
+  },
+  "grades": {
+    "excellent": "Çok uygun",
+    "good": "Uygun",
+    "neutral": "Nötr",
+    "avoid": "Dikkat gerektiren"
+  },
+  "activities": {
+    "love": "Aşk",
+    "meetings": "Görüşmeler",
+    "business": "İş",
+    "contract": "Sözleşme imzalama",
+    "conversation": "Önemli konuşma",
+    "travel": "Seyahat",
+    "shopping": "Alışveriş",
+    "project_start": "Projeye başlama",
+    "interview": "İş görüşmesi",
+    "moving": "Taşınma"
+  },
+  "lenses": {
+    "general": "Genel",
+    "personal": "Aşk ve ilişkiler",
+    "professional": "İş ve kariyer"
+  },
+  "lens_focus_titles": {
+    "general": "Dönemin odağı",
+    "personal": "Aşk ve ilişkiler",
+    "professional": "İş ve kariyer"
+  },
+  "compat_types": {
+    "love": "Aşk",
+    "family": "Aile",
+    "work": "İş"
+  },
+  "family_relations": {
+    "parent_child": "Ebeveyn ve çocuk",
+    "siblings": "Kardeşler",
+    "other": "Diğer"
+  },
+  "relations": {
+    "self": "Ben",
+    "partner": "Partner",
+    "child": "Çocuk",
+    "parent": "Ebeveyn",
+    "family": "Aile",
+    "friend": "Arkadaş",
+    "colleague": "İş arkadaşı",
+    "business_partner": "İş ortağı",
+    "other": "Diğer"
+  },
+  "moon_phases": {
+    "new": "Yeni Ay",
+    "waxing_crescent": "Büyüyen hilal",
+    "first_quarter": "İlk dördün",
+    "waxing_gibbous": "Büyüyen şişkin Ay",
+    "full": "Dolunay",
+    "waning_gibbous": "Küçülen şişkin Ay",
+    "last_quarter": "Son dördün",
+    "waning_crescent": "Küçülen hilal"
+  },
+  "transit_phases": {
+    "building": "Yaklaşıyor",
+    "peak": "Dorukta",
+    "easing": "Hafifliyor"
+  },
+  "tiers": {
+    "tight": "Çok yakın",
+    "strong": "Yakın",
+    "wide": "Uzak etki alanı"
+  },
+  "notification_types": {
+    "favorable_window": "Destekleyici günler",
+    "period_start": "Dönem başlangıcı",
+    "lunation_in_house": "Ay döngüleri",
+    "retrograde_start": "Retro başlangıcı",
+    "station_on_point": "Gezegen dönüşü",
+    "eclipse_hit": "Tutulmalar"
+  },
+  "recommend_regions": {
+    "europe": "Avrupa",
+    "turkey": "Türkiye",
+    "mediterranean": "Akdeniz",
+    "middle_east_gulf": "Orta Doğu ve Körfez",
+    "caucasus": "Kafkasya",
+    "americas": "Amerika",
+    "east_asia": "Doğu Asya",
+    "south_southeast_asia": "Güney ve Güneydoğu Asya",
+    "oceania": "Okyanusya",
+    "central_asia": "Orta Asya"
+  },
+  "city_sizes": {
+    "big": "Büyük",
+    "mid": "Orta",
+    "small": "Küçük"
+  },
+  "climates": {
+    "warm": "Sıcak",
+    "mild": "Ilıman",
+    "cold": "Soğuk"
+  },
+  "purposes": {
+    "living": "Yaşamak",
+    "travel": "Seyahat",
+    "both": "Her ikisi"
+  },
+  "terms": {
+    "retrograde": "Retro",
+    "void_of_course": "Boşlukta Ay",
+    "new_moon": "Yeni Ay",
+    "full_moon": "Dolunay",
+    "solar_eclipse": "Güneş tutulması",
+    "lunar_eclipse": "Ay tutulması",
+    "solar_return": "Güneş dönüşü",
+    "rising": "Yükselen",
+    "big_three": "Üç temel gösterge"
+  }
+}

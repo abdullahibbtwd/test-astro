@@ -298,6 +298,15 @@ class LLMGenerator:
             text_tr=data.get("text_tr", ""),
         )
 
+    def progressive_section(self, key, routed, chart):
+        """Same grounded draft pipeline, with ONB's longer opening chapter."""
+        system, user = build_section_prompt(key, routed, chart)
+        if key == 'core_identity':
+            system += "\nONBOARDING LENGTH: Write about 450 Turkish words (400-500), in 4-6 paragraphs. Fully develop the supplied Sun-sign, Moon-sign, Ascendant and chart-ruler principles. Keep house references brief. Do not invent claims or pad with generic advice."
+        data = self._call_json(self.model, system, user, temperature=self.section_temperature,
+                               max_tokens=self.max_tokens, label=f'progressive_draft[{key}]', schema=SECTION_SCHEMA)
+        return SectionDraft(key=data.get('key', key), text_tr=data.get('text_tr', ''))
+
     def section_all(self, routed_by_section: dict[str, list[RoutedPrinciple]],
                     chart: dict) -> list[SectionDraft]:
         """Run every section call in parallel (§4: no cross-dependencies)."""

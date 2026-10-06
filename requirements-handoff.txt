@@ -1,0 +1,18 @@
+# Direct packages observed on the working Python 3.11.9 environment, 2026-10-06.
+# Includes calculation, reading, optional provider and test tooling used in source.
+# Not a transitive lock or a claim of Linux/macOS deployment qualification.
+anthropic==0.112.0
+geopy==2.5.0
+google-auth==2.58.1
+google-genai==2.25.0
+httpx==0.28.1
+jsonschema==4.26.0
+numpy==2.4.6
+openai==3.19.2
+pillow==12.3.0
+pyshp==3.1.6
+pyswisseph==2.10.3.2
+pytest==9.1.1
+shapely==2.1.2
+timezonefinder==9.0.0
+tzdata==2026.4

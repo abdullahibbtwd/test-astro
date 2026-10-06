@@ -1,0 +1,32 @@
+name: Frontend contract and shell
+on:
+  push:
+    paths: ['FE/**', 'Chart_wheel/**', '.github/workflows/frontend-contract.yml']
+  pull_request:
+    paths: ['FE/**', 'Chart_wheel/**', '.github/workflows/frontend-contract.yml']
+permissions:
+  contents: read
+jobs:
+  public-contract:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: FE
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: FE/package-lock.json
+      - run: npm ci
+      - run: npm run contract:build && npm run contract:types && npm run contract:zod
+      - run: git diff --exit-code -- openapi.yaml contracts src/api/schema.d.ts src/api/zod
+      - run: npm run typecheck && npm run lint
+      - run: npx tsx --test tests/schema.test.ts tests/fonts.test.ts
+      - run: npm run test:native
+      - run: npm run bundle
+        env:
+          CI: '1'
+# Private birth-data fixtures are intentionally not uploaded to CI.
+# Run npm run check locally with the fixture pack before accepting a phase.

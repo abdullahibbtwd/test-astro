@@ -1,0 +1,6 @@
+{
+  "enabled": false,
+  "url": "https://YOUR_PROJECT_REF.supabase.co",
+  "publishableKey": "sb_publishable_REPLACE_WITH_PROJECT_PUBLIC_KEY",
+  "ownerEmail": "developer@example.com"
+}

@@ -51,7 +51,7 @@ PACK_SCHEMA = {
                                                               "polarity": {"enum": ["supportive", "challenging", "mixed", None]},
                                                               "sensitivity": {"enum": ["normal", "high", None]}}}},
         "items": {"type": "array", "items": {"type": "object", "required": ["id", "label", "dates", "band", "grade", "band_label"],
-                                             "additionalProperties": False, "properties": {"id": {"pattern": "^i:"}}}},
+                                             "additionalProperties": False, "properties": {"id": {"pattern": "^i:"}, "label": {"type": "string"}, "dates": {"type": "array", "items": {"type": "string", "format": "date"}}, "band": {"type": ["string", "null"]}, "grade": {"type": ["string", "null"]}, "band_label": {"type": ["string", "null"]}}}},
         "prose": {"type": "array", "items": {"type": "object", "required": ["id", "text"], "additionalProperties": False,
                                              "properties": {"id": {"pattern": "^p:"}, "text": {"type": "string"}}}},
         "card_candidates": {"type": "array", "items": {"required": ["id", "card", "desc"], "properties": {"id": {"pattern": "^k:"}}}},
@@ -96,7 +96,7 @@ def test_t3_time_layers_modern_only(packs):
                 assert pid in modern, r["id"]                    # cal_corpus.load keeps tradition == modern only
 
 
-_DATE = re.compile(r"\b\d{1,2} (Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık|January|"
+_DATE = re.compile(r"\b(?:\d{1,2} )?(Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık|January|"
                    r"February|March|April|May|June|July|August|September|October|November|December) \d{4}\b|\b\d{4}-\d{2}-\d{2}\b")
 _HOUSE = re.compile(r"\b\d{1,2}\.\s?ev|\b\d{1,2}(st|nd|rd|th) house", re.IGNORECASE)
 

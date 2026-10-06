@@ -495,3 +495,40 @@ Return ONLY a JSON object of this exact shape, no prose around it:
 {{ "text": "<the cleaned {lang_name} text, none of the forbidden words present>" }}
 """
     return system, user
+
+
+def build_progressive_finalize_prompt(section_key: str, draft: str,
+                                      written: list[dict], own: list[str],
+                                      elsewhere: list[dict], chart: dict,
+                                      low_salience_ids: list[str] | None = None
+                                      ) -> tuple[str, str]:
+    """ONB_01: finalize only this draft, with immutable earlier text as context."""
+    # Reuse the batch jobs verbatim except for their all-drafts ownership policy.
+    batch_system, _ = build_section_synthesis_prompt(section_key, draft, [], chart, low_salience_ids)
+    texture_jobs = batch_system[batch_system.index('3. TEXTURE BALANCING:'):]
+    exception_start = batch_system.index('EXCEPTION:')
+    exception_end = batch_system.index('3. TEXTURE BALANCING:')
+    system = _CONTRACT + """
+You are finalizing ONE section that will be read in order. Rewrite only THIS
+SECTION'S DRAFT. Its draft is the ONLY source of interpretive content. CHART is
+for factual cross-reference; context and ownership are not additional sources.
+WRITTEN SO FAR contains finalized sections already read: keep the same voice,
+do not re-teach what they covered, and name genuine tensions as productive tension.
+Backward callbacks are allowed only when their subject is visible in that context.
+OWN principles get full treatment.
+OWNED ELSEWHERE lists principles whose portrait belongs to another section. Use
+these only for THIS section's area of life, never repeat their home portrait.
+If needed, refer to the owner by its display title in one clause, without claiming
+that a later section has already been read. Do not include a person's name.
+1. VOICE: warm, consistent, second-person Turkish, psychological-primary.
+2. CROSS-SECTION DEDUP: apply the supplied primary-reason ownership map.
+""" + batch_system[exception_start:exception_end] + texture_jobs
+    if section_key == CORE_IDENTITY:
+        system += '\nONBOARDING LENGTH: Preserve a developed opening chapter of about 450 Turkish words (400-500), in 4-6 paragraphs. Do not compress the owned sign and character portrait into a short summary. Do not add claims absent from the draft.\n'
+    payload = {
+        'SECTION': section_key, 'THEME': SECTION_THEME[section_key],
+        'BRIEF': section_brief(section_key, chart), "THIS SECTION'S DRAFT": draft,
+        'WRITTEN SO FAR': written, 'OWN': own, 'OWNED ELSEWHERE': elsewhere,
+        'LOW-SALIENCE ids': sorted(low_salience_ids or []), 'CHART': compact_chart(chart),
+    }
+    return system, json.dumps(payload, ensure_ascii=False) + '\nReturn only {"key": "' + section_key + '", "text_tr": "..."}.'

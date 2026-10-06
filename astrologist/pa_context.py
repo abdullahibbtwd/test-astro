@@ -31,7 +31,8 @@ def chart_of(birth: dict) -> dict:
 
 class TurnContext:
     def __init__(self, subject: dict, *, profiles: Optional[list] = None, compatibilities: Optional[list] = None,
-                 lang: str = "tr", today: Optional[date] = None, cache_root: str = K.CACHE_ROOT):
+                 lang: str = "tr", today: Optional[date] = None, cache_root: str = K.CACHE_ROOT, profile_dossier=None):
+        self._profile_dossier = profile_dossier
         self.subject = subject
         self.lang = lang
         self.today = today or date.today()
@@ -49,17 +50,38 @@ class TurnContext:
         return self._memo[key]
 
     # -- natal --------------------------------------------------------------------------------------------
+    def _shared(self):
+        if not self.subject.get("dossier_chart_key"):
+            return None
+        if self._profile_dossier is None:
+            from profile_dossier import Dossier
+            self._profile_dossier = Dossier()
+        return self._profile_dossier
+
     def natal(self) -> dict:
-        return self._m("natal", lambda: chart_of(self.subject["birth"]))
+        shared = self._shared()
+        return self._m("natal", lambda: shared.get(self.subject["dossier_chart_key"], "chart")
+                       if shared else chart_of(self.subject["birth"]))
 
     def chart_key(self) -> str:
         import personal_events as P
         return self._m("chart_key", lambda: P.chart_key(self.natal()))
 
     def l4_output(self) -> Optional[dict]:
+        shared = self._shared()
+        if shared:
+            return self._m("l4", lambda: {"sections": list(shared.readings(self.subject["dossier_chart_key"]).values())})
         return self._m("l4", lambda: find_l4_output(self.subject["birth"]))
 
     def dossier(self) -> dict:
+        shared = self._shared()
+        if shared:
+            def load():
+                value = shared.get(self.subject["dossier_chart_key"], "pa_dossier")
+                value["prose"] = D.prose_from(self.l4_output(), value["records"])
+                value["availability"]["l4_output"] = bool(value["prose"])
+                return value
+            return self._m("dossier", load)
         return self._m("dossier", lambda: D.load_or_build(self.chart_key(), self.natal(), self.l4_output(),
                                                           cache_root=self.cache_root)[0])
 

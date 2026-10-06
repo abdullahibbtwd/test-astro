@@ -449,14 +449,15 @@ def best_days(ctx: TurnContext, p: dict, activities: list[str], from_: Optional[
             if w["start"] <= B_ and w["end"] >= A_:
                 add_item(p, f"i:window:{act}:{w['start']}", (f"{name}: destekleyici aralık" if lang == "tr"
                                                             else f"{name}: supportive window"), [w["start"], w["end"]],
-                         raw={"kind": "window"})
+                         band_label=C.DAY_BAND[lang]["supportive"], raw={"kind": "window"})
         top = sorted(good, key=lambda r: (-r["R"], r["local_date"]))[:3]
         for r in sorted(top, key=lambda r: r["local_date"]):
             ds = r["local_date"]
             parts = sorted((x for x in r.get("_parts", []) if x["contribution"] > 0), key=lambda x: -x["contribution"])
             negs = sorted((x for x in r.get("_parts", []) if x["contribution"] < 0), key=lambda x: x["contribution"])
             reasons = BD.reasons(r.get("_parts", []))
-            labs = [x[f"label_{lang}"] for x in reasons["positive"]]
+            labs = [clean_render(x[f"label_{lang}"]) for x in reasons["positive"]]
+            labs = [lab for lab in labs if lab]
             add_item(p, f"i:bestday_why:{act}:{ds}", f"{name} {C.fmt_date(ds, lang)}: " + "; ".join(labs), [ds],
                      raw={"kind": "why", "parts": parts[:3] + negs[:2]})
             n = 0

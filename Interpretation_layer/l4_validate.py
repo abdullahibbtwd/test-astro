@@ -33,7 +33,8 @@ def _find_forbidden(text: str) -> list[str]:
 
 
 def validate(output: dict,
-             routed_ids: Optional[dict[str, set[str]]] = None) -> list[str]:
+             routed_ids: Optional[dict[str, set[str]]] = None,
+             langs: tuple[str, ...] = ("tr", "en")) -> list[str]:
     errors: list[str] = []
 
     # Top-level contract (§6, §7.7).
@@ -74,23 +75,16 @@ def validate(output: dict,
         if house is not None and not (isinstance(house, int) and 1 <= house <= 12):
             errors.append(f"{loc} ({key}): house must be an int 1..12, got {house!r}")
 
-        text_tr = sec.get("text_tr")
-        if not isinstance(text_tr, str) or not text_tr.strip():
-            # §7.4 — no empty sections (an emitted section must have text).
-            errors.append(f"{loc} ({key}): text_tr is empty (§7.4)")
-            text_tr = text_tr or ""
-
-        text_en = sec.get("text_en")
-        if not isinstance(text_en, str) or not text_en.strip():
-            errors.append(f"{loc} ({key}): text_en is empty (§7.4)")
-            text_en = text_en or ""
-
-        # §7.3 — no tradition labels reach the reader, in either language.
-        for field, val in (("text_tr", text_tr), ("text_en", text_en)):
-            for tok in _find_forbidden(val):
-                errors.append(
-                    f"{loc} ({key}): forbidden tradition token {tok!r} in {field} (§7.3)"
-                )
+        for lang in langs:
+            if lang not in ("tr", "en"):
+                raise ValueError("Unsupported validation language")
+            field = f"text_{lang}"
+            value = sec.get(field)
+            if not isinstance(value, str) or not value.strip():
+                errors.append(f"{loc} ({key}): {field} is empty (§7.4)")
+                value = ""
+            for token in _find_forbidden(value):
+                errors.append(f"{loc} ({key}): forbidden tradition token {token!r} in {field} (§7.3)")
 
         # §7.1 — grounding is now section-level: every emitted section carries
         # the principle_ids it was built from (attached deterministically from
