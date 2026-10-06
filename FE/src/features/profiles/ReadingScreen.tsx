@@ -56,6 +56,7 @@ export default function ReadingScreen() {
         />
       </Screen>
     );
+  if (params.key === "core_identity") return <CoreIdentityContent profile={profile} />;
   return (
     <ReadingContent
       key={`${profile.profile_id}:${profile.chart_key}:${app.language}`}
@@ -63,6 +64,12 @@ export default function ReadingScreen() {
       sectionKey={params.key}
     />
   );
+}
+function CoreIdentityContent({profile}: {profile: BirthProfile}) {
+ const reading = useGenerated<NatalSection>(["natal-core",profile.profile_id,profile.chart_key], `/profiles/${profile.profile_id}/natal-reading/sections/core_identity`, "NatalSection");
+ return <Screen back title={profile.label}>{reading.data
+   ? <ReadingSection section={reading.data} initialExpanded askRoute={`/ask?profile=${profile.profile_id}&section_key=core_identity`} />
+   : <JobProgress job={reading.job} error={reading.error} slow={reading.slow} failed={reading.state === "failed"} retry={() => void reading.retry()} />}</Screen>;
 }
 function ReadingContent({
   profile,
