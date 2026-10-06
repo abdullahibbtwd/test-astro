@@ -24,6 +24,8 @@ const emptyDraft: Draft = {
 type State = {
   ready: boolean;
   signedIn: boolean;
+  guestClaimPending: boolean;
+  onboardingUnlockProfileId: string | null;
   language: Lang;
   languageChosen: boolean;
   theme: Me["theme"];
@@ -41,6 +43,8 @@ type State = {
 export const useApp = create<State>((set, get) => ({
   ready: false,
   signedIn: false,
+  guestClaimPending: false,
+  onboardingUnlockProfileId: null,
   language: getLocales()[0]?.languageCode === "tr" ? "tr" : "en",
   languageChosen: false,
   theme: "system",
@@ -89,6 +93,8 @@ export const useApp = create<State>((set, get) => ({
 export function resetLocalState() {
   useApp.setState({
     signedIn: false,
+    guestClaimPending: false,
+    onboardingUnlockProfileId: null,
     me: null,
     activeProfileId: null,
     draft: { ...emptyDraft },

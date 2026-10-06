@@ -441,6 +441,7 @@ export function Progress({ step, total }: { step: number; total: number }) {
   const c = useTheme();
   return (
     <View
+      accessible
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: total, now: step }}
       style={{ height: 3, backgroundColor: c.hair }}

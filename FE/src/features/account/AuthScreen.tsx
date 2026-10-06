@@ -1,12 +1,12 @@
+import { GuestWelcomeScreen, WelcomeFooter } from "../onboarding/GuestOnboarding";
 import { Title } from "../../design-system/components/Title";
 import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
 import { Emblem } from "../../design-system/components/Ornament";
 import { showSnackbar } from "../../design/components/Snackbar";
 import Constants from "expo-constants";
-import * as Linking from "expo-linking";
 import { providerSignIn, ProviderUnavailable } from "../../lib/oauth";
 import { useEffect, useRef, useState } from "react";
-import { Platform, TextInput, View, Pressable } from "react-native";
+import { TextInput, View, Pressable } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,13 +15,9 @@ import {
   Button,
   Field,
   ErrorNotice,
-  Row,
-  Choices,
-  Chip,
 } from "../../design/components";
 import { useTheme } from "../../design/theme";
-import { useApp } from "../../lib/state";
-import { useActions, useConfig } from "../../api/hooks";
+import { useActions } from "../../api/hooks";
 const demoAuth = __DEV__ && process.env.EXPO_PUBLIC_AUTH_MODE !== "supabase";
 export default function AuthScreen() {
   const { mode, fresh } = useLocalSearchParams<{
@@ -30,9 +26,7 @@ export default function AuthScreen() {
     }>(),
     { t } = useTranslation(),
     c = useTheme(),
-    app = useApp(),
-    actions = useActions(),
-    config = useConfig();
+    actions = useActions();
   const [providerBusy, setProviderBusy] = useState(false),
     [providerError, setProviderError] = useState<unknown>();
   const signIn = async (provider: "google" | "apple") => {
@@ -81,29 +75,7 @@ export default function AuthScreen() {
       submitting.current = false;
     }
   };
-  if (!app.languageChosen)
-    return (
-      <Screen headerless arch grain>
-        <Title variant="displayHero">{Constants.expoConfig?.name ?? "Astrology"}</Title>
-        <View style={{ alignItems: "center" }}><Emblem width={180} /></View>
-        <Txt kind="display">{t("chooseLanguage")}</Txt>
-        <Txt muted>{t("languageHint")}</Txt>
-        <Choices>
-          {(["tr", "en"] as const).map((lang) => (
-            <Chip
-              key={lang}
-              label={lang === "tr" ? "Türkçe" : "English"}
-              selected={app.language === lang}
-              onPress={() => app.update({ language: lang })}
-            />
-          ))}
-        </Choices>
-        <Button
-          label={t("continue")}
-          onPress={() => app.update({ languageChosen: true })}
-        />
-      </Screen>
-    );
+  if (!mode && process.env.EXPO_PUBLIC_BACKEND_MODE !== "demo") return <GuestWelcomeScreen />;
   if (mode === "email" || mode === "verify")
     return (
       <Screen headerless back>
@@ -202,80 +174,15 @@ export default function AuthScreen() {
       </Screen>
     );
   return (
-    <Screen headerless arch grain>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Title variant="displayHero">{Constants.expoConfig?.name ?? "Astrology"}</Title>
-        <Chip role="button"
-          label={app.language === "tr" ? "TR" : "EN"}
-          selected={false}
-          onPress={() =>
-            app.update({ language: app.language === "tr" ? "en" : "tr" })
-          }
-        />
-      </View>
-      <View style={{ alignItems: "center" }}><Emblem width={180} /></View>
-      <Txt kind="display">{t("welcome")}</Txt>
-      <Txt muted>{t("welcomeBody")}</Txt>
-      <View>
-        {["whoAmI", "whatsAhead", "whoFits", "whereToBe"].map((key, i) => (
-          <Row
-            key={key}
-            label={`${String(i + 1).padStart(2, "0")}    ${t(key)}`}
-          />
-        ))}
-      </View>
+    <Screen headerless arch grain footer={<WelcomeFooter />}>
+      <Title variant="displayHero">{Constants.expoConfig?.name ?? "Astrology"}</Title>
+      <View style={{ alignItems: "center" }}><Emblem width={120} /></View>
+      <Txt kind="display">{t("guestMore")}</Txt>
+      <Txt muted>{t("guestUnlockBody")}</Txt>
       <ErrorNotice error={providerError} />
-      <View style={{ gap: dsSpace[3] }}>
-        {Platform.OS === "ios" && demoAuth && (
-          <Button
-            secondary
-            label={t("appleContinue")}
-            loading={providerBusy}
-            onPress={() => void signIn("apple")}
-          />
-        )}
-        <Button
-          secondary
-          label={t("googleContinue")}
-          loading={providerBusy}
-          onPress={() => void signIn("google")}
-        />
-        <Button
-          label={t("emailContinue")}
-          onPress={() =>
-            router.push(
-              demoAuth
-                ? "/(auth)/welcome?mode=email"
-                : "/(auth)/link?provider=email",
-            )
-          }
-        />
-      </View>
-      {demoAuth && (
-        <Button
-          secondary
-          label={t("tryOnboarding")}
-          onPress={() => router.push("/(auth)/welcome?mode=email&fresh=1")}
-        />
-      )}
-      <Choices>
-        {["terms", "privacy"].map((key) => (
-          <Chip role="button"
-            key={key}
-            label={t(key)}
-            selected={false}
-            onPress={() => {
-              const url = config.data?.links[key as "terms" | "privacy"];
-              if (url && /^https:\/\//.test(url))
-                void Linking.openURL(url).catch(setProviderError);
-              else showSnackbar(t("legalUnavailable"));
-            }}
-          />
-        ))}
-      </Choices>
-      <Txt kind="caption" muted>
-        {t("disclaimer")}
-      </Txt>
+      <Button secondary label={t("googleContinue")} loading={providerBusy} onPress={() => void signIn("google")} />
+      <Button label={t("emailContinue")} onPress={() => router.push(demoAuth ? "/(auth)/welcome?mode=email" : "/(auth)/link?provider=email")} />
+      <Button secondary label={t("back")} onPress={() => router.back()} />
     </Screen>
   );
 }

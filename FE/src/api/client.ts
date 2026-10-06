@@ -15,7 +15,20 @@ let refreshing: Promise<boolean> | null = null;
 export let mockToday: string | undefined;
 export async function setSession(value: Session | null) {
   session = value;
-  if (value) await tokenStorage.set(value);
+  if (value) {
+    const { hasGuestReading, claimGuestReading } = await import("../lib/guest-onboarding");
+    if (hasGuestReading()) {
+      useApp.getState().update({ guestClaimPending: true });
+      try {
+        const claimed = await claimGuestReading();
+        if (claimed) value = { ...value, me: claimed.me, is_new_user: false };
+      } catch {
+        // Sign-in succeeds; the result screen offers a safe claim retry.
+      }
+    }
+    session = value;
+    await tokenStorage.set(value);
+  }
   else {
     useApp.setState({ signedIn: false, me: null });
     await tokenStorage.clear();
@@ -38,7 +51,7 @@ export async function restoreSession() {
   if (raw) {
     try {
       session = JSON.parse(raw);
-      useApp.getState().update({ signedIn: true, me: session!.me });
+      await setSession(session);
     } catch {
       await tokenStorage.clear();
     }

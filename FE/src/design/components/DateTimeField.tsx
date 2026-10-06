@@ -11,10 +11,14 @@ export function DateTimeField({
   value,
   onChange,
   label,
+  placeholder,
+  compact = false,
   minimumDate = new Date(1900, 0, 1),
   maximumDate = new Date(),
 }: {
   label?: string;
+  placeholder?: string;
+  compact?: boolean;
   minimumDate?: Date;
   maximumDate?: Date;
   mode: "date" | "time";
@@ -30,17 +34,28 @@ export function DateTimeField({
       : new Date(`2000-01-01T${value || "12:00"}:00`);
   return (
     <>
-      <Field label={label ?? t(mode === "date" ? "birthDate" : "birthTime")}><SelectField
-        accessibilityLabel={label ?? t(mode === "date" ? "birthDate" : "birthTime")}
-        valueLabel={
-          value
-            ? mode === "date"
-              ? formatDate(value, lang)
-              : value
-            : t(mode === "date" ? "selectDate" : "selectTime")
-        }
-        onPress={() => setOpen(true)}
-      /></Field>
+      <Field label={label ?? t(mode === "date" ? "birthDate" : "birthTime")}>
+        <SelectField
+          accessibilityLabel={
+            label ?? t(mode === "date" ? "birthDate" : "birthTime")
+          }
+          valueLabel={
+            value
+              ? mode === "date"
+                ? compact
+                  ? new Intl.DateTimeFormat(lang === "tr" ? "tr-TR" : "en-GB", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    }).format(date)
+                  : formatDate(value, lang)
+                : value
+              : (placeholder ??
+                t(mode === "date" ? "selectDate" : "selectTime"))
+          }
+          onPress={() => setOpen(true)}
+        />
+      </Field>
       {open && (
         <>
           <DateTimePicker

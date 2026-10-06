@@ -17,7 +17,8 @@ export function shouldPersistQuery(query: Query, all: Query[] = []) {
   if (
     query.state.status !== "success" ||
     query.state.error ||
-    query.queryKey[0] === "job"
+    query.queryKey[0] === "job" ||
+    query.queryKey[0] === "guest-core"
   )
     return false;
   const path = String(query.queryKey[2] ?? "");

@@ -89,6 +89,14 @@ export default function RootLayout() {
     if (!app.signedIn && section !== "(auth)" && section !== undefined)
       router.replace("/(auth)/welcome");
     if (app.signedIn) {
+      if (app.guestClaimPending) {
+        if (segments[1] !== "core") router.replace("/(auth)/core");
+        return;
+      }
+      if (app.onboardingUnlockProfileId) {
+        if (segments[1] !== "unlocked") router.replace("/(auth)/unlocked");
+        return;
+      }
       const onboarding =
         !app.me?.self_profile_id ||
         (app.draft.profileId === app.me.self_profile_id &&
@@ -102,6 +110,8 @@ export default function RootLayout() {
   }, [
     ready,
     app.signedIn,
+    app.guestClaimPending,
+    app.onboardingUnlockProfileId,
     app.me?.self_profile_id,
     app.draft.profileId,
     app.draft.step,
