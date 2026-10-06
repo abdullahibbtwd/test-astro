@@ -152,3 +152,102 @@ def test_cancel_during_stream_has_no_final():
     for event in stream:
         if event['event']=='delta': token.set();break
     assert list(stream)==[]
+
+
+def test_additional_chart_naming_has_actionable_compose_and_repair_context():
+    request = req()
+    request['subject'] = {**SUBJECT, 'label': 'My chart', 'is_self': False, 'relation': 'other'}
+    named = answer(answer()['segments'][0]['text'].replace('Your Sun', 'For the chart labelled My chart, the Sun'))
+    fake = Fake(plan(), answer(), named)
+    events = list(answer_turn(request, complete=fake, tool_runner=lambda *a, **k: pack()))
+    final = events[-1]['data']
+    assert final['message']['answer_kind'] == 'composed'
+    assert final['audit']['validation'] == [
+        {'attempt': 1, 'violations': [{'rule': 'PV12_naming', 'segment': -1}]},
+        {'attempt': 2, 'violations': []},
+    ]
+    initial = json.loads(fake.calls[1][0][2])
+    repair = json.loads(fake.calls[2][0][2])
+    assert initial['required_names'] == ['My chart']
+    assert 'required_names' in fake.calls[1][0][1]
+    assert repair['repair']['missing_names'] == ['My chart']
+    assert 'PV12_naming' in repair['repair']['instruction']
+
+
+def test_additional_chart_still_rejects_answers_that_omit_its_label():
+    request = req()
+    request['subject'] = {**SUBJECT, 'label': 'My chart', 'is_self': False, 'relation': 'other'}
+    fake = Fake(plan(), answer(), answer())
+    final = list(answer_turn(request, complete=fake, tool_runner=lambda *a, **k: pack()))[-1]['data']
+    assert final['message']['answer_kind'] == 'fallback'
+    assert all(v['violations'] == [{'rule': 'PV12_naming', 'segment': -1}] for v in final['audit']['validation'])
+
+
+@pytest.mark.parametrize('lang,place_name', [('en', 'Izmir'), ('tr', 'İzmir')])
+def test_composer_receives_the_same_names_as_the_validator(lang, place_name):
+    from pa_compose import compose
+    from pa_validate import required_names
+    place = new_pack('c2', 'place', {})
+    place['_internal']['place'] = {'name': 'Izmir', 'name_tr': 'İzmir'}
+    compatibility = new_pack('c3', 'compatibility', {})
+    compatibility['_internal']['other_label'] = 'Ayşe'
+    subject = {**SUBJECT, 'label': 'My chart', 'is_self': False}
+    packs = [pack(), place, compatibility]
+    fake = Fake(answer(), answer())
+    compose(req(), SimpleNamespace(lang=lang, subject=subject), plan(), packs, fake)
+    payload = json.loads(fake.calls[0][0][2])
+    assert payload['required_names'] == ['Ayşe', place_name, 'My chart']
+    assert payload['required_names'] == required_names(packs, lang, subject)
+    assert required_names([pack()], lang, SUBJECT) == []
+
+
+@pytest.mark.parametrize('lang,supported,unsupported', [
+    ('en', '6–9 October is a supportive window.', '6–9 October is an excellent window.'),
+    ('tr', '6–9 Ekim destekleyici bir aralık.', '6–9 Ekim mükemmel bir aralık.'),
+])
+def test_best_days_window_description_is_supported_by_its_own_evidence(lang, supported, unsupported):
+    from pa_tools import best_days
+    day = {'local_date': '2026-10-07', 'grade': 'good', 'R': 1, '_parts': []}
+    window = {'start': '2026-10-06', 'end': '2026-10-09'}
+    context = SimpleNamespace(
+        today=date(2026, 10, 6), lang=lang,
+        best=lambda: {'activities': {'contract': {'days': [day], 'windows': [window]}}},
+        corpus=lambda: ({}, {}), cached_text=lambda key: None,
+    )
+    evidence = best_days(context, new_pack('c1', 'best_days', {}), ['contract'], '2026-10-07', '2026-10-07')
+    a = answer(supported)
+    a['segments'][0]['trace'] = ['i:window:contract:2026-10-06']
+    p = plan('best_days', {'activities': ['contract']}, 'best_days')
+    assert not any(e['rule'] == 'PV5_band' for e in validate_answer(a, [evidence], p, lang))
+    a['segments'][0]['text'] = unsupported
+    assert any(e['rule'] == 'PV5_band' for e in validate_answer(a, [evidence], p, lang))
+    a['segments'][0]['text'] = supported
+    a['segments'][0]['trace'] = ['i:bestday:contract:2026-10-07']
+    assert any(e['rule'] == 'PV5_band' for e in validate_answer(a, [evidence], p, lang))
+
+
+def test_repair_identifies_forbidden_word_even_when_negated():
+    fake = Fake(plan(), answer(answer()['segments'][0]['text'] + ' This is not a guarantee.'), answer())
+    final = list(answer_turn(req(), complete=fake, tool_runner=lambda *a, **k: pack()))[-1]['data']
+    assert final['message']['answer_kind'] == 'composed'
+    repair = json.loads(fake.calls[-1][0][2])['repair']
+    detail = next(d for d in repair['details'] if d['rule'] == 'PV7_forbidden')
+    assert 'guarantee' in detail['phrases']
+    assert 'PV7' in repair['rule_descriptions']
+    initial = json.loads(fake.calls[1][0][2])
+    assert 'guarantee' in initial['forbidden_phrases']
+
+
+def test_repair_identifies_untraced_ratings_and_invented_trace_ids():
+    from pa_compose import compose
+    evidence = new_pack('c1', 'best_days', {})
+    add_item(evidence, 'i:day:x', '7 October: good', ['2026-10-07'], grade='good', band_label='good')
+    bad = answer('7 October is an excellent time for this activity.')
+    bad['segments'][0]['trace'] = ['i:day:x', 'i:invented']
+    fake = Fake(bad, bad)
+    compose(req(), ctx(), plan('best_days', {}, 'best_days'), [evidence], fake)
+    repair = json.loads(fake.calls[-1][0][2])['repair']
+    rating = next(d for d in repair['details'] if d['rule'] == 'PV5_band')
+    assert rating['label'] == 'excellent' and rating['allowed_labels'] == ['good']
+    trace = next(d for d in repair['details'] if d['rule'] == 'PV2_trace')
+    assert trace['invalid_ids'] == ['i:invented']

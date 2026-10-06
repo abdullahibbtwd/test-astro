@@ -40,10 +40,25 @@ def claims(raw):
     visit(raw)
     return result
 
-def validate_answer(answer,packs,plan,lang,subject=None,allow_short=False):
+def required_names(packs,lang,subject=None):
+    """Keep the composer and PV12 aligned on exact, user-supplied display labels."""
+    names=[p['_internal'].get('other_label') for p in packs if p['tool']=='compatibility']
+    for p in packs:
+        if p['tool']=='place':
+            row=p['_internal'].get('place',{})
+            names.append((row.get('name_tr') or row.get('name')) if lang=='tr' else row.get('name'))
+    if subject and not subject.get('is_self',True): names.append(subject.get('label'))
+    return list(filter(None,names))
+
+def forbidden_phrases(lang):
+    return AV2_TR+AV8_TR+RV4_TR+EXTRA_TR if lang=='tr' else AV2_EN+AV8_EN+RV4_EN+EXTRA_EN
+
+def validate_answer(answer,packs,plan,lang,subject=None,allow_short=False,feedback=None):
     errors=[]
-    def fail(rule,index=-1):
+    def fail(rule,index=-1,**details):
         if not any(e['rule']==rule and e['segment']==index for e in errors): errors.append({'rule':rule,'segment':index})
+        # Repair-only details stay out of the persisted audit and public stream.
+        if feedback is not None and details: feedback.append({'rule':rule,'segment':index,**details})
     try: jsonschema.validate(answer,ANSWER_SCHEMA)
     except jsonschema.ValidationError: return [{'rule':'PV1_schema','segment':-1}]
     evidence={x['id']:x for p in packs for kind in ('facts','records','items','prose') for x in p[kind]}
@@ -56,7 +71,8 @@ def validate_answer(answer,packs,plan,lang,subject=None,allow_short=False):
     paragraphs={}
     for i,s in enumerate(answer['segments']):
         text=s['text']; trace=s['trace']; paragraphs.setdefault(s['para'],[]).append(text)
-        if any(t not in evidence for t in trace): fail('PV2_trace',i)
+        invalid_ids=[t for t in trace if t not in evidence]
+        if invalid_ids: fail('PV2_trace',i,invalid_ids=invalid_ids)
         if (astro_terms(text,lang) or s['kind']=='astro') and (s['kind']!='astro' or not trace): fail('PV3_untraced',i)
         allowed=claims([internal.get(t,{}) for t in trace])
         for sentence in re.split(r'(?<=[.!?])\s+',text):
@@ -75,7 +91,7 @@ def validate_answer(answer,packs,plan,lang,subject=None,allow_short=False):
         all_labels={v for table in (C.GRADE,C.DAY_BAND,C.TONE,C.PLACE_BAND) for v in table[lang].values()}
         for label in all_labels if (traced_items or plan['intent'] in ('day','span','when','best_days','calendar_item','place','recommend','mixed')) else ():
             if phrase(text,label,lang) and not any(phrase(label,v,lang) or phrase(v,label,lang) for v in labels):
-                if label not in ('good','iyi','quiet','sakin'): fail('PV5_band',i)
+                if label not in ('good','iyi','quiet','sakin'): fail('PV5_band',i,label=label,allowed_labels=sorted(labels))
         if i==next((j for j,x in enumerate(answer['segments']) if x['kind']=='astro'),-1) and plan.get('reframe')=='yes_no' and not any(phrase(text,label,lang) for label in labels): fail('PV5_verdict',i)
         def date_ok(m):
             days=[int(m.group(1))]
@@ -97,8 +113,8 @@ def validate_answer(answer,packs,plan,lang,subject=None,allow_short=False):
         pattern=r'\b(\d{1,2})(?:\s*[–-]\s*(\d{1,2}))?\s+('+ '|'.join(MONTHS[lang])+r')(?:\s+(\d{4}))?\b'
         remainder=re.sub(pattern,date_ok,text,flags=re.I)
         if re.search(r'\d|[°%]|\b(orb|degrees?|derece|km|kilometre|miles?)\b',remainder,re.I): fail('PV6_number',i)
-        forbidden=AV2_TR+AV8_TR+RV4_TR+EXTRA_TR if lang=='tr' else AV2_EN+AV8_EN+RV4_EN+EXTRA_EN
-        if any(phrase(text,t,lang,prefix=(lang=='tr' or t=='diagnos')) for t in forbidden): fail('PV7_forbidden',i)
+        blocked=[t for t in forbidden_phrases(lang) if phrase(text,t,lang,prefix=(lang=='tr' or t=='diagnos'))]
+        if blocked: fail('PV7_forbidden',i,phrases=blocked)
         # Cancer is also a sign: illness use remains forbidden; traced sign use is allowed.
         if lang=='en' and phrase(text,'cancer',lang) and not any(s=='cancer' for _,s in allowed['sign']): fail('PV7_forbidden',i)
         if any(phrase(text,t,lang) for t in MASK): fail('PV8_mask',i)
@@ -111,13 +127,7 @@ def validate_answer(answer,packs,plan,lang,subject=None,allow_short=False):
         en=sum(w in {'the','and','your','you','with','this','is','can','of','in','for'} for w in words)
         if len(words)>12 and ((lang=='tr' and en>=3 and en>tr*2) or (lang=='en' and tr>=3 and tr>en*2)): fail('PV11_language')
     full=' '.join(s['text'] for s in answer['segments'])
-    names=[p['_internal'].get('other_label') for p in packs if p['tool']=='compatibility']
-    for p in packs:
-        if p['tool']=='place':
-            row=p['_internal'].get('place',{})
-            names.append((row.get('name_tr') or row.get('name')) if lang=='tr' else row.get('name'))
-    if subject and not subject.get('is_self',True): names.append(subject.get('label'))
-    for name in filter(None,names):
+    for name in required_names(packs,lang,subject):
         if fold(name,lang) not in fold(full,lang): fail('PV12_naming')
     if [s['para'] for s in answer['segments']]!=sorted(s['para'] for s in answer['segments']): fail('PV10_paragraph_order')
     return errors

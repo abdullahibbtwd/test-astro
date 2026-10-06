@@ -449,7 +449,7 @@ def best_days(ctx: TurnContext, p: dict, activities: list[str], from_: Optional[
             if w["start"] <= B_ and w["end"] >= A_:
                 add_item(p, f"i:window:{act}:{w['start']}", (f"{name}: destekleyici aralık" if lang == "tr"
                                                             else f"{name}: supportive window"), [w["start"], w["end"]],
-                         raw={"kind": "window"})
+                         band_label=C.DAY_BAND[lang]["supportive"], raw={"kind": "window"})
         top = sorted(good, key=lambda r: (-r["R"], r["local_date"]))[:3]
         for r in sorted(top, key=lambda r: r["local_date"]):
             ds = r["local_date"]
