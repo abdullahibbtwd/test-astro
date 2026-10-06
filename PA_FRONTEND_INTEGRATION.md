@@ -1,3 +1,5 @@
+> Historical integration snapshot (5 October). The missing agent modules were subsequently implemented in the local working repository. See [current handoff](FE/FRONTEND_TEAM_HANDOFF.md), [agent connection](FE/ASTRO_AGENT_CONNECTION.md) and [answer-validation fix](FE/ASK_ANSWER_FIX_REPORT.md) for the working state.
+
 # Personal Astrologist frontend integration — 2026-10-05
 
 Status: frontend/API adapter implemented and tested; live PA answers blocked by incomplete supplied backend.

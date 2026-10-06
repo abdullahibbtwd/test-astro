@@ -1,3 +1,5 @@
+> Historical progress log. For the current 6 October 2026 baseline, team setup and remaining payments/design/iOS work, start with [FRONTEND_TEAM_HANDOFF.md](FRONTEND_TEAM_HANDOFF.md). Ask, guest onboarding and Google login status changed after the entries below.
+
 ## Live user testing enabled — 3 October 2026
 
 At the user's explicit request, enabled paid reading generation for the running Android preview under the unchanged shared US$20 total cap. Google owner authentication remains enabled. The launcher now accepts `-RealCharts -EnableReadings -RestartApi`; omit EnableReadings with RestartApi to disable new generation. Existing API processes are verified before stopping; do not restart while a reading is active.

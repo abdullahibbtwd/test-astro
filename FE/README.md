@@ -1,54 +1,40 @@
-For the new **real-calculation preview**, open `Open Real Charts.cmd` and read [LIVE_INTEGRATION.md](LIVE_INTEGRATION.md). The sample demo below remains available separately.
+# Astrology mobile app
 
-# Astrology frontend — Android preview
+**Start with [the frontend team handoff](FRONTEND_TEAM_HANDOFF.md)** for current status, setup, priorities and release gaps (6 October 2026).
 
-Active working copy: `D:\Dev\astrology-app\FE`. The full frontend has an Android development preview. Double-click **Open Android Preview.cmd** in this folder to open it. Use **demo@example.com**, code **000000**. The welcome screen also offers a fresh-account onboarding demo. Read [the latest build progress](BUILD_PROGRESS.md) and [the Phase 1 report](PHASE_1_REPORT.md) for verified flows and remaining acceptance gaps. The original [exploration report](FE_EXPLORATION_REPORT.md) records Phase 0 findings.
+The Expo/React Native Android preview is connected to the local Python astrology backend. Birth-first guest reading, Google/email account flows, natal chart, forecasts, calendar/Best Days, love/work compatibility, maps/parans and Ask are implemented to the qualification levels recorded in the handoff.
 
-## Run locally
+Remaining product work: payment policy/implementation, UI refinement in the current design direction, and native iOS completion. Production hosting/multiuser auth and store acceptance are additional release dependencies.
 
-Use Node 22.13+ (22 LTS recommended) and Python 3 with the existing backend's dependencies available. Keep the original source run folders next to `FE`; they are needed to regenerate private fixtures.
+- [New-developer setup and environment](handoff/SETUP.md)
+- [Payments, design, iOS and release backlog](handoff/REMAINING_WORK.md)
+- [Verification and acceptance](handoff/ACCEPTANCE.md)
+- [Design direction](handoff/DESIGN_DIRECTION.md)
 
-```powershell
-Set-Location 'D:\Dev\astrology-app\FE'
-npm ci
-npm run check
-npm run mock
-```
-
-Mock: `http://127.0.0.1:4010/v1`. Email: `demo@example.com`; code: `000000`. For direct API inspection use `Authorization: Bearer mock-access`. Fixture date is fixed to 2026-09-29. Mock birth-profile calculations reuse fixture positions deliberately; they are not real calculations for newly entered birth data.
+## Existing Windows real preview
 
 ```powershell
-Invoke-RestMethod 'http://127.0.0.1:4010/v1/profiles?lang=en' -Headers @{ Authorization = 'Bearer mock-access' }
+cd D:\Dev\astrology-app\FE
+.\scripts\Start-Android-Preview.ps1 -RealCharts -EnableReadings -EnableAstrologist -RestartApi
 ```
 
-In another terminal, `npm start` starts Metro for a development client. `npm run android` requires Android SDK/JDK/device configuration. `npm run ios` requires macOS/Xcode; alternatively link an EAS project and use the checked-in build profiles. MapLibre/Skia require native development builds. The screens use the local preview API. `npm run bundle` checks both JavaScript/Hermes bundles; it does not compile native binaries.
+This workstation-specific command uses the existing private auth configuration, SDK and emulator. Wait for active readings to finish before restarting. The ordinary Open Android Preview launcher opens mock mode.
 
-The mock listens on loopback by default. `MOCK_HOST` can explicitly change the interface for physical-device testing. Use Android emulator host alias `10.0.2.2` when wiring the future client. Do not expose this unauthenticated-development infrastructure publicly.
+For a fresh developer checkout, follow SETUP first: `npm ci`, Python dependencies and the supplied private fixture ZIP are required. Provider keys and the owner's account database are not included. Paid generation needs a separately coordinated budget; the current owner's shared test cap remains $20.
 
-## Generated files
+## Core commands
 
-- Contract: `npm run contract:build`, then `npm run contract:types` and `npm run contract:zod`.
-- Fixtures: `npm run fixtures:build`; no model calls, validates every output.
-- Checks: `npm run typecheck`, `npm run lint`, `npm test`.
-- Do not edit generated `contracts/`, `src/api/schema.d.ts` or `src/api/zod/index.ts` by hand. Proposed spec resolutions are recorded in the report.
-- `mock-api/fixtures/`, dependencies and bundle artifacts are gitignored. Do not commit real birth-data fixture outputs.
+| Command in FE | Purpose |
+| --- | --- |
+| `npm run mock` | No-cost fixed-data demo, port 4010 |
+| `npm run local-api` | Real private backend, port 4020; paid work off unless enabled |
+| `npm start` | Metro development-client server |
+| `npm run android` / `npm run ios` | Native development build; configured native toolchain required |
+| `npm run typecheck` / `npm run lint` | Static checks |
+| `npm test` / `npm run test:native` | Backend/logic and native component regressions |
+| `npm run bundle` | Android/iOS JS bundle check, not native release validation |
+| `npm run release:check` | Known release blockers: draft legal copy and placeholder app ID |
 
-## Android preview on this computer
+`npm run check` additionally regenerates historical fixtures and needs ignored source run folders. The handoff supplies prebuilt fixtures instead; use the individual checks above. Keep native generated folders, dependencies, live data and credentials out of Git.
 
-- **Open:** double-click `Open Android Preview.cmd`, or run `powershell -ExecutionPolicy Bypass -File scripts/Start-Android-Preview.ps1`.
-- **Rebuild after native dependency/config changes:** `powershell -ExecutionPolicy Bypass -File scripts/Build-Android-Preview.ps1`.
-- Tools live outside Drive in `D:\Dev\astrology-app\.tooling`. The emulator uses API 36, x86_64, WHPX acceleration and software graphics for this host.
-- The development APK is `android/app/build/outputs/apk/debug/app-debug.apk`. It targets the local x86_64 emulator, not a typical ARM phone.
-- The launcher starts Metro and the mock locally, forwards ports 8081 and 4010, and opens the native app. Initial emulator boot takes about a minute. Metro needs IPv4-first DNS for Android port forwarding on this Windows host.
-- Local logs: `../.tooling/metro.log`, `mock.log`, `emulator.log`, and corresponding error logs. Do not publish birth fixtures or debug output.
-- `npm run check` runs the complete fixture and native component checks; `npm run release:check` intentionally fails while legal consent and application identifiers remain placeholders.
-- Mock state resets when its server restarts. A stale session returns to sign-in. No real email is sent by the mock.
-
-## Live integration configuration
-
-The preview defaults are intentionally local. Configure the production API with `EXPO_PUBLIC_API_URL`.
-Google uses `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, optional `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`, and `GOOGLE_IOS_URL_SCHEME` for its native iOS plugin. Apple requires the final bundle identifier, entitlement and backend token verification. Never put provider client secrets in the app.
-`EXPO_PUBLIC_SHARE_URL` optionally adds the final public app link to share cards. Map styles and legal/support URLs come from `/app/config`.
-After native configuration changes, rebuild the development client. `npm run release:check` continues to reject draft legal content and development app identifiers.
-
-See [BUILD_PROGRESS.md](BUILD_PROGRESS.md) for the complete feature inventory, tested sample profiles and explicit preview-data limitations.
+Historical BUILD_PROGRESS/HANDOFF_REPORT and phase reports retain their original snapshots. Use the new handoff to resolve conflicting status statements.
