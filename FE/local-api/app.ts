@@ -1,3 +1,4 @@
+import { registerGuestOnboarding } from "./guest-onboarding";
 import path from "node:path";
 import { runReadingBridge } from "./readings";
 import {
@@ -32,6 +33,7 @@ export function buildLocalApp({
   dbPath,
   allowPaid = false,
   progressiveReadings = false,
+  guestOnboarding = false,
   sectionRunner,
   generateForecast,
   calculateCalendar = computeCalendar,
@@ -46,6 +48,7 @@ export function buildLocalApp({
   dbPath: string;
   allowPaid?: boolean;
   progressiveReadings?: boolean;
+  guestOnboarding?: boolean;
   sectionRunner?: SectionRunner;
   calculateCalendar?: typeof computeCalendar;
   generateForecast?: (data: any) => Promise<any>;
@@ -74,7 +77,7 @@ export function buildLocalApp({
   const readings = new ReadingJobs(store, undefined, allowPaid);
   const progressive = new ProgressiveReadings(
     store,
-    allowPaid && progressiveReadings,
+    allowPaid && (progressiveReadings || guestOnboarding),
     sectionRunner ??
       ((data, onStage) =>
         runReadingBridge(
@@ -149,6 +152,7 @@ export function buildLocalApp({
               429: "rate_limited",
               404: "not_found",
               409: "conflict",
+              410: "unauthorized",
               503: "upstream_unavailable",
             } as any
           )[status] ?? "internal",
@@ -241,6 +245,31 @@ export function buildLocalApp({
     } = value;
     return result;
   };
+  if (guestOnboarding) {
+    const guestPath = dbPath === ":memory:" ? ":memory:" : path.join(path.dirname(dbPath), "onboarding-guests.sqlite");
+    const guestStore = new Store(guestPath);
+    const guestReadings = new ProgressiveReadings(guestStore, allowPaid, sectionRunner ?? ((data, onStage) =>
+      runReadingBridge("reading_section_bridge.py", {
+        ...data, dossier_root: path.join(path.dirname(dbPath), "dossier"),
+        reference_id: digest(path.resolve(guestPath) + ":" + data.profile_id),
+      }, onStage)));
+    registerGuestOnboarding(app, {
+      enabled: allowPaid, guest: guestStore, account: store, readings: guestReadings, accountReadings: progressive, place,
+      withAccount: async (work) => {
+        const previous = tail;
+        let unlock!: () => void;
+        tail = new Promise<void>((resolve) => { unlock = resolve; });
+        await previous;
+        try { return await work(); } finally { unlock(); }
+      },
+      authorize: async (request) => {
+        const token = String(request.headers.authorization ?? "").replace(/^Bearer /, "");
+        if ((store.get(credential("access", token))?.expires ?? 0) <= Date.now()) throw issue(401);
+        if (auth) bindOwner((await auth.user(token)).id);
+        return store.get<Me>("me")!.user_id;
+      },
+    });
+  }
   for (const endpoint of endpoints) {
     app.route({
       method: endpoint.method.toUpperCase() as any,
@@ -263,7 +292,7 @@ export function buildLocalApp({
             p = request.params as Record<string, string>;
           const lang = q.lang ?? store.get<Me>("me")!.language;
           if (!["en", "tr"].includes(lang)) throw issue(400);
-          if (!/^\/(auth|meta|geo)\//.test(endpoint.path)) {
+          if (!/^\/(auth|meta|geo)\//.test(endpoint.path) && !(guestOnboarding && endpoint.method === "get" && ["/places/search", "/places/{place_id}"].includes(endpoint.path))) {
             const token = String(request.headers.authorization ?? "").replace(
               /^Bearer /,
               "",
@@ -320,6 +349,7 @@ export function buildLocalApp({
             case "get /meta/config":
               result = fixture("config");
               result.flags.askAstrology = ask.enabled();
+              result.flags.guestOnboarding = guestOnboarding && allowPaid;
               result.flags.familyCompatibility = false;
               result.flags.solarReturn = false;
               break;
@@ -895,7 +925,7 @@ export function buildLocalApp({
               break;
             }
             case "get /profiles/{id}/natal-reading": {
-              const value = progressiveReadings
+              const value = (progressiveReadings || (guestOnboarding && store.get(`reading-section:${profile!.chart_key}:core_identity`)))
                 ? await progressive.reading(
                     profile!,
                     lang as "en" | "tr",

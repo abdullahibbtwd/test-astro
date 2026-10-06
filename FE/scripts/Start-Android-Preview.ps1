@@ -25,6 +25,7 @@ $authFile = Join-Path $frontend '.local-data/auth-config.json'
 $realAuth = $RealCharts -and (Test-Path -LiteralPath $authFile) -and ((Get-Content -Raw -LiteralPath $authFile | ConvertFrom-Json).enabled -eq $true)
 $env:EXPO_PUBLIC_AUTH_MODE = if ($realAuth) { 'supabase' } else { 'demo' }
 $env:ASTRO_ALLOW_PAID = if ($EnableReadings) { '1' } else { '0' } # Shared durable US$20 cap remains enforced.
+$env:ASTRO_GUEST_ONBOARDING = if ($RealCharts) { '1' } else { '0' }
 Remove-Item Env:CI -ErrorAction SilentlyContinue
 $adb = Join-Path $env:ANDROID_HOME 'platform-tools/adb.exe'
 $node = (Get-Command node.exe).Source

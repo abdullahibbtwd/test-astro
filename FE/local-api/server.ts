@@ -17,6 +17,7 @@ const app = buildLocalApp({
   dbPath: path.join(folder, "app.sqlite"),
   allowPaid: process.env.ASTRO_ALLOW_PAID === "1",
   progressiveReadings: process.env.ASTRO_PROGRESSIVE_READING === "1",
+  guestOnboarding: process.env.ASTRO_GUEST_ONBOARDING === "1",
 });
 await app.listen({ host: "127.0.0.1", port: 4020 });
 console.log(
