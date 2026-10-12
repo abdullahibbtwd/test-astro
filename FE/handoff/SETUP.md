@@ -27,16 +27,13 @@ python -m venv .venv
 python -m pip install -r requirements-handoff.txt
 cd FE
 npm ci
-# First clone only: let Metro reach "Waiting", then stop it with Ctrl+C.
-# This generates .expo/types/router.d.ts; do not commit generated files.
-npm start -- --offline --port 8099
 npm run typecheck
 npm run lint
 npm test
 npm run test:native
 ```
 
-Expo route types do not ship in Git. Skipping that first-start step can produce tuple/route TypeScript errors in `app/_layout.tsx`. The setup was checked in an isolated source archive plus fixture pack: 12 demo/real-API/parity checks and TypeScript passed. This reused the workstation's installed Node/Python dependencies; a fresh dependency installation and macOS build remain team acceptance steps.
+Expo generates additional route types during development; they do not ship in Git. The login guard now also typechecks before Metro has run (12 October CI fix). The original isolated-source verification reused installed Node/Python dependencies; a fresh dependency installation and macOS build remain team acceptance steps.
 
 macOS/Linux: activate with `source .venv/bin/activate`. The requirements file records direct packages observed in the working environment; it is not a fully resolved cross-platform deployment lock. Qualify Linux/macOS dependency builds during production setup.
 

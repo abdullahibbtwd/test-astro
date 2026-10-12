@@ -51,7 +51,7 @@ export default function RootLayout() {
   const [ready, setReady] = useState(false),
     [error, setError] = useState(false),
     app = useApp(),
-    segments = useSegments(),
+    segments: readonly string[] = useSegments(),
     c = useTheme();
   useEffect(() => {
     void initStorage()
