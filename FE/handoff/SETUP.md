@@ -4,9 +4,17 @@
 
 Clone the private repository and check out `codex/frontend-team-handoff-2026-10-06`, or extract `astrology-app-source.zip`. The ZIP contains an `astrology-app/` root. Verify the SHA-256 values in the delivery manifest.
 
-The separate `frontend-demo-fixtures.zip` contains `FE/mock-api/fixtures/`. Extract it **into the repository root**. These are the existing three-profile internal demo outputs, not the live account database. They contain sample birth/chart/reading data and are for this internal handoff, not a production dataset. Keep the ZIP and extracted data private and out of Git.
+The fixture archive is now included in this private branch at [frontend-demo-fixtures.zip](frontend-demo-fixtures.zip). Pull the latest branch before setup. From the repository root, extract it before starting either API:
 
-The prebuilt fixture pack is necessary even for the real local API's configuration/catalogue defaults. It contains its manifest. A source-only clone without it cannot start these preview servers.
+```powershell
+Expand-Archive -LiteralPath .\FE\handoff\frontend-demo-fixtures.zip -DestinationPath .
+```
+
+macOS/Linux: `unzip FE/handoff/frontend-demo-fixtures.zip -d .`
+
+Confirm `FE/mock-api/fixtures/manifest.json` exists. The archive contains the existing three-profile internal demo outputs, not the live account database. Keep this repository and its fixture data private; extracted fixtures remain ignored by Git. The archive SHA-256 and file count are in `frontend-demo-fixtures.manifest.json`.
+
+The prebuilt fixture pack is necessary even for the real local API's configuration/catalogue defaults. A fresh clone includes the ZIP but still needs this extraction step. The original 6 October Drive delivery remains a historical snapshot.
 
 ## Toolchain
 

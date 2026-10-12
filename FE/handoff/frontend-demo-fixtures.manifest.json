@@ -1,0 +1,9 @@
+{
+  "snapshot_date": "2026-10-06",
+  "packaged_date": "2026-10-12",
+  "archive": "frontend-demo-fixtures.zip",
+  "sha256": "efe33ccb55240c324163b5085d6a97788eaf594332f8a810a694d5a67a20a4b9",
+  "file_count": 5307,
+  "uncompressed_bytes": 50488767,
+  "scope": "Existing private three-profile demo fixtures only; no live account databases or credentials."
+}

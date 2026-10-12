@@ -1,6 +1,8 @@
 # Frontend team handoff
 **Astrology app · 6 October 2026 · Owner: Radul**
 
+> 12 October update: the missing demo fixture ZIP is now included in this branch at [handoff/frontend-demo-fixtures.zip](handoff/frontend-demo-fixtures.zip). Extract it using the setup guide.
+
 ## Start here
 
 This is the current handoff. The project has a working Android development preview connected to real chart calculations, reading generators and the Personal Astrologist. It is **not a production release**.

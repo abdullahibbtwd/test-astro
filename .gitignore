@@ -111,3 +111,6 @@ principles_grounding/validation_report.merged.json
 # Private Personal Astrologist runs and deterministic caches
 ask_run/
 astrologist/eval/
+
+# Deliberately ship the validated demo fixture pack in the private handoff.
+!FE/handoff/frontend-demo-fixtures.zip

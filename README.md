@@ -11,4 +11,4 @@ Remaining priorities: payment policy and implementation, UX/UI refinement in the
 - [Verification and acceptance](FE/handoff/ACCEPTANCE.md)
 - [Current design direction](FE/handoff/DESIGN_DIRECTION.md)
 
-Use the complete repository, not just FE. The separate private handoff fixture ZIP is required for demo and local API startup; obtain it from Radul with the design kit. Credentials, live account data and SDK installations are intentionally not shipped.
+Use the complete repository, not just FE. The private fixture ZIP is included at `FE/handoff/frontend-demo-fixtures.zip`; extract it as described in the setup guide before starting either API. Obtain the original design kit from Radul. Credentials, live account data and SDK installations are intentionally not shipped.

@@ -20,7 +20,7 @@ cd D:\Dev\astrology-app\FE
 
 This workstation-specific command uses the existing private auth configuration, SDK and emulator. Wait for active readings to finish before restarting. The ordinary Open Android Preview launcher opens mock mode.
 
-For a fresh developer checkout, follow SETUP first: `npm ci`, Python dependencies and the supplied private fixture ZIP are required. Provider keys and the owner's account database are not included. Paid generation needs a separately coordinated budget; the current owner's shared test cap remains $20.
+For a fresh developer checkout, follow SETUP first: `npm ci`, Python dependencies and the private fixture ZIP included at `handoff/frontend-demo-fixtures.zip` are required. Provider keys and the owner's account database are not included. Paid generation needs a separately coordinated budget; the current owner's shared test cap remains $20.
 
 ## Core commands
 
