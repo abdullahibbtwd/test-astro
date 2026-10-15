@@ -10,7 +10,7 @@ import sys
 def main():
     if os.environ.get('ASTRO_ALLOW_PAID') != '1' or os.environ.get('ASTRO_ASK_ENABLED') != '1':
         raise RuntimeError('PA generation disabled')
-    root = Path(os.environ.get('ASTRO_PA_ROOT', Path(__file__).resolve().parents[2])).resolve()
+    root = Path(os.environ.get('ASTRO_PA_ROOT', Path(__file__).resolve().parents[1] / 'engine')).resolve()
     bridge = root / 'ask_bridge.py'
     if not bridge.is_file() or not (root / 'astrologist/pa_engine.py').is_file():
         raise RuntimeError('PA backend incomplete')

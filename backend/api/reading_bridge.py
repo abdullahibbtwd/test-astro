@@ -3,7 +3,9 @@ import sys
 import json
 import contextlib
 from datetime import datetime, timezone
-ROOT = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[2]
+ENGINE = Path(__file__).resolve().parents[1] / 'engine'
+ROOT = ENGINE  # engines + PA live under backend/engine
 for folder in ('', 'd_layer', 'principles_grounding', 'Interpretation_layer'):
     sys.path.insert(0, str(ROOT / folder))
 from budget import install_guard
@@ -13,7 +15,7 @@ def generate(data):
     import os
     if os.environ.get('ASTRO_ALLOW_PAID') != '1':
         raise RuntimeError('Paid generation is disabled')
-    budget = install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
+    budget = install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
     from ground import ground
     from l4_interpret import interpret
     import l4_render

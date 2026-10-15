@@ -4,7 +4,9 @@ import contextlib
 import json
 import sys
 from pathlib import Path
-ROOT = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[2]
+ENGINE = Path(__file__).resolve().parents[1] / 'engine'
+ROOT = ENGINE  # engines + PA live under backend/engine
 for folder in ('', 'd_layer', 'Astrocartography'):
     sys.path.insert(0, str(ROOT / folder))
 
@@ -27,7 +29,7 @@ def calculate(data):
         goal, scope = data['request']['goal'], data['request'].get('scope') or 'world'
         if scope != 'world' and not geo.country(scope):
             return {'invalid_scope': True}
-        products = build_chart_products(data['chart'], str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'map-products'), stages=Stages())
+        products = build_chart_products(data['chart'], str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'map-products'), stages=Stages())
         rec.set_parans(products['parans'])
         aff = ag.load_affinity()
         f = data['request'].get('filters') or {}
@@ -55,7 +57,7 @@ def calculate(data):
         meta = geo.country(code) if kind == 'country' else geo.region(code)
         if not meta:
             return {'missing': True}
-        products = build_chart_products(data['chart'], str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'map-products'), stages=Stages())
+        products = build_chart_products(data['chart'], str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'map-products'), stages=Stages())
         rec.set_parans(products['parans'])
         area = rec.area_view(kind, code, products['acg'], products['goal_scan'], ag.load_affinity())
         return {'area': area, 'regions': [r for r in geo.load_regions() if r['iso_a2'] == area.get('iso_a2')], 'footer': FOOTER}
@@ -65,7 +67,7 @@ def calculate(data):
         goal = data['goal']
         if goal not in acg_goals.GOAL_ORDER:
             raise ValueError('Unknown goal')
-        products = build_chart_products(data['chart'], str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'map-products'), stages=Stages())
+        products = build_chart_products(data['chart'], str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'map-products'), stages=Stages())
         if products['goal_scan'] is None:
             raise RuntimeError('Heat calculation unavailable')
         geo = acg_goals.heat_geojson(products['goal_scan'], goal)

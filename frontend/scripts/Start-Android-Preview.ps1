@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 if ($EnableReadings -and !$RealCharts) { throw 'EnableReadings requires RealCharts' }
 $frontend = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $project = (Resolve-Path (Join-Path $frontend '..')).Path
-$env:ASTRO_PA_ROOT = $project
+$env:ASTRO_PA_ROOT = Join-Path $project 'backend\engine'
 $env:ASTRO_ASK_ENABLED = if ($EnableAstrologist) { '1' } else { '0' }
 if ($EnableAstrologist) {
  if (!$RealCharts -or !$EnableReadings) { throw 'EnableAstrologist requires RealCharts and EnableReadings.' }

@@ -23,7 +23,7 @@ services:
       PORT: "4020"
       DATABASE_URL: postgres://astrology:astrology@db:5432/astrology
       PYTHON: /opt/venv/bin/python
-      ASTRO_PA_ROOT: /app
+      ASTRO_PA_ROOT: /app/backend/engine
       DATA_DIR: /app/backend/.local-data
       ASTRO_ALLOW_PAID: ${ASTRO_ALLOW_PAID:-0}
       ASTRO_PROGRESSIVE_READING: ${ASTRO_PROGRESSIVE_READING:-0}

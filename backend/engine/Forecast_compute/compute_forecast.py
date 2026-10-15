@@ -957,7 +957,8 @@ def compute_forecast(natal: dict, target_date, horizon: str, *,
 # YYYYMMDD-HHMMSS_<3char> scheme as natal/synastry runs. compute_forecast()
 # itself stays a pure function (like compute_chart); this helper does the I/O,
 # mirroring how run.py owns all writing for LAYER 1.
-_REPO_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+_ENGINE_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+_REPO_ROOT = os.path.normpath(os.path.join(_ENGINE_ROOT, "..", ".."))
 
 
 def write_forecast(forecast: dict, runs_dir: Optional[str] = None) -> str:

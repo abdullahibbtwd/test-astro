@@ -5,7 +5,9 @@ import sys
 import contextlib
 from pathlib import Path
 from datetime import date
-ROOT = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[2]
+ENGINE = Path(__file__).resolve().parents[1] / 'engine'
+ROOT = ENGINE  # engines + PA live under backend/engine
 sys.path.insert(0, str(ROOT))
 import run_calendar as calendar
 import cr_sections as labels
@@ -23,7 +25,7 @@ def compute(data):
     def geocoder(query):
         p = b['place'] if query == 'birth' else current
         return {'latitude':p['lat'], 'longitude':p['lon'], 'display_name':p['name']}
-    calendar.CAL_RUN = str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'calendar')
+    calendar.CAL_RUN = str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'calendar')
     result = calendar.run_calendar({'year':y,'month':m,'day':d,'hour':h,'minute':minute,'location':'birth','time_precision':'exact'},
         current_location='current', mode='all', start=date.fromisoformat(data['start']), dry_run=True, geocoder=geocoder)
     folder = Path(result['run_dir'])
@@ -32,10 +34,10 @@ def compute(data):
     periods = read('periods')['periods']
     horizon = read('personal_events')['horizon']
     years = list(range(int(horizon['from_local'][:4])-1,int(horizon['to_local'][:4])+2))
-    years = [year for year in years if (ROOT / f'cal_run/_collective/{year}.json').exists()]
+    years = [year for year in years if (REPO / f'cal_run/_collective/{year}.json').exists()]
     names = {}
     for year in years:
-        for event in json.loads((ROOT / f'cal_run/_collective/{year}.json').read_text(encoding='utf-8'))['events']:
+        for event in json.loads((REPO / f'cal_run/_collective/{year}.json').read_text(encoding='utf-8'))['events']:
             names[event['id']] = dict(zip(('tr','en'), labels.collective_label(event)))
     for event in events: names[event['id']] = dict(zip(('tr','en'), labels.event_label(event)))
     for period in periods: names[period['id']] = dict(zip(('tr','en'), labels.period_label(period['goal'],period['kind'])))

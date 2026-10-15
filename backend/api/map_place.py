@@ -7,8 +7,9 @@ def prepare_place(data):
     import ground_acg as ga
     import ar_routing
     from pathlib import Path
-    root = Path(__file__).resolve().parents[2]
-    products = build_chart_products(data['chart'], str(Path(os.environ.get('DATA_DIR', str(root / 'backend' / '.local-data'))) / 'map-products'), stages=Stages(), with_goal_scan=False)
+    repo = Path(__file__).resolve().parents[2]
+    root = Path(__file__).resolve().parents[1] / 'engine'
+    products = build_chart_products(data['chart'], str(Path(os.environ.get('DATA_DIR', str(repo / 'backend' / '.local-data'))) / 'map-products'), stages=Stages(), with_goal_scan=False)
     place = data['place']
     location = {**place, 'name_tr': place['name'], 'source': 'gazetteer' if place['place_id'] else 'manual'}
     loc, relocated = al.build_locate(products['acg'], data['chart'], location, parans=products['parans'])

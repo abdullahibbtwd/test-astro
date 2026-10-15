@@ -30,13 +30,16 @@ import time
 from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
-REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+ENGINE_ROOT = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(os.path.dirname(ENGINE_ROOT))  # repo root (Chart_wheel, run caches)
+# Layer packages live under backend/engine; keep ENGINE as the import root.
+_ENGINE = ENGINE_ROOT
 for _p in ("Calendar", "calendar_reading", "d_layer", "Astrocartography"):
-    _full = os.path.join(REPO_ROOT, _p)
+    _full = os.path.join(ENGINE_ROOT, _p)
     if _full not in sys.path:
         sys.path.insert(0, _full)
-if REPO_ROOT not in sys.path:
-    sys.path.insert(0, REPO_ROOT)
+if ENGINE_ROOT not in sys.path:
+    sys.path.insert(0, ENGINE_ROOT)
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 

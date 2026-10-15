@@ -34,7 +34,7 @@ COPY . .
 
 ENV PATH="/opt/venv/bin:/usr/local/bin:$PATH"
 ENV PYTHON=/opt/venv/bin/python
-ENV ASTRO_PA_ROOT=/app
+ENV ASTRO_PA_ROOT=/app/backend/engine
 ENV DATA_DIR=/app/backend/.local-data
 ENV HOST=0.0.0.0
 ENV PORT=4020

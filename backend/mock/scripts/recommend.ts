@@ -42,7 +42,7 @@ export function mapRecommendation(
     raw.regions = [];
   }
   const dest = new Map(
-    read("Astrocartography/destinations.json").destinations.map((p: any) => [
+    read("backend/engine/Astrocartography/destinations.json").destinations.map((p: any) => [
       p.id,
       p,
     ]),
@@ -160,7 +160,7 @@ export function linePlaces(root: string, lang: Lang, cat: Catalogue) {
     JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
   const raw = read("acg_run/20260929-105635_kgc/city_scan_1979-03-30.json");
   const gaz = new Map(
-    read("Astrocartography/gazetteer.json").cities.map((c: any) => [c.id, c]),
+    read("backend/engine/Astrocartography/gazetteer.json").cities.map((c: any) => [c.id, c]),
   );
   return Object.fromEntries(
     Object.entries(raw.by_line).map(([key, rows]: any) => {

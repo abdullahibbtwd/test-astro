@@ -42,9 +42,9 @@ def main():
     elif not a.dry_run:
         import llm_client
         import os
-        sys.path.insert(0,str(ROOT/'backend'/'api'))
+        sys.path.insert(0,str(ROOT.parent/'api'))
         from budget import install_guard
-        data = Path(os.environ['DATA_DIR']) if os.environ.get('DATA_DIR') else ROOT/'backend'/'.local-data'
+        data = Path(os.environ['DATA_DIR']) if os.environ.get('DATA_DIR') else ROOT.parent/'.local-data'
         install_guard(llm_client,str(data/'ai-budget.sqlite'))
         complete=llm_client.complete
     history=[];context=json.loads(a.context);last_audit={};number=0

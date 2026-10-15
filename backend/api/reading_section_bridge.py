@@ -4,7 +4,9 @@ import json
 import os
 import sys
 from pathlib import Path
-ROOT = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[2]
+ENGINE = Path(__file__).resolve().parents[1] / 'engine'
+ROOT = ENGINE  # engines + PA live under backend/engine
 sys.path[:0] = [str(ROOT), str(ROOT / 'astrologist')]
 import _paths
 from profile_dossier import Dossier, DEFAULT_ROOT
@@ -46,7 +48,7 @@ def run(data, *, dossier=None, generator=None):
             raise RuntimeError('Paid generation is disabled')
         import llm_client
         from budget import install_guard
-        install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
+        install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
         from l4_generate import LLMGenerator
         generator = LLMGenerator()
     if op == 'section':

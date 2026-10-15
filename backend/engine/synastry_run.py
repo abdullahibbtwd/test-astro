@@ -31,13 +31,16 @@ import os
 import sys
 from datetime import datetime, timezone
 
-REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+ENGINE_ROOT = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(os.path.dirname(ENGINE_ROOT))  # repo root (Chart_wheel, run caches)
+# Layer packages live under backend/engine; keep ENGINE as the import root.
+_ENGINE = ENGINE_ROOT
 
 # The synastry reading modules live in synastry_reading/ and import each other by
 # bare name; put that dir on sys.path before importing them. run.py (imported
 # below) already inserts d_layer / principles_grounding / Interpretation_layer.
 for _d in ("d_layer", "principles_grounding", "synastry_reading", "Interpretation_layer"):
-    _p = os.path.join(REPO_ROOT, _d)
+    _p = os.path.join(ENGINE_ROOT, _d)
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -52,7 +55,7 @@ from run import (  # noqa: E402
 # Relationship corpus: the analogue of all_principles.grounded.json (§2). The
 # TAGGED corpus — every record carries `synastry.contexts` — is required for the
 # reading-type fork; grounding's E6 invariant hard-fails on an untagged corpus.
-REL_CORPUS_PATH = os.path.join(REPO_ROOT, "principles_grounding",
+REL_CORPUS_PATH = os.path.join(ENGINE_ROOT, "principles_grounding",
                                "combined_relationship_principles_tagged.json")
 SYN_RUNS_DIR = os.path.join(REPO_ROOT, "synastry_run")
 

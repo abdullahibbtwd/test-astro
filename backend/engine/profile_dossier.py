@@ -25,7 +25,7 @@ import pa_dossier
 from l4_progressive import prepare, routed_for
 from l4_routing import route, RoutingResult
 
-DEFAULT_ROOT = ROOT / 'backend/.local-data/dossier'
+DEFAULT_ROOT = ROOT.parent / '.local-data' / 'dossier'
 _LOCKS = {}
 _LOCKS_GUARD = threading.Lock()
 

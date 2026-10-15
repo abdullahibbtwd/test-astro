@@ -18,7 +18,8 @@ from typing import Optional
 import cal_astro as A
 import cal_constants as K
 
-REPO_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+ENGINE_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+REPO_ROOT = os.path.normpath(os.path.join(ENGINE_ROOT, "..", ".."))  # astrology-app root
 COLLECTIVE_DIR = os.path.join(REPO_ROOT, "cal_run", "_collective")
 
 _MOON_STEP = 0.25                  # Moon is monotonic; 6 h < 30° / max relative speed

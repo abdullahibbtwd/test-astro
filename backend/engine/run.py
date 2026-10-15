@@ -39,18 +39,21 @@ import string
 import sys
 from datetime import datetime, timezone
 
-REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+ENGINE_ROOT = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(os.path.dirname(ENGINE_ROOT))  # repo root (Chart_wheel, run caches)
+# Layer packages live under backend/engine; keep ENGINE as the import root.
+_ENGINE = ENGINE_ROOT
 
 # Insert each layer's directory onto sys.path BEFORE importing it: every layer
 # module computes paths relative to its own __file__ and imports sibling modules
 # (ground imports grounding_schema; l4_interpret imports l4_generate/l4_routing/...).
 _LAYER_DIRS = ("d_layer", "principles_grounding", "Interpretation_layer", "Eval_harness")
 for _d in _LAYER_DIRS:
-    _p = os.path.join(REPO_ROOT, _d)
+    _p = os.path.join(ENGINE_ROOT, _d)
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-CORPUS_PATH = os.path.join(REPO_ROOT, "principles_grounding",
+CORPUS_PATH = os.path.join(ENGINE_ROOT, "principles_grounding",
                            "all_principles.grounded.json")
 RUNS_DIR = os.path.join(REPO_ROOT, "runs")
 GEOCODER_USER_AGENT = "astrology-app-orchestrator/1.0 (natal chart pipeline)"

@@ -4,7 +4,9 @@ import json
 import os
 import sys
 from pathlib import Path
-ROOT = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[2]
+ENGINE = Path(__file__).resolve().parents[1] / 'engine'
+ROOT = ENGINE  # engines + PA live under backend/engine
 sys.path.insert(0, str(ROOT))
 import run_acg  # approved module search paths
 from budget import install_guard
@@ -20,7 +22,7 @@ def generate(data):
             raise RuntimeError('Dry-run must not call models')
         llm_client.complete = no_models
     else:
-        install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
+        install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
     from ar_generate import DEFAULT_MODEL, DEFAULT_TRANSLATION_MODEL
     models = {'model': DEFAULT_MODEL, 'synthesis': DEFAULT_MODEL, 'translation': DEFAULT_TRANSLATION_MODEL}
     context, chart = data['context'], data['chart']
@@ -52,7 +54,7 @@ def generate(data):
     import acg_views as views
     import ar_recommend
     import ar_overall
-    products = run_acg.build_chart_products(chart, str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'map-products'), stages=run_acg.Stages())
+    products = run_acg.build_chart_products(chart, str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'map-products'), stages=run_acg.Stages())
     products['natal'] = chart
     saved = {}
     def write(name, obj, **kwargs):

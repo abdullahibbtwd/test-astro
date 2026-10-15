@@ -5,7 +5,9 @@ import os
 import sys
 from pathlib import Path
 from datetime import date
-ROOT = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[2]
+ENGINE = Path(__file__).resolve().parents[1] / 'engine'
+ROOT = ENGINE  # engines + PA live under backend/engine
 for folder in ('', 'd_layer', 'Forecast_compute', 'principles_grounding', 'prediction_reading'):
     sys.path.insert(0, str(ROOT / folder))
 from budget import install_guard
@@ -39,7 +41,7 @@ def generate(data):
         def no_models(*args, **kwargs):
             raise RuntimeError('Dry-run must not call models')
         llm_client.complete = no_models
-    budget = None if dry else install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
+    budget = None if dry else install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
     grounded, calendar = prepare(data)
     import pr_calendar
     result = {'context': data['context'], 'from': str(pr_calendar.window_dates(grounded)[0]),

@@ -37,9 +37,9 @@ Chart_wheel/wheel-light.svg
 Chart_wheel/wheel-dark.svg
 
 # --- Personal readings / charts scattered in module folders (privacy) ---
-Interpretation_layer/NIa/
-Interpretation_layer/Radul/
-Interpretation_layer/test/*.pdf
+backend/engine/Interpretation_layer/NIa/
+backend/engine/Interpretation_layer/Radul/
+backend/engine/Interpretation_layer/test/*.pdf
 **/personal_principles.json
 # Generated charts contain real birth data
 **/chart.json
@@ -52,15 +52,15 @@ Interpretation_layer/test/*.pdf
 **/relationship_reading_routing.json
 **/relationship_reading.*.txt
 **/relationship_statements.json
-principles_grounding/relationship_extracted/
-principles_grounding/relationships_chunks/
+backend/engine/principles_grounding/relationship_extracted/
+backend/engine/principles_grounding/relationships_chunks/
 
 # --- Generated reading artifacts (not source) ---
-Interpretation_layer/l4_output.json
-Interpretation_layer/l4_routing_report.json
-Interpretation_layer/l4_reading.*.txt
-Interpretation_layer/test/l4_output.json
-Interpretation_layer/test/l4_reading.*.txt
+backend/engine/Interpretation_layer/l4_output.json
+backend/engine/Interpretation_layer/l4_routing_report.json
+backend/engine/Interpretation_layer/l4_reading.*.txt
+backend/engine/Interpretation_layer/test/l4_output.json
+backend/engine/Interpretation_layer/test/l4_reading.*.txt
 
 # --- Generated reports / rejected sets / checksums / scratch ---
 **/grounding_report.json
@@ -70,8 +70,8 @@ Interpretation_layer/test/l4_reading.*.txt
 **/*.sha256
 *.zip
 **/err.txt
-d_layer/out.json
-d_layer/test/out.json
+backend/engine/d_layer/out.json
+backend/engine/d_layer/test/out.json
 
 # --- OS / editor ---
 .DS_Store
@@ -84,33 +84,33 @@ Thumbs.db
 
 # --- Local-only: contracts, build logs, one-off corpus backups ---
 Contracts/
-Astrocartography/*.log
-!Astrocartography/build_gazetteer.log
+backend/engine/Astrocartography/*.log
+!backend/engine/Astrocartography/build_gazetteer.log
 **/*.bak-pre-*
 
 # --- Corpus build intermediates (regenerable by the principles_grounding pipeline; kept locally) ---
-principles_grounding/all_principles_grounded_reclassified.json
-principles_grounding/combined_relationship_principles.clean.json
-principles_grounding/relationship_principles.clean.json
-principles_grounding/relationship_natal_principles.clean.json
-principles_grounding/predictive_delta.clean.json
-principles_grounding/predictive_delta.backfill_report.json
-principles_grounding/houses_delta.raw.json
-principles_grounding/houses_delta.clean.json
-principles_grounding/houses_delta.grounded.json
-principles_grounding/houses_delta.merge_report.json
-principles_grounding/houses_delta.near_dupes_review.json
-principles_grounding/acg_consolidation_report.json
-principles_grounding/acg_goal_tagging_report.json
-principles_grounding/transit_goal_tagging_report.json
-principles_grounding/validation_report.merged.json
+backend/engine/principles_grounding/all_principles_grounded_reclassified.json
+backend/engine/principles_grounding/combined_relationship_principles.clean.json
+backend/engine/principles_grounding/relationship_principles.clean.json
+backend/engine/principles_grounding/relationship_natal_principles.clean.json
+backend/engine/principles_grounding/predictive_delta.clean.json
+backend/engine/principles_grounding/predictive_delta.backfill_report.json
+backend/engine/principles_grounding/houses_delta.raw.json
+backend/engine/principles_grounding/houses_delta.clean.json
+backend/engine/principles_grounding/houses_delta.grounded.json
+backend/engine/principles_grounding/houses_delta.merge_report.json
+backend/engine/principles_grounding/houses_delta.near_dupes_review.json
+backend/engine/principles_grounding/acg_consolidation_report.json
+backend/engine/principles_grounding/acg_goal_tagging_report.json
+backend/engine/principles_grounding/transit_goal_tagging_report.json
+backend/engine/principles_grounding/validation_report.merged.json
 
 # Local Android preview tooling
 .tooling/
 
 # Private Personal Astrologist runs and deterministic caches
 ask_run/
-astrologist/eval/
+backend/engine/astrologist/eval/
 
 # Deliberately ship the validated demo fixture pack in the private handoff.
 !fixtures/frontend-demo-fixtures.zip

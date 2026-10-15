@@ -1,14 +1,15 @@
 """Deterministic area facts from the existing scan; no network or language-model calls."""
 import sys,json,hashlib
 from pathlib import Path
-root=Path(__file__).resolve().parents[3]
-sys.path.insert(0,str(root/'Astrocartography'))
+repo=Path(__file__).resolve().parents[3]
+engine=repo/'backend'/'engine'
+sys.path.insert(0,str(engine/'Astrocartography'))
 from acg_recommend import area_view
 from acg_goals import load_scan,load_affinity
 from acg_geodata import load_regions,load_countries
-run=root/'acg_run/20260929-105635_kgc'
-cache=root/'backend/mock/fixtures/_area-source.json'
-inputs=[run/'acg_1979-03-30.json',run/'goal_scan_1979-03-30.npz',*sorted((root/'Astrocartography').glob('acg_*.py')),Path(__file__)]
+run=repo/'acg_run/20260929-105635_kgc'
+cache=repo/'backend/mock/fixtures/_area-source.json'
+inputs=[run/'acg_1979-03-30.json',run/'goal_scan_1979-03-30.npz',*sorted((engine/'Astrocartography').glob('acg_*.py')),Path(__file__)]
 key=hashlib.sha256(b''.join(p.read_bytes() for p in inputs)).hexdigest()
 if cache.exists():
  old=json.loads(cache.read_text(encoding='utf-8'))

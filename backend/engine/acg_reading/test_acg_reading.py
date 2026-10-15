@@ -389,7 +389,9 @@ def test_o4_high_latitude(dirs):
 def test_o5_folder_pattern_and_gitignore(dirs):
     m = _run({"birth": BIRTH}, dirs)
     assert re.fullmatch(r"\d{8}-\d{6}_[a-z0-9]{3}", os.path.basename(m["run_dir"]))
-    with open(os.path.join(_ROOT, ".gitignore"), encoding="utf-8") as fh:
+    # Engines live under backend/engine/; acg_run/ is ignored at the repo root.
+    repo = os.path.dirname(os.path.dirname(_ROOT))
+    with open(os.path.join(repo, ".gitignore"), encoding="utf-8") as fh:
         assert "acg_run/" in fh.read().split()
 
 

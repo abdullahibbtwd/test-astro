@@ -86,7 +86,7 @@ $env:ASTRO_ALLOW_PAID = '0'
 $env:ASTRO_ASK_ENABLED = '0'
 $env:ASTRO_GUEST_ONBOARDING = '0'
 $env:ASTRO_PROGRESSIVE_READING = '0'
-$env:ASTRO_PA_ROOT = (Resolve-Path '..').Path
+$env:ASTRO_PA_ROOT = (Resolve-Path '.\engine').Path
 # Optional; defaults to backend/.local-data
 # $env:DATA_DIR = (Resolve-Path '.\.local-data').Path
 npm run local-api

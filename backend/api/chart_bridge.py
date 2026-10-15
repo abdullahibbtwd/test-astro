@@ -5,7 +5,9 @@ from pathlib import Path
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-ROOT = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[2]
+ENGINE = Path(__file__).resolve().parents[1] / 'engine'
+ROOT = ENGINE  # engines + PA live under backend/engine
 sys.path.insert(0, str(ROOT / "d_layer"))
 from compute_chart import BirthData, compute_chart, resolve_timezone
 

@@ -39,14 +39,17 @@ import time
 from datetime import datetime, timezone
 from typing import Optional
 
-REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+ENGINE_ROOT = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(os.path.dirname(ENGINE_ROOT))  # repo root (Chart_wheel, run caches)
+# Layer packages live under backend/engine; keep ENGINE as the import root.
+_ENGINE = ENGINE_ROOT
 for _d in ("d_layer", "principles_grounding", "Astrocartography", "acg_reading",
            "Interpretation_layer"):
-    _p = os.path.join(REPO_ROOT, _d)
+    _p = os.path.join(ENGINE_ROOT, _d)
     if _p not in sys.path:
         sys.path.insert(0, _p)
-if REPO_ROOT not in sys.path:
-    sys.path.insert(0, REPO_ROOT)
+if ENGINE_ROOT not in sys.path:
+    sys.path.insert(0, ENGINE_ROOT)
 
 import run  # noqa: E402
 from run import _write_json, suffixed  # noqa: E402
@@ -104,7 +107,7 @@ def _file_sha(path: str) -> Optional[str]:
 
 def chart_cache_key(acg_meta: dict, corpus_sha: Optional[str], affinity_sha: Optional[str]) -> str:
     """07 §8 key (jd_ut, flags, corpus, affinity) + the gazetteer and grid the scans read."""
-    acg_dir = os.path.join(REPO_ROOT, "Astrocartography")
+    acg_dir = os.path.join(ENGINE_ROOT, "Astrocartography")
     return _sha({"jd_ut": acg_meta.get("jd_ut"), "flags": acg_meta.get("flags"),
                  "node_type": acg_meta.get("node_type"), "corpus": corpus_sha,
                  "affinity": affinity_sha,
@@ -458,7 +461,7 @@ def _reading_code_version() -> str:
     """Hash of the reading layer's source: a prompt or validator change invalidates
     cached readings."""
     h = hashlib.sha256()
-    rdir = os.path.join(REPO_ROOT, "acg_reading")
+    rdir = os.path.join(ENGINE_ROOT, "acg_reading")
     for name in sorted(os.listdir(rdir)):
         if name.startswith("ar_") and name.endswith(".py"):
             with open(os.path.join(rdir, name), "rb") as fh:

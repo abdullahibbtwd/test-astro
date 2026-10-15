@@ -24,10 +24,10 @@ def main():
         with contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):
             from pa_engine import answer_turn,prewarm
             if payload.get('op')=='turn':
-                sys.path.insert(0,str(Path(__file__).resolve().parent/'backend'/'api'))
+                sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'api'))
                 import llm_client
                 from budget import install_guard
-                data = Path(os.environ['DATA_DIR']) if os.environ.get('DATA_DIR') else Path(__file__).resolve().parent/'backend'/'.local-data'
+                data = Path(os.environ['DATA_DIR']) if os.environ.get('DATA_DIR') else Path(__file__).resolve().parents[1]/'.local-data'
                 install_guard(llm_client,str(data/'ai-budget.sqlite'))
                 for event in answer_turn(payload['request'],cancel): emit(event)
             elif payload.get('op')=='prewarm': emit({'event':'prewarm','data':prewarm(payload['subject'])})

@@ -4,7 +4,9 @@ import json
 import os
 import sys
 from pathlib import Path
-ROOT = Path(__file__).resolve().parents[2]
+REPO = Path(__file__).resolve().parents[2]
+ENGINE = Path(__file__).resolve().parents[1] / 'engine'
+ROOT = ENGINE  # engines + PA live under backend/engine
 for folder in ('', 'd_layer', 'principles_grounding', 'synastry_reading', 'Interpretation_layer'):
     sys.path.insert(0, str(ROOT / folder))
 from budget import install_guard
@@ -21,7 +23,7 @@ def generate(data):
         def no_models(*args, **kwargs):
             raise RuntimeError('Dry-run must not call models')
         llm_client.complete = no_models
-    budget = None if dry else install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(ROOT / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
+    budget = None if dry else install_guard(llm_client, str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'ai-budget.sqlite'))
     from ground_relationship import ground_relationship
     corpus = json.loads((ROOT / 'principles_grounding/combined_relationship_principles_tagged.json').read_text(encoding='utf-8'))
     for record in corpus:

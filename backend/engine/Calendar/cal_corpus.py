@@ -26,8 +26,9 @@ from functools import lru_cache
 
 import cal_constants as K
 
-REPO_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-CORPUS_PATH = os.path.join(REPO_ROOT, "principles_grounding",
+ENGINE_ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+REPO_ROOT = os.path.normpath(os.path.join(ENGINE_ROOT, "..", ".."))  # astrology-app root
+CORPUS_PATH = os.path.join(ENGINE_ROOT, "principles_grounding",
                            "all_principles_grounded.with_predictive.json")
 
 _PL = "sun|moon|mercury|venus|mars|jupiter|saturn|uranus|neptune|pluto"

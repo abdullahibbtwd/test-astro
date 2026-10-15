@@ -42,12 +42,15 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+ENGINE_ROOT = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(os.path.dirname(ENGINE_ROOT))  # repo root (Chart_wheel, run caches)
+# Layer packages live under backend/engine; keep ENGINE as the import root.
+_ENGINE = ENGINE_ROOT
 
 # Each layer computes paths relative to its own __file__ and imports siblings by
 # bare name; put every stage's dir on sys.path before importing them.
 for _d in ("d_layer", "principles_grounding", "Forecast_compute", "prediction_reading"):
-    _p = os.path.join(REPO_ROOT, _d)
+    _p = os.path.join(ENGINE_ROOT, _d)
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -61,7 +64,7 @@ from run import (  # noqa: E402
 
 # The merged corpus the predictive grounding runs against (spec §6). Named with a
 # dot, not the underscore the manifest example uses — this is the real file.
-CORPUS_PATH = os.path.join(REPO_ROOT, "principles_grounding",
+CORPUS_PATH = os.path.join(ENGINE_ROOT, "principles_grounding",
                            "all_principles_grounded.with_predictive.json")
 # Predictive runs get their own folder (like synastry_run/), one subfolder per run.
 PRED_RUNS_DIR = os.path.join(REPO_ROOT, "prediction_run")

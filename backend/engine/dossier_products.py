@@ -4,9 +4,16 @@ from pathlib import Path
 import tempfile
 from profile_dossier import ROOT, digest, file_hash
 
+REPO = ROOT.parent.parent  # astrology-app root (Chart_wheel stays here)
+
 
 def versions(*files):
-    return {'code': file_hash(*(ROOT / f for f in files))}
+    return {
+        'code': file_hash(*(
+            (REPO / f if str(f).startswith('Chart_wheel/') else ROOT / f)
+            for f in files
+        ))
+    }
 
 
 def get_product(dossier, key, name, anchor=None):
