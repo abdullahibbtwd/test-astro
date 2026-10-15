@@ -108,6 +108,9 @@ backend/engine/principles_grounding/validation_report.merged.json
 # Local Android preview tooling
 .tooling/
 
+# Code graph / analysis output (local regenerable)
+graphify-out/
+
 # Private Personal Astrologist runs and deterministic caches
 ask_run/
 backend/engine/astrologist/eval/
