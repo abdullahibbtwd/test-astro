@@ -5,7 +5,7 @@ import { fileURLToPath, URL } from "node:url";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
 import { mapRecommendation } from "../mock/scripts/recommend";
-import { fixture } from "../mock/fixtures";
+import { defaults } from "./defaults";
 import { validate } from "../../frontend/src/api/zod";
 import type {
   BirthProfile,
@@ -193,7 +193,7 @@ export class MapJobs {
                 const mapped = mapRecommendation(
                   fileURLToPath(new URL("../../", import.meta.url)),
                   language,
-                  fixture(`catalogue.${language}`),
+                  defaults(`catalogue.${language}`),
                   output.raw,
                 );
                 const identifiers = (v: any) => [

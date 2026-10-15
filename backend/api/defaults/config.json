@@ -1,0 +1,35 @@
+{
+  "min_app_version": {
+    "ios": "0.1.0",
+    "android": "0.1.0"
+  },
+  "flags": {
+    "askAstrology": true,
+    "solarReturn": false,
+    "familyCompatibility": false,
+    "compatibilityScore": false,
+    "homeEnergyTile": false,
+    "dayScoreNumbers": true,
+    "elementNotes": false,
+    "showTraces": false
+  },
+  "polling": {
+    "initial_ms": [
+      1000,
+      2000,
+      3000
+    ],
+    "interval_ms": 4000,
+    "slow_after_s": 180,
+    "give_up_after_s": 600
+  },
+  "map_style_url": {
+    "light": "",
+    "dark": ""
+  },
+  "links": {
+    "privacy": "",
+    "terms": "",
+    "support": ""
+  }
+}

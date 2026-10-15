@@ -1,0 +1,260 @@
+{
+  "version": "fe-v1",
+  "lang": "en",
+  "bodies": {
+    "sun": "Sun",
+    "moon": "Moon",
+    "mercury": "Mercury",
+    "venus": "Venus",
+    "mars": "Mars",
+    "jupiter": "Jupiter",
+    "saturn": "Saturn",
+    "uranus": "Uranus",
+    "neptune": "Neptune",
+    "pluto": "Pluto",
+    "north_node": "North Node",
+    "south_node": "South Node"
+  },
+  "signs": {
+    "aries": "Aries",
+    "taurus": "Taurus",
+    "gemini": "Gemini",
+    "cancer": "Cancer",
+    "leo": "Leo",
+    "virgo": "Virgo",
+    "libra": "Libra",
+    "scorpio": "Scorpio",
+    "sagittarius": "Sagittarius",
+    "capricorn": "Capricorn",
+    "aquarius": "Aquarius",
+    "pisces": "Pisces"
+  },
+  "houses": {
+    "1": {
+      "ordinal": "House 1",
+      "name": "Identity"
+    },
+    "2": {
+      "ordinal": "House 2",
+      "name": "Values and Money"
+    },
+    "3": {
+      "ordinal": "House 3",
+      "name": "Communication, Studying, Siblings"
+    },
+    "4": {
+      "ordinal": "House 4",
+      "name": "Family and Home"
+    },
+    "5": {
+      "ordinal": "House 5",
+      "name": "Joy, Artistic Talents and Kids"
+    },
+    "6": {
+      "ordinal": "House 6",
+      "name": "Health, Routine, Pets"
+    },
+    "7": {
+      "ordinal": "House 7",
+      "name": "Partnerships"
+    },
+    "8": {
+      "ordinal": "House 8",
+      "name": "Transformation and Intimacy"
+    },
+    "9": {
+      "ordinal": "House 9",
+      "name": "Distant Travels and Philosophy"
+    },
+    "10": {
+      "ordinal": "House 10",
+      "name": "Social Status and Vocation"
+    },
+    "11": {
+      "ordinal": "House 11",
+      "name": "Friendships and the Future"
+    },
+    "12": {
+      "ordinal": "House 12",
+      "name": "Subconscious and Solitary"
+    }
+  },
+  "angles": {
+    "ASC": {
+      "short": "AC",
+      "name": "Ascendant",
+      "line": "Rising line"
+    },
+    "DSC": {
+      "short": "DC",
+      "name": "Descendant",
+      "line": "Setting line"
+    },
+    "MC": {
+      "short": "MC",
+      "name": "Midheaven",
+      "line": "Culminating line"
+    },
+    "IC": {
+      "short": "IC",
+      "name": "IC",
+      "line": "Lower line"
+    }
+  },
+  "aspects": {
+    "conjunction": "Conjunction",
+    "sextile": "Sextile",
+    "square": "Square",
+    "trine": "Trine",
+    "opposition": "Opposition"
+  },
+  "goals": {
+    "love": "Love",
+    "career": "Career",
+    "business": "Business",
+    "money": "Money",
+    "family": "Family",
+    "education": "Education",
+    "creativity": "Creativity",
+    "spirituality": "Spiritual Growth",
+    "rest": "Rest",
+    "travel": "Travel",
+    "relocation": "Permanent Relocation"
+  },
+  "day_bands": {
+    "strongly_supportive": "Strongly supportive",
+    "supportive": "Supportive",
+    "quiet": "Quiet",
+    "mixed": "Mixed",
+    "challenging": "Challenging",
+    "strongly_challenging": "Strongly challenging"
+  },
+  "place_bands": {
+    "strongly_supportive": "Strongly supportive",
+    "supportive": "Supportive",
+    "mixed": "Mixed",
+    "no_emphasis": "No clear emphasis",
+    "challenging": "Challenging"
+  },
+  "tones": {
+    "favorable": "Supportive",
+    "quiet": "Quiet",
+    "mixed": "Mixed",
+    "challenging": "Challenging"
+  },
+  "grades": {
+    "excellent": "Excellent",
+    "good": "Good",
+    "neutral": "Neutral",
+    "avoid": "Avoid"
+  },
+  "activities": {
+    "love": "Love",
+    "meetings": "Meetings",
+    "business": "Business",
+    "contract": "Signing a contract",
+    "conversation": "Important conversation",
+    "travel": "Travel",
+    "shopping": "Shopping",
+    "project_start": "Starting a project",
+    "interview": "Job interview",
+    "moving": "Moving"
+  },
+  "lenses": {
+    "general": "General",
+    "personal": "Love & relationships",
+    "professional": "Work & career"
+  },
+  "lens_focus_titles": {
+    "general": "Focus of the period",
+    "personal": "Love & relationships",
+    "professional": "Work & career"
+  },
+  "compat_types": {
+    "love": "Love",
+    "family": "Family",
+    "work": "Work"
+  },
+  "family_relations": {
+    "parent_child": "Parent and child",
+    "siblings": "Siblings",
+    "other": "Other"
+  },
+  "relations": {
+    "self": "You",
+    "partner": "Partner",
+    "child": "Child",
+    "parent": "Parent",
+    "family": "Family",
+    "friend": "Friend",
+    "colleague": "Colleague",
+    "business_partner": "Business partner",
+    "other": "Other"
+  },
+  "moon_phases": {
+    "new": "New Moon",
+    "waxing_crescent": "Waxing crescent",
+    "first_quarter": "First quarter",
+    "waxing_gibbous": "Waxing gibbous",
+    "full": "Full Moon",
+    "waning_gibbous": "Waning gibbous",
+    "last_quarter": "Last quarter",
+    "waning_crescent": "Waning crescent"
+  },
+  "transit_phases": {
+    "building": "Building",
+    "peak": "Peak",
+    "easing": "Easing"
+  },
+  "tiers": {
+    "tight": "Very close",
+    "strong": "Close",
+    "wide": "Distant range"
+  },
+  "notification_types": {
+    "favorable_window": "Supportive days",
+    "period_start": "Period start",
+    "lunation_in_house": "Moon cycles",
+    "retrograde_start": "Retrograde start",
+    "station_on_point": "Planetary stations",
+    "eclipse_hit": "Eclipses"
+  },
+  "recommend_regions": {
+    "europe": "Europe",
+    "turkey": "Turkey",
+    "mediterranean": "Mediterranean",
+    "middle_east_gulf": "Middle East & Gulf",
+    "caucasus": "Caucasus",
+    "americas": "Americas",
+    "east_asia": "East Asia",
+    "south_southeast_asia": "South & Southeast Asia",
+    "oceania": "Oceania",
+    "central_asia": "Central Asia"
+  },
+  "city_sizes": {
+    "big": "Big",
+    "mid": "Mid-size",
+    "small": "Small"
+  },
+  "climates": {
+    "warm": "Warm",
+    "mild": "Mild",
+    "cold": "Cold"
+  },
+  "purposes": {
+    "living": "Living",
+    "travel": "Travel",
+    "both": "Both"
+  },
+  "terms": {
+    "retrograde": "Retrograde",
+    "void_of_course": "Void-of-course Moon",
+    "new_moon": "New Moon",
+    "full_moon": "Full Moon",
+    "solar_eclipse": "Solar eclipse",
+    "lunar_eclipse": "Lunar eclipse",
+    "solar_return": "Solar Return",
+    "rising": "Rising",
+    "big_three": "Big three"
+  }
+}

@@ -3,7 +3,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
 import { forecastSegments } from "./forecast";
-import { fixture } from "../mock/fixtures";
+import { defaults } from "./defaults";
 import type {
   BirthProfile,
   ReportRef,
@@ -147,7 +147,7 @@ export class ForecastJobs {
         type:
           context.horizon === "month" ? "forecast_month" : "forecast_year",
         title: `${kind} · ${title}`,
-        subtitle: `${p.label} · ${fixture(`catalogue.${lang}`).lenses[context.lens]}`,
+        subtitle: `${p.label} · ${defaults(`catalogue.${lang}`).lenses[context.lens]}`,
         profile_id: p.profile_id,
         created_at,
         route: `/ahead?view=${context.horizon}&profile=${encodeURIComponent(p.profile_id)}&month=${month}&lens=${context.lens}`,
@@ -176,7 +176,7 @@ export class ForecastJobs {
         : {
             status: "ready",
             ...cached[lang],
-            focus_title: fixture(`catalogue.${lang}`).lens_focus_titles[
+            focus_title: defaults(`catalogue.${lang}`).lens_focus_titles[
               context.lens
             ],
           };

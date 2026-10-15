@@ -23,7 +23,7 @@ import { ReadingJobs } from "./reading-jobs";
 import { Store, SYSTEM_TENANT } from "./store";
 import { bridge, computeBirthChart as defaultBirthChart } from "./engine";
 import { dataDir } from "./data-dir";
-import { fixture } from "../mock/fixtures";
+import { defaults } from "./defaults";
 import { endpoints } from "../../frontend/scripts/endpoints";
 import { validate, schemas } from "../../frontend/src/api/zod";
 import type { BirthProfile, Me } from "../../frontend/contracts/spec-types";
@@ -120,9 +120,9 @@ export async function buildLocalApp({
   const now = () => new Date().toISOString();
   const initializeAccount = async (tenantId: string, email = "") => {
     const me: Me = {
-      ...fixture("me.en"),
+      ...defaults("me.en"),
       user_id: tenantId,
-      email: email || fixture("me.en").email,
+      email: email || defaults("me.en").email,
       display_name: "",
       self_profile_id: null,
       current_place: null,
@@ -464,14 +464,14 @@ export async function buildLocalApp({
           let result: any;
           switch (`${endpoint.method} ${endpoint.path}`) {
             case "get /meta/config":
-              result = fixture("config");
+              result = defaults("config");
               result.flags.askAstrology = ask.enabled();
               result.flags.guestOnboarding = guestOnboarding && allowPaid;
               result.flags.familyCompatibility = false;
               result.flags.solarReturn = false;
               break;
             case "get /meta/catalogue":
-              result = fixture(`catalogue.${lang}`);
+              result = defaults(`catalogue.${lang}`);
               break;
             // Demo credentials are accepted only when real authentication has never been enabled.
             case "post /auth/email/start":
@@ -874,16 +874,12 @@ export async function buildLocalApp({
               );
               break;
             case "get /geo/countries.geojson":
-              result = fixture("geo-countries-simple");
+              result = defaults("geo-countries-simple");
               break;
             case "get /geo/regions/{iso2}.geojson":
               if (!/^[A-Z]{2}$/.test(p.iso2 ?? "")) throw issue(400);
-              try {
-                result = fixture(`geo-regions.${p.iso2}`);
-              } catch {
-                throw issue(404);
-              }
-              break;
+              // Region outlines stay in the optional mock fixture pack, not API defaults.
+              throw issue(404);
             case "get /profiles/{id}/chart":
               result = await store.get("chart:" + p.id);
               break;
@@ -899,7 +895,7 @@ export async function buildLocalApp({
                 lang,
                 context.start.slice(0, 7) + "-01",
               );
-              const catalogue = fixture(`catalogue.${lang}`);
+              const catalogue = defaults(`catalogue.${lang}`);
               const day = dayForecast(
                 cal,
                 catalogue,
@@ -943,7 +939,7 @@ export async function buildLocalApp({
               result = endpoint.path.endsWith("/day")
                 ? dayForecast(
                     cal,
-                    fixture(`catalogue.${lang}`),
+                    defaults(`catalogue.${lang}`),
                     profile!.profile_id,
                     date,
                     q.lens,

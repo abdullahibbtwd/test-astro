@@ -1,0 +1,52 @@
+{
+  "user_id": "00000000-0000-4000-8000-000000000010",
+  "email": "demo@example.com",
+  "display_name": "Person A",
+  "language": "en",
+  "theme": "system",
+  "current_place": {
+    "place_id": "geo-sofia",
+    "name": "Sofia",
+    "admin1": null,
+    "country_code": "BG",
+    "country_name": "Bulgaria",
+    "lat": 42.6977,
+    "lon": 23.3217,
+    "tz": "Europe/Sofia"
+  },
+  "self_profile_id": "00000000-0000-4000-8000-000000000001",
+  "notification_prefs": {
+    "enabled": false,
+    "types": {
+      "favorable_window": true,
+      "period_start": true,
+      "lunation_in_house": true,
+      "retrograde_start": true,
+      "station_on_point": true,
+      "eclipse_hit": true
+    },
+    "time": "09:00",
+    "max_per_day": 1,
+    "max_per_week": 3,
+    "quiet_hours": {
+      "start": "22:00",
+      "end": "08:00"
+    }
+  },
+  "entitlements": {
+    "all": true
+  },
+  "ask_quota": {
+    "limit_per_day": 30,
+    "used_today": 0,
+    "resets_at": "2026-09-30T00:00:00+03:00"
+  },
+  "consents": {
+    "birth_data": {
+      "version": "mock-only",
+      "accepted_at": "2026-09-29T13:08:11Z"
+    },
+    "marketing": false
+  },
+  "created_at": "2026-09-29T13:08:11Z"
+}

@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 import { fileURLToPath, URL } from "node:url";
 import { calendarFixtures } from "../mock/scripts/calendar";
-import { fixture } from "../mock/fixtures";
+import { defaults } from "./defaults";
 import type { BirthProfile, Lang, Place } from "../../frontend/contracts/spec-types";
 export async function computeCalendar(
   profile: BirthProfile,
@@ -53,7 +53,7 @@ export async function computeCalendar(
         ...calendarFixtures(
           fileURLToPath(new URL("../../", import.meta.url)),
           lang,
-          fixture(`catalogue.${lang}`),
+          defaults(`catalogue.${lang}`),
           source.labels,
           profile.profile_id,
           source,

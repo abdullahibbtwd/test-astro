@@ -4,7 +4,7 @@ import { mapRecommendation } from "../mock/scripts/recommend";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
 import { mapAcgLines } from "../mock/scripts/geo";
-import { fixture } from "../mock/fixtures";
+import { defaults } from "./defaults";
 import { validate } from "../../frontend/src/api/zod";
 import type {
   BirthProfile,
@@ -42,7 +42,7 @@ export class LiveMap {
     request: RecommendationRequest,
     lang: Lang,
   ): Promise<Recommendation> {
-    const cat = fixture(`catalogue.${lang}`);
+    const cat = defaults(`catalogue.${lang}`);
     const id = createHash("sha256")
       .update(JSON.stringify([profile.chart_key, request]))
       .digest("hex");
@@ -123,7 +123,7 @@ export class LiveMap {
     if (value.missing)
       throw Object.assign(new Error("Area not found"), { statusCode: 404 });
     const a = value.area,
-      cat = fixture(`catalogue.${lang}`);
+      cat = defaults(`catalogue.${lang}`);
     if (a.status !== "ok")
       throw Object.assign(new Error("Area unavailable"), { statusCode: 503 });
     const label = (item: any) =>
@@ -178,7 +178,7 @@ export class LiveMap {
       !Number.isFinite(place.lon) ||
       Math.abs(place.lat) > 90 ||
       Math.abs(place.lon) > 180 ||
-      (focus && !Object.hasOwn(fixture("catalogue.en").goals, focus))
+      (focus && !Object.hasOwn(defaults("catalogue.en").goals, focus))
     )
       throw Object.assign(new Error("Invalid place request"), {
         statusCode: 400,
@@ -195,7 +195,7 @@ export class LiveMap {
     return validate<PlaceReport>("PlaceReport", result.reports[lang]);
   }
   async heat(profile: BirthProfile, goal: string): Promise<AcgHeat> {
-    if (!Object.hasOwn(fixture("catalogue.en").goals, goal))
+    if (!Object.hasOwn(defaults("catalogue.en").goals, goal))
       throw Object.assign(new Error("Unknown map goal"), { statusCode: 400 });
     const chart = await this.store.get("raw:" + profile.profile_id);
     if (!chart)
@@ -223,7 +223,7 @@ export class LiveMap {
     lang: Lang,
     limit: number,
   ): Promise<LinePlaces> {
-    const cat = fixture(`catalogue.${lang}`);
+    const cat = defaults(`catalogue.${lang}`);
     if (
       !Object.hasOwn(cat.bodies, body) ||
       !Object.hasOwn(cat.angles, angle) ||

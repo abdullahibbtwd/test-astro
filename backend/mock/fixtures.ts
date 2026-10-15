@@ -5,12 +5,22 @@ export const fixtureRoot = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
   "fixtures",
 );
-const manifest: { file: string; schema: string }[] = JSON.parse(
-  fs.readFileSync(path.join(fixtureRoot, "manifest.json"), "utf8"),
-);
+type ManifestEntry = { file: string; schema: string };
+let manifest: ManifestEntry[] | undefined;
 const cache = new Map<string, unknown>();
+function loadManifest(): ManifestEntry[] {
+  if (!manifest) {
+    const file = path.join(fixtureRoot, "manifest.json");
+    if (!fs.existsSync(file))
+      throw new Error(
+        `Mock fixtures missing (${file}). Extract fixtures/frontend-demo-fixtures.zip first.`,
+      );
+    manifest = JSON.parse(fs.readFileSync(file, "utf8"));
+  }
+  return manifest!;
+}
 export function fixture(name: string): any {
-  if (!manifest.some((m) => m.file === `${name}.json`)) return undefined;
+  if (!loadManifest().some((m) => m.file === `${name}.json`)) return undefined;
   if (!cache.has(name))
     cache.set(
       name,
@@ -21,7 +31,7 @@ export function fixture(name: string): any {
   return structuredClone(cache.get(name));
 }
 export function collection(prefix: string, lang: string): any[] {
-  return manifest
+  return loadManifest()
     .filter(
       (m) => m.file.startsWith(prefix) && m.file.endsWith(`.${lang}.json`),
     )
