@@ -2,7 +2,7 @@ import { URL } from "node:url";
 import { readFileSync, writeFileSync } from "node:fs";
 const geo = JSON.parse(
   readFileSync(
-    new URL("../mock-api/fixtures/geo-countries.json", import.meta.url),
+    new URL("../../backend/mock/fixtures/geo-countries.json", import.meta.url),
     "utf8",
   ),
 );

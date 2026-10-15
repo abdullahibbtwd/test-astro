@@ -18,6 +18,8 @@ chapters
 **/android/build
 **/ios/build
 frontend/.local-data
+backend/.local-data
 frontend/artifacts
+backend/mock/fixtures
 *.md
 !requirements-handoff.txt

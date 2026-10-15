@@ -10,7 +10,7 @@ jest.mock("../../src/api/resource", () => ({
 }));
 jest.mock("../../src/api/hooks", () => ({
   useCatalogue: () => ({
-    data: require("../../mock-api/fixtures/catalogue.en.json"),
+    data: require("../../../backend/mock/fixtures/catalogue.en.json"),
   }),
 }));
 jest.mock("../../src/lib/flags", () => ({ useFlags: () => ({}) }));
@@ -32,7 +32,7 @@ jest.mock("expo-router", () => ({
 }));
 test("Today tolerates unknown goal, body and band enums", async () => {
   mockData = JSON.parse(
-    JSON.stringify(require("../../mock-api/fixtures/forecast-day.en.json")),
+    JSON.stringify(require("../../../backend/mock/fixtures/forecast-day.en.json")),
   );
   mockData.tone = "future";
   mockData.areas.love.band = "future";
@@ -47,7 +47,7 @@ test("Today tolerates unknown goal, body and band enums", async () => {
 });
 test("calendar day tolerates unknown body and tone", async () => {
   mockData = JSON.parse(
-    JSON.stringify(require("../../mock-api/fixtures/day.2026-09-29.en.json")),
+    JSON.stringify(require("../../../backend/mock/fixtures/day.2026-09-29.en.json")),
   );
   mockData.tone = "future";
   mockData.retrograde.push("future");
@@ -56,7 +56,7 @@ test("calendar day tolerates unknown body and tone", async () => {
 test("place report tolerates unknown goal and band", async () => {
   mockData = JSON.parse(
     JSON.stringify(
-      require("../../mock-api/fixtures/place-report.gn-1819729.en.json"),
+      require("../../../backend/mock/fixtures/place-report.gn-1819729.en.json"),
     ),
   );
   mockData.cards[0].band = "future";

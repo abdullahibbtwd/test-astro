@@ -35,7 +35,7 @@ jest.mock("expo-router", () => ({
 }));
 jest.mock("../../src/api/hooks", () => ({
   useCatalogue: () => ({
-    data: require(`../../mock-api/fixtures/catalogue.${mockLang}.json`),
+    data: require(`../../../backend/mock/fixtures/catalogue.${mockLang}.json`),
   }),
   useActions: () => ({}),
 }));
@@ -72,7 +72,7 @@ jest.mock("../../src/api/resource", () => ({
 
     const data = JSON.parse(
       JSON.stringify(
-        require(`../../mock-api/fixtures/${names[schema]}.${mockLang}.json`),
+        require(`../../../backend/mock/fixtures/${names[schema]}.${mockLang}.json`),
       ),
     );
     if (schema === "BestDayDetail" && mockEmptyReasons)

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { validBirth, formatDate, upper } from "../src/lib/dates";
 import { pollingDelay, jobState } from "../src/api/job-policy";
 import { safeEvent, scrubError } from "../src/lib/telemetry";
-import { buildApp } from "../mock-api/app";
+import { buildApp } from "../../backend/mock/app";
 test("birth validation rejects missing time, rollover dates and future dates", () => {
   assert.equal(validBirth("2000-02-29", "06:30", "2026-09-29"), true);
   for (const date of ["2001-02-29", "1899-01-01", "2026-09-30"])

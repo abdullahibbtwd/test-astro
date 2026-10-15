@@ -1,0 +1,30 @@
+{
+  "name": "astrology-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "mock": "tsx mock/server.ts",
+    "local-api": "tsx api/server.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "tsx --test tests/*.test.ts",
+    "test:budget": "python3 -X utf8 tests/budget_test.py",
+    "fixtures:build": "tsx mock/scripts/build-fixtures.ts"
+  },
+  "dependencies": {
+    "@date-fns/tz": "1.5.0",
+    "@fastify/cors": "11.3.0",
+    "fastify": "5.12.5",
+    "pg": "8.23.1",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.3",
+    "@types/pg": "8.23.1",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=22.13.0 <25"
+  }
+}

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildApp } from "../mock-api/app";
+import { buildApp } from "../../backend/mock/app";
 const headers = { authorization: "Bearer mock-access" };
 const self = "00000000-0000-4000-8000-000000000001",
   partner = "00000000-0000-4000-8000-000000000002";

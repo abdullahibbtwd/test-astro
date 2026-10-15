@@ -1,8 +1,13 @@
 # Astrology local API: Node Fastify + Python chart/reading bridges.
-FROM node:22-bookworm AS node-deps
+FROM node:22-bookworm AS frontend-deps
 WORKDIR /app/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
+
+FROM node:22-bookworm AS backend-deps
+WORKDIR /app/backend
+COPY backend/package.json ./
+RUN npm install
 
 FROM python:3.11-slim-bookworm AS python-deps
 WORKDIR /app
@@ -21,7 +26,8 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 
 COPY --from=python-deps /opt/venv /opt/venv
-COPY --from=node-deps /app/frontend/node_modules ./frontend/node_modules
+COPY --from=frontend-deps /app/frontend/node_modules ./frontend/node_modules
+COPY --from=backend-deps /app/backend/node_modules ./backend/node_modules
 
 # Full engine tree (bridges import across module folders).
 COPY . .
@@ -29,10 +35,11 @@ COPY . .
 ENV PATH="/opt/venv/bin:/usr/local/bin:$PATH"
 ENV PYTHON=/opt/venv/bin/python
 ENV ASTRO_PA_ROOT=/app
+ENV DATA_DIR=/app/backend/.local-data
 ENV HOST=0.0.0.0
 ENV PORT=4020
 ENV NODE_ENV=production
 
-WORKDIR /app/frontend
+WORKDIR /app/backend
 EXPOSE 4020
-CMD ["npx", "tsx", "local-api/server.ts"]
+CMD ["npx", "tsx", "api/server.ts"]

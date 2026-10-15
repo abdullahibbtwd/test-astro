@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { buildApp } from "../mock-api/app";
+import { buildApp } from "../../backend/mock/app";
 import { validate } from "../src/api/zod";
 import type {
   BirthProfile,

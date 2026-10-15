@@ -41,12 +41,12 @@ test("merged heat preserves area, cell membership and holes across levels", () =
 });
 test("light countries retain every worldview identity and remain below 400 KB", () => {
   const raw = readFileSync(
-    new URL("../mock-api/fixtures/geo-countries-simple.json", import.meta.url),
+    new URL("../../backend/mock/fixtures/geo-countries-simple.json", import.meta.url),
     "utf8",
   );
   const before = JSON.parse(
       readFileSync(
-        new URL("../mock-api/fixtures/geo-countries.json", import.meta.url),
+        new URL("../../backend/mock/fixtures/geo-countries.json", import.meta.url),
         "utf8",
       ),
     ),

@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { createHash } from "node:crypto";
 import { toWheelInput } from "../packages/wheel-core/adapter";
-import { fixture } from "../mock-api/fixtures";
+import { fixture } from "../../backend/mock/fixtures";
 // Phase 0 proves the adapter against the unmodified canonical engine. The TS port is Phase 2.
 import { renderChart } from "../packages/wheel-core/render";
 import { checkInvariants } from "../packages/wheel-core/invariants";

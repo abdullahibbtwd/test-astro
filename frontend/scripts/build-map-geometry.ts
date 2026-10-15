@@ -4,11 +4,11 @@ import { createRequire } from "node:module";
 import { fileURLToPath, URL } from "node:url";
 const require = createRequire(import.meta.url);
 const sourcePath = new URL(
-  "../mock-api/fixtures/geo-countries.json",
+  "../../backend/mock/fixtures/geo-countries.json",
   import.meta.url,
 );
 const targetPath = new URL(
-  "../mock-api/fixtures/geo-countries-simple.json",
+  "../../backend/mock/fixtures/geo-countries-simple.json",
   import.meta.url,
 );
 // Shared topology keeps neighbouring countries on the same simplified border.
@@ -47,7 +47,7 @@ if (Buffer.byteLength(compact) > 400_000)
   throw new Error("Country geometry exceeds the 400 KB budget");
 writeFileSync(targetPath, compact);
 const manifestPath = new URL(
-  "../mock-api/fixtures/manifest.json",
+  "../../backend/mock/fixtures/manifest.json",
   import.meta.url,
 );
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {

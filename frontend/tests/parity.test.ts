@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { gzipSync } from "node:zlib";
-import { fixture, fixtureRoot } from "../mock-api/fixtures";
+import { fixture, fixtureRoot } from "../../backend/mock/fixtures";
 const manifest: { file: string }[] = JSON.parse(
   fs.readFileSync(`${fixtureRoot}/manifest.json`, "utf8"),
 );

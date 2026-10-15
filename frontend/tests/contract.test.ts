@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { schemas } from "../src/api/zod";
-import { fixtureRoot } from "../mock-api/fixtures";
+import { fixtureRoot } from "../../backend/mock/fixtures";
 test("all generated fixtures validate and contain no internal keys or unambiguous mask terms", () => {
   const manifest = JSON.parse(
     fs.readFileSync(`${fixtureRoot}/manifest.json`, "utf8"),

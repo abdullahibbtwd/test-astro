@@ -64,7 +64,7 @@ See the copied [original design specification](handoff/design/DS_IMPLEMENTATION_
 ```text
 Expo / React Native app (frontend/app, frontend/src)
   -> typed HTTP / SSE client (frontend/src/api)
-  -> Fastify local API (frontend/local-api)
+  -> Fastify local API (backend/api)
      -> Supabase identity verification
      -> private SQLite profiles, jobs, conversations
      -> Python bridges
@@ -83,8 +83,8 @@ Calculation facts, rankings and chart geometry come from deterministic backend c
 | `frontend/src/design-system/`, `frontend/assets/` | Tokens, typography, glyphs, backgrounds and bundled fonts |
 | `frontend/src/design/components/` | App component adapters; preserve accessibility and callbacks |
 | `frontend/contracts/`, `frontend/openapi.yaml`, `frontend/src/api/` | API contracts, validators, client, query cache and job handling |
-| `frontend/local-api/` | Real private preview service, auth, persistence, bridges and budget |
-| `frontend/mock-api/` | Demo server and generated fixture loader; not real chart calculation |
+| `backend/api/` | Real private preview service, auth, persistence, bridges and budget |
+| `backend/mock/` | Demo server and generated fixture loader; not real chart calculation |
 | `astrologist/`, `ask_bridge.py` | Personal Astrologist implementation and stream protocol |
 | `d_layer/`, `Calendar/`, `Astrocartography/` | Deterministic calculation layers |
 | `Interpretation_layer/`, `calendar_reading/`, `prediction_reading/`, `synastry_reading/`, `acg_reading/` | Approved reading layers |

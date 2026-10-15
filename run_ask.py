@@ -41,9 +41,11 @@ def main():
             value=next(replies);return SimpleNamespace(text=json.dumps(value),usage={})
     elif not a.dry_run:
         import llm_client
-        sys.path.insert(0,str(ROOT/'frontend'/'local-api'))
+        import os
+        sys.path.insert(0,str(ROOT/'backend'/'api'))
         from budget import install_guard
-        install_guard(llm_client,str(ROOT/'frontend'/'.local-data'/'ai-budget.sqlite'))
+        data = Path(os.environ['DATA_DIR']) if os.environ.get('DATA_DIR') else ROOT/'backend'/'.local-data'
+        install_guard(llm_client,str(data/'ai-budget.sqlite'))
         complete=llm_client.complete
     history=[];context=json.loads(a.context);last_audit={};number=0
     while True:

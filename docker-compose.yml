@@ -24,6 +24,7 @@ services:
       DATABASE_URL: postgres://astrology:astrology@db:5432/astrology
       PYTHON: /opt/venv/bin/python
       ASTRO_PA_ROOT: /app
+      DATA_DIR: /app/backend/.local-data
       ASTRO_ALLOW_PAID: ${ASTRO_ALLOW_PAID:-0}
       ASTRO_PROGRESSIVE_READING: ${ASTRO_PROGRESSIVE_READING:-0}
       ASTRO_GUEST_ONBOARDING: ${ASTRO_GUEST_ONBOARDING:-0}
@@ -38,7 +39,7 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     volumes:
-      - api-data:/app/frontend/.local-data
+      - api-data:/app/backend/.local-data
     depends_on:
       db:
         condition: service_healthy

@@ -18,7 +18,7 @@ import {
   keepsReading,
   CACHE_MAX_AGE,
 } from "../src/api/cache-policy";
-import { fixture } from "../mock-api/fixtures";
+import { fixture } from "../../backend/mock/fixtures";
 import { jobPhase } from "../src/api/job-timing";
 
 test("every error category has an appropriate message and action", () => {

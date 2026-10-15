@@ -16,12 +16,14 @@ $env:JAVA_HOME = (Get-ChildItem $tools -Directory -Filter 'jdk-*' | Select-Objec
 $env:ANDROID_HOME = Join-Path $tools 'android'
 $env:ANDROID_AVD_HOME = Join-Path $tools 'avd'
 $env:NODE_OPTIONS = '--dns-result-order=ipv4first'
+$backend = Join-Path $project 'backend'
 $apiPort = if ($RealCharts) { 4020 } else { 4010 }
 $metroPort = if ($RealCharts) { 8082 } else { 8081 }
-$apiEntry = if ($RealCharts) { 'local-api/server.ts' } else { 'mock-api/server.ts' }
+$apiEntry = if ($RealCharts) { 'api/server.ts' } else { 'mock/server.ts' }
 $env:EXPO_PUBLIC_API_URL = "http://127.0.0.1:$apiPort/v1"
 $env:EXPO_PUBLIC_BACKEND_MODE = if ($RealCharts) { 'local' } else { 'demo' }
-$authFile = Join-Path $frontend '.local-data/auth-config.json'
+$env:DATA_DIR = Join-Path $backend '.local-data'
+$authFile = Join-Path $env:DATA_DIR 'auth-config.json'
 $realAuth = $RealCharts -and (Test-Path -LiteralPath $authFile) -and ((Get-Content -Raw -LiteralPath $authFile | ConvertFrom-Json).enabled -eq $true)
 $env:EXPO_PUBLIC_AUTH_MODE = if ($realAuth) { 'supabase' } else { 'demo' }
 $env:ASTRO_ALLOW_PAID = if ($EnableReadings) { '1' } else { '0' } # Shared durable US$20 cap remains enforced.
@@ -45,7 +47,7 @@ function Is-MetroReady { try { return (Invoke-WebRequest -Uri "http://127.0.0.1:
 $existingApi = Get-NetTCPConnection -LocalPort $apiPort -State Listen -ErrorAction SilentlyContinue
 if ($existingApi -and $RestartApi) {
  $apiProcess = Get-CimInstance Win32_Process -Filter "ProcessId=$($existingApi.OwningProcess)"
- if (!$apiProcess.CommandLine.Contains($frontend) -or !$apiProcess.CommandLine.Contains($apiEntry)) {
+ if (!$apiProcess.CommandLine.Contains($backend) -or !$apiProcess.CommandLine.Contains($apiEntry)) {
   throw 'The API port belongs to an unexpected process; not stopping it.'
  }
  Stop-Process -Id $apiProcess.ProcessId
@@ -53,7 +55,7 @@ if ($existingApi -and $RestartApi) {
  throw 'Use -RestartApi to apply EnableReadings to the running API. Wait for active readings to finish first.'
 }
 if (!(Is-Listening $apiPort)) {
- Start-Process -FilePath $node -ArgumentList 'node_modules/tsx/dist/cli.mjs',$apiEntry -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/api-$apiPort.log" -RedirectStandardError "$tools/api-$apiPort-error.log"
+ Start-Process -FilePath $node -ArgumentList 'node_modules/tsx/dist/cli.mjs',$apiEntry -WorkingDirectory $backend -WindowStyle Hidden -RedirectStandardOutput "$tools/api-$apiPort.log" -RedirectStandardError "$tools/api-$apiPort-error.log"
 }
 if (!(Is-Listening $metroPort)) {
  Start-Process -FilePath $node -ArgumentList ('"' + $expoCli + '"'),'start','--dev-client','--localhost','--port',"$metroPort" -WorkingDirectory $frontend -WindowStyle Hidden -RedirectStandardOutput "$tools/metro-$metroPort.log" -RedirectStandardError "$tools/metro-$metroPort-error.log"

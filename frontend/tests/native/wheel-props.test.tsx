@@ -14,7 +14,7 @@ const flatten = (node: any): any[] =>
       : [];
 test("W4 native SVG props retain shared wheel chord coordinates for both themes", async () => {
   const chart = JSON.parse(
-    fs.readFileSync("mock-api/fixtures/chart.1.json", "utf8"),
+    fs.readFileSync("../backend/mock/fixtures/chart.1.json", "utf8"),
   ) as ChartData;
   const model = computeWheel(toWheelInput(chart));
   for (const theme of ["light", "dark"] as const) {

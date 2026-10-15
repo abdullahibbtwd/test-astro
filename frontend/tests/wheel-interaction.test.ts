@@ -1,6 +1,6 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {fixture} from "../mock-api/fixtures";
+import {fixture} from "../../backend/mock/fixtures";
 import {computeWheel} from "../packages/wheel-core/model";
 import {toWheelInput} from "../packages/wheel-core/adapter";
 import {hitTest,touchToModel} from "../packages/wheel-core/hit-test";

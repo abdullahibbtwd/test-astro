@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { fixture } from "../mock-api/fixtures";
+import { fixture } from "../../backend/mock/fixtures";
 import type { ChartData, NatalReading } from "../contracts/spec-types";
 import { degrees, axisPoint, isRetrograde, readingSections, aspectOrder } from "../src/features/chart/facts";
 test("chart formatting never rounds a position into the next sign or marks nodes retrograde", () => {
