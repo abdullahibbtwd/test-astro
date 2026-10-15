@@ -80,7 +80,7 @@ def test_pa_reads_app_sections_without_generation_or_regrounding(tmp_path, chart
         assert dossier['index']['by_topic']['inner_drives']
 
 def test_section_bridge_offline_roundtrip_is_immutable_and_lazy(tmp_path, chart):
-    sys.path.insert(0, str(ROOT/'FE/local-api'))
+    sys.path.insert(0, str(ROOT/'frontend/local-api'))
     from reading_section_bridge import run
     from test_l4_progressive import FakeGenerator
     d = Dossier(tmp_path)

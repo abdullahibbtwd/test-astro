@@ -895,7 +895,7 @@ def _residual_verdict(record: dict) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Tier 0 — the ACG corpus (ACG/ACG_06_CORPUS_DELTA_SPEC.md §8). Only records whose
+# Tier 0 — the ACG corpus (docs/acg/ACG_06_CORPUS_DELTA_SPEC.md §8). Only records whose
 # principle_id starts with "acg-" take this branch; every other record is
 # untouched (no main-corpus id starts with "acg-"). The ACG factor types are
 # validated by the ACG-local vocab below and are deliberately NOT added to

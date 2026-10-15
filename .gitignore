@@ -113,4 +113,4 @@ ask_run/
 astrologist/eval/
 
 # Deliberately ship the validated demo fixture pack in the private handoff.
-!FE/handoff/frontend-demo-fixtures.zip
+!fixtures/frontend-demo-fixtures.zip

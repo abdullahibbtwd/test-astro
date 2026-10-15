@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-build_affinity.py — the goal-affinity table (spec ``ACG/ACG_08_GOAL_SCORING_SPEC.md`` §2).
+build_affinity.py — the goal-affinity table (spec ``docs/acg/ACG_08_GOAL_SCORING_SPEC.md`` §2).
 
 Input: ``principles_grounding/acg_principles.grounded.json`` with ``goal_effects`` from
 ``principles_grounding/tag_goals_acg.py`` (07 §5). No LLM; deterministic.
@@ -19,7 +19,7 @@ For every planet p (sun..pluto) × angle a (MC, IC, ASC, DSC) × goal g (08 §1)
 
 A3 angle frames and A4 planet-in-house fallbacks never enter the table.
 
-Paran affinity (``ACG/ACG_10_PARANS_SPEC.md`` §6), top-level block ``parans``, key
+Paran affinity (``docs/acg/ACG_10_PARANS_SPEC.md`` §6), top-level block ``parans``, key
 ``"<p1>-<p2>"`` (lowercase, alphabetical; the 45 unordered pairs of the 10 planets):
 
     s, c, m, volume from the ``paran`` records whose about.planets == {p1, p2}

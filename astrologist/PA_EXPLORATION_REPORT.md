@@ -23,7 +23,7 @@ These must be **added** before or during the build:
 | G4 | **Predictive readings can't be looked up by chart.** They exist only in per-run folders `prediction_run/<run_id>/reading_<h>_<profile>_<target>_<birthdate>.json`; there is no index (`run_predictive.py:352-354`, :582). | v1: a read-only locator that scans `prediction_run/*/run_manifest_*.json` for (`natal_ref`, tz, target, profile). It returns `absent: not_generated` otherwise, which will be the usual case (D4: the chat never generates readings). |
 | G5 | **Calendar caches have no public loader.** The keys are computed inside `run_calendar.run_calendar` (`run_calendar.py:178-222`). | Extract the stage logic into `run_calendar.ensure_calendar(natal, tz, start) -> {events, scores, periods, best}` with no behaviour change, so PA and the CLI share one cache path. |
 | G6 | **`llm_client` can't do strict Structured Outputs or a per-request key.** The JSON schema is hard-coded `strict: False` (`llm_client.py:444-447`), and the OpenAI client is built from the one platform key (:418-428). | Smallest addition: `complete(..., strict: bool = False, route: dict \| None = None)`. `strict` sets the format flag; `route["openai_api_key"]` selects a per-key cached client. Nothing else changes; existing callers are unaffected. |
-| G7 | **No `openapi.yaml`, no `local-api/`, no `budget.py`, no `*_bridge.py`** anywhere on the drive. `FE/scripts/build-contract.ts` would generate `openapi.yaml` from the FE_02/FE_09 `ts` blocks, but it hasn't been run. | T10/E11 validate against JSON Schemas I generate from the FE_09 §4.3 `AskCard` and FE_02 types (`astrologist/fixtures/askcard.schema.json`), and switch to `openapi.yaml` once the FE repo produces it. The bridge follows PA_04 §6 as written; the spending ledger is reported in the audit only (no `budget.py` to call). |
+| G7 | **No `openapi.yaml`, no `local-api/`, no `budget.py`, no `*_bridge.py`** anywhere on the drive. `frontend/scripts/build-contract.ts` would generate `openapi.yaml` from the FE_02/FE_09 `ts` blocks, but it hasn't been run. | T10/E11 validate against JSON Schemas I generate from the FE_09 §4.3 `AskCard` and FE_02 types (`astrologist/fixtures/askcard.schema.json`), and switch to `openapi.yaml` once the FE repo produces it. The bridge follows PA_04 §6 as written; the spending ledger is reported in the audit only (no `budget.py` to call). |
 
 ## 1. Natal grounding per chart
 
@@ -166,7 +166,7 @@ The PA place tool will call the functions directly, not the CLI.
 | Detox rewrite | `ar_generate.detox_unit` + `ar_prompts.build_detox_prompt`; `cr_generate.CalendarGenerator.detox` + `cr_prompts.build_detox_prompt`; `l4_generate._detox_text` |
 
 **PA doesn't need a detox model call:** PA_03 §6 replaces detox with one repair call, and PA uses the lists only.
-FE_02 AC3 (`FE/FE_02_API_CONTRACT_SPEC.md:965`) and FE_00 F7 (`FE/FE_00_INDEX.md:57`) are not in backend code yet.
+FE_02 AC3 (`frontend/FE_02_API_CONTRACT_SPEC.md:965`) and FE_00 F7 (`docs/frontend/FE_00_INDEX.md:57`) are not in backend code yet.
 `pa_validate` merges them with the lists above (PV8).
 
 ## 10. Catalogue

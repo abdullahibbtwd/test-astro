@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-finish_acg.py — ACG corpus delta, step 3 (spec ``ACG/ACG_06_CORPUS_DELTA_SPEC.md`` §6.3, §7, §8).
+finish_acg.py — ACG corpus delta, step 3 (spec ``docs/acg/ACG_06_CORPUS_DELTA_SPEC.md`` §6.3, §7, §8).
 
 Input: ``TXT/extracted_acg/acg_consolidated.json`` (from ``consolidate_acg.py``), or with
 ``--in`` a previous ``acg_principles.clean.json`` (the C-8 idempotence path).

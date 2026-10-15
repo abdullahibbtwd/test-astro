@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-extract_acg.py — ACG corpus delta, step 1 (spec ``ACG/ACG_06_CORPUS_DELTA_SPEC.md``).
+extract_acg.py — ACG corpus delta, step 1 (spec ``docs/acg/ACG_06_CORPUS_DELTA_SPEC.md``).
 
 Source: ``TXT/ACG/The-astro-carto-graphy-book-of-maps-the-astrology-of-relocation.txt``
 (an OCR scan; two-column pages interleaved line by line). The source stays in

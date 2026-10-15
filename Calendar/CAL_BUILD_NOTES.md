@@ -1,6 +1,6 @@
 # CAL build notes (status + decisions)
 
-*Updated 2026-09-29. The specs are in `CAL/`, the Phase 0 report is `CAL_EXPLORATION_REPORT.md` (decisions Q1–Q4 are at its top).
+*Updated 2026-09-29. The specs are in `docs/cal/`, the Phase 0 report is `CAL_EXPLORATION_REPORT.md` (decisions Q1–Q4 are at its top).
 Radul delegated every review gate: "you decide" (Q2–Q4), then "fix the 3 problems yourself and continue".*
 
 ## Status: all six phases built

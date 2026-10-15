@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: astrology
+      POSTGRES_PASSWORD: astrology
+      POSTGRES_DB: astrology
+    # Not published on the host — API reaches Postgres on the compose network.
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U astrology -d astrology"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    ports:
+      - "4020:4020"
+    environment:
+      HOST: "0.0.0.0"
+      PORT: "4020"
+      DATABASE_URL: postgres://astrology:astrology@db:5432/astrology
+      PYTHON: /opt/venv/bin/python
+      ASTRO_PA_ROOT: /app
+      ASTRO_ALLOW_PAID: ${ASTRO_ALLOW_PAID:-0}
+      ASTRO_PROGRESSIVE_READING: ${ASTRO_PROGRESSIVE_READING:-0}
+      ASTRO_GUEST_ONBOARDING: ${ASTRO_GUEST_ONBOARDING:-0}
+      ASTRO_ASK_ENABLED: ${ASTRO_ASK_ENABLED:-0}
+      # Multi-user Supabase (omit AUTH_OWNER_EMAIL). For single-operator pin, set AUTH_OWNER_EMAIL.
+      AUTH_ENABLED: ${AUTH_ENABLED:-0}
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_PUBLISHABLE_KEY: ${SUPABASE_PUBLISHABLE_KEY:-}
+      AUTH_OWNER_EMAIL: ${AUTH_OWNER_EMAIL:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    volumes:
+      - api-data:/app/frontend/.local-data
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  api-data:

@@ -1,7 +1,7 @@
 {
  "policy": "viable_world_v1",
  "version": 2,
- "spec": "ACG/ACG_11_DESTINATIONS_SPEC.md §3",
+ "spec": "docs/acg/ACG_11_DESTINATIONS_SPEC.md §3",
  "semantics": "Rules are evaluated in order; the first rule whose 'match' holds decides. action 'exclude' -> not allowed; 'allow' -> allowed; 'allow_if' -> allowed iff every key of 'condition' holds (AND). Condition keys: countries (dest.country in list), federal_district_in (dest.admin1_id looked up in this rule's federal_districts table), size_in, coast_km_max, med_coast_km_max (null distance fails), geonameids. Country = destinations.json 'country' (Natural Earth Turkey-POV code): Canary Islands, Ceuta and Melilla carry ES, Madeira PT, Reunion/Mayotte FR, Western Sahara MA, Crimea/Sevastopol UA, Northern Cyprus XN, Hong Kong HK, Macau MO, Taiwan TW. Users can't widen the policy; user filters only narrow it.",
  "rules": [
   {

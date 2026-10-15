@@ -2,7 +2,7 @@
 
 *State as of 2026-09-28. The ACG layer adds relocation astrology to the app: where on Earth
 each planet is emphasised for a person, what a place brings out, and where to go for a goal.
-Built from the spec set in `ACG/` (specs 00–11). Build history and decisions are in
+Built from the spec set in `docs/acg/` (specs 00–11). Build history and decisions are in
 `ACG_BUILD_NOTES.md`, and the spec-vs-code conflicts are in `ACG_EXPLORATION_REPORT.md`.*
 
 ---

@@ -1,5 +1,5 @@
 """
-test_acg_affinity.py — the goal-affinity table (ACG/ACG_08_GOAL_SCORING_SPEC.md §2, §7 S1).
+test_acg_affinity.py — the goal-affinity table (docs/acg/ACG_08_GOAL_SCORING_SPEC.md §2, §7 S1).
 
     python -m pytest -q Astrocartography/test_acg_affinity.py
 """

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-consolidate_acg.py — ACG corpus delta, step 2 (spec ``ACG/ACG_06_CORPUS_DELTA_SPEC.md`` §6).
+consolidate_acg.py — ACG corpus delta, step 2 (spec ``docs/acg/ACG_06_CORPUS_DELTA_SPEC.md`` §6).
 
 Reads ``TXT/extracted_acg/acg_raw.jsonl`` (from ``extract_acg.py``), buckets the
 records, and merges near-duplicates:

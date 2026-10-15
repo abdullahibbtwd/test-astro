@@ -1,9 +1,9 @@
 name: Frontend contract and shell
 on:
   push:
-    paths: ['FE/**', 'Chart_wheel/**', '.github/workflows/frontend-contract.yml']
+    paths: ['frontend/**', 'Chart_wheel/**', '.github/workflows/frontend-contract.yml']
   pull_request:
-    paths: ['FE/**', 'Chart_wheel/**', '.github/workflows/frontend-contract.yml']
+    paths: ['frontend/**', 'Chart_wheel/**', '.github/workflows/frontend-contract.yml']
 permissions:
   contents: read
 jobs:
@@ -11,14 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: FE
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: FE/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npm run contract:build && npm run contract:types && npm run contract:zod
       - run: git diff --exit-code -- openapi.yaml contracts src/api/schema.d.ts src/api/zod

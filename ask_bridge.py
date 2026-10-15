@@ -24,10 +24,10 @@ def main():
         with contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):
             from pa_engine import answer_turn,prewarm
             if payload.get('op')=='turn':
-                sys.path.insert(0,str(Path(__file__).resolve().parent/'FE'/'local-api'))
+                sys.path.insert(0,str(Path(__file__).resolve().parent/'frontend'/'local-api'))
                 import llm_client
                 from budget import install_guard
-                install_guard(llm_client,str(Path(__file__).resolve().parent/'FE'/'.local-data'/'ai-budget.sqlite'))
+                install_guard(llm_client,str(Path(__file__).resolve().parent/'frontend'/'.local-data'/'ai-budget.sqlite'))
                 for event in answer_turn(payload['request'],cancel): emit(event)
             elif payload.get('op')=='prewarm': emit({'event':'prewarm','data':prewarm(payload['subject'])})
             else: raise ValueError('invalid_operation')

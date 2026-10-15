@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-tag_goals_acg.py — ACG corpus goal tags (spec ``ACG/ACG_07_CHANGE_ORDER_V3.md`` §5), a separate,
+tag_goals_acg.py — ACG corpus goal tags (spec ``docs/acg/ACG_07_CHANGE_ORDER_V3.md`` §5), a separate,
 idempotent post-pass over ``acg_principles.grounded.json``. Nothing is re-extracted.
 
 For every record in the scopes ``line``, ``planet_general``, ``angle_frame`` and ``paran``
-(``ACG/ACG_10_PARANS_SPEC.md`` §5; the one ``acg_method`` record filed under scope paran is tagged
+(``docs/acg/ACG_10_PARANS_SPEC.md`` §5; the one ``acg_method`` record filed under scope paran is tagged
 too, normally ``{}``) the model returns
 ``goal_effects: {<goal>: "supportive" | "challenging" | "mixed"}`` over the closed goal enum of
-``ACG/ACG_08_GOAL_SCORING_SPEC.md`` §1 (``Astrocartography/acg_constants.GOALS``; the definitions
+``docs/acg/ACG_08_GOAL_SCORING_SPEC.md`` §1 (``Astrocartography/acg_constants.GOALS``; the definitions
 go into the prompt verbatim). Rules: tag a goal only when the record's meaning directly concerns
 it; at most 3 goals; ``{}`` is valid; the polarity is per goal.
 

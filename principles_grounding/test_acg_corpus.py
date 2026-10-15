@@ -1,5 +1,5 @@
 """
-test_acg_corpus.py — guards C-1..C-9 of ACG/ACG_06_CORPUS_DELTA_SPEC.md over the built
+test_acg_corpus.py — guards C-1..C-9 of docs/acg/ACG_06_CORPUS_DELTA_SPEC.md over the built
 ACG corpus (``acg_principles.clean.json`` / ``acg_principles.grounded.json``), plus the
 backfill Tier-0 ``acg-*`` branch.
 
