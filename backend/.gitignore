@@ -2,3 +2,4 @@ node_modules/
 .local-data/
 mock/fixtures/
 *.tsbuildinfo
+src/generated/

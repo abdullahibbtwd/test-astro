@@ -35,15 +35,21 @@ export class AskService {
     return this.allowPaid && this.ready();
   }
   async quota() {
+    const { prisma } = await import("./db");
+    const { utcDay } = await import("./limits");
     const me = (await this.store.get<Me>("me"))!;
-    const previous = me.ask_quota;
-    const expired = Date.parse(previous.resets_at) <= Date.now();
-    const reset = new Date();
-    reset.setUTCHours(24, 0, 0, 0);
+    const day = utcDay();
+    const row = await prisma().usageCounter.findUnique({
+      where: {
+        userId_kind_date: { userId: me.user_id, kind: "ASK", date: day },
+      },
+    });
+    const reset = new Date(day);
+    reset.setUTCDate(reset.getUTCDate() + 1);
     const quota = {
       limit_per_day: this.enabled() ? this.dailyLimit : 0,
-      used_today: expired ? 0 : previous.used_today,
-      resets_at: expired ? reset.toISOString() : previous.resets_at,
+      used_today: row?.count ?? 0,
+      resets_at: reset.toISOString(),
     };
     await this.store.put("me", { ...me, ask_quota: quota });
     return quota;
@@ -140,10 +146,15 @@ export class AskService {
         "profile:" + thread.profile_id,
       );
       if (!profile) throw issue(409, "conflict");
-      const quota = await this.quota();
-      if (quota.used_today + this.active.size >= quota.limit_per_day)
-        throw issue(429, "rate_limited");
       const me = (await this.store.get<Me>("me"))!;
+      const { tryConsumeUsage } = await import("./limits");
+      if (this.active.size >= this.dailyLimit)
+        throw issue(429, "rate_limited");
+      if (
+        (await tryConsumeUsage(me.user_id, "ASK", this.dailyLimit)) == null
+      )
+        throw issue(429, "rate_limited");
+      const quota = await this.quota();
       const subject = async (p: BirthProfile) => ({
         profile_id: p.profile_id,
         ...((await this.store.get("dossier-ref:" + p.profile_id)) ===
@@ -369,12 +380,6 @@ export class AskService {
               usage: audit.usage,
               answer_kind: final.message.answer_kind,
               lang,
-            });
-            const current = await this.quota();
-            current.used_today++;
-            await this.store.put("me", {
-              ...(await this.store.get<Me>("me")),
-              ask_quota: current,
             });
             await persist();
           });

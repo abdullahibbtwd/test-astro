@@ -1,0 +1,241 @@
+// Prisma ORM 7.10.1 — single owner of the Postgres schema.
+
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SessionKind {
+  ACCESS
+  REFRESH
+}
+
+enum JobKind {
+  READING
+  FORECAST
+  MAP_READING
+  COMPAT
+  NATAL_SECTION
+  READING_COMPLETE
+}
+
+enum JobStatus {
+  queued
+  running
+  ok
+  failed
+}
+
+enum ReadingKind {
+  NATAL
+  FULL_SECTION
+  FORECAST
+  MAP
+  COMPAT
+  REPORT
+  FORECAST_REPORT
+  MAP_REPORT
+}
+
+enum UsageKind {
+  ASK
+  PROFILE_CREATE
+  GUEST_READING
+}
+
+model User {
+  id                String   @id @map("id")
+  email             String?
+  displayName       String   @default("") @map("display_name")
+  language          String   @default("en")
+  theme             String   @default("system")
+  currentPlace      Json?    @map("current_place")
+  consents          Json?
+  entitlements      Json?
+  notificationPrefs Json?    @map("notification_prefs")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  sessions    Session[]
+  profiles    Profile[]
+  jobs        Job[]
+  readings    Reading[]
+  usage       UsageCounter[]
+  records     Record[]
+  guestClaims GuestSession[] @relation("ClaimedBy")
+
+  @@map("users")
+}
+
+/// Prevents ensureAccount from recreating a deleted tenant id.
+model DeletedUser {
+  id        String   @id @map("id")
+  deletedAt DateTime @default(now()) @map("deleted_at")
+
+  @@map("deleted_users")
+}
+
+model Session {
+  id              String      @id @default(cuid()) @map("id")
+  userId          String      @map("user_id")
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind            SessionKind
+  tokenHash       String      @unique @map("token_hash")
+  expiresAt       DateTime    @map("expires_at")
+  accessTokenHash String?     @map("access_token_hash")
+  createdAt       DateTime    @default(now()) @map("created_at")
+
+  @@index([userId, kind])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model Profile {
+  id        String   @id @default(uuid()) @map("id")
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chartKey  String   @map("chart_key")
+  label     String
+  relation  String
+  isSelf    Boolean  @map("is_self")
+  gender    String?
+  birth     Json
+  bigThree  Json?    @map("big_three")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  chart    Chart?
+  jobs     Job[]
+  readings Reading[]
+
+  @@index([userId])
+  @@index([chartKey])
+  @@map("profiles")
+}
+
+model Chart {
+  profileId String   @id @map("profile_id")
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  result    Json
+  raw       Json?
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("charts")
+}
+
+model Reading {
+  id        String      @id @default(cuid()) @map("id")
+  userId    String      @map("user_id")
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileId String?     @map("profile_id")
+  profile   Profile?    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  kind      ReadingKind
+  key       String
+  body      Json
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  @@unique([userId, kind, key])
+  @@index([profileId])
+  @@map("readings")
+}
+
+model Job {
+  id        String    @id @map("id")
+  userId    String    @map("user_id")
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileId String?   @map("profile_id")
+  profile   Profile?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  kind      JobKind
+  status    JobStatus
+  lookupKey String    @map("lookup_key")
+  payload   Json
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@unique([userId, kind, lookupKey])
+  @@index([userId, status])
+  @@map("jobs")
+}
+
+model UsageCounter {
+  userId String    @map("user_id")
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind   UsageKind
+  date   DateTime  @db.Date
+  count  Int       @default(0)
+
+  @@id([userId, kind, date])
+  @@map("usage_counters")
+}
+
+model GuestSession {
+  tokenHash        String   @id @map("token_hash")
+  fingerprint      String
+  expiresAt        DateTime @map("expires_at")
+  profile          Json
+  chartKey         String?  @map("chart_key")
+  chartResult      Json?    @map("chart_result")
+  chartRaw         Json?    @map("chart_raw")
+  sectionBody      Json?    @map("section_body")
+  claimedById      String?  @map("claimed_by_id")
+  claimedBy        User?    @relation("ClaimedBy", fields: [claimedById], references: [id], onDelete: SetNull)
+  claimedProfileId String?  @map("claimed_profile_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([expiresAt])
+  @@map("guest_sessions")
+}
+
+model GuestRateLimit {
+  ipHash    String   @id @map("ip_hash")
+  count     Int      @default(0)
+  expiresAt DateTime @map("expires_at")
+
+  @@index([expiresAt])
+  @@map("guest_rate_limits")
+}
+
+/// No FK — user_id is a plain string. Shared ledger uses user_id = 'shared'.
+model BudgetSettings {
+  userId String @id @map("user_id")
+  cap    BigInt
+
+  @@map("budget_settings")
+}
+
+/// No FK. On account delete: SET user_id = 'shared' (keep charged toward shared cap).
+model BudgetCall {
+  id       BigInt  @id @default(autoincrement()) @map("id")
+  userId   String  @map("user_id")
+  model    String?
+  reserved BigInt
+  charged  BigInt
+  state    String
+
+  @@index([userId])
+  @@map("budget_calls")
+}
+
+/// Catch-all KV (incl. ask threads). FK only to real users.
+model Record {
+  tenantId String @map("tenant_id")
+  key      String
+  value    Json
+  user     User   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@id([tenantId, key])
+  @@map("records")
+}
+
+model SystemConfig {
+  key   String @id
+  value Json
+
+  @@map("system_config")
+}

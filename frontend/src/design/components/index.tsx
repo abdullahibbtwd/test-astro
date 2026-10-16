@@ -35,12 +35,16 @@ export function Txt({
   muted = false,
   style,
   numberOfLines,
+  adjustsFontSizeToFit,
+  minimumFontScale,
 }: {
   children: React.ReactNode;
   kind?: "body" | "title" | "display" | "caption" | "reading";
   muted?: boolean;
   style?: any;
   numberOfLines?: number;
+  adjustsFontSizeToFit?: boolean;
+  minimumFontScale?: number;
 }) {
   const c = useTheme();
   const variant = kind === "reading" ? "bodyLg" : kind === "title" ? "displaySection" : kind === "display" ? "displayTitle" : kind === "caption" ? "caption" : "body";
@@ -48,6 +52,7 @@ export function Txt({
   return <AppText variant={variant} color={muted ? "inkSoft" : kind === "title" || kind === "display" ? "accent" : "ink"}
     accessibilityRole={kind === "title" || kind === "display" ? "header" : undefined}
     selectable={kind === "reading"} numberOfLines={numberOfLines}
+    adjustsFontSizeToFit={adjustsFontSizeToFit} minimumFontScale={minimumFontScale}
     style={[{ color: muted ? c.ink2 : kind === "title" || kind === "display" ? c.accent : c.ink }, style]}>{content}</AppText>;
 }
 
@@ -197,6 +202,7 @@ export function Button({
       onPress={onPress}
       style={({ pressed }) => [
         {
+          alignSelf: "stretch",
           minHeight: dsSize.buttonLg,
           paddingHorizontal: dsSpace[6],
           paddingVertical: dsSpace[2],
@@ -213,7 +219,15 @@ export function Button({
       {loading ? (
         <ActivityIndicator color={secondary ? c.accent : c.onAccent} />
       ) : (
-        <AppText variant="button" align="center" color={secondary ? danger ? "danger" : "accent" : "onPrimary"}>{label}</AppText>
+        <AppText
+          variant="button"
+          align="center"
+          color={secondary ? (danger ? "danger" : "accent") : "onPrimary"}
+          numberOfLines={1}
+          style={{ flexShrink: 0 }}
+        >
+          {label}
+        </AppText>
       )}
     </Pressable>
   );
@@ -310,11 +324,14 @@ export function Chip({
   label,
   selected,
   onPress,
+  compact = false,
 }: {
   label: string;
   selected: boolean;
   role?: "radio" | "checkbox" | "button";
   onPress: () => void;
+  /** Tighter padding for dense filter rows on narrow screens. */
+  compact?: boolean;
 }) {
   const c = useTheme();
   return (
@@ -324,27 +341,38 @@ export function Chip({
       accessibilityState={role === "button" ? {} : { checked: selected }}
       onPress={onPress}
       style={{
-        minHeight: 44,
-        paddingHorizontal: dsSpace[4],
-        paddingVertical: dsSpace[3],
+        minHeight: compact ? dsSize.buttonMd : 44,
+        maxWidth: "100%",
+        paddingHorizontal: compact ? dsSpace[3] : dsSpace[4],
+        paddingVertical: compact ? dsSpace[2] : dsSpace[3],
         borderRadius: dsRadius.md,
         borderWidth: 1,
         borderColor: selected ? c.primary : c.borderControl,
         backgroundColor: selected ? c.primary : undefined,
+        justifyContent: "center",
       }}
     >
-      <Txt style={{ color: selected ? c.onPrimary : c.ink }}>{label}</Txt>
+      <Txt
+        kind={compact ? "caption" : undefined}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.8}
+        style={{ color: selected ? c.onPrimary : c.ink }}
+      >
+        {label}
+      </Txt>
     </Pressable>
   );
 }
 export function Choices({
   children,
   multi = false,
-}: PropsWithChildren<{ multi?: boolean }>) {
+  gap = dsSpace[2],
+}: PropsWithChildren<{ multi?: boolean; gap?: number }>) {
   return (
     <View
       accessibilityRole={multi ? undefined : "radiogroup"}
-      style={{ flexDirection: "row", flexWrap: "wrap", gap: dsSpace[2] }}
+      style={{ flexDirection: "row", flexWrap: "wrap", gap }}
     >
       {children}
     </View>

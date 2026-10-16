@@ -6,8 +6,10 @@ RUN npm ci
 
 FROM node:22-bookworm AS backend-deps
 WORKDIR /app/backend
-COPY backend/package.json ./
-RUN npm install
+COPY backend/package.json backend/package-lock.json ./
+COPY backend/prisma ./prisma
+COPY backend/prisma.config.ts ./
+RUN npm ci && npx prisma generate
 
 FROM python:3.11-slim-bookworm AS python-deps
 WORKDIR /app
@@ -21,10 +23,14 @@ RUN python -m venv /opt/venv \
 
 FROM node:22-bookworm-slim
 WORKDIR /app
+# Native wheels (e.g. swisseph) need C++ runtime libs from the slim base.
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends python3 libstdc++6 \
+  && apt-get install -y --no-install-recommends libstdc++6 \
   && rm -rf /var/lib/apt/lists/*
 
+# The venv's python symlink targets /usr/local/bin/python from the python image.
+# Copy that interpreter (and site libs) or places/charts spawn fails with ENOENT → 500.
+COPY --from=python-deps /usr/local /usr/local
 COPY --from=python-deps /opt/venv /opt/venv
 COPY --from=frontend-deps /app/frontend/node_modules ./frontend/node_modules
 COPY --from=backend-deps /app/backend/node_modules ./backend/node_modules
@@ -42,4 +48,5 @@ ENV NODE_ENV=production
 
 WORKDIR /app/backend
 EXPOSE 4020
-CMD ["npx", "tsx", "api/server.ts"]
+# migrateDeploy() also runs inside api/server.ts; keep an explicit step for clarity.
+CMD ["sh", "-c", "npx prisma migrate deploy && npx tsx api/server.ts"]

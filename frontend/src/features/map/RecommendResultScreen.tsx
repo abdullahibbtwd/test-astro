@@ -1,3 +1,7 @@
+import {
+  space as dsSpace,
+  radius as dsRadius,
+} from "../../design-system/theme/tokens";
 import { CitySizeChip } from "../../design/components/CitySizeChip";
 import { ContentSections } from "../../design/components/ContentList";
 import { BandChip } from "../../design/components/BandChip";
@@ -5,6 +9,7 @@ import { CountryLabel } from "../../design/components/CountryLabel";
 import { countryName } from "../../lib/countries";
 import { useApp } from "../../lib/state";
 import { useMemo, useState } from "react";
+import { View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -18,6 +23,7 @@ import {
   ErrorNotice,
   Skeleton,
 } from "../../design/components";
+import { useTheme } from "../../design/theme";
 import { useApi } from "../../api/resource";
 import { ApiError } from "../../api/client";
 import { useProfile } from "../shared/useProfile";
@@ -35,6 +41,7 @@ import type {
 } from "../../../contracts/spec-types";
 export default function RecommendResultScreen() {
   const lang = useApp((s) => s.language);
+  const theme = useTheme();
   const params = useLocalSearchParams<{ request: string }>(),
     { id } = useProfile(),
     { t } = useTranslation(),
@@ -82,12 +89,23 @@ export default function RecommendResultScreen() {
   const item = (p: Destination) => (
     <Card key={p.place_id}>
       <Row label={p.name} onPress={() => place(p)} />
-      <CitySizeChip size={p.size}/>
-      <CountryLabel code={p.country_code} />
-      <BandChip band={p.band} label={p.band_label} />
-      {p.summary_label && <Txt>{p.summary_label}</Txt>}
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          gap: dsSpace[2],
+          alignItems: "center",
+        }}
+      >
+        <CitySizeChip size={p.size} />
+        <CountryLabel code={p.country_code} />
+        <BandChip band={p.band} label={p.band_label} compact />
+      </View>
+      {p.summary_label && <Txt muted>{p.summary_label}</Txt>}
       {p.dominant_line && (
-        <Txt>{distanceLabel(p.dominant_line.distance_km_rounded)}</Txt>
+        <Txt kind="caption" muted>
+          {distanceLabel(p.dominant_line.distance_km_rounded)}
+        </Txt>
       )}
       {p.has_tradeoff && <Txt kind="caption">{t("hasTradeoff")}</Txt>}
       {d?.explanations.status === "ready" &&
@@ -99,22 +117,36 @@ export default function RecommendResultScreen() {
       )}
     </Card>
   );
+  const filterLabel = (key: string, value: unknown) => {
+    if (key === "purpose" && value === "both") return t("livingTravel");
+    if (key === "city_size")
+      return Array.isArray(value)
+        ? value
+            .map((v) => t(v === "big" ? "largeCities" : String(v)))
+            .join(", ")
+        : t(String(value));
+    const shown = Array.isArray(value)
+      ? value.map((v) => t(String(v))).join(", ")
+      : t(String(value));
+    return `${t(key)}: ${shown}`;
+  };
   return (
     <Screen scroll={false} back title={d?.goal_label ?? t("whereShouldIGo")}>
       <ContentSections
         header={
-          <>
+          <View style={{ gap: dsSpace[4], marginBottom: dsSpace[4] }}>
             {!parsed.error && q.isPending && <Skeleton />}
             <ErrorNotice error={parsed.error ?? q.error} />
             {d && (
               <>
                 {d.status === "needs_goal" ? (
-                  <>
+                  <View style={{ gap: dsSpace[3] }}>
                     <Txt>{t("whichGoal")}</Txt>
-                    <Choices>
+                    <Choices gap={dsSpace[3]}>
                       {d.goal_options?.map((g) => (
                         <Chip
                           role="button"
+                          compact
                           key={g.goal}
                           label={g.label}
                           selected={false}
@@ -130,102 +162,120 @@ export default function RecommendResultScreen() {
                         />
                       ))}
                     </Choices>
-                  </>
+                  </View>
                 ) : (
                   <>
                     {d.status === "thin_result" && <Txt>{t("thinResult")}</Txt>}
-                    <Txt>
-                      {d.scope === "world"
-                        ? t("world")
-                        : countryName(d.scope, lang)}
-                    </Txt>
-                    <Choices>
-                      {Object.entries(d.filters_applied)
-                        .filter(([k, v]) => k !== "policy" && v != null)
-                        .map(([key, value]) => (
+                    <View style={{ gap: dsSpace[3] }}>
+                      <Txt kind="caption" muted>
+                        {d.scope === "world"
+                          ? t("world")
+                          : countryName(d.scope, lang)}
+                      </Txt>
+                      <Choices gap={dsSpace[3]}>
+                        {Object.entries(d.filters_applied)
+                          .filter(([k, v]) => k !== "policy" && v != null)
+                          .map(([key, value]) => (
+                            <Chip
+                              key={key}
+                              compact
+                              label={filterLabel(key, value)}
+                              selected
+                              onPress={() => {
+                                const filters = { ...body?.filters };
+                                if (key === "city_size")
+                                  filters.city_size = ["big", "mid", "small"];
+                                else if (key === "climate")
+                                  filters.climate = null;
+                                else if (key === "max_distance_km")
+                                  filters.max_distance_km = null;
+                                else if (key === "purpose")
+                                  filters.purpose = "both";
+                                else
+                                  delete filters[key as keyof typeof filters];
+                                router.setParams({
+                                  request: JSON.stringify({
+                                    ...body,
+                                    filters,
+                                  }),
+                                });
+                              }}
+                            />
+                          ))}
+                      </Choices>
+                      <Button
+                        secondary
+                        label={t("changeFilters")}
+                        onPress={() =>
+                          router.replace(
+                            `/map/recommend?profile=${id}&request=${encodeURIComponent(JSON.stringify(body))}`,
+                          )
+                        }
+                      />
+                    </View>
+                    <View style={{ gap: dsSpace[3] }}>
+                      <Generated part={d.explanations} retry={q.retry}>
+                        {(e) => <Txt kind="reading">{e.intro}</Txt>}
+                      </Generated>
+                    </View>
+                    <View
+                      style={{
+                        marginTop: dsSpace[1],
+                        paddingTop: dsSpace[4],
+                        borderTopWidth: 1,
+                        borderTopColor: theme.hair,
+                        gap: dsSpace[3],
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          gap: dsSpace[2],
+                          padding: dsSpace[1],
+                          borderRadius: dsRadius.md,
+                          borderWidth: 1,
+                          borderColor: theme.borderControl,
+                          alignSelf: "flex-start",
+                        }}
+                      >
+                        {(
+                          [
+                            [false, "list"],
+                            [true, "map"],
+                          ] as const
+                        ).map(([showMap, label]) => (
                           <Chip
-                            key={key}
-                            label={
-                              key === "purpose" && value === "both"
-                                ? t("livingTravel")
-                                : key === "city_size"
-                                  ? Array.isArray(value)
-                                    ? value
-                                        .map((v) =>
-                                          t(
-                                            v === "big"
-                                              ? "largeCities"
-                                              : String(v),
-                                          ),
-                                        )
-                                        .join(", ")
-                                    : t(String(value))
-                                  : `${t(key)}: ${Array.isArray(value) ? value.map((v) => t(String(v))).join(", ") : t(String(value))}`
-                            }
-                            selected
-                            onPress={() => {
-                              const filters = { ...body?.filters };
-                              if (key === "city_size")
-                                filters.city_size = ["big", "mid", "small"];
-                              else if (key === "climate")
-                                filters.climate = null;
-                              else if (key === "max_distance_km")
-                                filters.max_distance_km = null;
-                              else if (key === "purpose")
-                                filters.purpose = "both";
-                              else delete filters[key as keyof typeof filters];
-                              router.setParams({
-                                request: JSON.stringify({ ...body, filters }),
-                              });
-                            }}
+                            key={label}
+                            compact
+                            label={t(label)}
+                            selected={map === showMap}
+                            onPress={() => setMap(showMap)}
                           />
                         ))}
-                    </Choices>
-                    <Button
-                      secondary
-                      label={t("changeFilters")}
-                      onPress={() =>
-                        router.replace(
-                          `/map/recommend?profile=${id}&request=${encodeURIComponent(JSON.stringify(body))}`,
-                        )
-                      }
-                    />
-                    <Generated part={d.explanations} retry={q.retry}>
-                      {(e) => <Txt kind="reading">{e.intro}</Txt>}
-                    </Generated>
-                    <Choices>
-                      <Chip
-                        label={t("list")}
-                        selected={!map}
-                        onPress={() => setMap(false)}
-                      />
-                      <Chip
-                        label={t("map")}
-                        selected={map}
-                        onPress={() => setMap(true)}
-                      />
-                    </Choices>
-                    {map && (
-                      <MapCanvas
-                        emphasized={d.by_line.flatMap((g) => {
-                          const line = g.line;
-                          return "body" in line
-                            ? [`${line.body}:${line.angle}`]
-                            : line.bodies.map(
-                                (body, i) => `${body}:${line.angles[i]}`,
-                              );
-                        })}
-                        lines={lines.data}
-                        bodies={Object.keys(planetColors) as Body[]}
-                        destinations={d.places}
-                        onDestination={place}
-                      />
-                    )}
+                      </View>
+                      {map && (
+                        <MapCanvas
+                          emphasized={d.by_line.flatMap((g) => {
+                            const line = g.line;
+                            return "body" in line
+                              ? [`${line.body}:${line.angle}`]
+                              : line.bodies.map(
+                                  (body, i) => `${body}:${line.angles[i]}`,
+                                );
+                          })}
+                          lines={lines.data}
+                          bodies={Object.keys(planetColors) as Body[]}
+                          destinations={d.places}
+                          onDestination={place}
+                        />
+                      )}
+                    </View>
                   </>
                 )}
               </>
             )}
-          </>
+          </View>
         }
         sections={
           !d || d.status === "needs_goal"

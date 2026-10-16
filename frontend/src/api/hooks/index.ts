@@ -104,14 +104,16 @@ export function useActions() {
         body: { email, code },
       })) as Session;
       queryClient.clear();
-      if (!data.me.self_profile_id)
+      const { hasGuestReading } = await import("../../lib/guest-onboarding");
+      // Guest birth is claimed in setSession — don't wipe that path into consent.
+      if (!data.me.self_profile_id && !hasGuestReading())
         useApp.getState().editDraft({ step: "consent", profileId: undefined });
-      await setSession(data);
-      if (data.me.language !== useApp.getState().language)
+      const session = (await setSession(data)) ?? data;
+      if (session.me.language !== useApp.getState().language)
         await request("PATCH", "/me", "Me", {
           language: useApp.getState().language,
         });
-      return data;
+      return session;
     },
     patchMe: async (body: unknown) => {
       const me = (await mutate.mutateAsync({

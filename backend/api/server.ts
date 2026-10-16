@@ -3,6 +3,15 @@ import { SupabaseAuth, type AuthConfig } from "./supabase-auth";
 import path from "node:path";
 import { buildLocalApp } from "./app";
 import { dataDir } from "./data-dir";
+import { migrateDeploy } from "./db";
+
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL =
+    "postgres://astrology:astrology@127.0.0.1:5432/astrology";
+}
+
+await migrateDeploy();
+
 const folder = dataDir();
 const authFile = path.join(folder, "auth-config.json");
 const authConfig: (AuthConfig & { enabled: boolean }) | undefined =
@@ -25,6 +34,7 @@ const fromEnv =
     : undefined;
 const resolved = fromEnv ?? authConfig;
 const auth = resolved?.enabled ? new SupabaseAuth(resolved) : undefined;
+const demoAuth = process.env.ASTRO_DEMO_AUTH === "1";
 const app = await buildLocalApp({
   auth,
   dbPath: path.join(folder, "app.sqlite"),
@@ -41,8 +51,10 @@ console.log(
       ? auth.multiUser
         ? "Supabase multi-user authentication enabled. "
         : "Supabase owner authentication enabled. "
-      : "Private preview login: any email / 000000 (per-email accounts). ") +
-    (process.env.DATABASE_URL ? "PostgreSQL store. " : "SQLite store. ") +
+      : demoAuth
+        ? "Demo login enabled (any email / 000000). "
+        : "Demo login disabled (set ASTRO_DEMO_AUTH=1). ") +
+    "PostgreSQL + Prisma. " +
     `DATA_DIR=${folder}. ` +
     "Paid generation " +
     (process.env.ASTRO_ALLOW_PAID === "1"

@@ -1,8 +1,18 @@
-import { space as dsSpace } from "../../design-system/theme/tokens";
+import {
+  space as dsSpace,
+  size as dsSize,
+  radius as dsRadius,
+} from "../../design-system/theme/tokens";
 import { resolveRoute } from "../../lib/routes";
 import { TimezoneNotice } from "../shared/TimezoneNotice";
 import { useCallback, useEffect } from "react";
-import { AppState, RefreshControl, View } from "react-native";
+import {
+  AppState,
+  Pressable,
+  RefreshControl,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useCatalogue } from "../../api/hooks";
@@ -21,6 +31,7 @@ import {
   ErrorNotice,
   Choices,
 } from "../../design/components";
+import { useTheme } from "../../design/theme";
 import { Generated, Score } from "../shared/Blocks";
 import type { HomeSummary } from "../../../contracts/spec-types";
 export default function HomeScreen() {
@@ -28,8 +39,12 @@ export default function HomeScreen() {
     app = useApp(),
     catalogue = useCatalogue(),
     flags = useFlags(),
+    theme = useTheme(),
+    { width: windowWidth } = useWindowDimensions(),
     query = useApi<HomeSummary>("/home", "HomeSummary"),
     data = query.data;
+  // Two columns on phones; keep gutters proportional to screen width.
+  const tileGap = windowWidth < 360 ? dsSpace[2] : dsSpace[3];
   const today = () =>
     router.push(
       `/(tabs)/ahead?view=day&profile=${app.me?.self_profile_id ?? ""}`,
@@ -90,8 +105,16 @@ export default function HomeScreen() {
               score={data.score_10}
               band={data.tone_label}
               bandKey={data.tone}
+              compact
             />
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: dsSpace[4] }}>
+            <View
+              style={{
+                flexDirection: "row",
+                flexWrap: "wrap",
+                gap: tileGap,
+                alignItems: "stretch",
+              }}
+            >
               {data.tiles
                 .filter((tile) => tile.key !== "energy" || flags.homeEnergyTile)
                 .filter(
@@ -103,22 +126,51 @@ export default function HomeScreen() {
                     ),
                 )
                 .map((tile) => (
-                  <View key={tile.key} style={{ gap: dsSpace[2], width: "47%" }}>
+                  <View
+                    key={tile.key}
+                    style={{
+                      flexGrow: 1,
+                      flexBasis: "42%",
+                      maxWidth: "48%",
+                      gap: dsSpace[2],
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Score
+                      compact
                       label={tile.label}
                       score={tile.score_10}
-                      band={catalogue.data.day_bands[tile.band] ?? tile.label}
+                      band={
+                        catalogue.data?.day_bands?.[tile.band] ?? tile.label
+                      }
                       bandKey={tile.band}
                     />
-                    <Button
-                      secondary
-                      label={t("exploreArea", { area: tile.label })}
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={t("exploreArea", {
+                        area: tile.label,
+                      })}
                       onPress={() =>
                         router.push(
                           `/(tabs)/ahead?view=day&area=${tile.key}&profile=${app.me?.self_profile_id ?? ""}`,
                         )
                       }
-                    />
+                      style={({ pressed }) => ({
+                        minHeight: dsSize.buttonMd,
+                        paddingVertical: dsSpace[1],
+                        paddingHorizontal: dsSpace[2],
+                        borderRadius: dsRadius.md,
+                        borderWidth: 1,
+                        borderColor: theme.borderControl,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        opacity: pressed ? 0.88 : 1,
+                      })}
+                    >
+                      <Txt kind="caption" numberOfLines={1}>
+                        {t("exploreArea", { area: tile.label })}
+                      </Txt>
+                    </Pressable>
                   </View>
                 ))}
             </View>

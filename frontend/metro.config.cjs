@@ -4,7 +4,7 @@ const config = getDefaultConfig(__dirname);
 const existing = config.resolver.blockList;
 config.resolver.blockList = [
   ...(Array.isArray(existing) ? existing : existing ? [existing] : []),
-  /[/\\]backend/mock[/\\]fixtures[/\\].*/,
+  /[/\\]backend[/\\]mock[/\\]fixtures[/\\].*/,
   /[/\\]artifacts[/\\].*/,
   /[/\\]\.local-data[/\\].*/,
 ];

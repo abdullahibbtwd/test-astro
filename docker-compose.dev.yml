@@ -1,0 +1,32 @@
+# Development: Postgres only. Run the API on the host so code changes apply
+# without rebuilding the API image.
+#
+#   docker compose -f docker-compose.dev.yml up -d
+#   # then from backend/ (see README): npm run local-api with DATABASE_URL set
+#
+# Keep docker-compose.yml for the full API+db container stack.
+# Stop that stack first if it is running (shared project name / port 5432).
+
+# Host API should export (see .env.docker.example):
+#   DATABASE_URL=postgres://astrology:astrology@127.0.0.1:5432/astrology
+#   ASTRO_DEMO_AUTH=1
+
+services:
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: astrology
+      POSTGRES_PASSWORD: astrology
+      POSTGRES_DB: astrology
+    volumes:
+      - pgdata-dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U astrology -d astrology"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  pgdata-dev:

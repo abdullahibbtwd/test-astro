@@ -1,4 +1,6 @@
+import { space as dsSpace } from "../../design-system/theme/tokens";
 import { useState } from "react";
+import { View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import {
@@ -78,11 +80,12 @@ export default function RecommendScreen() {
   };
   return (
     <Screen back title={t("whereShouldIGo")}>
-      <Choices>
+      <Choices gap={dsSpace[3]}>
         {(["overall", ...Object.keys(cat.goals)] as (Goal | "overall")[]).map(
           (g) => (
             <Chip
               key={g}
+              compact
               label={g === "overall" ? t("overall") : cat.goals[g]}
               selected={!text && goal === g}
               onPress={() => {
@@ -99,24 +102,29 @@ export default function RecommendScreen() {
         onChangeText={setText}
         maxLength={1000}
       />
-      <Txt kind="title">{t("scope")}</Txt>
-      <Choices>
-        <Chip
-          label={t("world")}
-          selected={scope === "world"}
-          onPress={() => setScope("world")}
-        />
-        <Chip
-          label="Türkiye"
-          selected={scope === "TR"}
-          onPress={() => setScope("TR")}
-        />
-        <Chip
-          label={scopeName || t("chooseCountry")}
-          selected={!["world", "TR"].includes(scope)}
-          onPress={() => setCountry(!country)}
-        />
-      </Choices>
+      <View style={{ gap: dsSpace[3] }}>
+        <Txt kind="title">{t("scope")}</Txt>
+        <Choices gap={dsSpace[3]}>
+          <Chip
+            compact
+            label={t("world")}
+            selected={scope === "world"}
+            onPress={() => setScope("world")}
+          />
+          <Chip
+            compact
+            label="Türkiye"
+            selected={scope === "TR"}
+            onPress={() => setScope("TR")}
+          />
+          <Chip
+            compact
+            label={scopeName || t("chooseCountry")}
+            selected={!["world", "TR"].includes(scope)}
+            onPress={() => setCountry(!country)}
+          />
+        </Choices>
+      </View>
       {country && (
         <MapSearch
           areasOnly
@@ -133,70 +141,98 @@ export default function RecommendScreen() {
         onPress={() => setRefine(!refine)}
       />
       {refine && (
-        <>
-          <Txt>{t("regions")}</Txt>
-          <Choices multi>
-            {regions.map((r) => (
-              <Chip role="checkbox"
-                key={r}
-                label={t(r)}
-                selected={(filters.regions ?? regions).includes(r)}
-                onPress={() => toggle("regions", r, [...regions])}
-              />
-            ))}
-          </Choices>
-          <Txt>{t("citySize")}</Txt>
-          <Choices multi>
-            {(["big", "mid", "small"] as const).map((s) => (
-              <Chip role="checkbox"
-                key={s}
-                label={t(s)}
-                selected={(filters.city_size ?? ["big", "mid"]).includes(s)}
-                onPress={() => toggle("city_size", s, ["big", "mid"])}
-              />
-            ))}
-          </Choices>
-          <Txt>{t("maxDistance")}</Txt>
-          <Choices>
-            {[0, 500, 1000, 2000, 3000, 5000].map((km) => (
-              <Chip
-                key={km}
-                label={km ? `≈ ${km.toLocaleString()} km` : t("off")}
-                selected={(filters.max_distance_km ?? 0) === km}
-                onPress={() =>
-                  setFilters({ ...filters, max_distance_km: km || null })
-                }
-              />
-            ))}
-          </Choices>
-          <Txt>{t("climate")}</Txt>
-          <Choices multi>
-            {(["warm", "mild", "cold"] as const).map((c) => (
-              <Chip role="checkbox"
-                key={c}
-                label={t(c)}
-                selected={(filters.climate ?? []).includes(c)}
-                onPress={() => toggle("climate", c, [])}
-              />
-            ))}
-          </Choices>
-          <Txt>{t("purpose")}</Txt>
-          <Choices>
-            {(["auto", "living", "travel", "both"] as const).map((p) => (
-              <Chip
-                key={p}
-                label={t(p === "both" ? "livingTravel" : p)}
-                selected={(filters.purpose ?? "auto") === p}
-                onPress={() => {
-                  const next = { ...filters };
-                  if (p === "auto") delete next.purpose;
-                  else next.purpose = p;
-                  setFilters(next);
-                }}
-              />
-            ))}
-          </Choices>
-        </>
+        <View style={{ gap: dsSpace[4] }}>
+          <View style={{ gap: dsSpace[2] }}>
+            <Txt kind="caption" muted>
+              {t("regions")}
+            </Txt>
+            <Choices multi gap={dsSpace[3]}>
+              {regions.map((r) => (
+                <Chip
+                  role="checkbox"
+                  compact
+                  key={r}
+                  label={t(r)}
+                  selected={(filters.regions ?? regions).includes(r)}
+                  onPress={() => toggle("regions", r, [...regions])}
+                />
+              ))}
+            </Choices>
+          </View>
+          <View style={{ gap: dsSpace[2] }}>
+            <Txt kind="caption" muted>
+              {t("citySize")}
+            </Txt>
+            <Choices multi gap={dsSpace[3]}>
+              {(["big", "mid", "small"] as const).map((s) => (
+                <Chip
+                  role="checkbox"
+                  compact
+                  key={s}
+                  label={t(s)}
+                  selected={(filters.city_size ?? ["big", "mid"]).includes(s)}
+                  onPress={() => toggle("city_size", s, ["big", "mid"])}
+                />
+              ))}
+            </Choices>
+          </View>
+          <View style={{ gap: dsSpace[2] }}>
+            <Txt kind="caption" muted>
+              {t("maxDistance")}
+            </Txt>
+            <Choices gap={dsSpace[3]}>
+              {[0, 500, 1000, 2000, 3000, 5000].map((km) => (
+                <Chip
+                  compact
+                  key={km}
+                  label={km ? `≈ ${km.toLocaleString()} km` : t("off")}
+                  selected={(filters.max_distance_km ?? 0) === km}
+                  onPress={() =>
+                    setFilters({ ...filters, max_distance_km: km || null })
+                  }
+                />
+              ))}
+            </Choices>
+          </View>
+          <View style={{ gap: dsSpace[2] }}>
+            <Txt kind="caption" muted>
+              {t("climate")}
+            </Txt>
+            <Choices multi gap={dsSpace[3]}>
+              {(["warm", "mild", "cold"] as const).map((c) => (
+                <Chip
+                  role="checkbox"
+                  compact
+                  key={c}
+                  label={t(c)}
+                  selected={(filters.climate ?? []).includes(c)}
+                  onPress={() => toggle("climate", c, [])}
+                />
+              ))}
+            </Choices>
+          </View>
+          <View style={{ gap: dsSpace[2] }}>
+            <Txt kind="caption" muted>
+              {t("purpose")}
+            </Txt>
+            <Choices gap={dsSpace[3]}>
+              {(["auto", "living", "travel", "both"] as const).map((p) => (
+                <Chip
+                  compact
+                  key={p}
+                  label={t(p === "both" ? "livingTravel" : p)}
+                  selected={(filters.purpose ?? "auto") === p}
+                  onPress={() => {
+                    const next = { ...filters };
+                    if (p === "auto") delete next.purpose;
+                    else next.purpose = p;
+                    setFilters(next);
+                  }}
+                />
+              ))}
+            </Choices>
+          </View>
+        </View>
       )}
       <Button label={t("findPlaces")} onPress={submit} />
     </Screen>

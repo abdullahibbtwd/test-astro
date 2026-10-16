@@ -13,7 +13,7 @@ export const apiBase =
 let session: Session | null = null;
 let refreshing: Promise<boolean> | null = null;
 export let mockToday: string | undefined;
-export async function setSession(value: Session | null) {
+export async function setSession(value: Session | null): Promise<Session | null> {
   session = value;
   if (value) {
     const { hasGuestReading, claimGuestReading } = await import("../lib/guest-onboarding");
@@ -42,6 +42,23 @@ export async function setSession(value: Session | null) {
   }
   privateStorage.setItem("api-base", apiBase);
   useApp.getState().update({ signedIn: !!value, me: value?.me ?? null });
+  return session;
+}
+/** Where to go after sign-in (uses post-claim app state, not a stale Session). */
+export function routeAfterSignIn(): string {
+  const app = useApp.getState();
+  if (app.guestClaimPending) return "/(auth)/core";
+  if (app.onboardingUnlockProfileId) return "/(auth)/unlocked";
+  const self = app.me?.self_profile_id;
+  if (
+    self &&
+    app.draft.profileId === self &&
+    app.draft.step &&
+    app.draft.step !== "complete"
+  )
+    return `/(onboarding)/${app.draft.step}`;
+  if (self) return "/(tabs)";
+  return "/(onboarding)/consent";
 }
 export async function restoreSession() {
   const previousApi = privateStorage.getItem("api-base");

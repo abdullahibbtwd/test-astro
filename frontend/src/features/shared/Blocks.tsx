@@ -80,11 +80,14 @@ export function Score({
   score,
   band,
   bandKey,
+  compact = false,
 }: {
   label: string;
   score: number;
   band: string;
   bandKey?: string;
+  /** Denser layout for narrow home tiles — softer type, single-line band. */
+  compact?: boolean;
 }) {
   const flags = useFlags(),
     c = useTheme();
@@ -92,31 +95,49 @@ export function Score({
     <View
       accessible
       accessibilityLabel={`${label}${flags.dayScoreNumbers ? `, ${score} / 10` : ""}, ${band}`}
-      style={{ gap: dsSpace[2] }}
+      style={{ gap: compact ? dsSpace[1] : dsSpace[2], flexGrow: compact ? 1 : undefined }}
     >
-      <Txt>{label}</Txt>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "baseline",
+          justifyContent: "space-between",
+          gap: dsSpace[2],
+        }}
+      >
+        <Txt
+          kind={compact ? "caption" : undefined}
+          numberOfLines={1}
+          style={{ flexShrink: 1 }}
+        >
+          {label}
+        </Txt>
+        {flags.dayScoreNumbers && (
+          <Txt kind="caption" muted>
+            {score}/10
+          </Txt>
+        )}
+      </View>
       {flags.dayScoreNumbers && (
-        <>
-          <Txt kind="title">{score} / 10</Txt>
-          <View style={{ flexDirection: "row", gap: 3 }}>
-            {Array.from({ length: 10 }, (_, i) => (
-              <View
-                key={i}
-                style={{
-                  flex: 1,
-                  height: 5,
-                  backgroundColor:
-                    i < score
-                      ? bandColor(bandKey ?? "quiet", c.dark)
-                      : c.hair,
-                  borderRadius: 2,
-                }}
-              />
-            ))}
-          </View>
-        </>
+        <View style={{ flexDirection: "row", gap: compact ? 2 : 3 }}>
+          {Array.from({ length: 10 }, (_, i) => (
+            <View
+              key={i}
+              style={{
+                flex: 1,
+                height: compact ? 3 : 4,
+                backgroundColor:
+                  i < score
+                    ? bandColor(bandKey ?? "quiet", c.dark)
+                    : c.hair,
+                borderRadius: 2,
+                opacity: compact ? (i < score ? 0.85 : 0.5) : 1,
+              }}
+            />
+          ))}
+        </View>
       )}
-      <BandChip band={bandKey ?? "quiet"} label={band} />
+      <BandChip band={bandKey ?? "quiet"} label={band} compact={compact} />
     </View>
   );
 }

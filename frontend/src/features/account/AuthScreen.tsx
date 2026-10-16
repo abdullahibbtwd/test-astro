@@ -18,6 +18,7 @@ import {
 } from "../../design/components";
 import { useTheme } from "../../design/theme";
 import { useActions } from "../../api/hooks";
+import { routeAfterSignIn } from "../../api/client";
 const demoAuth = __DEV__ && process.env.EXPO_PUBLIC_AUTH_MODE !== "supabase";
 export default function AuthScreen() {
   const { mode, fresh } = useLocalSearchParams<{
@@ -38,10 +39,7 @@ export default function AuthScreen() {
     setProviderError(undefined);
     try {
       const session = await providerSignIn(provider);
-      if (session)
-        router.replace(
-          session.me.self_profile_id ? "/(tabs)" : "/(onboarding)/consent",
-        );
+      if (session) router.replace(routeAfterSignIn());
     } catch (e) {
       if (e instanceof ProviderUnavailable)
         showSnackbar(t("providerUnavailable"));
@@ -66,10 +64,8 @@ export default function AuthScreen() {
     if (submitting.current) return;
     submitting.current = true;
     try {
-      const session = await actions.verify(email, value);
-      router.replace(
-        session.me.self_profile_id ? "/(tabs)" : "/(onboarding)/consent",
-      );
+      await actions.verify(email, value);
+      router.replace(routeAfterSignIn());
     } catch {
     } finally {
       submitting.current = false;

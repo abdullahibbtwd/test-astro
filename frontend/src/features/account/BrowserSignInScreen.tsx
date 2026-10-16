@@ -17,7 +17,7 @@ import {
   cancelBrowserSignIn,
   type SignInTicket,
 } from "../../lib/browser-signin";
-import { ApiError, setSession } from "../../api/client";
+import { ApiError, setSession, routeAfterSignIn } from "../../api/client";
 export default function BrowserSignInScreen() {
   const { provider: raw } = useLocalSearchParams<{ provider?: string }>();
   const provider = raw === "google" ? "google" : "email";
@@ -87,9 +87,7 @@ export default function BrowserSignInScreen() {
           await setSession(session);
           await cancelBrowserSignIn(ticket);
           current.current = null;
-          router.replace(
-            session.me.self_profile_id ? "/(tabs)" : "/(onboarding)/consent",
-          );
+          router.replace(routeAfterSignIn());
         }
       } catch (e) {
         if (!stopped) {

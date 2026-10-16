@@ -11,6 +11,7 @@ __pycache__/
 node_modules/
 */node_modules/
 
+.env
 # --- Personal run outputs (real birth data + readings) ---
 runs/
 synastry_run/

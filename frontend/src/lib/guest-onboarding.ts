@@ -97,12 +97,20 @@ export async function claimGuestReading() {
   await SecureStore.deleteItemAsync(key);
   privateStorage.removeItem("guest-preview-active");
   privateStorage.removeItem("guest-preview-input");
-  useApp
-    .getState()
-    .editDraft({ step: "complete", profileId: profile.profile_id });
+  // Birth is already claimed — finish the same account setup as sign-up-first
+  // (consent + name + current place…), not a shortcut into the app.
+  useApp.getState().editDraft({
+    step: "consent",
+    profileId: profile.profile_id,
+    name: "",
+    date: profile.birth.date,
+    time: profile.birth.time,
+    place: profile.birth.place,
+    consent: false,
+  });
   useApp.getState().update({
     activeProfileId: profile.profile_id,
-    onboardingUnlockProfileId: profile.profile_id,
+    onboardingUnlockProfileId: null,
     guestClaimPending: false,
   });
   queryClient.removeQueries({ queryKey: ["guest-core"] });

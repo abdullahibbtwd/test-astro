@@ -6,6 +6,10 @@
   "scripts": {
     "mock": "tsx mock/server.ts",
     "local-api": "tsx api/server.ts",
+    "local-api:dev": "bash -lc 'set -a; [ -f ../.env ] && . ../.env; set +a; exec env DATABASE_URL=${DATABASE_URL:-postgres://astrology:astrology@127.0.0.1:5432/astrology} ASTRO_DEMO_AUTH=${ASTRO_DEMO_AUTH:-1} HOST=${HOST:-127.0.0.1} PORT=${PORT:-4020} ASTRO_PA_ROOT=${ASTRO_PA_ROOT:-./engine} DATA_DIR=${DATA_DIR:-./.local-data} PYTHON=${PYTHON:-../.venv/bin/python} tsx api/server.ts'",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:smoke": "tsx scripts/prisma-smoke.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "tsx --test tests/*.test.ts",
     "test:budget": "python3 -X utf8 tests/budget_test.py",
@@ -14,8 +18,12 @@
   "dependencies": {
     "@date-fns/tz": "1.5.0",
     "@fastify/cors": "11.3.0",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "dotenv": "18.0.8",
     "fastify": "5.12.5",
     "pg": "8.23.1",
+    "prisma": "7.10.1",
     "zod": "3.25.76"
   },
   "devDependencies": {
@@ -26,5 +34,10 @@
   },
   "engines": {
     "node": ">=22.13.0 <25"
+  },
+  "allowScripts": {
+    "prisma@7.10.1": true,
+    "@prisma/engines@7.10.1": true,
+    "esbuild@0.28.2": true
   }
 }

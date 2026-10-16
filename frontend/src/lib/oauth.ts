@@ -74,8 +74,7 @@ export async function providerSignIn(
       "Session",
       body,
     );
-    await setSession(session);
-    return session;
+    return (await setSession(session)) ?? session;
   } catch (e) {
     if (e instanceof ProviderUnavailable) throw e;
     if (isNativeModuleMissing(e)) throw new ProviderUnavailable();

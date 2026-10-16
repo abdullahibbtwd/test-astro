@@ -12,6 +12,8 @@ import { registerBrowserSignIn } from "./browser-auth-routes";
 import type { SupabaseAuth, VerifiedSession } from "./supabase-auth";
 import { MapJobs, mapContext } from "./map-jobs";
 import { exportAccount, deleteAccount } from "./account";
+import { startCleanupTimer } from "./cleanup";
+import { prisma } from "./db";
 import { LiveMap } from "./map";
 import { CompatibilityJobs } from "./compatibility-jobs";
 import { ForecastJobs, forecastContext } from "./forecast-jobs";
@@ -119,6 +121,16 @@ export async function buildLocalApp({
   );
   const now = () => new Date().toISOString();
   const initializeAccount = async (tenantId: string, email = "") => {
+    // User row must exist before any Session/Record writes (FK).
+    await prisma().user.upsert({
+      where: { id: tenantId },
+      create: {
+        id: tenantId,
+        email: email || null,
+        displayName: "",
+      },
+      update: email ? { email } : {},
+    });
     const me: Me = {
       ...defaults("me.en"),
       user_id: tenantId,
@@ -134,17 +146,25 @@ export async function buildLocalApp({
     return me;
   };
   const ensureAccount = async (tenantId: string, email?: string) => {
+    if (await prisma().deletedUser.findUnique({ where: { id: tenantId } }))
+      throw issue(403, "Account deleted");
     let me = await store.get<Me>("me");
     if (!me) me = await initializeAccount(tenantId, email);
     else if (email && me.email !== email) {
       me = { ...me, email };
+      await prisma().user.update({
+        where: { id: tenantId },
+        data: { email },
+      });
       await store.put("me", me);
     }
     return me;
   };
   // Serialize handlers so profile edits/idempotency checks cannot interleave across an await.
   let tail = Promise.resolve();
+  const stopCleanup = startCleanupTimer();
   app.addHook("onClose", async () => {
+    stopCleanup();
     await ask.close();
     await tail;
     await readings.close();
@@ -153,6 +173,8 @@ export async function buildLocalApp({
     await compatibility.close();
     await mapJobs.close();
     await store.close();
+    const { disconnectPrisma } = await import("./db");
+    await disconnectPrisma();
   });
   app.setErrorHandler((error: any, _request, reply) => {
     if (error.absence) {
@@ -203,6 +225,10 @@ export async function buildLocalApp({
     const access = verified?.access_token ?? randomBytes(32).toString("hex"),
       refresh = verified?.refresh_token ?? randomBytes(32).toString("hex");
     const expires = Date.now() + (verified?.expires_in ?? 3600) * 1000;
+    // Create User (+ me Record) before any Session rows.
+    const me = await store.runAsAsync(tenantId, () =>
+      ensureAccount(tenantId, verified?.user.email ?? demoEmail),
+    );
     await store.runAsAsync(SYSTEM_TENANT, async () => {
       await store.put(credential("access", access), {
         expires,
@@ -215,10 +241,6 @@ export async function buildLocalApp({
       });
     });
     return store.runAsAsync(tenantId, async () => {
-      const me = await ensureAccount(
-        tenantId,
-        verified?.user.email ?? demoEmail,
-      );
       await ask.quota();
       return {
         access_token: access,
@@ -287,31 +309,38 @@ export async function buildLocalApp({
     }
     return saved[lang];
   };
+  // Place cache is shared (not per-user). Anonymous guest routes have no
+  // tenant; writing under DEFAULT_TENANT would FK-fail without a User row.
   const place = async (id: string, lang: string) => {
     const key = `place:${lang}:${id}`;
-    let value = await store.get(key);
-    if (!value) {
-      value = (await bridge({ action: "places", id, lang }))[0];
-      if (!value) throw issue(400);
-      await store.put(key, value);
-    }
-    const {
-      kind: _kind,
-      population: _population,
-      source: _source,
-      ...result
-    } = value;
-    return result;
+    return store.runAsAsync(SYSTEM_TENANT, async () => {
+      let value = await store.get(key);
+      if (!value) {
+        value = (await bridge({ action: "places", id, lang }))[0];
+        if (!value) throw issue(400);
+        await store.put(key, value);
+      }
+      const {
+        kind: _kind,
+        population: _population,
+        source: _source,
+        ...result
+      } = value;
+      return result;
+    });
   };
   if (guestOnboarding) {
+    // Sentinel user so guest KV (profile/chart/raw/sections) can use Record FK.
+    await prisma().user.upsert({
+      where: { id: "guest-pool" },
+      create: { id: "guest-pool", displayName: "Guest pool" },
+      update: {},
+    });
     const guestStore = await Store.open(
       process.env.DATABASE_URL
         ? { databaseUrl: process.env.DATABASE_URL }
-        : dbPath === ":memory:"
-          ? ":memory:"
-          : path.join(dataRoot, "onboarding-guests.sqlite"),
+        : { databaseUrl: process.env.DATABASE_URL! },
     );
-    // Isolate guest records under a dedicated tenant when sharing Postgres.
     const guestTenant = "guest-pool";
     const guestScoped = {
       get: <T = any>(key: string) =>
@@ -482,6 +511,7 @@ export async function buildLocalApp({
               if (auth)
                 result = await session(await auth.verify(body.email, body.code));
               else {
+                if (process.env.ASTRO_DEMO_AUTH !== "1") throw issue(503);
                 if (body.code !== "000000") throw issue(401);
                 result = await session(
                   undefined,
@@ -553,20 +583,26 @@ export async function buildLocalApp({
             case "delete /me":
               await ask.close();
               progressive.assertIdle();
+              // Transitional: jobs may still live in Record until Job model is wired.
               if (
-                (await store.list<any>("job:")).some((j) =>
-                  ["queued", "running"].includes(j.status),
-                )
+                (await store.list<any>("job:")).some((j) => {
+                  if (!["queued", "running"].includes(j.status)) return false;
+                  const stamp = Date.parse(j.updated_at ?? j.created_at ?? "");
+                  return (
+                    !Number.isFinite(stamp) ||
+                    stamp > Date.now() - 15 * 60_000
+                  );
+                })
               )
                 throw issue(409);
               for (const target of await store.list<BirthProfile>("profile:"))
                 await progressive.releaseProfile(target);
-              await deleteAccount(store, dbPath === ":memory:" ? dataRoot : dbPath);
+              if (!tenantId) throw issue(401);
+              await deleteAccount(prisma(), tenantId, dataRoot);
               if (auth)
                 await store.runAsAsync(SYSTEM_TENANT, async () => {
                   await store.put("auth-mode", auth.scope);
                 });
-              if (tenantId) await initializeAccount(tenantId);
               return reply.code(202).send();
             case "get /me":
               result = { ...me, ask_quota: await ask.quota() };
@@ -609,8 +645,13 @@ export async function buildLocalApp({
                 query: (q.q ?? "").slice(0, 100),
                 lang,
               });
-              for (const candidate of result)
-                await store.put(`place:${lang}:${candidate.place_id}`, candidate);
+              await store.runAsAsync(SYSTEM_TENANT, async () => {
+                for (const candidate of result)
+                  await store.put(
+                    `place:${lang}:${candidate.place_id}`,
+                    candidate,
+                  );
+              });
               break;
             case "get /places/{place_id}":
               result = await place(p.place_id!, lang);
@@ -660,8 +701,14 @@ export async function buildLocalApp({
                 (profile?.is_self && relation !== "self")
               )
                 throw issue(409);
-              if (!profile && (await store.list("profile:")).length >= 50)
-                throw issue(409);
+              if (!profile) {
+                const { tryConsumeUsage } = await import("./limits");
+                if (
+                  (await tryConsumeUsage(me.user_id, "PROFILE_CREATE", 50)) ==
+                  null
+                )
+                  throw issue(409);
+              }
               const birthPlace = body.birth_place_id
                 ? await place(body.birth_place_id, lang)
                 : profile!.birth.place;

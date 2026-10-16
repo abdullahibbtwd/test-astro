@@ -15,7 +15,7 @@ Use the complete repository, not just `frontend/`. The private fixture ZIP is in
 
 ## Docker (API + PostgreSQL)
 
-Multi-user local API with Postgres:
+**Full stack** (API image + Postgres) — rebuild when the Dockerfile or deps change:
 
 ```bash
 cp .env.docker.example .env   # optional
@@ -23,3 +23,20 @@ docker compose up --build
 ```
 
 API listens on `http://localhost:4020/v1`. Without Supabase env, sign in with any email and code `000000` (each email is an isolated account). Set `AUTH_ENABLED=1` plus Supabase URL/key for real multi-user auth; omit `AUTH_OWNER_EMAIL` so every confirmed user gets their own tenant.
+
+**Dev (Postgres only)** — API runs on the host so TypeScript/Python edits apply without rebuilding:
+
+```bash
+# Stop the full stack if it is running: docker compose down
+docker compose -f docker-compose.dev.yml up -d
+
+cd backend
+export DATABASE_URL=postgres://astrology:astrology@127.0.0.1:5432/astrology
+export PYTHON="${PYTHON:-$(cd .. && pwd)/.venv/bin/python}"
+export ASTRO_PA_ROOT="$(pwd)/engine"
+export DATA_DIR="$(pwd)/.local-data"
+# Load LLM flags/keys from repo-root .env as needed, e.g. set -a; source ../.env; set +a
+npm run local-api
+```
+
+Same API URL: `http://localhost:4020/v1`. Dev Postgres uses volume `pgdata-dev` (separate from the full-stack `pgdata`).

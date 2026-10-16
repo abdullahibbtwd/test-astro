@@ -6,14 +6,25 @@ import {
   guestTokenSchema,
   type GuestBirth,
 } from "../../frontend/contracts/guest-onboarding";
+import type { GuestSession, Prisma } from "../src/generated/prisma/client.js";
 import { validBirth } from "../../frontend/src/lib/dates";
 import { computeBirthChart } from "./engine";
+import { prisma as getPrisma } from "./db";
+import {
+  countActiveGuestSessions,
+  tryConsumeGuestRate,
+  withGuestPoolLock,
+} from "./limits";
 import { Store } from "./store";
 import { ProgressiveReadings } from "./progressive-readings";
+
+const GUEST_POOL_MAX = 20;
+
 const hash = (value: string) =>
   createHash("sha256").update(value).digest("hex");
 const fail = (statusCode: number) =>
   Object.assign(new Error("Onboarding unavailable"), { statusCode });
+
 type Guest = {
   hash: string;
   fingerprint: string;
@@ -21,6 +32,20 @@ type Guest = {
   profile: BirthProfile;
   claimed?: { owner: string; profile_id: string };
 };
+
+function fromRow(row: GuestSession): Guest {
+  return {
+    hash: row.tokenHash,
+    fingerprint: row.fingerprint,
+    expires: row.expiresAt.getTime(),
+    profile: row.profile as unknown as BirthProfile,
+    claimed:
+      row.claimedById && row.claimedProfileId
+        ? { owner: row.claimedById, profile_id: row.claimedProfileId }
+        : undefined,
+  };
+}
+
 export function registerGuestOnboarding(
   app: FastifyInstance,
   options: {
@@ -37,6 +62,7 @@ export function registerGuestOnboarding(
   },
 ) {
   const { guest, account, readings, accountReadings } = options;
+  const db = getPrisma();
   const clock = options.now ?? Date.now;
   const withAccount =
     options.withAccount ?? (async <T>(work: () => Promise<T>) => work());
@@ -59,8 +85,12 @@ export function registerGuestOnboarding(
     if (!value.success) throw fail(401);
     return hash(value.data);
   };
+  const load = async (id: string) => {
+    const row = await db.guestSession.findUnique({ where: { tokenHash: id } });
+    return row ? fromRow(row) : undefined;
+  };
   const lookup = async (id: string) => {
-    const record = await guest.get<Guest>("guest:" + id);
+    const record = await load(id);
     if (!record || record.expires <= clock() || record.claimed) throw fail(401);
     return record;
   };
@@ -97,22 +127,22 @@ export function registerGuestOnboarding(
     await guest.transaction(async () => {
       for (const prefix of ["profile:", "chart:", "raw:"])
         await guest.remove(prefix + record.profile.profile_id);
-      await guest.remove("guest:" + record.hash);
     });
+    await db.guestSession
+      .delete({ where: { tokenHash: record.hash } })
+      .catch(() => undefined);
   };
   const sweep = async () => {
-    for (const record of await guest.list<Guest>("guest:")) {
-      if (record.expires > clock()) continue;
+    const expired = await db.guestSession.findMany({
+      where: { expiresAt: { lte: new Date(clock()) } },
+    });
+    for (const row of expired) {
       try {
-        await remove(record);
+        await remove(fromRow(row));
       } catch {
         /* Active generation is collected on the next sweep. */
       }
     }
-    for (const entry of await guest.list<{ key: string; expires: number }>(
-      "guest-rate:",
-    ))
-      if (entry.expires <= clock()) await guest.remove(entry.key);
   };
   const timer = setInterval(() => void serial(sweep).catch(() => {}), 60_000);
   (timer as unknown as NodeJS.Timeout).unref();
@@ -144,26 +174,16 @@ export function registerGuestOnboarding(
           input.birth_place_id,
         ]),
       );
-      const saved = await guest.get<Guest>("guest:" + id);
+      const saved = await load(id);
       if (saved) {
         const record = await lookup(id);
         if (record.fingerprint !== fingerprint) throw fail(409);
         return reply.code(202).send(await state(record, input.lang, true));
       }
       await sweep();
-      const rateKey = "guest-rate:" + hash(request.ip);
-      let rate = await guest.get<{ key: string; count: number; expires: number }>(
-        rateKey,
-      );
-      if (!rate || rate.expires <= clock())
-        rate = { key: rateKey, count: 0, expires: clock() + 3600_000 };
-      if (
-        rate.count >= 5 ||
-        (await guest.list<Guest>("guest:")).length >= 20
-      )
-        throw fail(429);
       // Persist the attempt before expensive work; tokens cannot bypass this budget bound.
-      await guest.put(rateKey, { ...rate, count: rate.count + 1 });
+      if ((await tryConsumeGuestRate(hash(request.ip), db)) == null)
+        throw fail(429);
       const place = await options.place(input.birth_place_id, input.lang);
       const profile_id = randomUUID();
       const { chart, raw } = await (options.calculate ?? computeBirthChart)(
@@ -193,19 +213,33 @@ export function registerGuestOnboarding(
         created_at: new Date(clock()).toISOString(),
         updated_at: new Date(clock()).toISOString(),
       };
+      const expiresAt = new Date(clock() + 86400_000);
       const record: Guest = {
         hash: id,
         fingerprint,
         profile,
-        expires: clock() + 86400_000,
+        expires: expiresAt.getTime(),
       };
+      await withGuestPoolLock(async (tx) => {
+        if ((await countActiveGuestSessions(tx)) >= GUEST_POOL_MAX)
+          throw fail(429);
+        await tx.guestSession.create({
+          data: {
+            tokenHash: id,
+            fingerprint,
+            expiresAt,
+            profile: profile as unknown as Prisma.InputJsonValue,
+            chartKey: chart.chart_key,
+          },
+        });
+      }, db);
       await guest.transaction(async () => {
         await guest.put("profile:" + profile_id, profile);
         await guest.put("chart:" + profile_id, chart);
         await guest.put("raw:" + profile_id, raw);
-        await guest.put("guest:" + id, record);
       });
-      return reply.code(202).send(await state(record, input.lang));
+      // Retry clears a prior failed section for the same chart_key.
+      return reply.code(202).send(await state(record, input.lang, true));
     }),
   );
   app.get("/v1/onboarding/reading", async (request) =>
@@ -230,8 +264,8 @@ export function registerGuestOnboarding(
           (request.body as { guest_token?: unknown })?.guest_token,
         );
         if (!token.success) throw fail(400);
-        const id = hash(token.data),
-          record = await guest.get<Guest>("guest:" + id);
+        const id = hash(token.data);
+        const record = await load(id);
         if (!record || record.expires <= clock()) throw fail(410);
         return account.runAsAsync(owner, async () => {
           if (record.claimed) {
@@ -305,8 +339,13 @@ export function registerGuestOnboarding(
               });
           });
           await accountReadings.prepare(profile);
-          record.claimed = { owner, profile_id: profile.profile_id };
-          await guest.put("guest:" + id, record);
+          await db.guestSession.update({
+            where: { tokenHash: id },
+            data: {
+              claimedById: owner,
+              claimedProfileId: profile.profile_id,
+            },
+          });
           await readings.releaseProfile(record.profile);
           for (const prefix of ["profile:", "raw:", "chart:"])
             await guest.remove(prefix + record.profile.profile_id);

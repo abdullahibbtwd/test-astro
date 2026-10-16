@@ -31,7 +31,12 @@ export function TimezoneNotice() {
         <AppText variant="caption" color="inkSoft" style={styles.prompt}>
           {prompt}
         </AppText>
-        <AppText variant="caption" color="accent" style={styles.link}>
+        <AppText
+          variant="caption"
+          color="accent"
+          numberOfLines={1}
+          style={styles.link}
+        >
           {t("change")}
         </AppText>
       </Pressable>
@@ -54,5 +59,5 @@ const styles = StyleSheet.create({
     gap: space[2],
   },
   prompt: { flexShrink: 1 },
-  link: { textDecorationLine: "underline" },
+  link: { flexShrink: 0, textDecorationLine: "underline" },
 });

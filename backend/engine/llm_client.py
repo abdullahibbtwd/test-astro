@@ -39,20 +39,27 @@ import time
 from dataclasses import dataclass, field
 from typing import Optional, Sequence, Union
 
-# Project-wide default model. Every pipeline's DEFAULT_MODEL points here, so
-# switching vendors for the whole app is a one-line change.
-DEFAULT_MODEL = "gemini-3.7-flash"
+# Project-wide default model. Every pipeline's DEFAULT_MODEL points here.
+# Override with ASTRO_LLM_MODEL (e.g. gemini-3.8-flash or a Pro id). The default
+# is a free-tier Flash model so local testing works with a Gemini free key.
+# Free-tier default: gemini-2.5-flash is closed to new keys; 3.5 Flash-Lite is
+# the recommended free Flash model for new Gemini API projects.
+DEFAULT_MODEL = os.environ.get("ASTRO_LLM_MODEL", "gemini-3.5-flash-lite")
 # Cheap model for the mechanical stages (faithful translation, forbidden-word
 # detox, the L5 distiller): bounded, extraction-shaped work where the reader
-# never sees the model's own prose. Reasoning effort for OpenAI models comes
-# from OPENAI_REASONING_EFFORT (default "low"; "none" = non-reasoning mode).
-DEFAULT_CHEAP_MODEL = "gpt-6-luna"
+# never sees the model's own prose. Defaults to the same free Flash model so a
+# Gemini-only key can finish readings; set ASTRO_CHEAP_MODEL=gpt-6-luna for the
+# prior OpenAI translation path. Reasoning effort for OpenAI models comes from
+# OPENAI_REASONING_EFFORT (default "low"; "none" = non-reasoning mode).
+DEFAULT_CHEAP_MODEL = os.environ.get("ASTRO_CHEAP_MODEL", DEFAULT_MODEL)
 OPENAI_REASONING_EFFORT = os.environ.get("OPENAI_REASONING_EFFORT", "low")
 # Gemini thinking level for every Gemini call (low | medium | high). Thinking
 # tokens are billed at the output rate and were ~60% of billed output at the
 # model default (medium), so the project default is LOW. Override per process
 # with GEMINI_THINKING_LEVEL, or per call via complete(thinking=...).
-GEMINI_THINKING_LEVEL = os.environ.get("GEMINI_THINKING_LEVEL", "low").lower()
+# "minimal" keeps free-tier Flash-Lite from spending the whole output budget on
+# thoughts; set GEMINI_THINKING_LEVEL=low|medium for heavier models.
+GEMINI_THINKING_LEVEL = os.environ.get("GEMINI_THINKING_LEVEL", "minimal").lower()
 
 USAGE_KEYS = ("input_tokens", "output_tokens",
               "cache_read_input_tokens", "cache_creation_input_tokens")

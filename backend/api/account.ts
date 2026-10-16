@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
+import type { PrismaClient } from "../src/generated/prisma/client.js";
 import { Store } from "./store";
+
+const STALE_JOB_MS = 15 * 60_000;
+
 export async function exportAccount(store: Store) {
   return {
     format: "astrology-local-export-v1",
@@ -36,19 +40,68 @@ export async function exportAccount(store: Store) {
     saved_reports: await store.list("report:"),
   };
 }
-export async function deleteAccount(store: Store, dbPath: string) {
-  if (
-    (await store.list<any>("job:")).some((j) =>
-      ["queued", "running"].includes(j.status),
-    )
-  )
-    throw Object.assign(new Error("Wait for active readings before deleting"), {
-      statusCode: 409,
-    });
-  const root = path.resolve(path.dirname(dbPath));
+
+function wipeMapProductsCache(dataRoot: string) {
+  const root = path.resolve(dataRoot);
   const cache = path.resolve(root, "map-products");
   if (path.dirname(cache) !== root)
     throw new Error("Invalid account cache path");
   fs.rmSync(cache, { recursive: true, force: true });
-  await store.clear();
+}
+
+/**
+ * Idempotent account deletion. Never re-initializes the account.
+ * - No user + already tombstoned → success
+ * - queued/running jobs older than 15 minutes are treated as dead (ignored for 409)
+ */
+export async function deleteAccount(
+  db: PrismaClient,
+  userId: string,
+  dataRoot: string,
+): Promise<void> {
+  const user = await db.user.findUnique({ where: { id: userId } });
+  const tombstone = await db.deletedUser.findUnique({ where: { id: userId } });
+
+  if (!user) {
+    if (!tombstone) {
+      await db.deletedUser.upsert({
+        where: { id: userId },
+        create: { id: userId },
+        update: {},
+      });
+    }
+    wipeMapProductsCache(dataRoot);
+    return;
+  }
+
+  const freshAfter = new Date(Date.now() - STALE_JOB_MS);
+  const blocking = await db.job.count({
+    where: {
+      userId,
+      status: { in: ["queued", "running"] },
+      updatedAt: { gt: freshAfter },
+    },
+  });
+  if (blocking > 0)
+    throw Object.assign(new Error("Wait for active readings before deleting"), {
+      statusCode: 409,
+    });
+
+  await db.$transaction(async (tx) => {
+    await tx.deletedUser.upsert({
+      where: { id: userId },
+      create: { id: userId },
+      update: { deletedAt: new Date() },
+    });
+    await tx.session.deleteMany({ where: { userId } });
+    await tx.usageCounter.deleteMany({ where: { userId } });
+    await tx.budgetCall.updateMany({
+      where: { userId },
+      data: { userId: "shared" },
+    });
+    await tx.budgetSettings.deleteMany({ where: { userId } });
+    await tx.user.delete({ where: { id: userId } });
+  });
+
+  wipeMapProductsCache(dataRoot);
 }

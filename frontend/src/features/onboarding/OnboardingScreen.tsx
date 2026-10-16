@@ -183,8 +183,13 @@ export default function OnboardingScreen() {
             loading={actions.isPending}
             onPress={() =>
               void run(async () => {
-                await actions.patchMe({ display_name: draft.name.trim() });
-                go("birth-date");
+                const label = draft.name.trim();
+                await actions.patchMe({ display_name: label });
+                // Guest claim already saved birth — skip date/time/place.
+                if (draft.profileId && app.me?.self_profile_id) {
+                  await actions.saveProfile({ label }, draft.profileId);
+                  go("current-place");
+                } else go("birth-date");
               })
             }
           />
@@ -355,6 +360,7 @@ function BuildingJob({ id }: { id: string }) {
   return reading.state === "ready" ? null : (
     <JobProgress
       job={reading.job}
+      error={reading.error}
       slow={reading.slow}
       failed={reading.state === "failed"}
       retry={() => void reading.retry().catch(() => {})}
