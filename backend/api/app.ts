@@ -10,6 +10,8 @@ import type { AskRunner } from "./ask-bridge";
 import { homeSummary } from "./home";
 import { registerBrowserSignIn } from "./browser-auth-routes";
 import type { SupabaseAuth, VerifiedSession } from "./supabase-auth";
+import type { JwtAuth } from "./jwt-auth";
+import type { SupabaseAdmin } from "./supabase-admin";
 import { MapJobs, mapContext } from "./map-jobs";
 import { exportAccount, deleteAccount } from "./account";
 import { startCleanupTimer } from "./cleanup";
@@ -43,10 +45,16 @@ export async function buildLocalApp({
   generateCompatibility,
   computeBirthChart = defaultBirthChart,
   auth,
+  jwt,
+  admin,
   askRunner,
   askReady,
 }: {
   auth?: SupabaseAuth;
+  /** Preferred: verify Supabase access tokens via JWKS (no Session rows). */
+  jwt?: JwtAuth;
+  /** Backend-only secret for deleting the Supabase auth user. */
+  admin?: SupabaseAdmin;
   askRunner?: AskRunner;
   askReady?: () => boolean;
   dbPath: string;
@@ -59,6 +67,7 @@ export async function buildLocalApp({
   generateCompatibility?: (data: unknown) => Promise<any>;
   computeBirthChart?: typeof defaultBirthChart;
 }) {
+  const demoAuth = process.env.ASTRO_DEMO_AUTH === "1";
   const app = Fastify({ logger: false, bodyLimit: 65536 });
   const dataRoot = dbPath === ":memory:" ? dataDir() : path.dirname(dbPath);
   const store = await Store.open(
@@ -67,21 +76,23 @@ export async function buildLocalApp({
       : dbPath,
   );
   const ask = new AskService(store, allowPaid, askRunner, askReady);
+  const authScope = auth?.scope ?? jwt?.scope;
   const previousAuth = await store.runAsAsync(SYSTEM_TENANT, () =>
     store.get<string>("auth-mode"),
   );
-  if (previousAuth && previousAuth !== auth?.scope) {
+  if (previousAuth && previousAuth !== authScope) {
     await store.close();
     throw new Error(
       "Real authentication is required for this database; keep its original project and owner configuration",
     );
   }
-  if (auth)
+  if (authScope)
     await store.runAsAsync(SYSTEM_TENANT, () =>
-      store.put("auth-mode", auth.scope),
+      store.put("auth-mode", authScope),
     );
+  // Session credential hashes are only for demo mode (opaque tokens).
   const credential = (kind: string, token: string) =>
-    (auth ? `supabase:${auth.scope}:` : "") + kind + ":" + digest(token);
+    (authScope ? `supabase:${authScope}:` : "") + kind + ":" + digest(token);
   /** Legacy single-operator pin when ownerEmail is configured; multi-user skips this. */
   const bindOwner = async (id: string) => {
     if (!auth || auth.multiUser) return;
@@ -216,7 +227,7 @@ export async function buildLocalApp({
     demoTenant?: string,
     demoEmail?: string,
   ) => {
-    if (auth && !verified) throw issue(401);
+    if ((auth || jwt) && !verified) throw issue(401);
     const tenantId =
       verified?.user.id ??
       demoTenant ??
@@ -229,17 +240,20 @@ export async function buildLocalApp({
     const me = await store.runAsAsync(tenantId, () =>
       ensureAccount(tenantId, verified?.user.email ?? demoEmail),
     );
-    await store.runAsAsync(SYSTEM_TENANT, async () => {
-      await store.put(credential("access", access), {
-        expires,
-        owner: tenantId,
+    // Real Supabase logins use the JWT as Bearer; Session table is demo-only.
+    if (!jwt) {
+      await store.runAsAsync(SYSTEM_TENANT, async () => {
+        await store.put(credential("access", access), {
+          expires,
+          owner: tenantId,
+        });
+        await store.put(credential("refresh", refresh), {
+          expires: Date.now() + 30 * 86400000,
+          accessKey: credential("access", access),
+          owner: tenantId,
+        });
       });
-      await store.put(credential("refresh", refresh), {
-        expires: Date.now() + 30 * 86400000,
-        accessKey: credential("access", access),
-        owner: tenantId,
-      });
-    });
+    }
     return store.runAsAsync(tenantId, async () => {
       await ask.quota();
       return {
@@ -252,6 +266,14 @@ export async function buildLocalApp({
     });
   };
   const resolveTenant = async (token: string) => {
+    if (jwt) {
+      const claims = await jwt.verify(token);
+      await bindOwner(claims.sub);
+      await store.runAsAsync(claims.sub, () =>
+        ensureAccount(claims.sub, claims.email),
+      );
+      return claims.sub;
+    }
     const record = await store.runAsAsync(SYSTEM_TENANT, () =>
       store.get<{ expires: number; owner?: string }>(
         credential("access", token),
@@ -502,27 +524,28 @@ export async function buildLocalApp({
             case "get /meta/catalogue":
               result = defaults(`catalogue.${lang}`);
               break;
-            // Demo credentials are accepted only when real authentication has never been enabled.
+            // Demo login only when ASTRO_DEMO_AUTH=1; otherwise 404 (or Supabase adapter).
             case "post /auth/email/start":
               if (auth) await auth.startEmail(body.email);
-              else if (!body.email?.includes("@")) throw issue(503);
+              else if (demoAuth) {
+                if (!body.email?.includes("@")) throw issue(400);
+              } else throw issue(404);
               return reply.code(204).send();
             case "post /auth/email/verify":
               if (auth)
                 result = await session(await auth.verify(body.email, body.code));
-              else {
-                if (process.env.ASTRO_DEMO_AUTH !== "1") throw issue(503);
+              else if (demoAuth) {
                 if (body.code !== "000000") throw issue(401);
                 result = await session(
                   undefined,
                   digest(String(body.email).trim().toLowerCase()),
                   String(body.email).trim().toLowerCase(),
                 );
-              }
+              } else throw issue(404);
               break;
             case "post /auth/google":
             case "post /auth/apple":
-              if (!auth) throw issue(503);
+              if (!auth) throw issue(demoAuth ? 503 : 404);
               result = await session(
                 await auth.provider(
                   endpoint.path.endsWith("google") ? "google" : "apple",
@@ -531,6 +554,11 @@ export async function buildLocalApp({
               );
               break;
             case "post /auth/refresh": {
+              if (jwt && auth) {
+                result = await session(await auth.refresh(body.refresh_token));
+                break;
+              }
+              if (!demoAuth && !auth) throw issue(404);
               const key = credential("refresh", body.refresh_token);
               const saved = await store.runAsAsync(SYSTEM_TENANT, () =>
                 store.get<{
@@ -554,6 +582,14 @@ export async function buildLocalApp({
               break;
             }
             case "post /auth/logout": {
+              if (jwt) {
+                const access = String(
+                  request.headers.authorization ?? "",
+                ).replace(/^Bearer /, "");
+                if (auth && access) await auth.logout(access).catch(() => {});
+                return reply.code(204).send();
+              }
+              if (!demoAuth && !auth) throw issue(404);
               const key = credential("refresh", body.refresh_token);
               const saved = await store.runAsAsync(SYSTEM_TENANT, () =>
                 store.get<{ accessKey?: string; accessHash?: string }>(key),
@@ -598,10 +634,14 @@ export async function buildLocalApp({
               for (const target of await store.list<BirthProfile>("profile:"))
                 await progressive.releaseProfile(target);
               if (!tenantId) throw issue(401);
-              await deleteAccount(prisma(), tenantId, dataRoot);
-              if (auth)
+              await deleteAccount(prisma(), tenantId, dataRoot, {
+                deleteAuthUser: admin
+                  ? (id) => admin.deleteUser(id)
+                  : undefined,
+              });
+              if (authScope)
                 await store.runAsAsync(SYSTEM_TENANT, async () => {
-                  await store.put("auth-mode", auth.scope);
+                  await store.put("auth-mode", authScope);
                 });
               return reply.code(202).send();
             case "get /me":

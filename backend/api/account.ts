@@ -51,13 +51,16 @@ function wipeMapProductsCache(dataRoot: string) {
 
 /**
  * Idempotent account deletion. Never re-initializes the account.
- * - No user + already tombstoned → success
+ * - No user + already tombstoned → success (still attempts auth-provider delete)
  * - queued/running jobs older than 15 minutes are treated as dead (ignored for 409)
+ * - Tombstone is written before wipe so a failed provider delete cannot recreate the account
+ * - If deleteAuthUser fails, throw a retryable error after local wipe/tombstone
  */
 export async function deleteAccount(
   db: PrismaClient,
   userId: string,
   dataRoot: string,
+  opts?: { deleteAuthUser?: (id: string) => Promise<void> },
 ): Promise<void> {
   const user = await db.user.findUnique({ where: { id: userId } });
   const tombstone = await db.deletedUser.findUnique({ where: { id: userId } });
@@ -71,6 +74,7 @@ export async function deleteAccount(
       });
     }
     wipeMapProductsCache(dataRoot);
+    if (opts?.deleteAuthUser) await opts.deleteAuthUser(userId);
     return;
   }
 
@@ -104,4 +108,5 @@ export async function deleteAccount(
   });
 
   wipeMapProductsCache(dataRoot);
+  if (opts?.deleteAuthUser) await opts.deleteAuthUser(userId);
 }
