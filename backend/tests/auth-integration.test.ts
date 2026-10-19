@@ -141,5 +141,7 @@ test("Real auth blocks demo tokens, binds the verified owner, rotates and revoke
     () => buildLocalApp({ dbPath }),
     /Real authentication is required/,
   );
+  // Shared Postgres: do not leave sticky auth-mode for later demo suites.
+  await prisma().systemConfig.deleteMany({ where: { key: "auth-mode" } });
   fs.rmSync(folder, { recursive: true, force: true });
 });
