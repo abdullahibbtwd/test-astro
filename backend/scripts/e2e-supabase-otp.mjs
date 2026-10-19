@@ -4,11 +4,11 @@
  * Never prints keys or tokens — only email, user id, and HTTP status.
  *
  * Usage (from repo root, with .env loaded):
+ *   set -a && source .env && set +a
  *   node backend/scripts/e2e-supabase-otp.mjs you@example.com
  */
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { createClient } from "@supabase/supabase-js";
 
 function env(name) {
   const value = process.env[name]?.trim();
@@ -25,27 +25,41 @@ if (!email.includes("@")) {
   process.exit(1);
 }
 
-const url = env("SUPABASE_URL");
+const url = env("SUPABASE_URL").replace(/\/$/, "");
 const publishable = env("SUPABASE_PUBLISHABLE_KEY");
 const api = (process.env.EXPO_PUBLIC_API_URL || "http://127.0.0.1:4020/v1").replace(
   /\/$/,
   "",
 );
+const authBase = url + "/auth/v1";
 
-const supabase = createClient(url, publishable, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
+async function authPost(path, body) {
+  const response = await fetch(authBase + path, {
+    method: "POST",
+    headers: {
+      apikey: publishable,
+      Authorization: "Bearer " + publishable,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const text = await response.text();
+  let json = null;
+  try {
+    json = text ? JSON.parse(text) : null;
+  } catch {
+    json = null;
+  }
+  return { ok: response.ok, status: response.status, json };
+}
 
 console.log(`Requesting email code for ${email}…`);
-const { error: startError } = await supabase.auth.signInWithOtp({
-  email,
-  options: { shouldCreateUser: true },
-});
-if (startError) {
-  console.error("OTP request failed:", startError.message);
+const started = await authPost("/otp", { email, create_user: true });
+if (!started.ok && started.status !== 204) {
+  console.error("OTP request failed with status", started.status);
   process.exit(1);
 }
-console.log("Code sent. Enter the 6-digit code (will not be logged elsewhere):");
+console.log("Code sent. Enter the 6-digit code:");
 
 const rl = createInterface({ input, output });
 const code = (await rl.question("> ")).replace(/\D/g, "").slice(0, 6);
@@ -55,23 +69,23 @@ if (code.length !== 6) {
   process.exit(1);
 }
 
-const { data, error: verifyError } = await supabase.auth.verifyOtp({
+const verified = await authPost("/verify", {
   email,
   token: code,
   type: "email",
 });
-if (verifyError || !data.session) {
-  console.error("Verify failed:", verifyError?.message ?? "no session");
+if (!verified.ok || !verified.json?.access_token || !verified.json?.user?.id) {
+  console.error("Verify failed with status", verified.status);
   process.exit(1);
 }
 
-const userId = data.session.user.id;
-const userEmail = data.session.user.email;
+const userId = verified.json.user.id;
+const userEmail = verified.json.user.email;
 console.log(`Supabase user id: ${userId}`);
 console.log(`Supabase email: ${userEmail}`);
 
 const me = await fetch(`${api}/me`, {
-  headers: { Authorization: `Bearer ${data.session.access_token}` },
+  headers: { Authorization: `Bearer ${verified.json.access_token}` },
 });
 const body = await me.text();
 console.log(`Backend GET /me status: ${me.status}`);
