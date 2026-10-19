@@ -7,6 +7,11 @@ import { buildLocalApp } from "../api/app";
 import { SupabaseAuth } from "../api/supabase-auth";
 import { validate } from "../../frontend/src/api/zod";
 test("Real auth blocks demo tokens, binds the verified owner, rotates and revokes sessions", async () => {
+  process.env.DATABASE_URL ??=
+    "postgres://astrology:astrology@127.0.0.1:5432/astrology";
+  process.env.ASTRO_DEMO_AUTH = "1";
+  const { prisma } = await import("../api/db");
+  await prisma().systemConfig.deleteMany({ where: { key: "auth-mode" } });
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "astro-auth-"));
   const dbPath = path.join(folder, "app.sqlite");
   let app = await buildLocalApp({ dbPath });
@@ -49,6 +54,8 @@ test("Real auth blocks demo tokens, binds the verified owner, rotates and revoke
       });
     },
   );
+  // Shared Postgres: drop sticky mode left by other suites before enabling auth.
+  await prisma().systemConfig.deleteMany({ where: { key: "auth-mode" } });
   app = await buildLocalApp({ dbPath, auth });
   try {
     const post = (url: string, payload: Record<string, string>, headers = {}) =>

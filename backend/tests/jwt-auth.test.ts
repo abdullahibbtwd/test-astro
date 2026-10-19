@@ -68,6 +68,7 @@ test("JWT bearer: first login creates user; tenants are isolated; tombstone refu
   process.env.DATABASE_URL ??=
     "postgres://astrology:astrology@127.0.0.1:5432/astrology";
   process.env.ASTRO_DEMO_AUTH = "0";
+  await prisma().systemConfig.deleteMany({ where: { key: "auth-mode" } });
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "astro-jwt-"));
   const { jwt, sign } = await testKeys();
   const app = await buildLocalApp({

@@ -149,8 +149,10 @@ export class Store {
   private async getSystem<T>(key: string): Promise<T | undefined> {
     const cred = this.parseCredentialKey(key);
     if (cred) {
+      // Full credential key (includes auth scope) so demo and Supabase namespaces
+      // cannot collide on the raw token digest alone.
       const row = await this.db.session.findUnique({
-        where: { tokenHash: cred.tokenHash },
+        where: { tokenHash: key },
       });
       if (!row || row.kind !== cred.kind) return undefined;
       if (row.kind === "ACCESS")
@@ -177,11 +179,11 @@ export class Store {
         accessHash?: string;
       };
       await this.db.session.upsert({
-        where: { tokenHash: cred.tokenHash },
+        where: { tokenHash: key },
         create: {
           userId: body.owner,
           kind: cred.kind,
-          tokenHash: cred.tokenHash,
+          tokenHash: key,
           expiresAt: new Date(body.expires),
           accessTokenHash: body.accessKey ?? body.accessHash ?? null,
         },
@@ -204,7 +206,7 @@ export class Store {
     const cred = this.parseCredentialKey(key);
     if (cred) {
       await this.db.session
-        .delete({ where: { tokenHash: cred.tokenHash } })
+        .delete({ where: { tokenHash: key } })
         .catch(() => undefined);
       return;
     }
