@@ -25,6 +25,7 @@
   "code": "Doğrulama kodu",
   "resend": "Yeni kod gönder",
   "previewLogin": "Önizleme: {email} · kod 000000",
+  "errorOtpInvalid": "Kod yanlış veya süresi dolmuş. Yeni bir kod iste.",
   "preview": "Geliştirme önizlemesi",
   "tryOnboarding": "Yeni hesap akışını dene",
   "error": "İşlem tamamlanamadı. Bağlantını kontrol edip tekrar dene.",

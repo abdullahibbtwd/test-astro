@@ -5,13 +5,22 @@ import { useCapabilities } from "../lib/capabilities";
 import createClient from "openapi-fetch";
 import type { paths } from "./schema";
 import type { Session, Me } from "../../contracts/spec-types";
+import type { Session as SupabaseSession } from "@supabase/supabase-js";
 import { validate } from "./zod";
 import { tokenStorage, privateStorage } from "../lib/storage";
 import { useApp, resetLocalState } from "../lib/state";
+import {
+  isSupabaseAuth,
+  refreshSupabaseSession,
+  getSupabaseSession,
+  signOutSupabase,
+} from "../lib/supabase";
 export const apiBase =
   process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:4010/v1";
 let session: Session | null = null;
 let refreshing: Promise<boolean> | null = null;
+/** Temporary Bearer while bootstrapping /me after Supabase OTP (before Session exists). */
+let bootstrapToken: string | null = null;
 export let mockToday: string | undefined;
 export async function setSession(value: Session | null): Promise<Session | null> {
   session = value;
@@ -32,6 +41,7 @@ export async function setSession(value: Session | null): Promise<Session | null>
   else {
     useApp.setState({ signedIn: false, me: null });
     await tokenStorage.clear();
+    if (isSupabaseAuth()) await signOutSupabase();
     const { queryClient } = await import("./query");
     await queryClient.cancelQueries();
     queryClient.clear();
@@ -43,6 +53,31 @@ export async function setSession(value: Session | null): Promise<Session | null>
   privateStorage.setItem("api-base", apiBase);
   useApp.getState().update({ signedIn: !!value, me: value?.me ?? null });
   return session;
+}
+function sessionFromSupabase(supa: SupabaseSession, me: Me): Session {
+  const expiresAt = supa.expires_at
+    ? new Date(supa.expires_at * 1000).toISOString()
+    : new Date(Date.now() + 3600_000).toISOString();
+  return {
+    access_token: supa.access_token,
+    refresh_token: supa.refresh_token ?? "",
+    access_expires_at: expiresAt,
+    is_new_user: !me.self_profile_id,
+    me,
+  };
+}
+/** After Supabase OTP/verify: Bearer = access token, load /me, persist Session. */
+export async function adoptSupabaseSession(
+  supa: SupabaseSession,
+): Promise<Session> {
+  bootstrapToken = supa.access_token;
+  try {
+    const me = await request<Me>("GET", "/me", "Me", undefined, false);
+    const value = sessionFromSupabase(supa, me);
+    return (await setSession(value)) ?? value;
+  } finally {
+    bootstrapToken = null;
+  }
 }
 /** Where to go after sign-in (uses post-claim app state, not a stale Session). */
 export function routeAfterSignIn(): string {
@@ -64,6 +99,18 @@ export async function restoreSession() {
   const previousApi = privateStorage.getItem("api-base");
   if (previousApi !== apiBase) await setSession(null);
   privateStorage.setItem("api-base", apiBase);
+  if (isSupabaseAuth()) {
+    const supa = await getSupabaseSession();
+    if (supa) {
+      try {
+        await adoptSupabaseSession(supa);
+        return;
+      } catch {
+        await setSession(null);
+        return;
+      }
+    }
+  }
   const raw = await tokenStorage.get();
   if (raw) {
     try {
@@ -77,8 +124,24 @@ export async function restoreSession() {
 export async function refreshSession() {
   if (!refreshing)
     refreshing = (async () => {
-      if (!session) return false;
+      if (!session && !bootstrapToken) return false;
       try {
+        if (isSupabaseAuth()) {
+          const next = await refreshSupabaseSession();
+          if (!next) {
+            await setSession(null);
+            return false;
+          }
+          if (session) {
+            const updated = sessionFromSupabase(next, session.me);
+            session = updated;
+            await tokenStorage.set(updated);
+            return true;
+          }
+          await adoptSupabaseSession(next);
+          return true;
+        }
+        if (!session) return false;
         const response = await fetch(`${apiBase}/auth/refresh`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -101,8 +164,8 @@ export async function refreshSession() {
 export const client = createClient<paths>({ baseUrl: apiBase });
 client.use({
   onRequest({ request }) {
-    if (session)
-      request.headers.set("Authorization", `Bearer ${session.access_token}`);
+    const token = bootstrapToken ?? session?.access_token;
+    if (token) request.headers.set("Authorization", `Bearer ${token}`);
   },
   onResponse({ response }) {
     mockToday = response.headers.get("X-Mock-Today") ?? mockToday;

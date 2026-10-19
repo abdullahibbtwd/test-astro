@@ -25,6 +25,7 @@
   "code": "Verification code",
   "resend": "Send a new code",
   "previewLogin": "Preview: {email} · code 000000",
+  "errorOtpInvalid": "That code is wrong or has expired. Request a new one.",
   "preview": "Development preview",
   "tryOnboarding": "Try new-account onboarding",
   "error": "We couldn’t complete that. Check your connection and try again.",

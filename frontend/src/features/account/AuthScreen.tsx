@@ -19,7 +19,14 @@ import {
 import { useTheme } from "../../design/theme";
 import { useActions } from "../../api/hooks";
 import { routeAfterSignIn } from "../../api/client";
-const demoAuth = __DEV__ && process.env.EXPO_PUBLIC_AUTH_MODE !== "supabase";
+import { ApiError, NetworkError } from "../../api/errors";
+import { showDemoLoginHint, isSupabaseAuth } from "../../lib/supabase";
+
+const demoBackend =
+  !isSupabaseAuth() &&
+  __DEV__ &&
+  process.env.EXPO_PUBLIC_AUTH_MODE !== "supabase";
+
 export default function AuthScreen() {
   const { mode, fresh } = useLocalSearchParams<{
       mode?: string;
@@ -29,9 +36,10 @@ export default function AuthScreen() {
     c = useTheme(),
     actions = useActions();
   const [providerBusy, setProviderBusy] = useState(false),
-    [providerError, setProviderError] = useState<unknown>();
+    [providerError, setProviderError] = useState<unknown>(),
+    [authError, setAuthError] = useState<unknown>();
   const signIn = async (provider: "google" | "apple") => {
-    if (!demoAuth && provider === "google") {
+    if (!demoBackend && provider === "google") {
       router.push("/(auth)/link?provider=google");
       return;
     }
@@ -49,7 +57,11 @@ export default function AuthScreen() {
     }
   };
   const [email, setEmail] = useState(
-      demoAuth ? (fresh ? "new@example.com" : "demo@example.com") : "",
+      demoBackend && showDemoLoginHint()
+        ? fresh
+          ? "new@example.com"
+          : "demo@example.com"
+        : "",
     ),
     [code, setCode] = useState(""),
     [cooldown, setCooldown] = useState(0);
@@ -60,18 +72,32 @@ export default function AuthScreen() {
     const id = setTimeout(() => setCooldown(cooldown - 1), 1000);
     return () => clearTimeout(id);
   }, [cooldown]);
+  const explainAuthError = (error: unknown) => {
+    if (error instanceof NetworkError) return error;
+    if (error instanceof ApiError) {
+      if (error.code === "rate_limited") return error;
+      if (error.code === "unauthorized")
+        return new ApiError(401, "otp_invalid");
+      return error;
+    }
+    return error;
+  };
   const verify = async (value: string) => {
     if (submitting.current) return;
     submitting.current = true;
+    setAuthError(undefined);
     try {
       await actions.verify(email, value);
       router.replace(routeAfterSignIn());
-    } catch {
+    } catch (e) {
+      setAuthError(explainAuthError(e));
+      setCode("");
     } finally {
       submitting.current = false;
     }
   };
-  if (!mode && process.env.EXPO_PUBLIC_BACKEND_MODE !== "demo") return <GuestWelcomeScreen />;
+  if (!mode && process.env.EXPO_PUBLIC_BACKEND_MODE !== "demo")
+    return <GuestWelcomeScreen />;
   if (mode === "email" || mode === "verify")
     return (
       <Screen headerless back>
@@ -93,13 +119,14 @@ export default function AuthScreen() {
               disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)}
               loading={actions.isPending}
               onPress={() => {
+                setAuthError(undefined);
                 void actions
                   .startEmail(email)
                   .then(() => {
                     setCooldown(60);
                     router.setParams({ mode: "verify" });
                   })
-                  .catch(() => {});
+                  .catch((e) => setAuthError(explainAuthError(e)));
               }}
             />
           </>
@@ -150,21 +177,22 @@ export default function AuthScreen() {
               secondary
               disabled={cooldown > 0}
               onPress={() => {
+                setAuthError(undefined);
                 void actions
                   .startEmail(email)
                   .then(() => {
                     setCooldown(60);
                     setCode("");
                   })
-                  .catch(() => {});
+                  .catch((e) => setAuthError(explainAuthError(e)));
               }}
             />
           </>
         )}
-        <ErrorNotice error={actions.error} />
-        {demoAuth && (
+        <ErrorNotice error={authError ?? actions.error} />
+        {showDemoLoginHint() && (
           <Txt kind="caption" muted>
-            {t("previewLogin", { email })}
+            {t("previewLogin", { email: email || "demo@example.com" })}
           </Txt>
         )}
       </Screen>
@@ -177,7 +205,16 @@ export default function AuthScreen() {
       <Txt muted>{t("guestUnlockBody")}</Txt>
       <ErrorNotice error={providerError} />
       <Button secondary label={t("googleContinue")} loading={providerBusy} onPress={() => void signIn("google")} />
-      <Button label={t("emailContinue")} onPress={() => router.push(demoAuth ? "/(auth)/welcome?mode=email" : "/(auth)/link?provider=email")} />
+      <Button
+        label={t("emailContinue")}
+        onPress={() =>
+          router.push(
+            isSupabaseAuth() || demoBackend
+              ? "/(auth)/welcome?mode=email"
+              : "/(auth)/link?provider=email",
+          )
+        }
+      />
       <Button secondary label={t("back")} onPress={() => router.back()} />
     </Screen>
   );

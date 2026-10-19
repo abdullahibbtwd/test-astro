@@ -2,10 +2,22 @@ import catalogueTr from "../../i18n/catalogue-fallback.tr.json";
 import catalogueEn from "../../i18n/catalogue-fallback.en.json";
 import { useMutation, useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
-import { request, setSession, refreshToken, updateSessionMe } from "../client";
+import {
+  request,
+  setSession,
+  refreshToken,
+  updateSessionMe,
+  adoptSupabaseSession,
+} from "../client";
 import { queryClient, keys } from "../query";
 import { useApp, resetLocalState } from "../../lib/state";
 import { privateStorage } from "../../lib/storage";
+import {
+  isSupabaseAuth,
+  signInWithEmailOtp,
+  verifyEmailOtp,
+  signOutSupabase,
+} from "../../lib/supabase";
 import type {
   BirthProfile,
   ChartData,
@@ -78,7 +90,19 @@ export function useActions() {
       path: string;
       body?: unknown;
       schema?: string;
-    }) => request<any>(method, path, schema, body),
+    }) => {
+      if (path === "/auth/email/start" && isSupabaseAuth()) {
+        await signInWithEmailOtp(
+          String((body as { email?: string })?.email ?? ""),
+        );
+        return;
+      }
+      if (path === "/auth/email/verify" && isSupabaseAuth()) {
+        const { email, code } = body as { email: string; code: string };
+        return adoptSupabaseSession(await verifyEmailOtp(email, code));
+      }
+      return request<any>(method, path, schema, body);
+    },
     onSuccess: (_data, variables) => {
       // Deleting a saved reference must not refetch its reading and save it again.
       void queryClient.invalidateQueries(
@@ -97,23 +121,23 @@ export function useActions() {
         body: { email, lang: useApp.getState().language },
       }),
     verify: async (email: string, code: string) => {
-      const data = (await mutate.mutateAsync({
+      queryClient.clear();
+      let data = (await mutate.mutateAsync({
         method: "POST",
         path: "/auth/email/verify",
         schema: "Session",
         body: { email, code },
       })) as Session;
-      queryClient.clear();
+      if (!isSupabaseAuth()) data = (await setSession(data)) ?? data;
       const { hasGuestReading } = await import("../../lib/guest-onboarding");
       // Guest birth is claimed in setSession — don't wipe that path into consent.
       if (!data.me.self_profile_id && !hasGuestReading())
         useApp.getState().editDraft({ step: "consent", profileId: undefined });
-      const session = (await setSession(data)) ?? data;
-      if (session.me.language !== useApp.getState().language)
+      if (data.me.language !== useApp.getState().language)
         await request("PATCH", "/me", "Me", {
           language: useApp.getState().language,
         });
-      return session;
+      return data;
     },
     patchMe: async (body: unknown) => {
       const me = (await mutate.mutateAsync({
@@ -149,15 +173,18 @@ export function useActions() {
       request<Place | null>("GET", `/places/reverse?lat=${lat}&lon=${lon}`),
     logout: async () => {
       try {
-        await request("POST", "/auth/logout", undefined, {
-          refresh_token: refreshToken(),
-        });
+        if (isSupabaseAuth()) await signOutSupabase();
+        else
+          await request("POST", "/auth/logout", undefined, {
+            refresh_token: refreshToken(),
+          });
       } finally {
         await clearSession();
       }
     },
     deleteAccount: async () => {
       await mutate.mutateAsync({ method: "DELETE", path: "/me" });
+      if (isSupabaseAuth()) await signOutSupabase();
       await clearSession();
     },
     exportData: () =>
