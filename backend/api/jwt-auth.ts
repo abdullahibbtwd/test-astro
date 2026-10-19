@@ -1,5 +1,9 @@
 import { createHash } from "node:crypto";
-import { createRemoteJWKSet, jwtVerify } from "jose";
+import {
+  createRemoteJWKSet,
+  jwtVerify,
+  type JWTVerifyGetKey,
+} from "jose";
 
 export type JwtClaims = {
   sub: string;
@@ -15,10 +19,15 @@ const unauthorized = () =>
  */
 export class JwtAuth {
   readonly scope: string;
-  private readonly jwks: ReturnType<typeof createRemoteJWKSet>;
+  private readonly getKey: JWTVerifyGetKey;
   private readonly issuer: string;
 
-  constructor(supabaseUrl: string, jwksUrl?: string) {
+  constructor(
+    supabaseUrl: string,
+    jwksUrl?: string,
+    /** Test-only key resolver (e.g. createLocalJWKSet). */
+    getKey?: JWTVerifyGetKey,
+  ) {
     const url = new URL(supabaseUrl);
     if (
       url.protocol !== "https:" ||
@@ -32,12 +41,15 @@ export class JwtAuth {
     )
       throw new Error("Invalid Supabase project URL");
     this.issuer = url.origin + "/auth/v1";
-    const jwks = new URL(
-      jwksUrl?.trim() || url.origin + "/auth/v1/.well-known/jwks.json",
-    );
-    if (jwks.origin !== url.origin)
-      throw new Error("SUPABASE_JWKS_URL must be on the same project host");
-    this.jwks = createRemoteJWKSet(jwks);
+    if (getKey) this.getKey = getKey;
+    else {
+      const jwks = new URL(
+        jwksUrl?.trim() || url.origin + "/auth/v1/.well-known/jwks.json",
+      );
+      if (jwks.origin !== url.origin)
+        throw new Error("SUPABASE_JWKS_URL must be on the same project host");
+      this.getKey = createRemoteJWKSet(jwks);
+    }
     this.scope = createHash("sha256")
       .update(url.origin + ":jwks")
       .digest("hex");
@@ -46,7 +58,7 @@ export class JwtAuth {
   async verify(token: string): Promise<JwtClaims> {
     if (!token || token.length > 8192) throw unauthorized();
     try {
-      const { payload } = await jwtVerify(token, this.jwks, {
+      const { payload } = await jwtVerify(token, this.getKey, {
         issuer: this.issuer,
         audience: "authenticated",
         clockTolerance: 5,
