@@ -20,6 +20,8 @@ chapters
 frontend/.local-data
 backend/.local-data
 frontend/artifacts
+# Mock-only fixture pack (not used by the real API). Keep schema, prisma.config.ts,
+# and backend/src/generated available to the image build / multi-stage COPY.
 backend/mock/fixtures
 *.md
 !requirements-handoff.txt
