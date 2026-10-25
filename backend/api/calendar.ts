@@ -47,24 +47,30 @@ export async function computeCalendar(
     child.stdin.end(JSON.stringify({ profile, current, start }));
   });
   return Object.fromEntries(
-    (["tr", "en"] as Lang[]).map((lang) => [
-      lang,
-      {
-        ...calendarFixtures(
+    (["tr", "en"] as Lang[]).map((lang) => {
+      // Drop in-memory helpers (label/active/good) — they are functions and
+      // cannot be stored in Postgres JSON, which broke /home after compute.
+      const { label: _label, active: _active, good: _good, ...fixtures } =
+        calendarFixtures(
           fileURLToPath(new URL("../../", import.meta.url)),
           lang,
           defaults(`catalogue.${lang}`),
           source.labels,
           profile.profile_id,
           source,
-        ),
-        eventLabels: Object.fromEntries(
-          Object.entries(source.labels.events).map(([id, labels]: any) => [
-            id,
-            labels[lang],
-          ]),
-        ),
-      },
-    ]),
+        );
+      return [
+        lang,
+        {
+          ...fixtures,
+          eventLabels: Object.fromEntries(
+            Object.entries(source.labels.events).map(([id, labels]: any) => [
+              id,
+              labels[lang],
+            ]),
+          ),
+        },
+      ];
+    }),
   );
 }

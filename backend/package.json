@@ -6,7 +6,7 @@
   "scripts": {
     "mock": "tsx mock/server.ts",
     "local-api": "tsx api/server.ts",
-    "local-api:dev": "bash -lc 'set -a; [ -f ../.env ] && . ../.env; set +a; exec env DATABASE_URL=${DATABASE_URL:-postgres://astrology:astrology@127.0.0.1:5432/astrology} ASTRO_DEMO_AUTH=${ASTRO_DEMO_AUTH:-0} HOST=${HOST:-127.0.0.1} PORT=${PORT:-4020} ASTRO_PA_ROOT=${ASTRO_PA_ROOT:-./engine} DATA_DIR=${DATA_DIR:-./.local-data} PYTHON=${PYTHON:-../.venv/bin/python} tsx api/server.ts'",
+    "local-api:dev": "bash -lc 'set -a; [ -f ../.env ] && . ../.env; set +a; exec env DATABASE_URL=${DATABASE_URL:-postgres://astrology:astrology@127.0.0.1:5432/astrology} ASTRO_DEMO_AUTH=${ASTRO_DEMO_AUTH:-0} HOST=${HOST:-0.0.0.0} PORT=${PORT:-4020} ASTRO_PA_ROOT=${ASTRO_PA_ROOT:-./engine} DATA_DIR=${DATA_DIR:-./.local-data} PYTHON=${PYTHON:-../.venv/bin/python} tsx api/server.ts'",
     "test": "bash -lc 'set -a; [ -f ../.env ] && . ../.env; set +a; exec env DATABASE_URL=${DATABASE_URL:-postgres://astrology:astrology@127.0.0.1:5432/astrology} ASTRO_DEMO_AUTH=1 tsx --test --test-concurrency=1 tests/*.test.ts'",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
