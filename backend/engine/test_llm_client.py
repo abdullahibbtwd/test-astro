@@ -243,10 +243,10 @@ def test_openai_truncation_maps(monkeypatch):
     assert lc.complete("gpt-6-luna", None, "u", max_tokens=5).stop_reason == "max_tokens"
 
 
-def test_gemini_thinking_level_default_low(monkeypatch):
+def test_gemini_thinking_level_default_minimal(monkeypatch):
     cap = _fake_gemini(monkeypatch)
     lc.complete("gemini-3.7-flash", "s", "u", max_tokens=10)
-    assert cap["config"]["thinking_config"] == {"thinking_level": "LOW"}
+    assert cap["config"]["thinking_config"] == {"thinking_level": "MINIMAL"}
     cap = _fake_gemini(monkeypatch)
     lc.complete("gemini-3.7-flash", "s", "u", max_tokens=10, thinking="medium")
     assert cap["config"]["thinking_config"] == {"thinking_level": "MEDIUM"}

@@ -53,12 +53,12 @@ DEFAULT_MODEL = os.environ.get("ASTRO_LLM_MODEL", "gemini-3.5-flash-lite")
 # OPENAI_REASONING_EFFORT (default "low"; "none" = non-reasoning mode).
 DEFAULT_CHEAP_MODEL = os.environ.get("ASTRO_CHEAP_MODEL", DEFAULT_MODEL)
 OPENAI_REASONING_EFFORT = os.environ.get("OPENAI_REASONING_EFFORT", "low")
-# Gemini thinking level for every Gemini call (low | medium | high). Thinking
-# tokens are billed at the output rate and were ~60% of billed output at the
-# model default (medium), so the project default is LOW. Override per process
-# with GEMINI_THINKING_LEVEL, or per call via complete(thinking=...).
-# "minimal" keeps free-tier Flash-Lite from spending the whole output budget on
-# thoughts; set GEMINI_THINKING_LEVEL=low|medium for heavier models.
+# Gemini thinking level for every Gemini call (minimal | low | medium | high).
+# Thinking tokens are billed at the output rate and were ~60% of billed output
+# at the model default (medium). Project default is MINIMAL so free-tier
+# Flash-Lite does not spend the whole output budget on thoughts. Override per
+# process with GEMINI_THINKING_LEVEL, or per call via complete(thinking=...).
+# Set GEMINI_THINKING_LEVEL=low|medium for heavier models.
 GEMINI_THINKING_LEVEL = os.environ.get("GEMINI_THINKING_LEVEL", "minimal").lower()
 
 USAGE_KEYS = ("input_tokens", "output_tokens",
