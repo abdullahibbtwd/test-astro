@@ -127,6 +127,11 @@ export default function NewMatchScreen() {
         disabledId={picker === "a" ? b : a}
         onSelect={(value) => (picker === "a" ? setA(value) : selectB(value))}
         onClose={() => setPicker(null)}
+        addPersonParams={{
+          returnTo: "match",
+          // Keep the other selected person as A after save; new person becomes B.
+          a: picker === "a" ? b || app.me?.self_profile_id : a,
+        }}
       />
       <Choices>
         {(["love", "family", "work"] as const)

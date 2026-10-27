@@ -18,12 +18,15 @@ export function ProfilePicker({
   disabledId,
   onSelect,
   onClose,
+  addPersonParams,
 }: {
   open: boolean;
   selectedId?: string | null;
   disabledId?: string;
   onSelect: (id: string) => void;
   onClose: () => void;
+  /** When set, Add person returns here after save (e.g. match flow). */
+  addPersonParams?: { returnTo: "match"; a?: string };
 }) {
   const profiles = useProfiles(),
     app = useApp(),
@@ -83,6 +86,11 @@ export function ProfilePicker({
         label={t("addPerson")}
         onPress={() => {
           onClose();
+          if (addPersonParams?.returnTo === "match") {
+            const a = addPersonParams.a ? `&a=${encodeURIComponent(addPersonParams.a)}` : "";
+            router.push(`/profile/charts/new?returnTo=match${a}`);
+            return;
+          }
           router.push("/profile/charts/new");
         }}
       />

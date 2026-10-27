@@ -96,7 +96,11 @@ export default function ProfileDetail() {
         <Button
           secondary
           label={t("compare")}
-          onPress={() => router.push(`/(tabs)/match?other=${id}`)}
+          onPress={() =>
+            router.push(
+              `/match/new?other=${id}&a=${app.me?.self_profile_id ?? ""}`,
+            )
+          }
         />
       )}
       <Button

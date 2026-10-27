@@ -33,6 +33,14 @@ export default function MatchScreen() {
       void refetch();
     }, [refetch]),
   );
+  // Deep link / profile "Compare" used to land here with ?other= and no cue.
+  // Send straight into the new-match form with that person pre-selected.
+  useFocusEffect(
+    useCallback(() => {
+      if (!other) return;
+      router.replace(`/match/new?other=${other}`);
+    }, [other]),
+  );
   const remove = (id: string) =>
     deferDelete(
       `match:${id}`,
