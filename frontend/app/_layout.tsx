@@ -26,6 +26,7 @@ import { focusManager, onlineManager } from "@tanstack/react-query";
 import NetInfo from "@react-native-community/netinfo";
 import * as SplashScreen from "expo-splash-screen";
 import { initStorage, privateStorage } from "../src/lib/storage";
+import { bindSupabaseAuthLifecycle } from "../src/lib/supabase";
 import { useApp } from "../src/lib/state";
 import { restoreSession } from "../src/api/client";
 import { queryClient } from "../src/api/query";
@@ -64,6 +65,7 @@ export default function RootLayout() {
         reportError(error, { area: "storage" });
         setError(true);
       });
+    const unbindAuth = bindSupabaseAuthLifecycle();
     const listener = AppState.addEventListener("change", (state) =>
       focusManager.setFocused(state === "active"),
     );
@@ -71,6 +73,7 @@ export default function RootLayout() {
       onlineManager.setOnline(!!state.isConnected),
     );
     return () => {
+      unbindAuth();
       listener.remove();
       unsubscribe();
     };

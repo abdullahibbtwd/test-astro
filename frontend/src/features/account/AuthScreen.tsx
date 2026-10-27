@@ -207,13 +207,7 @@ export default function AuthScreen() {
       <Button secondary label={t("googleContinue")} loading={providerBusy} onPress={() => void signIn("google")} />
       <Button
         label={t("emailContinue")}
-        onPress={() =>
-          router.push(
-            isSupabaseAuth() || demoBackend
-              ? "/(auth)/welcome?mode=email"
-              : "/(auth)/link?provider=email",
-          )
-        }
+        onPress={() => router.push("/(auth)/welcome?mode=email")}
       />
       <Button secondary label={t("back")} onPress={() => router.back()} />
     </Screen>

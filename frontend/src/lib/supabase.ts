@@ -1,16 +1,10 @@
 import { createClient, type Session as SupabaseSession } from "@supabase/supabase-js";
-import * as SecureStore from "expo-secure-store";
+import { AppState, type NativeEventSubscription } from "react-native";
 import { ApiError, NetworkError } from "../api/errors";
+import { durableStorage } from "./storage";
 
 const url = process.env.EXPO_PUBLIC_SUPABASE_URL ?? "";
 const publishableKey = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "";
-
-/** SecureStore adapter so Supabase persists/refreshes the session locally. */
-const secureStorage = {
-  getItem: (key: string) => SecureStore.getItemAsync(key),
-  setItem: (key: string, value: string) => SecureStore.setItemAsync(key, value),
-  removeItem: (key: string) => SecureStore.deleteItemAsync(key),
-};
 
 export const supabaseConfigured =
   /^https:\/\/[a-z]{20}\.supabase\.co\/?$/.test(url) &&
@@ -19,7 +13,9 @@ export const supabaseConfigured =
 export const supabase = supabaseConfigured
   ? createClient(url.replace(/\/$/, ""), publishableKey, {
       auth: {
-        storage: secureStorage,
+        // File-backed storage (not SecureStore): persists across restarts on
+        // unsigned iOS builds and avoids SecureStore's 2048-byte limit.
+        storage: durableStorage,
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: false,
@@ -27,10 +23,28 @@ export const supabase = supabaseConfigured
     })
   : null;
 
-export function isSupabaseAuth() {
-  return (
-    process.env.EXPO_PUBLIC_AUTH_MODE === "supabase" && supabaseConfigured
+/** Keep token refresh alive when the app returns from background (RN requirement). */
+export function bindSupabaseAuthLifecycle(): () => void {
+  if (!supabase) return () => {};
+  const onChange = (state: string) => {
+    if (state === "active") void supabase.auth.startAutoRefresh();
+    else void supabase.auth.stopAutoRefresh();
+  };
+  if (AppState.currentState === "active") onChange("active");
+  const sub: NativeEventSubscription = AppState.addEventListener(
+    "change",
+    onChange,
   );
+  return () => sub.remove();
+}
+
+export function isSupabaseAuth() {
+  // Prefer explicit mode; if unset, use Supabase whenever keys are configured
+  // so release builds never fall back to the email magic-link UI.
+  const mode = process.env.EXPO_PUBLIC_AUTH_MODE;
+  if (mode === "demo") return false;
+  if (mode === "supabase") return supabaseConfigured;
+  return supabaseConfigured;
 }
 
 /** Dev-only hint for email + 000000; off unless explicitly enabled. */

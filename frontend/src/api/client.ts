@@ -7,7 +7,7 @@ import type { paths } from "./schema";
 import type { Session, Me } from "../../contracts/spec-types";
 import type { Session as SupabaseSession } from "@supabase/supabase-js";
 import { validate } from "./zod";
-import { tokenStorage, privateStorage } from "../lib/storage";
+import { tokenStorage, privateStorage, durableStorage } from "../lib/storage";
 import { useApp, resetLocalState } from "../lib/state";
 import {
   isSupabaseAuth,
@@ -51,6 +51,7 @@ export async function setSession(value: Session | null): Promise<Session | null>
     resetLocalState();
   }
   privateStorage.setItem("api-base", apiBase);
+  await durableStorage.setItem("api-base", apiBase);
   useApp.getState().update({ signedIn: !!value, me: value?.me ?? null });
   return session;
 }
@@ -96,9 +97,12 @@ export function routeAfterSignIn(): string {
   return "/(onboarding)/consent";
 }
 export async function restoreSession() {
-  const previousApi = privateStorage.getItem("api-base");
-  if (previousApi !== apiBase) await setSession(null);
+  // api-base must be durable: on iOS privateStorage is memory-only, so a reload
+  // used to always look like an API switch and call setSession(null) → signOut.
+  const previousApi = await durableStorage.getItem("api-base");
+  if (previousApi != null && previousApi !== apiBase) await setSession(null);
   privateStorage.setItem("api-base", apiBase);
+  await durableStorage.setItem("api-base", apiBase);
   if (isSupabaseAuth()) {
     const supa = await getSupabaseSession();
     if (supa) {

@@ -1,6 +1,7 @@
 import * as SecureStore from "expo-secure-store";
 import * as Crypto from "expo-crypto";
 import { Platform } from "react-native";
+import { File, Paths } from "expo-file-system";
 import { createMMKV, type MMKV } from "react-native-mmkv";
 
 const memory = new Map<string, string>();
@@ -45,9 +46,50 @@ export const privateStorage = {
   },
 };
 
+function durableFile(key: string) {
+  const safe = encodeURIComponent(key).replace(/%/g, "_");
+  return new File(Paths.document, `kv-${safe}.json`);
+}
+
+/**
+ * Survives app restarts without Keychain entitlements (needed on unsigned iOS
+ * Simulator builds) and without SecureStore's 2048-byte value limit (Supabase
+ * session JWTs often exceed that).
+ */
+export const durableStorage = {
+  getItem: async (key: string): Promise<string | null> => {
+    try {
+      const file = durableFile(key);
+      if (file.exists) return await file.text();
+    } catch {
+      /* fall through */
+    }
+    return memory.get(key) ?? null;
+  },
+  setItem: async (key: string, value: string): Promise<void> => {
+    memory.set(key, value);
+    try {
+      durableFile(key).write(value);
+    } catch {
+      /* memory already holds the value for this process */
+    }
+  },
+  removeItem: async (key: string): Promise<void> => {
+    memory.delete(key);
+    try {
+      const file = durableFile(key);
+      if (file.exists) file.delete();
+    } catch {
+      /* ignore */
+    }
+  },
+};
+
+const SESSION_KEY = "session";
+
 export const tokenStorage = {
-  get: () => SecureStore.getItemAsync("session"),
+  get: () => durableStorage.getItem(SESSION_KEY),
   set: (session: unknown) =>
-    SecureStore.setItemAsync("session", JSON.stringify(session)),
-  clear: () => SecureStore.deleteItemAsync("session"),
+    durableStorage.setItem(SESSION_KEY, JSON.stringify(session)),
+  clear: () => durableStorage.removeItem(SESSION_KEY),
 };
