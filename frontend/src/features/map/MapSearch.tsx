@@ -13,30 +13,36 @@ import type { PlaceCandidate } from "../../../contracts/spec-types";
 export function MapSearch({
   onSelect,
   areasOnly = false,
+  onOpenChange,
 }: {
   onSelect: (place: PlaceCandidate) => void;
   areasOnly?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const c = useTheme();
   const { t } = useTranslation(),
     [input, setInput] = useState(""),
     [search, setSearch] = useState("");
+  const open = search.length >= 2;
   useEffect(() => {
     const timeout = setTimeout(() => setSearch(input.trim()), 300);
     return () => clearTimeout(timeout);
   }, [input]);
+  useEffect(() => {
+    onOpenChange?.(open);
+  }, [open, onOpenChange]);
   const cities = useApi<PlaceCandidate[]>(
     `/places/search?kind=city&q=${encodeURIComponent(search)}`,
     "PlaceCandidate[]",
-    search.length >= 2 && !areasOnly,
+    open && !areasOnly,
   );
   const areas = useApi<PlaceCandidate[]>(
     `/places/search?kind=area&q=${encodeURIComponent(search)}`,
     "PlaceCandidate[]",
-    search.length >= 2,
+    open,
   );
   return (
-    <View style={{ zIndex: 20 }}>
+    <View style={{ zIndex: 30, elevation: 12 }}>
       <View
         style={{
           flexDirection: "row",
@@ -79,15 +85,25 @@ export function MapSearch({
           />
         )}
       </View>
-      {search.length >= 2 && (
+      {open && (
         <SectionList<PlaceCandidate>
           keyboardShouldPersistTaps="handled"
           style={{
-            marginTop: dsSpace[1],
-            height: 320,
+            position: "absolute",
+            top: 52,
+            left: 0,
+            right: 0,
+            maxHeight: 320,
             backgroundColor: c.surface,
             borderRadius: dsRadius.md,
-            elevation: 8,
+            borderWidth: 1,
+            borderColor: c.borderControl,
+            elevation: 16,
+            zIndex: 40,
+            shadowColor: "#000",
+            shadowOpacity: 0.2,
+            shadowRadius: 12,
+            shadowOffset: { width: 0, height: 6 },
           }}
           contentContainerStyle={{ padding: dsSpace[4] }}
           sections={[

@@ -57,7 +57,8 @@ export default function MapScreen() {
     [parans, setParans] = useState(false),
     [nodes, setNodes] = useState(false),
     [bodies, setBodies] = useState<Body[]>(Object.keys(planetColors) as Body[]),
-    [error, setError] = useState<unknown>();
+    [error, setError] = useState<unknown>(),
+    [searchOpen, setSearchOpen] = useState(false);
   const lines = useApi<AcgLines>(`/profiles/${id}/acg/lines`, "AcgLines", !!id),
     heat = useApi<AcgHeat>(
       `/profiles/${id}/acg/heat/${goal}`,
@@ -134,34 +135,46 @@ export default function MapScreen() {
       />
       <View
         pointerEvents="box-none"
-        style={{ position: "absolute", top: 12, left: 12, right: 12, gap: dsSpace[2] }}
+        style={{
+          position: "absolute",
+          top: 12,
+          left: 12,
+          right: 12,
+          gap: dsSpace[2],
+          zIndex: 20,
+          elevation: 10,
+        }}
       >
-        <MapSearch onSelect={place} />
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={{ flexDirection: "row", gap: dsSpace[2] }}>
-            <Chip
-              label={t("lines")}
-              selected={!goal}
-              onPress={() => setGoal(undefined)}
-            />
-            {(Object.keys(catalogue.goals) as Goal[]).map((g) => (
+        <MapSearch onSelect={place} onOpenChange={setSearchOpen} />
+        {!searchOpen && (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={{ flexDirection: "row", gap: dsSpace[2] }}>
               <Chip
-                key={g}
-                label={catalogue.goals[g]}
-                selected={goal === g}
-                onPress={() => setGoal(g)}
+                label={t("lines")}
+                selected={!goal}
+                onPress={() => setGoal(undefined)}
               />
-            ))}
-          </View>
-        </ScrollView>
+              {(Object.keys(catalogue.goals) as Goal[]).map((g) => (
+                <Chip
+                  key={g}
+                  label={catalogue.goals[g]}
+                  selected={goal === g}
+                  onPress={() => setGoal(g)}
+                />
+              ))}
+            </View>
+          </ScrollView>
+        )}
       </View>
       <View
         style={{
           position: "absolute",
           right: 12,
-          top: 132,
+          top: searchOpen ? 72 : 132,
           borderRadius: dsRadius.lg,
           backgroundColor: colors.surface,
+          zIndex: 10,
+          elevation: 6,
         }}
       >
         <IconButton

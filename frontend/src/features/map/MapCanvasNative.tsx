@@ -65,7 +65,8 @@ export function MapCanvasNative({
     [zoom, setZoom] = useState(2),
     cells = useMemo(() => (heat ? heatCells(heat) : undefined), [heat]);
   const style = config.data?.map_style_url[dark ? "dark" : "light"];
-  const preview = (__DEV__ || process.env.EXPO_PUBLIC_FX_AUDIT === "1") && !style;
+  // Country outline preview when no provider style is configured (dev + release).
+  const preview = !style;
   const countries = useCountries(preview);
   const previewStyle = useMemo<StyleSpecification>(
     () => ({
