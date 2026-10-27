@@ -3,22 +3,25 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { createHash } from "node:crypto";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { toWheelInput } from "../packages/wheel-core/adapter";
 import { fixture } from "../../backend/mock/fixtures";
 // Phase 0 proves the adapter against the unmodified canonical engine. The TS port is Phase 2.
 import { renderChart } from "../packages/wheel-core/render";
 import { checkInvariants } from "../packages/wheel-core/invariants";
+const wheelDir = join(dirname(fileURLToPath(import.meta.url)), "fixtures/wheels");
 const sources = [
-  ["prediction_run/20260929-130811_qpm", "1979-03-30"],
-  ["runs/20260924-102926_26p_1988-12-28", "1988-12-28"],
-  ["runs/20260922-181953_w1d_1984-06-12", "1984-06-12"],
-];
-for (const [i, [dir, date]] of sources.entries())
-  for (const theme of ["light", "dark"])
+  ["1979-03-30", 0],
+  ["1988-12-28", 1],
+  ["1984-06-12", 2],
+] as const;
+for (const [date, i] of sources)
+  for (const theme of ["light", "dark"] as const)
     test(`W1 and W3 baseline: ${date} ${theme}`, () => {
       const input = toWheelInput(fixture(`chart.${i}`));
       const expected = fs.readFileSync(
-        `../${dir}/chart_wheel_${date}.${theme}.svg`,
+        join(wheelDir, `chart_wheel_${date}.${theme}.svg`),
         "utf8",
       );
       const actual = renderChart(input, { theme });
