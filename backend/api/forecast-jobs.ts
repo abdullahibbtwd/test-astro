@@ -1,9 +1,10 @@
 import { busyProblem, paused } from "./job-problems";
-import { createHash, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
 import { forecastSegments } from "./forecast";
 import { defaults } from "./defaults";
+import { stableHash as hash } from "./stable-hash";
 import type {
   BirthProfile,
   ReportRef,
@@ -28,8 +29,6 @@ export const forecastContext = (
   lens,
 });
 export type ForecastContext = ReturnType<typeof forecastContext>;
-const hash = (value: unknown) =>
-  createHash("sha256").update(JSON.stringify(value)).digest("hex");
 export class ForecastJobs {
   private running = new Set<Promise<void>>();
   private async blockingJob() {

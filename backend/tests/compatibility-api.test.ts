@@ -1,4 +1,5 @@
 import test from "node:test";
+import { clearAuthMode, dataDbPath, openStore, tempDataDir } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -12,6 +13,7 @@ test("compatibility endpoints authenticate, replay safely, paginate and delete",
   const dbPath = path.join(folder, "state.sqlite");
   const a = fixture("profile.1.en"),
     b = { ...a, profile_id: "second", chart_key: "second", label: "Second" };
+  await clearAuthMode();
   let app = await buildLocalApp({
     dbPath,
     allowPaid: true,
@@ -42,7 +44,7 @@ test("compatibility endpoints authenticate, replay safely, paginate and delete",
         payload: { email: "demo@example.com", code: "000000" },
       })
     ).json();
-    const store = await Store.open(dbPath);
+    const store = await openStore();
     await store.runAsAsync(session.me.user_id, async () => {
       for (const p of [a, b]) {
         await store.put("profile:" + p.profile_id, p);
@@ -146,6 +148,7 @@ test("compatibility endpoints authenticate, replay safely, paginate and delete",
     );
 
     await app.close();
+   await clearAuthMode();
     app = await buildLocalApp({ dbPath });
     assert.equal(
       (
@@ -179,6 +182,7 @@ test("compatibility endpoints authenticate, replay safely, paginate and delete",
     );
   } finally {
     await app.close();
+    await clearAuthMode();
     fs.rmSync(folder, { recursive: true, force: true });
   }
 });

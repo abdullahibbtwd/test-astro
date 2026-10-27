@@ -1,4 +1,11 @@
 import test from "node:test";
+import {
+  clearAuthMode,
+  clearUsageCounters,
+  dataDbPath,
+  openStore,
+  tempDataDir,
+} from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -11,6 +18,7 @@ import { validate } from "../../frontend/src/api/zod";
 async function setup(runner?: AskRunner, ready = true) {
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "pa-api-"));
   const dbPath = path.join(folder, "db.sqlite");
+  await clearAuthMode();
   const app = await buildLocalApp({
     dbPath,
     allowPaid: true,
@@ -24,7 +32,12 @@ async function setup(runner?: AskRunner, ready = true) {
     payload: { email: "demo@example.com", code: "000000" },
   });
   const tenantId = login.json().me.user_id;
-  const store = await Store.open(dbPath);
+  await clearUsageCounters(tenantId);
+  const store = await openStore();
+  const { prisma } = await import("../api/db");
+  await prisma().record.deleteMany({
+    where: { tenantId, key: { startsWith: "ask-" } },
+  });
   await store.runAsAsync(tenantId, async () => {
     await store.put("profile:" + profile.profile_id, profile);
   });
@@ -47,6 +60,7 @@ async function setup(runner?: AskRunner, ready = true) {
     close: async () => {
       await app.close();
       await store.close();
+      await clearAuthMode();
       fs.rmSync(folder, { recursive: true, force: true });
     },
   };
@@ -252,12 +266,27 @@ test("PA enforces quota, rejects foreign context, and keeps deleted-profile thre
       ).statusCode,
       400,
     );
-    let me = await t.inTenant(() => t.store.get("me"));
-    me.ask_quota.used_today = 20;
-    await t.inTenant(() => t.store.put("me", me));
+    // Quota is enforced via UsageCounter (not only me.ask_quota display fields).
+    const { prisma } = await import("../api/db");
+    const { utcDay } = await import("../api/limits");
+    await prisma().usageCounter.upsert({
+      where: {
+        userId_kind_date: {
+          userId: t.tenantId,
+          kind: "ASK",
+          date: utcDay(),
+        },
+      },
+      create: {
+        userId: t.tenantId,
+        kind: "ASK",
+        date: utcDay(),
+        count: 20,
+      },
+      update: { count: 20 },
+    });
     assert.equal((await send({ text: "Question" })).statusCode, 429);
-    me.ask_quota.resets_at = "2020-01-01T00:00:00Z";
-    await t.inTenant(() => t.store.put("me", me));
+    await clearUsageCounters(t.tenantId);
     assert.match((await send({ text: "Question" })).body, /event: done/);
     assert.equal(
       (await t.inTenant(() => t.store.get("me"))).ask_quota.used_today,

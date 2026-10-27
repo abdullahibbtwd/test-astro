@@ -1,11 +1,12 @@
 import test from "node:test";
+import { openStore, waitFinish } from "./helpers";
 import assert from "node:assert/strict";
 import { Store } from "../api/store";
 import { CompatibilityJobs } from "../api/compatibility-jobs";
 import { fixture } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
 const setup = async () => {
-  const store = await Store.open(":memory:");
+  const store = await openStore();
   const a = fixture("profile.1.en");
   const b = {
     ...a,
@@ -83,7 +84,7 @@ test("changed or deleted profiles cannot receive stale compatibility", async () 
   const first = await jobs.create(input, "en");
   await new Promise((resolve) => setImmediate(resolve));
   await store.put("profile:" + b.profile_id, { ...b, chart_key: "edited" });
-  finish(output(context));
+  (await waitFinish(() => finish))(output(context));
   await jobs.close();
   await assert.rejects(() => jobs.get(first.compatibility_id, "en"));
   assert.equal((await jobs.list()).length, 0);
@@ -122,7 +123,7 @@ test("interrupted jobs require explicit retry and deleted jobs stay deleted", as
     restarted.get(first.compatibility_id, "en", true),
   );
   await restarted.remove(first.compatibility_id);
-  finish(output(context));
+  (await waitFinish(() => finish))(output(context));
   await jobs.close();
   assert.equal((await jobs.list()).length, 0);
   await store.close();

@@ -1,4 +1,5 @@
 import test from "node:test";
+import { clearAuthMode, dataDbPath, openStore, tempDataDir } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -51,6 +52,7 @@ test("ONB local API creates only core, exposes sections safely, completes and ex
   };
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "onb-api-"));
   const dbPath = path.join(folder, "app.sqlite");
+  await clearAuthMode();
   const app = await buildLocalApp({
     dbPath,
     allowPaid: true,
@@ -70,7 +72,7 @@ test("ONB local API creates only core, exposes sections safely, completes and ex
     const tenantId = login.json().me.user_id;
     const headers = { authorization: "Bearer " + login.json().access_token };
     const source = { ...fixture("profile.1.en"), is_self: true };
-    const store = await Store.open(dbPath);
+    const store = await openStore();
     await store.runAsAsync(tenantId, async () => {
       await store.put("profile:" + source.profile_id, source);
       await store.put("raw:" + source.profile_id, {});
@@ -151,6 +153,7 @@ test("ONB local API creates only core, exposes sections safely, completes and ex
     assert.equal(response.statusCode, 202, response.body);
   } finally {
     await app.close();
+    await clearAuthMode();
     fs.rmSync(folder, { recursive: true, force: true });
   }
 });

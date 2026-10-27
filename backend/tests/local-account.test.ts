@@ -1,4 +1,5 @@
 import test from "node:test";
+import { clearAuthMode, dataDbPath, openStore, tempDataDir } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -14,7 +15,13 @@ test("local export excludes credentials; deletion clears account and caches but 
   const demoTenant = createHash("sha256")
     .update("demo@example.com")
     .digest("hex");
-  const seed = await Store.open(dbPath);
+  const seed = await openStore();
+  const { prisma } = await import("../api/db");
+  await prisma().user.upsert({
+    where: { id: demoTenant },
+    create: { id: demoTenant, displayName: "demo" },
+    update: {},
+  });
   const p = fixture("profile.1.en");
   await seed.runAsAsync(demoTenant, async () => {
     await seed.put("profile:" + p.profile_id, p);
@@ -26,6 +33,7 @@ test("local export excludes credentials; deletion clears account and caches but 
   fs.mkdirSync(path.join(dir, "map-products"));
   fs.writeFileSync(path.join(dir, "map-products", "chart.json"), "test");
   fs.writeFileSync(path.join(dir, "ai-budget.sqlite"), "preserve");
+  await clearAuthMode();
   const app = await buildLocalApp({
     dbPath,
     sectionRunner: async () => ({}),
@@ -82,13 +90,14 @@ test("local export excludes credentials; deletion clears account and caches but 
     );
   } finally {
     await app.close();
+    await clearAuthMode();
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
 
 test("account deletion waits for running work and leaves records intact", async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "account-busy-"));
-  const store = await Store.open(path.join(dir, "state.sqlite"));
+  const store = await openStore();
   try {
     await store.put("me", { user_id: "test" });
     await store.put("job:pending", { status: "running" });

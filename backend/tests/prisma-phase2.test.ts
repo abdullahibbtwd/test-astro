@@ -13,7 +13,7 @@ import {
 import { Store, SYSTEM_TENANT } from "../api/store";
 
 process.env.DATABASE_URL ??=
-  "postgres://astrology:astrology@127.0.0.1:5432/astrology";
+  "postgres://astrology:astrology@127.0.0.1:5432/astrology_test";
 
 const hash = (s: string) => createHash("sha256").update(s).digest("hex");
 

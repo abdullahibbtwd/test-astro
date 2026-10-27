@@ -1,4 +1,5 @@
 import test from "node:test";
+import { clearAuthMode, dataDbPath, openStore, tempDataDir } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -15,7 +16,7 @@ import { validate } from "../../frontend/src/api/zod";
 
 test("all four guards return busy with the blocking job and no second generator call", async () => {
   for (const kind of ["forecast", "natal", "map", "compatibility"]) {
-    const store = await Store.open(":memory:"),
+    const store = await openStore(),
       a = fixture("profile.1.en"),
       b = { ...a, profile_id: "b", chart_key: "b", label: "B" };
     for (const p of [a, b]) await store.put("profile:" + p.profile_id, p);
@@ -97,7 +98,7 @@ test("all four guards return busy with the blocking job and no second generator 
   }
 });
 test("paused generation is an absence and peek never starts work", async () => {
-  const store = await Store.open(":memory:"),
+  const store = await openStore(),
     p = fixture("profile.1.en");
   await store.put("profile:" + p.profile_id, p);
   let calls = 0;
@@ -166,6 +167,7 @@ test("live Home returns facts and cached text with zero generation", async () =>
     };
     return { en: cal, tr: cal };
   };
+  await clearAuthMode();
   const app = await buildLocalApp({
     dbPath,
     allowPaid: true,
@@ -185,7 +187,7 @@ test("live Home returns facts and cached text with zero generation", async () =>
       ).json(),
       headers = { authorization: `Bearer ${login.access_token}` };
     const tenantId = login.me.user_id;
-    const store = await Store.open(dbPath);
+    const store = await openStore();
     await store.runAsAsync(tenantId, async () => {
       await store.put("profile:" + p.profile_id, p);
       await store.put("me", {
@@ -225,6 +227,7 @@ test("live Home returns facts and cached text with zero generation", async () =>
     await store.close();
   } finally {
     await app.close();
+    await clearAuthMode();
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });

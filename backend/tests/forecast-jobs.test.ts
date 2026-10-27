@@ -1,20 +1,21 @@
 import test from "node:test";
+import { openStore, waitFinish } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { Store } from "../api/store";
 import { ForecastJobs, forecastContext } from "../api/forecast-jobs";
 import { fixture } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
+
 test("forecast jobs deduplicate across languages, persist, isolate lenses and refuse stale results", async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "forecast-job-"));
-  const store = await Store.open(path.join(dir, "db.sqlite"));
+  const store = await openStore();
   const p = fixture("profile.1.en");
   await store.put("profile:" + p.profile_id, p);
   const ctx = forecastContext(p, p.birth.place, "2026-10-03", "day", "general");
-  let calls = 0,
-    finish!: (value: any) => void;
+  let calls = 0;
+  let finish: ((value: any) => void) | undefined;
   const gen = async (input: any) => {
     calls++;
     await new Promise((resolve) => {
@@ -35,8 +36,9 @@ test("forecast jobs deduplicate across languages, persist, isolate lenses and re
   try {
     const first = await jobs.get(ctx, "en");
     assert.equal(first.status, "pending");
-    assert.deepEqual(await jobs.get(ctx, "tr"), first);
-    finish(null);
+    assert.equal((await jobs.get(ctx, "tr")).job.job_id, first.job.job_id);
+    (await waitFinish(() => finish))(null);
+    finish = undefined;
     await jobs.close();
     assert.deepEqual(await jobs.get(ctx, "en"), {
       status: "ready",
@@ -54,14 +56,18 @@ test("forecast jobs deduplicate across languages, persist, isolate lenses and re
     );
     const second = await jobs.get({ ...ctx, lens: "personal" }, "en");
     assert.equal(second.status, "pending");
+    // Park in generate first so profile edit does not race the job's DB reads.
+    const release = await waitFinish(() => finish);
     await store.put("profile:" + p.profile_id, { ...p, chart_key: "edited" });
-    finish(null);
+    release(null);
+    finish = undefined;
     await jobs.close();
     const failed = await jobs.get({ ...ctx, lens: "personal" }, "en");
     assert.equal(failed.status, "failed");
     assert.equal(calls, 2);
     for (const job of await store.list("job:")) validate("Job", job);
   } finally {
+    finish?.(null);
     await jobs.close();
     await store.close();
     fs.rmSync(dir, { recursive: true, force: true });
@@ -69,7 +75,7 @@ test("forecast jobs deduplicate across languages, persist, isolate lenses and re
 });
 test("forecast validation rejects wrong windows and interrupted jobs require explicit retry", async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "forecast-invalid-"));
-  const store = await Store.open(path.join(dir, "db.sqlite"));
+  const store = await openStore();
   const p = fixture("profile.1.en");
   await store.put("profile:" + p.profile_id, p);
   const context = forecastContext(

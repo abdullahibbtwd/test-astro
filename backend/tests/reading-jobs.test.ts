@@ -1,4 +1,5 @@
 import test from "node:test";
+import { openStore } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -9,7 +10,7 @@ import { fixture } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
 test("reading jobs deduplicate, cache both languages and survive service restart", async () => {
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "reading-job-"));
-  const store = await Store.open(path.join(folder, "test.sqlite"));
+  const store = await openStore();
   const profile = fixture("profile.1.en");
   await store.put("profile:" + profile.profile_id, profile);
   await store.put("raw:" + profile.profile_id, {});
@@ -42,7 +43,7 @@ test("reading jobs deduplicate, cache both languages and survive service restart
 });
 test("a deleted profile does not receive a late reading and an interrupted job needs explicit retry", async () => {
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "reading-stale-"));
-  const store = await Store.open(path.join(folder, "test.sqlite"));
+  const store = await openStore();
   const profile = fixture("profile.1.en");
   await store.put("profile:" + profile.profile_id, profile);
   let finish!: (data: any) => void;

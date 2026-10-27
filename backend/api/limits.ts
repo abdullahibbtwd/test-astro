@@ -33,6 +33,22 @@ export async function tryConsumeUsage(
   return rows[0]?.count ?? null;
 }
 
+/** Undo one daily usage unit after a failed/cancelled attempt. */
+export async function refundUsage(
+  userId: string,
+  kind: UsageKind,
+  db: Db = getPrisma(),
+): Promise<void> {
+  const day = utcDay();
+  await db.$executeRaw`
+    UPDATE usage_counters
+    SET count = GREATEST(count - 1, 0)
+    WHERE user_id = ${userId}
+      AND kind = ${kind}::"UsageKind"
+      AND date = ${day}::date
+  `;
+}
+
 /**
  * Atomically consume one guest IP attempt (limit 5 / hour). Expired windows
  * reset to count=1 with a fresh expiry. Returns the new count, or null if

@@ -1,4 +1,5 @@
 import test from "node:test";
+import { clearAuthMode, dataDbPath, tempDataDir } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -8,7 +9,7 @@ import { SupabaseAuth } from "../api/supabase-auth";
 import { validate } from "../../frontend/src/api/zod";
 test("Real auth blocks demo tokens, binds the verified owner, rotates and revokes sessions", async () => {
   process.env.DATABASE_URL ??=
-    "postgres://astrology:astrology@127.0.0.1:5432/astrology";
+    "postgres://astrology:astrology@127.0.0.1:5432/astrology_test";
   process.env.ASTRO_DEMO_AUTH = "1";
   const { prisma } = await import("../api/db");
   await prisma().systemConfig.deleteMany({ where: { key: "auth-mode" } });

@@ -1,4 +1,5 @@
 import test from "node:test";
+import { clearAuthMode, dataDbPath, tempDataDir } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
@@ -7,6 +8,7 @@ import { SupabaseAuth } from "../api/supabase-auth";
 import { buildLocalApp } from "../api/app";
 test("browser auth endpoints reject cross-origin claims, preserve one account, and return a token-free callback", async () => {
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "astro-browser-auth-"));
+  await clearAuthMode();
   const auth = new SupabaseAuth(
     {
       url: "https://abcdefghijklmnopqrst.supabase.co",
@@ -98,6 +100,7 @@ test("browser auth endpoints reject cross-origin claims, preserve one account, a
     );
   } finally {
     await app.close();
+    await clearAuthMode();
     fs.rmSync(folder, { recursive: true, force: true });
   }
 });

@@ -1,4 +1,5 @@
 import test from "node:test";
+import { clearAuthMode, dataDbPath, tempDataDir } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -66,7 +67,7 @@ test("JwtAuth rejects invalid, expired and wrong-audience tokens", async () => {
 
 test("JWT bearer: first login creates user; tenants are isolated; tombstone refused", async () => {
   process.env.DATABASE_URL ??=
-    "postgres://astrology:astrology@127.0.0.1:5432/astrology";
+    "postgres://astrology:astrology@127.0.0.1:5432/astrology_test";
   process.env.ASTRO_DEMO_AUTH = "0";
   await prisma().systemConfig.deleteMany({ where: { key: "auth-mode" } });
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "astro-jwt-"));

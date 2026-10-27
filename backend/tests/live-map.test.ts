@@ -1,4 +1,5 @@
 import test from "node:test";
+import { openStore } from "./helpers";
 import assert from "node:assert/strict";
 import { gzipSync } from "node:zlib";
 import { Store } from "../api/store";
@@ -7,7 +8,7 @@ import { LiveMap } from "../api/map";
 import { fixture } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
 test("map geometry and nearby cities use the selected real birth chart without models", async () => {
-  const store = await Store.open(":memory:");
+  const store = await openStore();
   const maps = new LiveMap(store);
   const outputs = [];
   for (const date of ["1990-07-13", "1992-02-20"]) {
@@ -62,7 +63,7 @@ test("map geometry and nearby cities use the selected real birth chart without m
 });
 
 test("real heat layers differ by goal, survive restart and reject unsupported goals", async () => {
-  const store = await Store.open(":memory:");
+  const store = await openStore();
   const maps = new LiveMap(store);
   const computed = await computeBirthChart(
     {
@@ -130,7 +131,7 @@ test("real heat layers differ by goal, survive restart and reject unsupported go
 });
 
 test("place facts use selected coordinates and preserve high-latitude absence without invented prose", async () => {
-  const store = await Store.open(":memory:");
+  const store = await openStore();
   const maps = new LiveMap(store);
   const computed = await computeBirthChart(
     {
@@ -182,7 +183,7 @@ test("place facts use selected coordinates and preserve high-latitude absence wi
 });
 
 test("country and region facts come from the selected chart's scan", async () => {
-  const store = await Store.open(":memory:");
+  const store = await openStore();
   const maps = new LiveMap(store);
   const computed = await computeBirthChart(
     {
@@ -222,7 +223,7 @@ test("country and region facts come from the selected chart's scan", async () =>
 });
 
 test("recommendations retain goal, scope and filters without fabricated explanations", async () => {
-  const store = await Store.open(":memory:");
+  const store = await openStore();
   const maps = new LiveMap(store);
   const computed = await computeBirthChart(
     {

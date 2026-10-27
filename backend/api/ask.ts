@@ -395,6 +395,11 @@ export class AskService {
           send("error", problem(503, "generation_failed"));
         }
       } finally {
+        if (answer.status !== "complete") {
+          const { refundUsage } = await import("./limits");
+          await refundUsage(me.user_id, "ASK");
+          await this.quota();
+        }
         thread.updated_at = stamp();
         await persist();
         reply.raw.off("close", disconnected);

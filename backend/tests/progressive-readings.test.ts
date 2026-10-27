@@ -1,4 +1,5 @@
 import test from "node:test";
+import { openStore } from "./helpers";
 import assert from "node:assert/strict";
 import { Store } from "../api/store";
 import { ProgressiveReadings } from "../api/progressive-readings";
@@ -17,7 +18,7 @@ const waitUntil = async (
 };
 
 async function setup() {
-  const store = await Store.open(":memory:");
+  const store = await openStore();
   const profile = fixture("profile.1.en");
   await store.put("profile:" + profile.profile_id, profile);
   await store.put("raw:" + profile.profile_id, {});

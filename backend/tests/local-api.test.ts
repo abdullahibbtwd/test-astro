@@ -1,4 +1,5 @@
 import test from "node:test";
+import { clearAuthMode, dataDbPath, openStore, tempDataDir } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -32,6 +33,7 @@ const mockChart = (birth: { date: string; time: string; place: unknown }, id: st
 test("local API calculates, persists, edits and deletes real profiles without sample fallback", async () => {
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "astrology-live-"));
   const dbPath = path.join(folder, "state.sqlite");
+  await clearAuthMode();
   let app = await buildLocalApp({
     dbPath,
     computeBirthChart: async (birth, id) => mockChart(birth, id),
@@ -49,7 +51,7 @@ test("local API calculates, persists, edits and deletes real profiles without sa
     validate("Session", session);
     const headers = { authorization: `Bearer ${session.access_token}` };
     const fallbackPlace = fixture("profile.1.en").birth.place;
-    const seed = await Store.open(dbPath);
+    const seed = await openStore();
     await seed.runAsAsync(session.me.user_id, async () => {
       await seed.put(`place:en:${fallbackPlace.place_id}`, {
         ...fallbackPlace,
@@ -202,6 +204,7 @@ test("local API calculates, persists, edits and deletes real profiles without sa
     );
 
     await app.close();
+   await clearAuthMode();
     app = await buildLocalApp({
       dbPath,
       computeBirthChart: async (birth, id) => mockChart(birth, id),
@@ -295,6 +298,7 @@ test("local API calculates, persists, edits and deletes real profiles without sa
     );
   } finally {
     await app.close();
+    await clearAuthMode();
     fs.rmSync(folder, { recursive: true, force: true });
   }
 });

@@ -1,12 +1,13 @@
 import { countryName } from "../../frontend/src/lib/countries";
 import { busyProblem, paused } from "./job-problems";
-import { createHash, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { fileURLToPath, URL } from "node:url";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
 import { mapRecommendation } from "../mock/scripts/recommend";
 import { defaults } from "./defaults";
 import { validate } from "../../frontend/src/api/zod";
+import { stableHash as hash } from "./stable-hash";
 import type {
   BirthProfile,
   Job,
@@ -31,8 +32,6 @@ export const mapContext = (
   kind,
   input,
 });
-const hash = (v: unknown) =>
-  createHash("sha256").update(JSON.stringify(v)).digest("hex");
 const field = (c: MapContext) =>
   c.kind === "place"
     ? "reading"

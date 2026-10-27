@@ -1,4 +1,5 @@
 import test from "node:test";
+import { openStore } from "./helpers";
 import assert from "node:assert/strict";
 import { Store } from "../api/store";
 import { ForecastJobs, forecastContext } from "../api/forecast-jobs";
@@ -7,7 +8,7 @@ import { CompatibilityJobs } from "../api/compatibility-jobs";
 import { fixture } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
 const setup = async () => {
-  const store = await Store.open(":memory:");
+  const store = await openStore();
   const p = { ...fixture("profile.1.en"), is_self: false, current_place: null };
   await store.put("profile:" + p.profile_id, p);
   return { store, p };

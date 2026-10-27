@@ -1,8 +1,9 @@
 import { busyProblem, paused, problemError } from "./job-problems";
-import { randomUUID, createHash } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
 import { validate } from "../../frontend/src/api/zod";
+import { stableHash as hash } from "./stable-hash";
 import type {
   BirthProfile,
   ReportRef,
@@ -11,8 +12,6 @@ import type {
   Job,
   Lang,
 } from "../../frontend/contracts/spec-types";
-const hash = (v: unknown) =>
-  createHash("sha256").update(JSON.stringify(v)).digest("hex");
 const issue = (statusCode: number) =>
   Object.assign(new Error("Compatibility unavailable"), { statusCode });
 export class CompatibilityJobs {

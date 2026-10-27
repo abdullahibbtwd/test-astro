@@ -5,11 +5,18 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import Fastify from "fastify";
-import { Store, DEFAULT_TENANT } from "../api/store";
+import { DEFAULT_TENANT } from "../api/store";
 import { ProgressiveReadings } from "../api/progressive-readings";
 import { registerGuestOnboarding } from "../api/guest-onboarding";
 import { fixture } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
+import {
+  clearAuthMode,
+  dataDbPath,
+  openGuestScopedStore,
+  openStore,
+  tempDataDir,
+} from "./helpers";
 
 const OWNER = DEFAULT_TENANT;
 
@@ -30,9 +37,8 @@ async function waitReadingIdle(
 }
 
 async function setup() {
-  const app = Fastify(),
-    guest = await Store.open(":memory:"),
-    account = await Store.open(":memory:");
+  const app = Fastify();
+  const { store: account, guest } = await openGuestScopedStore();
   await account.runAsAsync(OWNER, async () => {
     await account.put("me", { ...fixture("me.en"), self_profile_id: null });
   });
@@ -300,6 +306,7 @@ test("the connected API keeps guest access narrow and reuses core after account 
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "guest-api-"));
   const dbPath = path.join(folder, "app.sqlite");
   const birthPlace = fixture("profile.1.en").birth.place;
+  await clearAuthMode();
   const app = await buildLocalApp({
     dbPath,
     allowPaid: true,
@@ -334,7 +341,7 @@ test("the connected API keeps guest access narrow and reuses core after account 
     },
   });
   try {
-    const store = await Store.open(dbPath);
+    const store = await openStore();
     await store.put(`place:en:${birthPlace.place_id}`, {
       ...birthPlace,
       kind: "city",
@@ -390,6 +397,7 @@ test("the connected API keeps guest access narrow and reuses core after account 
     assert.equal(generated, 1);
   } finally {
     await app.close();
+    await clearAuthMode();
     fs.rmSync(folder, { recursive: true, force: true });
   }
 });
