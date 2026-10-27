@@ -518,8 +518,6 @@ export async function buildLocalApp({
               result = defaults("config");
               result.flags.askAstrology = ask.enabled();
               result.flags.guestOnboarding = guestOnboarding && allowPaid;
-              result.flags.familyCompatibility = false;
-              result.flags.solarReturn = false;
               break;
             case "get /meta/catalogue":
               result = defaults(`catalogue.${lang}`);
