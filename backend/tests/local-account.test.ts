@@ -111,16 +111,33 @@ test("local export excludes credentials; deletion clears account and caches but 
 });
 
 test("account deletion waits for running work and leaves records intact", async () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "account-busy-"));
+  const dir = tempDataDir("account-busy-");
+  const userId =
+    "delete-busy-" + createHash("sha256").update(dir).digest("hex").slice(0, 16);
+  const db = prisma();
   const store = await openStore();
   try {
-    await store.put("me", { user_id: "test" });
-    await store.put("job:pending", { status: "running" });
-    await assert.rejects(deleteAccount(store, path.join(dir, "state.sqlite")), {
-      statusCode: 409,
+    await db.user.create({ data: { id: userId, displayName: "busy" } });
+    await store.runAsAsync(userId, () => store.put("me", { user_id: userId }));
+    await db.job.create({
+      data: {
+        id: userId + "-job",
+        userId,
+        kind: "READING",
+        status: "running",
+        lookupKey: "busy",
+        payload: {},
+      },
     });
-    assert.deepEqual(await store.get("me"), { user_id: "test" });
+    await assert.rejects(deleteAccount(db, userId, dir), { statusCode: 409 });
+    assert.deepEqual(await store.runAsAsync(userId, () => store.get("me")), {
+      user_id: userId,
+    });
+    assert.equal((await db.user.findUnique({ where: { id: userId } }))?.id, userId);
   } finally {
+    await db.job.deleteMany({ where: { userId } });
+    await db.record.deleteMany({ where: { tenantId: userId } });
+    await db.user.deleteMany({ where: { id: userId } });
     await store.close();
     fs.rmSync(dir, { recursive: true, force: true });
   }

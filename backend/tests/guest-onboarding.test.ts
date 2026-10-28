@@ -5,17 +5,20 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import Fastify from "fastify";
-import { DEFAULT_TENANT } from "../api/store";
+import { randomBytes } from "node:crypto";
+import { DEFAULT_TENANT, SYSTEM_TENANT } from "../api/store";
 import { ProgressiveReadings } from "../api/progressive-readings";
 import { registerGuestOnboarding } from "../api/guest-onboarding";
 import { fixture } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
 import {
   clearAuthMode,
+  clearUsageCounters,
   dataDbPath,
   openGuestScopedStore,
   openStore,
   tempDataDir,
+  wipeDemoTenant,
 } from "./helpers";
 
 const OWNER = DEFAULT_TENANT;
@@ -341,16 +344,20 @@ test("the connected API keeps guest access narrow and reuses core after account 
     },
   });
   try {
+    await wipeDemoTenant();
+    await clearUsageCounters();
     const store = await openStore();
-    await store.put(`place:en:${birthPlace.place_id}`, {
-      ...birthPlace,
-      kind: "city",
-      population: 1000,
-      source: "test",
-    });
+    await store.runAsAsync(SYSTEM_TENANT, () =>
+      store.put(`place:en:${birthPlace.place_id}`, {
+        ...birthPlace,
+        kind: "city",
+        population: 1000,
+        source: "test",
+      }),
+    );
     await store.close();
     assert.equal((await app.inject({ url: "/v1/profiles" })).statusCode, 401);
-    const guest = { "x-guest-token": "1".repeat(64) };
+    const guest = { "x-guest-token": randomBytes(32).toString("hex") };
     const created = await app.inject({
       method: "POST",
       url: "/v1/onboarding/reading",
@@ -364,11 +371,14 @@ test("the connected API keeps guest access narrow and reuses core after account 
       },
     });
     assert.equal(created.statusCode, 202, created.body);
-    await new Promise((resolve) => setImmediate(resolve));
-    const ready = await app.inject({
-      url: "/v1/onboarding/reading?lang=en",
-      headers: guest,
-    });
+    let ready = created;
+    for (let i = 0; i < 50 && ready.json().status !== "ready"; i++) {
+      await new Promise((resolve) => setImmediate(resolve));
+      ready = await app.inject({
+        url: "/v1/onboarding/reading?lang=en",
+        headers: guest,
+      });
+    }
     assert.equal(ready.json().status, "ready", ready.body);
     const login = await app.inject({
       method: "POST",
