@@ -484,11 +484,14 @@ export class ProgressiveReadings {
             });
           }
         })
-        .finally(() => {
+        .finally(async () => {
           this.tasks.delete(id);
-          this.running.delete(run);
-          this.pump();
-          void this.updateCompletions();
+          try {
+            await this.updateCompletions();
+          } finally {
+            this.running.delete(run);
+            this.pump();
+          }
         });
       this.running.add(run);
     }
@@ -555,16 +558,25 @@ export class ProgressiveReadings {
   }
   private async updateCompletions() {
     for (const record of await this.store.list<any>("reading-complete:")) {
-      if (!["queued", "running"].includes(record.job.status)) continue;
+      const pending = record.keys.some((key: Key) =>
+        this.tasks.has(sectionId(record.chart_key, key)),
+      );
+      if (
+        !pending &&
+        !["queued", "running", "failed"].includes(record.job.status)
+      )
+        continue;
       const sections = await Promise.all(
         record.keys.map((key: Key) =>
           this.store.get(sectionId(record.chart_key, key)),
         ),
       );
       const ready = sections.every((s: any) => s?.["text_" + record.lang]);
-      const failed = sections.some(
-        (s: any) => s?.error && !s?.["text_" + record.lang],
-      );
+      // An old error is not a failure while that section is still being retried.
+      const failed =
+        !pending &&
+        sections.some((s: any) => s?.error && !s?.["text_" + record.lang]);
+      if (record.job.status === "failed" && !ready && !pending) continue;
       record.job = {
         ...record.job,
         status: ready ? "succeeded" : failed ? "failed" : "running",
@@ -744,6 +756,19 @@ export class ProgressiveReadings {
     }
   }
   async close() {
-    while (this.running.size) await Promise.all(this.running);
+    // Queued tasks are not in `running` until pump starts them. Waiting only
+    // on `running` returns before English translation, failure recording, and
+    // completion status updates.
+    for (let idle = 0; idle < 100; idle++) {
+      this.pump();
+      if (this.running.size) {
+        idle = 0;
+        await Promise.all([...this.running]);
+        continue;
+      }
+      if (!this.tasks.size) break;
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+    await this.updateCompletions();
   }
 }
