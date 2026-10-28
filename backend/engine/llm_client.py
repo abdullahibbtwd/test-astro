@@ -32,6 +32,7 @@ own retry/backoff loops unchanged.
 """
 from __future__ import annotations
 
+import json
 import os
 import random
 import re
@@ -446,6 +447,23 @@ class _GeminiTooManyRequests(Exception):
     pass
 
 
+def _log_retry(status: Optional[int], delay: float, attempt: int) -> None:
+    """Optional smoke/ops log. Status and wait only — never a prompt or key."""
+    path = os.environ.get("ASTRO_BUDGET_LOG")
+    if not path:
+        return
+    try:
+        with open(path, "a", encoding="utf-8") as stream:
+            stream.write(json.dumps({
+                "retry": True,
+                "status": status,
+                "wait_s": round(delay, 3),
+                "attempt": attempt,
+            }) + "\n")
+    except OSError:
+        return
+
+
 def _wrap_gemini(fn):
     """On 429 or 503, sleep for retry-after or exponential backoff with jitter,
     then retry, up to GEMINI_429_MAX_WAITS times. Each sleep is at most
@@ -462,8 +480,10 @@ def _wrap_gemini(fn):
                 if waits >= GEMINI_429_MAX_WAITS:
                     raise _GeminiTooManyRequests(str(exc)) from exc
                 delay = _retry_wait_s(exc, waits)
-                print(f"[llm] gemini {_provider_status(exc)} - waiting {delay:.0f}s "
+                status = _provider_status(exc)
+                print(f"[llm] gemini {status} - waiting {delay:.0f}s "
                       f"({waits + 1}/{GEMINI_429_MAX_WAITS})", flush=True)
+                _log_retry(status, delay, waits + 1)
                 time.sleep(delay)
                 waits += 1
     return inner
