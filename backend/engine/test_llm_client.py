@@ -245,6 +245,58 @@ def test_gemini_concurrency_queues(monkeypatch):
     assert state["max"] == 2
 
 
+def test_gemini_retry_log_goes_to_stderr_not_stdout(monkeypatch, capsys):
+    """c0c8b3a logged retries with print(...); bridges parse stdout as JSON."""
+    monkeypatch.setattr(lc.time, "sleep", lambda _s: None)
+    monkeypatch.setattr(lc.random, "uniform", lambda _a, _b: 0)
+    monkeypatch.setattr(lc, "GEMINI_429_MAX_WAITS", 2)
+    monkeypatch.setattr(lc, "GEMINI_RETRY_MAX_WAIT_S", 60)
+    calls = {"n": 0}
+
+    def flaky(*_a, **_kw):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            exc = Exception('retryDelay: "1s"')
+            exc.code = 429
+            raise exc
+        return "ok"
+
+    assert lc._wrap_gemini(flaky)() == "ok"
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert "gemini 429" in captured.err
+    assert "waiting" in captured.err
+
+
+def test_bridge_stdout_stays_json_when_workers_print_retry_lines(capsys):
+    """Natal/map/forecast/compat wrap generate in redirect_stdout(stderr).
+
+    Retry lines printed from worker threads during generate must not land on the
+    pipe the Node parent parses as the bridge result.
+    """
+    import contextlib
+    import json
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    def worker():
+        # Pre-stderr-hardening shape from c0c8b3a (default stdout).
+        print("[llm] gemini 429 - waiting 1s (1/5)", flush=True)
+        time.sleep(0.01)
+        return True
+
+    with contextlib.redirect_stdout(sys.stderr):
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            assert all(pool.map(lambda _i: worker(), range(6)))
+        payload = {"readings": {"en": {"ok": True}}, "context": {"kind": "place"}}
+    # Bridge final line — only this may appear on the real stdout.
+    print(json.dumps(payload, ensure_ascii=True, separators=(",", ":")), flush=True)
+    captured = capsys.readouterr()
+    assert json.loads(captured.out.strip()) == payload
+    assert "[llm] gemini 429" not in captured.out
+    assert captured.err.count("[llm] gemini 429") == 6
+
+
 # --- OpenAI normalisation (stubbed SDK) ----------------------------------------
 
 def _fake_openai(monkeypatch, status="completed", reason=None, text='{"b":2}'):
