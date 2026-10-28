@@ -668,10 +668,36 @@ export class ProgressiveReadings {
     return { accuracy: (await this.accuracy(profile))! };
   }
   async exportDossiers() {
-    const keys = [...new Set(await this.store.list<string>("dossier-ref:"))];
-    return Promise.all(
-      keys.map((chart_key) => this.bridge({ op: "export", chart_key })),
-    );
+    const keys = [
+      ...new Set(await this.store.list<string>("dossier-ref:")),
+    ].filter((chart_key) => typeof chart_key === "string");
+    const exported = [];
+    for (const chart_key of keys) {
+      const dossier = await this.exportOneDossier(chart_key);
+      if (dossier) exported.push(dossier);
+    }
+    return exported;
+  }
+  /**
+   * Dossier files live under the process data directory. Postgres keeps the
+   * chart reference if that directory was ephemeral or replaced, and the
+   * bridge then raises FileNotFoundError. Rebuild from the stored chart and
+   * skip references that no longer belong to a profile.
+   */
+  private async exportOneDossier(chart_key: string) {
+    try {
+      return await this.bridge({ op: "export", chart_key });
+    } catch (error) {
+      if (!String((error as Error).message).includes("FileNotFoundError"))
+        throw error;
+      const profile = (await this.store.list<BirthProfile>("profile:")).find(
+        (item) => item.chart_key === chart_key,
+      );
+      if (!profile) return null;
+      this.plans.delete(chart_key);
+      await this.prepare(profile);
+      return await this.bridge({ op: "export", chart_key });
+    }
   }
   assertIdle(chart?: string) {
     if (

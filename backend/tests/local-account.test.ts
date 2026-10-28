@@ -1,5 +1,5 @@
 import test from "node:test";
-import { clearAuthMode, dataDbPath, openStore, tempDataDir } from "./helpers";
+import { clearAuthMode, openStore, tempDataDir } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -107,6 +107,72 @@ test("account deletion waits for running work and leaves records intact", async 
     assert.deepEqual(await store.get("me"), { user_id: "test" });
   } finally {
     await store.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("account export rebuilds a missing dossier through the real bridge", async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "account-export-"));
+  const dbPath = path.join(dir, "state.sqlite");
+  await clearAuthMode();
+  const app = await buildLocalApp({ dbPath, allowPaid: false });
+  try {
+    const login = await app.inject({
+      method: "POST",
+      url: "/v1/auth/email/verify",
+      payload: {
+        email: `export-${Date.now()}@example.test`,
+        code: "000000",
+      },
+    });
+    assert.equal(login.statusCode, 200, login.body);
+    const headers = {
+      authorization: `Bearer ${login.json().access_token}`,
+    };
+    const places = await app.inject({
+      url: "/v1/places/search?q=Istanbul&kind=birth&lang=en",
+      headers,
+    });
+    assert.equal(places.statusCode, 200, places.body);
+    const place = places.json()[0];
+    const created = await app.inject({
+      method: "POST",
+      url: "/v1/profiles",
+      headers: { ...headers, "idempotency-key": "export-real-bridge" },
+      payload: {
+        label: "Export",
+        relation: "self",
+        birth_date: "1991-04-04",
+        birth_time: "04:04",
+        birth_place_id: place.place_id,
+      },
+    });
+    assert.equal(created.statusCode, 201, created.body);
+    const profile = created.json();
+    const outline = await app.inject({
+      url: `/v1/profiles/${profile.profile_id}/natal-reading/outline`,
+      headers,
+    });
+    assert.equal(outline.statusCode, 200, outline.body);
+    const dossier = path.join(dir, "dossier", profile.chart_key);
+    assert.equal(fs.existsSync(path.join(dossier, "manifest.json")), true);
+    fs.rmSync(dossier, { recursive: true, force: true });
+    const exported = await app.inject({
+      method: "POST",
+      url: "/v1/me/export",
+      headers,
+    });
+    assert.equal(exported.statusCode, 202, exported.body);
+    const body = exported.json();
+    assert.equal(body.format, "astrology-local-export-v1");
+    assert.equal(body.dossiers.length, 1);
+    assert.equal(body.dossiers[0].manifest.chart_key, profile.chart_key);
+    assert.ok(body.dossiers[0].grounded_principle_ids.length > 0);
+    assert.equal(fs.existsSync(path.join(dossier, "manifest.json")), true);
+    assert.ok(!exported.body.includes(login.json().access_token));
+  } finally {
+    await app.close();
+    await clearAuthMode();
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
