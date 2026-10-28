@@ -19,6 +19,7 @@ import {
 import { useCatalogue } from "../../api/hooks";
 import { useApi } from "../../api/resource";
 import { useProfile } from "../shared/useProfile";
+import { useFlags } from "../../lib/flags";
 import { Generated } from "../shared/Blocks";
 import type { AreaReport, Goal } from "../../../contracts/spec-types";
 export default function AreaScreen() {
@@ -28,21 +29,24 @@ export default function AreaScreen() {
     }>(),
     { id } = useProfile(),
     { t } = useTranslation(),
+    flags = useFlags(),
     catalogue = useCatalogue().data,
     [goal, setGoal] = useState<Goal>("love"),
     q = useApi<AreaReport>(
       `/profiles/${id}/acg/${kind === "region" ? "regions" : "countries"}/${encodeURIComponent(areaId)}`,
       "AreaReport",
-      !!id,
+      !!id && (kind !== "region" || flags.regionOutlines),
     ),
     d = q.data;
   const countries = useCountries(kind !== "region");
   const regions = useApi<FeatureCollection<Polygon | MultiPolygon>>(
-    kind === "region"
+    kind === "region" && flags.regionOutlines
       ? `/geo/regions/${d?.area.iso2 ?? ""}.geojson`
       : "/geo/countries.geojson",
-    kind === "region" ? "RegionGeometry" : "CountryGeometry",
-    kind === "region" && !!d,
+    kind === "region" && flags.regionOutlines
+      ? "RegionGeometry"
+      : "CountryGeometry",
+    kind === "region" && flags.regionOutlines && !!d,
   );
   const geometry = kind === "region" ? regions : countries;
   useEffect(() => {
@@ -103,7 +107,8 @@ export default function AreaScreen() {
               />
             </View>
           ))}
-          {d.regions?.map((r) => (
+          {flags.regionOutlines &&
+            d.regions?.map((r) => (
             <Row
               key={r.admin1_id}
               label={r.name}

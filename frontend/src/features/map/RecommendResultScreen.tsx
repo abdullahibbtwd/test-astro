@@ -27,6 +27,7 @@ import { useTheme } from "../../design/theme";
 import { useApi } from "../../api/resource";
 import { ApiError } from "../../api/client";
 import { useProfile } from "../shared/useProfile";
+import { useFlags } from "../../lib/flags";
 import { Generated } from "../shared/Blocks";
 import { MapCanvas, planetColors } from "./MapCanvas";
 import { distanceLabel } from "./geometry";
@@ -45,6 +46,7 @@ export default function RecommendResultScreen() {
   const params = useLocalSearchParams<{ request: string }>(),
     { id } = useProfile(),
     { t } = useTranslation(),
+    flags = useFlags(),
     [map, setMap] = useState(false),
     parsed = useMemo(() => {
       try {
@@ -329,7 +331,9 @@ export default function RecommendResultScreen() {
                         ),
                         children: [
                           ...d.turkey.places.map(item),
-                          ...d.turkey.regions.map(area),
+                          ...(flags.regionOutlines
+                            ? d.turkey.regions.map(area)
+                            : []),
                         ],
                       },
                     ]
@@ -337,7 +341,10 @@ export default function RecommendResultScreen() {
                 {
                   key: "areas",
                   header: <Txt kind="title">{t("areas")}</Txt>,
-                  children: [...d.countries.map(area), ...d.regions.map(area)],
+                  children: [
+                    ...d.countries.map(area),
+                    ...(flags.regionOutlines ? d.regions.map(area) : []),
+                  ],
                 },
               ]
         }

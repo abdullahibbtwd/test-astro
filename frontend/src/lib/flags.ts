@@ -6,6 +6,7 @@ const defaults: Record<string, boolean> = {
   familyCompatibility: true,
   compatibilityScore: false,
   elementNotes: false,
+  regionOutlines: false,
   dayScoreNumbers: true,
   homeEnergyTile: false,
 };

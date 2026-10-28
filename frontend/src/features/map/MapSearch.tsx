@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Txt, Row, ErrorNotice, Skeleton } from "../../design/components";
 import { useApi } from "../../api/resource";
+import { useFlags } from "../../lib/flags";
 import type { PlaceCandidate } from "../../../contracts/spec-types";
 export function MapSearch({
   onSelect,
@@ -21,6 +22,7 @@ export function MapSearch({
 }) {
   const c = useTheme();
   const { t } = useTranslation(),
+    flags = useFlags(),
     [input, setInput] = useState(""),
     [search, setSearch] = useState("");
   const open = search.length >= 2;
@@ -119,7 +121,9 @@ export function MapSearch({
               : []),
             {
               title: t("areas"),
-              data: areas.data ?? [],
+              data: (areas.data ?? []).filter(
+                (place) => flags.regionOutlines || place.kind !== "region",
+              ),
               loading: areas.isFetching,
               error: areas.error,
             },
