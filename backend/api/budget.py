@@ -176,6 +176,8 @@ def install_guard(client, filename):
         raise BudgetExceeded("Unverified OpenAI endpoint/pricing")
     if os.environ.get("GOOGLE_GENAI_USE_VERTEXAI", "").lower() in ("1", "true"):
         raise BudgetExceeded("Vertex pricing has not been verified for these tests")
+    # Unset means the authorized $20. Compose does not pass this variable.
+    # Budget() rejects anything above $20 and refuses to rewrite a stored cap.
     raw_limit = os.environ.get("ASTRO_BUDGET_LIMIT", "20")
     try:
         limit = float(raw_limit)

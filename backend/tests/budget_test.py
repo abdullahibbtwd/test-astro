@@ -51,6 +51,33 @@ class BudgetTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             Budget("ignored", 21, user_id=self.user_id)
 
+    def test_per_run_cap_cannot_raise_or_rewrite_the_stored_cap(self):
+        Budget("ignored", 20, user_id=self.user_id)
+        with self.assertRaises(ValueError):
+            Budget("ignored", 1, user_id=self.user_id)
+        with _db() as db:
+            stored = int(
+                db.execute(
+                    "SELECT cap FROM budget_settings WHERE user_id=%s",
+                    (self.user_id,),
+                ).fetchone()[0]
+            )
+        self.assertEqual(stored, 20_000_000)
+        other = self.user_id + "-run"
+        try:
+            lowered = Budget("ignored", 1, user_id=other)
+            with self.assertRaises(BudgetExceeded):
+                lowered.reserve("test", 1.01)
+            lowered.reserve("test", 1)
+            self.assertEqual(lowered.total(), 1)
+        finally:
+            with _db() as db:
+                db.execute("DELETE FROM budget_calls WHERE user_id=%s", (other,))
+                db.execute(
+                    "DELETE FROM budget_settings WHERE user_id=%s", (other,)
+                )
+                db.commit()
+
     def test_concurrent_calls_share_one_cap(self):
         from concurrent.futures import ThreadPoolExecutor
 
