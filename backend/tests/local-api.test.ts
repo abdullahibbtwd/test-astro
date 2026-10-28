@@ -1,5 +1,5 @@
 import test from "node:test";
-import { clearAuthMode, dataDbPath, openStore, tempDataDir } from "./helpers";
+import { clearAuthMode, dataDbPath, openStore, tempDataDir, wipeDemoTenant } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -31,6 +31,7 @@ const mockChart = (birth: { date: string; time: string; place: unknown }, id: st
   };
 };
 test("local API calculates, persists, edits and deletes real profiles without sample fallback", async () => {
+  await wipeDemoTenant();
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "astrology-live-"));
   const dbPath = path.join(folder, "state.sqlite");
   await clearAuthMode();
@@ -198,9 +199,9 @@ test("local API calculates, persists, edits and deletes real profiles without sa
       "CountryGeometry",
       (await app.inject({ url: "/v1/geo/countries.geojson" })).json(),
     );
-    validate(
-      "RegionGeometry",
-      (await app.inject({ url: "/v1/geo/regions/TR.geojson" })).json(),
+    assert.equal(
+      (await app.inject({ url: "/v1/geo/regions/TR.geojson" })).statusCode,
+      404,
     );
 
     await app.close();

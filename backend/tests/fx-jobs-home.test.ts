@@ -1,10 +1,10 @@
 import test from "node:test";
-import { clearAuthMode, dataDbPath, openStore, tempDataDir } from "./helpers";
+import { clearAuthMode, dataDbPath, openStore, tempDataDir, wipeDemoTenant } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { createHash } from "node:crypto";
+import { stableHash } from "../api/stable-hash";
 import { Store } from "../api/store";
 import { ForecastJobs, forecastContext } from "../api/forecast-jobs";
 import { ReadingJobs } from "../api/reading-jobs";
@@ -134,6 +134,7 @@ test("paused generation is an absence and peek never starts work", async () => {
   await store.close();
 });
 test("live Home returns facts and cached text with zero generation", async () => {
+  await wipeDemoTenant();
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "fx-home-")),
     dbPath = path.join(dir, "app.sqlite"),
     p = fixture("profile.1.en");
@@ -213,7 +214,7 @@ test("live Home returns facts and cached text with zero generation", async () =>
         "day",
         "general",
       ),
-      key = createHash("sha256").update(JSON.stringify(context)).digest("hex");
+      key = stableHash(context);
     await store.runAsAsync(tenantId, () =>
       store.put("forecast-reading:" + key, {
         en: { reading: "Cached reading" },

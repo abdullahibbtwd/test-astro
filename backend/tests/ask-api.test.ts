@@ -5,6 +5,7 @@ import {
   dataDbPath,
   openStore,
   tempDataDir,
+  wipeDemoTenant,
 } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -310,6 +311,7 @@ test("PA client disconnect saves interrupted answer without charging quota", asy
   const stopped = new Promise<void>((resolve) => {
     cancelled = resolve;
   });
+  await wipeDemoTenant();
   const t = await setup(async (_r, signal, emit) => {
     emit({ event: "delta", data: { text: "Partial answer" } });
     await new Promise<void>((resolve) =>
@@ -331,7 +333,14 @@ test("PA client disconnect saves interrupted answer without charging quota", asy
     await reader.read();
     controller.abort();
     await stopped;
-    await new Promise((resolve) => setImmediate(resolve));
+    const deadline = Date.now() + 2000;
+    let used = 1;
+    while (Date.now() < deadline) {
+      used = (await t.inTenant(() => t.store.get<any>("me"))).ask_quota
+        .used_today;
+      if (used === 0) break;
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
     assert.equal(
       (await t.inTenant(() => t.store.get("ask-thread:" + id))).messages[1]
         .status,

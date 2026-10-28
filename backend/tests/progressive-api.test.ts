@@ -1,5 +1,5 @@
 import test from "node:test";
-import { clearAuthMode, dataDbPath, openStore, tempDataDir } from "./helpers";
+import { clearAuthMode, dataDbPath, openStore, tempDataDir, wipeDemoTenant } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -10,6 +10,7 @@ import { fixture } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
 
 test("ONB local API creates only core, exposes sections safely, completes and exports feedback", async () => {
+  await wipeDemoTenant();
   const tr = fixture("natal.1.tr"),
     en = fixture("natal.1.en");
   const plan = {
@@ -110,7 +111,9 @@ test("ONB local API creates only core, exposes sections safely, completes and ex
       payload: { key: "core_identity", event: "opened" },
     });
     assert.equal(response.statusCode, 204);
-    await new Promise((resolve) => setImmediate(resolve));
+    const ahead = Date.now() + 2000;
+    while (!generated.includes("sun_house") && Date.now() < ahead)
+      await new Promise((resolve) => setImmediate(resolve));
     assert.deepEqual(generated, ["core_identity", "sun_house"]);
     response = await app.inject({
       method: "POST",
@@ -126,8 +129,11 @@ test("ONB local API creates only core, exposes sections safely, completes and ex
     assert.equal(response.statusCode, 200, response.body);
     response = await app.inject({ url: base + "?lang=tr", headers });
     assert.equal(response.statusCode, 202, response.body);
-    await new Promise((resolve) => setImmediate(resolve));
-    response = await app.inject({ url: base + "?lang=tr", headers });
+    const done = Date.now() + 2000;
+    while (response.statusCode !== 200 && Date.now() < done) {
+      await new Promise((resolve) => setImmediate(resolve));
+      response = await app.inject({ url: base + "?lang=tr", headers });
+    }
     assert.equal(response.statusCode, 200, response.body);
     validate("NatalReading", response.json());
     assert.equal(new Set(generated).size, plan.order.length);

@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -40,6 +41,23 @@ export async function clearUsageCounters(userId?: string): Promise<void> {
     userId ? { where: { userId } } : undefined,
   );
   await prisma().guestRateLimit.deleteMany({});
+}
+
+/** Stable demo login id: sha256 of the trimmed, lowercased email. */
+export function demoTenantId(email = "demo@example.com"): string {
+  return createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
+}
+
+/**
+ * Drop one demo login's KV rows and deletion tombstone.
+ * openStore() only clears DEFAULT_TENANT, so demo@example.com otherwise
+ * keeps jobs, profiles, and a self id from earlier cases on astrology_test.
+ */
+export async function wipeDemoTenant(email = "demo@example.com"): Promise<void> {
+  const tenantId = demoTenantId(email);
+  await prisma().record.deleteMany({ where: { tenantId } });
+  await prisma().usageCounter.deleteMany({ where: { userId: tenantId } });
+  await prisma().deletedUser.deleteMany({ where: { id: tenantId } });
 }
 
 /** Temp folder for map-products / dossier paths; Store itself uses DATABASE_URL. */

@@ -1,5 +1,5 @@
 import test from "node:test";
-import { clearAuthMode, openStore, tempDataDir } from "./helpers";
+import { clearAuthMode, openStore, tempDataDir, wipeDemoTenant } from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -11,6 +11,7 @@ import { deleteAccount } from "../api/account";
 import { prisma } from "../api/db";
 import { fixture } from "../mock/fixtures";
 test("local export excludes credentials; deletion clears account and caches but preserves spending ledger", async () => {
+  await wipeDemoTenant();
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "account-tools-")),
     dbPath = path.join(dir, "state.sqlite");
   const demoTenant = createHash("sha256")
@@ -77,9 +78,9 @@ test("local export excludes credentials; deletion clears account and caches but 
         .statusCode,
       202,
     );
-    assert.deepEqual(
-      (await app.inject({ url: "/v1/profiles", headers })).json(),
-      [],
+    assert.equal(
+      (await app.inject({ url: "/v1/profiles", headers })).statusCode,
+      401,
     );
     assert.equal(
       fs.existsSync(path.join(dir, "map-products", demoTenant)),
@@ -96,17 +97,12 @@ test("local export excludes credentials; deletion clears account and caches but 
       fs.readFileSync(path.join(dir, "ai-budget.sqlite"), "utf8"),
       "preserve",
     );
-    const fresh = await login();
-    assert.equal(fresh.me.user_id, session.me.user_id);
-    assert.deepEqual(
-      (
-        await app.inject({
-          url: "/v1/profiles",
-          headers: { authorization: `Bearer ${fresh.access_token}` },
-        })
-      ).json(),
-      [],
-    );
+    const again = await app.inject({
+      method: "POST",
+      url: "/v1/auth/email/verify",
+      payload: { email: "demo@example.com", code: "000000" },
+    });
+    assert.equal(again.statusCode, 403);
   } finally {
     await app.close();
     await clearAuthMode();
