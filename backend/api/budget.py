@@ -1,4 +1,5 @@
 """Durable LLM spending ledger on PostgreSQL (Prisma-owned budget_* tables)."""
+import json
 import math
 import os
 from contextlib import closing
@@ -115,6 +116,15 @@ RATES = {
 }
 
 
+def _budget_log(entry):
+    """Optional per-call ledger. Never include prompts, chart data, or keys."""
+    path = os.environ.get("ASTRO_BUDGET_LOG")
+    if not path:
+        return
+    with open(path, "a", encoding="utf-8") as stream:
+        stream.write(json.dumps(entry, ensure_ascii=True) + "\n")
+
+
 def install_guard(client, filename):
     import json
 
@@ -124,7 +134,16 @@ def install_guard(client, filename):
         raise BudgetExceeded("Unverified OpenAI endpoint/pricing")
     if os.environ.get("GOOGLE_GENAI_USE_VERTEXAI", "").lower() in ("1", "true"):
         raise BudgetExceeded("Vertex pricing has not been verified for these tests")
-    budget = Budget(filename, user_id=os.environ.get("ASTRO_BUDGET_USER", "shared"))
+    raw_limit = os.environ.get("ASTRO_BUDGET_LIMIT", "20")
+    try:
+        limit = float(raw_limit)
+    except ValueError as error:
+        raise BudgetExceeded("Invalid spending cap") from error
+    budget = Budget(
+        filename,
+        limit,
+        user_id=os.environ.get("ASTRO_BUDGET_USER", "shared"),
+    )
 
     def wrap(original):
         def bounded(model, system, user, **kwargs):
@@ -146,10 +165,17 @@ def install_guard(client, filename):
             output = kwargs["max_tokens"]
             if not 0 < output <= 64000:
                 raise BudgetExceeded("Unbounded output request")
-            reservation = budget.reserve(
-                model, 2 * (size * rates[0] + output * rates[1]) / 1000000
-            )
-            response = original(model, system, user, **kwargs)
+            reserved = 2 * (size * rates[0] + output * rates[1]) / 1000000
+            try:
+                reservation = budget.reserve(model, reserved)
+            except BudgetExceeded:
+                _budget_log({"model": model, "error": "BudgetExceeded", "reserved_usd": reserved})
+                raise
+            try:
+                response = original(model, system, user, **kwargs)
+            except Exception as error:
+                _budget_log({"model": model, "error": type(error).__name__, "reserved_usd": reserved})
+                raise
             usage = response.usage
             inputs = sum(
                 usage.get(k, 0)
@@ -160,10 +186,15 @@ def install_guard(client, filename):
                 )
             )
             outputs = usage.get("output_tokens", 0)
+            spent = (inputs * rates[0] + outputs * rates[1]) / 1000000 if inputs + outputs else 0
             if inputs + outputs:
-                budget.settle(
-                    reservation, (inputs * rates[0] + outputs * rates[1]) / 1000000
-                )
+                budget.settle(reservation, spent)
+            _budget_log({
+                "model": model,
+                "input_tokens": inputs,
+                "output_tokens": outputs,
+                "usd": spent,
+            })
             return response
 
         return bounded
