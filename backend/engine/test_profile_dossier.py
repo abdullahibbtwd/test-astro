@@ -102,6 +102,24 @@ def test_section_bridge_offline_roundtrip_is_immutable_and_lazy(tmp_path, chart)
     assert 'rule' not in exported and 'natal_grounding' not in exported
 
 
+def test_export_never_calls_a_model_or_spends_budget(tmp_path, chart):
+    sys.path.insert(0, str(ROOT.parent / "api"))
+    from reading_section_bridge import run
+    from test_l4_progressive import FakeGenerator
+    d = Dossier(tmp_path)
+    run({"op": "prepare", "chart_key": "bridge", "chart": chart}, dossier=d)
+    gen = FakeGenerator()
+    with patch("llm_client.complete", side_effect=AssertionError("model")), patch(
+        "budget.install_guard", side_effect=AssertionError("budget")
+    ):
+        exported = run(
+            {"op": "export", "chart_key": "bridge"}, dossier=d, generator=gen
+        )
+    assert exported["manifest"]["chart_key"] == "bridge"
+    assert gen.usage["calls"] == 0
+    assert gen.translations == 0
+
+
 def test_a0_product_hashes_identical_in_independent_folders(tmp_path, chart):
     left, right = Dossier(tmp_path/'left'), Dossier(tmp_path/'right')
     left.build_a0('same', chart)
