@@ -25,19 +25,34 @@ export class CompatibilityJobs {
   constructor(
     private store: Store,
     private enabled = false,
-    private generate = (data: unknown) =>
-      runReadingBridge("compatibility_bridge.py", data),
+    private generate = (data: any) =>
+      runReadingBridge(
+        "compatibility_bridge.py",
+        data,
+        undefined,
+        data?.budget_user
+          ? { ASTRO_BUDGET_USER: String(data.budget_user) }
+          : undefined,
+      ),
   ) {}
   static async create(
     store: Store,
     enabled = false,
-    generate?: (data: unknown) => ReturnType<typeof runReadingBridge>,
+    generate?: (data: any) => ReturnType<typeof runReadingBridge>,
   ) {
     const jobs = new CompatibilityJobs(
       store,
       enabled,
       generate ??
-        ((data: unknown) => runReadingBridge("compatibility_bridge.py", data)),
+        ((data: any) =>
+          runReadingBridge(
+            "compatibility_bridge.py",
+            data,
+            undefined,
+            data?.budget_user
+              ? { ASTRO_BUDGET_USER: String(data.budget_user) }
+              : undefined,
+          )),
     );
     await jobs.resume();
     return jobs;
@@ -120,11 +135,14 @@ export class CompatibilityJobs {
       });
     if (this.running.size)
       throw problemError(busyProblem(await this.blockingJob()));
-    const { consumeGeneration, refundUsage } = await import("./limits");
+    const { consumeGeneration, refundUsageIfNoSettledSpend } = await import(
+      "./limits"
+    );
     const userId = this.store.tenant();
     await consumeGeneration(userId, "COMPAT_READING");
     let charged = true;
-    const created = new Date().toISOString();
+    const started = new Date();
+    const created = started.toISOString();
     const job: Job = {
       job_id: randomUUID(),
       kind: "compatibility",
@@ -143,7 +161,7 @@ export class CompatibilityJobs {
       readings: null as any,
     };
     await this.save(record);
-    this.start(record, userId, () => {
+    this.start(record, userId, started, () => {
       const was = charged;
       charged = false;
       return was;
@@ -153,11 +171,12 @@ export class CompatibilityJobs {
   private start(
     record: any,
     userId = this.store.tenant(),
+    started = new Date(),
     takeCharge = () => false,
   ) {
     const task = Promise.resolve()
       .then(async () => {
-        const { refundUsage } = await import("./limits");
+        const { refundUsageIfNoSettledSpend } = await import("./limits");
         try {
           const result = await this.generate({
             context: record.context,
@@ -166,6 +185,7 @@ export class CompatibilityJobs {
                 this.store.get("raw:" + p.profile_id),
               ),
             ),
+            budget_user: userId,
           });
           if (hash(result.context) !== hash(record.context))
             throw new Error("context_mismatch");
@@ -186,7 +206,12 @@ export class CompatibilityJobs {
           }
           if (!(await this.store.get("compat:" + record.id))) return;
           if (!(await this.valid(record))) {
-            if (takeCharge()) await refundUsage(userId, "COMPAT_READING");
+            if (takeCharge())
+              await refundUsageIfNoSettledSpend(
+                userId,
+                "COMPAT_READING",
+                started,
+              );
             await this.fail(record, "profile_changed");
             return;
           }
@@ -200,7 +225,12 @@ export class CompatibilityJobs {
           };
           await this.save(record);
         } catch {
-          if (takeCharge()) await refundUsage(userId, "COMPAT_READING");
+          if (takeCharge())
+            await refundUsageIfNoSettledSpend(
+              userId,
+              "COMPAT_READING",
+              started,
+            );
           if (await this.store.get("compat:" + record.id))
             await this.fail(record, "generation_failed");
         }
@@ -250,7 +280,8 @@ export class CompatibilityJobs {
       const userId = this.store.tenant();
       await consumeGeneration(userId, "COMPAT_READING");
       let charged = true;
-      const now = new Date().toISOString();
+      const started = new Date();
+      const now = started.toISOString();
       r.job = {
         ...r.job,
         job_id: randomUUID(),
@@ -261,7 +292,7 @@ export class CompatibilityJobs {
         stages: [{ name: "reading", status: "running" }],
       };
       await this.save(r);
-      this.start(r, userId, () => {
+      this.start(r, userId, started, () => {
         const was = charged;
         charged = false;
         return was;

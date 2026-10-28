@@ -4,12 +4,18 @@ export function generateReading(
   chart: unknown,
   profile_id: string,
   chart_key: string,
+  budgetUser?: string,
 ): Promise<any> {
-  return runReadingBridge("reading_bridge.py", {
-    chart,
-    profile_id,
-    chart_key,
-  });
+  return runReadingBridge(
+    "reading_bridge.py",
+    {
+      chart,
+      profile_id,
+      chart_key,
+    },
+    undefined,
+    budgetUser ? { ASTRO_BUDGET_USER: budgetUser } : undefined,
+  );
 }
 export function runReadingBridge(
   script:
@@ -21,12 +27,17 @@ export function runReadingBridge(
     | "map_reading_bridge.py",
   payload: unknown,
   onStage?: (stage: string) => void,
+  extraEnv?: Record<string, string>,
 ): Promise<any> {
   return new Promise((resolve, reject) => {
     const child = spawn(
       process.env.PYTHON ?? "python",
       ["-X", "utf8", fileURLToPath(new URL(`./${script}`, import.meta.url))],
-      { windowsHide: true, stdio: ["pipe", "pipe", "pipe"] },
+      {
+        windowsHide: true,
+        stdio: ["pipe", "pipe", "pipe"],
+        env: extraEnv ? { ...process.env, ...extraEnv } : undefined,
+      },
     );
     let output = "";
     const timer = setTimeout(() => {

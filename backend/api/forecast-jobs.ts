@@ -41,7 +41,14 @@ export class ForecastJobs {
     private store: Store,
     private enabled = false,
     private generate = (input: any) =>
-      runReadingBridge("forecast_bridge.py", input),
+      runReadingBridge(
+        "forecast_bridge.py",
+        input,
+        undefined,
+        input?.budget_user
+          ? { ASTRO_BUDGET_USER: String(input.budget_user) }
+          : undefined,
+      ),
   ) {}
   static async create(
     store: Store,
@@ -52,7 +59,15 @@ export class ForecastJobs {
       store,
       enabled,
       generate ??
-        ((input: any) => runReadingBridge("forecast_bridge.py", input)),
+        ((input: any) =>
+          runReadingBridge(
+            "forecast_bridge.py",
+            input,
+            undefined,
+            input?.budget_user
+              ? { ASTRO_BUDGET_USER: String(input.budget_user) }
+              : undefined,
+          )),
     );
     await jobs.resume();
     return jobs;
@@ -195,11 +210,14 @@ export class ForecastJobs {
         status: "failed",
         error: busyProblem(await this.blockingJob()),
       };
-    const { consumeGeneration, refundUsage } = await import("./limits");
+    const { consumeGeneration, refundUsageIfNoSettledSpend } = await import(
+      "./limits"
+    );
     const userId = this.store.tenant();
     await consumeGeneration(userId, "FORECAST_READING");
     let charged = true;
-    const created = new Date().toISOString();
+    const started = new Date();
+    const created = started.toISOString();
     const job: Job = {
       job_id: randomUUID(),
       kind: `${context.horizon}_reading`,
@@ -216,6 +234,7 @@ export class ForecastJobs {
         const result = await this.generate({
           context,
           chart: await this.store.get("raw:" + context.profile_id),
+          budget_user: userId,
         });
         if (hash(result.context) !== key) throw new Error("context_mismatch");
         const start = new Date(context.target),
@@ -291,7 +310,11 @@ export class ForecastJobs {
         });
       } catch {
         if (charged) {
-          await refundUsage(userId, "FORECAST_READING");
+          await refundUsageIfNoSettledSpend(
+            userId,
+            "FORECAST_READING",
+            started,
+          );
           charged = false;
         }
         await this.save(key, this.failed(job, "generation_failed"));

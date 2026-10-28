@@ -396,8 +396,12 @@ export class AskService {
         }
       } finally {
         if (answer.status !== "complete") {
-          const { refundUsage } = await import("./limits");
-          await refundUsage(me.user_id, "ASK");
+          const { refundUsageIfNoSettledSpend } = await import("./limits");
+          await refundUsageIfNoSettledSpend(
+            me.user_id,
+            "ASK",
+            new Date(answer.created_at ?? Date.now()),
+          );
           await this.quota();
         }
         thread.updated_at = stamp();

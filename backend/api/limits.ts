@@ -105,6 +105,30 @@ export async function refundUsage(
 }
 
 /**
+ * Refund a generation slot only when no settled paid model call happened at
+ * or after `since` for this user (or the shared ledger). Keeps the daily count
+ * when the job already spent provider money.
+ */
+export async function refundUsageIfNoSettledSpend(
+  userId: string,
+  kind: UsageKind,
+  since: Date,
+  db: Db = getPrisma(),
+): Promise<boolean> {
+  const budgetUser = process.env.ASTRO_BUDGET_USER || userId;
+  const rows = await db.$queryRaw<{ n: number }[]>`
+    SELECT COUNT(*)::int AS n
+    FROM budget_calls
+    WHERE state = 'settled'
+      AND created_at >= ${since}
+      AND user_id IN (${budgetUser}, ${userId}, 'shared')
+  `;
+  if (Number(rows[0]?.n) > 0) return false;
+  await refundUsage(userId, kind, db);
+  return true;
+}
+
+/**
  * Atomically consume one guest IP attempt (limit 5 / hour). Expired windows
  * reset to count=1 with a fresh expiry. Returns the new count, or null if
  * the limit is already reached inside an active window.

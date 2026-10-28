@@ -72,7 +72,14 @@ export class MapJobs {
     private store: Store,
     private enabled = false,
     private generate = (data: any) =>
-      runReadingBridge("map_reading_bridge.py", data),
+      runReadingBridge(
+        "map_reading_bridge.py",
+        data,
+        undefined,
+        data?.budget_user
+          ? { ASTRO_BUDGET_USER: String(data.budget_user) }
+          : undefined,
+      ),
     private dataRoot = dataDir(),
   ) {}
   static async create(
@@ -85,7 +92,15 @@ export class MapJobs {
       store,
       enabled,
       generate ??
-        ((data: any) => runReadingBridge("map_reading_bridge.py", data)),
+        ((data: any) =>
+          runReadingBridge(
+            "map_reading_bridge.py",
+            data,
+            undefined,
+            data?.budget_user
+              ? { ASTRO_BUDGET_USER: String(data.budget_user) }
+              : undefined,
+          )),
       dataRoot,
     );
     await jobs.resume();
@@ -168,10 +183,13 @@ export class MapJobs {
           error: busyProblem(await this.blockingJob()),
         },
       } as T;
-    const { consumeGeneration, refundUsage } = await import("./limits");
+    const { consumeGeneration, refundUsageIfNoSettledSpend } = await import(
+      "./limits"
+    );
     await consumeGeneration(owner, "MAP_READING");
     let charged = true;
-    const created = new Date().toISOString();
+    const started = new Date();
+    const created = started.toISOString();
     const job: Job = {
       job_id: randomUUID(),
       kind:
@@ -193,6 +211,7 @@ export class MapJobs {
             context,
             chart: await this.store.get("raw:" + context.profile_id),
             cache_root: mapProductsDir(this.dataRoot, owner),
+            budget_user: owner,
           });
           if (hash(output.context) !== key) throw new Error("context_mismatch");
           let values = output.readings;
@@ -246,7 +265,7 @@ export class MapJobs {
           });
         } catch (error) {
           if (charged) {
-            await refundUsage(owner, "MAP_READING");
+            await refundUsageIfNoSettledSpend(owner, "MAP_READING", started);
             charged = false;
           }
           const reason =

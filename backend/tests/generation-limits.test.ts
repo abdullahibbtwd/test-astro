@@ -7,6 +7,7 @@ import { fixture, collection } from "../mock/fixtures";
 import { prisma } from "../api/db";
 import {
   GENERATION_DAILY_LIMITS,
+  refundUsageIfNoSettledSpend,
   tryConsumeUsage,
   utcDay,
 } from "../api/limits";
@@ -126,5 +127,115 @@ test("generation usage consume is atomic under concurrent callers", async () => 
     accepted.sort((a, b) => (a ?? 0) - (b ?? 0)),
     [1, 2, 3],
   );
+  await store.close();
+});
+
+test("failed natal keeps the daily count after a settled paid call", async () => {
+  await wipeDemoTenant();
+  const store = await openStore();
+  const p = fixture("profile.1.en");
+  await store.put("profile:" + p.profile_id, p);
+  await store.put("raw:" + p.profile_id, {});
+  const userId = store.tenant();
+  await prisma().$executeRawUnsafe(
+    `DELETE FROM usage_counters WHERE user_id = $1 AND kind = 'NATAL_READING'`,
+    userId,
+  );
+  await prisma().$executeRawUnsafe(
+    `DELETE FROM budget_calls WHERE user_id = $1`,
+    userId,
+  );
+  const jobs = await ReadingJobs.create(
+    store,
+    async () => {
+      await prisma().$executeRawUnsafe(
+        `INSERT INTO budget_calls (user_id, model, reserved, charged, state)
+         VALUES ($1, 'gemini-3.5-flash-lite', 1, 1, 'settled')`,
+        userId,
+      );
+      throw new Error("validation failed after spend");
+    },
+    true,
+  );
+  try {
+    await jobs.get(p, "en");
+    await jobs.close();
+    const rows = await prisma().$queryRawUnsafe<{ count: number }[]>(
+      `SELECT count FROM usage_counters
+       WHERE user_id = $1 AND kind = 'NATAL_READING' AND date = $2::date`,
+      userId,
+      utcDay(),
+    );
+    assert.equal(Number(rows[0]?.count), 1);
+  } finally {
+    await jobs.close();
+    await store.close();
+  }
+});
+
+test("failed natal refunds when no settled paid call was made", async () => {
+  await wipeDemoTenant();
+  const store = await openStore();
+  const p = fixture("profile.1.en");
+  await store.put("profile:" + p.profile_id, p);
+  await store.put("raw:" + p.profile_id, {});
+  const userId = store.tenant();
+  await prisma().$executeRawUnsafe(
+    `DELETE FROM usage_counters WHERE user_id = $1 AND kind = 'NATAL_READING'`,
+    userId,
+  );
+  await prisma().$executeRawUnsafe(
+    `DELETE FROM budget_calls WHERE user_id = $1`,
+    userId,
+  );
+  const jobs = await ReadingJobs.create(
+    store,
+    async () => {
+      throw new Error("failed before any provider settle");
+    },
+    true,
+  );
+  try {
+    await jobs.get(p, "en");
+    await jobs.close();
+    const rows = await prisma().$queryRawUnsafe<{ count: number }[]>(
+      `SELECT count FROM usage_counters
+       WHERE user_id = $1 AND kind = 'NATAL_READING' AND date = $2::date`,
+      userId,
+      utcDay(),
+    );
+    assert.equal(Number(rows[0]?.count ?? 0), 0);
+  } finally {
+    await jobs.close();
+    await store.close();
+  }
+});
+
+test("refundUsageIfNoSettledSpend is a no-op once spend exists", async () => {
+  await wipeDemoTenant();
+  const store = await openStore();
+  const userId = store.tenant();
+  const since = new Date(Date.now() - 1000);
+  await prisma().$executeRawUnsafe(
+    `DELETE FROM usage_counters WHERE user_id = $1 AND kind = 'MAP_READING'`,
+    userId,
+  );
+  await tryConsumeUsage(userId, "MAP_READING", 5);
+  await prisma().$executeRawUnsafe(
+    `INSERT INTO budget_calls (user_id, model, reserved, charged, state)
+     VALUES ($1, 'gemini-3.5-flash-lite', 1, 1, 'settled')`,
+    userId,
+  );
+  assert.equal(
+    await refundUsageIfNoSettledSpend(userId, "MAP_READING", since),
+    false,
+  );
+  const rows = await prisma().$queryRawUnsafe<{ count: number }[]>(
+    `SELECT count FROM usage_counters
+     WHERE user_id = $1 AND kind = 'MAP_READING' AND date = $2::date`,
+    userId,
+    utcDay(),
+  );
+  assert.equal(Number(rows[0]?.count), 1);
   await store.close();
 });
