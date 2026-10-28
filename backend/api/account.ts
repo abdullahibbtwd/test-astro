@@ -41,12 +41,20 @@ export async function exportAccount(store: Store) {
   };
 }
 
-function wipeMapProductsCache(dataRoot: string) {
+/** One user's map cache. Never the shared map-products directory. */
+export function mapProductsDir(dataRoot: string, userId: string): string {
+  if (!/^[A-Za-z0-9_-]{1,128}$/.test(userId))
+    throw new Error("Invalid account cache path");
   const root = path.resolve(dataRoot);
   const cache = path.resolve(root, "map-products");
-  if (path.dirname(cache) !== root)
+  const userCache = path.resolve(cache, userId);
+  if (path.dirname(cache) !== root || path.dirname(userCache) !== cache)
     throw new Error("Invalid account cache path");
-  fs.rmSync(cache, { recursive: true, force: true });
+  return userCache;
+}
+
+function wipeMapProductsCache(dataRoot: string, userId: string) {
+  fs.rmSync(mapProductsDir(dataRoot, userId), { recursive: true, force: true });
 }
 
 /**
@@ -73,7 +81,7 @@ export async function deleteAccount(
         update: {},
       });
     }
-    wipeMapProductsCache(dataRoot);
+    wipeMapProductsCache(dataRoot, userId);
     if (opts?.deleteAuthUser) await opts.deleteAuthUser(userId);
     return;
   }
@@ -107,6 +115,6 @@ export async function deleteAccount(
     await tx.user.delete({ where: { id: userId } });
   });
 
-  wipeMapProductsCache(dataRoot);
+  wipeMapProductsCache(dataRoot, userId);
   if (opts?.deleteAuthUser) await opts.deleteAuthUser(userId);
 }

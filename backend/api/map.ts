@@ -1,5 +1,8 @@
 import { createHash } from "node:crypto";
+import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
+import { mapProductsDir } from "./account";
+import { dataDir } from "./data-dir";
 import { mapRecommendation } from "../mock/scripts/recommend";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
@@ -20,7 +23,13 @@ import type {
   Angle,
 } from "../../frontend/contracts/spec-types";
 export class LiveMap {
-  constructor(private store: Store) {}
+  constructor(
+    private store: Store,
+    private dataRoot = dataDir(),
+  ) {}
+  private cacheRoot() {
+    return mapProductsDir(this.dataRoot, this.store.tenant());
+  }
   private async data(profile: BirthProfile) {
     const key = "map:v1:" + profile.chart_key;
     const cached = await this.store.get(key);
@@ -84,6 +93,7 @@ export class LiveMap {
       mode: "recommend",
       request,
       home: [current.lat, current.lon],
+      cache_root: this.cacheRoot(),
     });
     if (value.invalid_scope)
       throw Object.assign(new Error("Unknown country"), { statusCode: 400 });
@@ -119,6 +129,7 @@ export class LiveMap {
       mode: "area",
       kind,
       code,
+      cache_root: this.cacheRoot(),
     });
     if (value.missing)
       throw Object.assign(new Error("Area not found"), { statusCode: 404 });
@@ -191,6 +202,7 @@ export class LiveMap {
       mode: "place",
       place,
       focus_goal: focus || null,
+      cache_root: this.cacheRoot(),
     });
     return validate<PlaceReport>("PlaceReport", result.reports[lang]);
   }
@@ -205,6 +217,7 @@ export class LiveMap {
       chart,
       mode: "heat",
       goal,
+      cache_root: this.cacheRoot(),
     });
     return validate<AcgHeat>("AcgHeat", {
       chart_key: profile.chart_key,

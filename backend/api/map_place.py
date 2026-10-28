@@ -9,7 +9,8 @@ def prepare_place(data):
     from pathlib import Path
     repo = Path(__file__).resolve().parents[2]
     root = Path(__file__).resolve().parents[1] / 'engine'
-    products = build_chart_products(data['chart'], str(Path(os.environ.get('DATA_DIR', str(repo / 'backend' / '.local-data'))) / 'map-products'), stages=Stages(), with_goal_scan=False)
+    cache = data.get('cache_root') or str(Path(os.environ.get('DATA_DIR', str(repo / 'backend' / '.local-data'))) / 'map-products')
+    products = build_chart_products(data['chart'], str(cache), stages=Stages(), with_goal_scan=False)
     place = data['place']
     location = {**place, 'name_tr': place['name'], 'source': 'gazetteer' if place['place_id'] else 'manual'}
     loc, relocated = al.build_locate(products['acg'], data['chart'], location, parans=products['parans'])

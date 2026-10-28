@@ -2,6 +2,8 @@ import { countryName } from "../../frontend/src/lib/countries";
 import { busyProblem, paused } from "./job-problems";
 import { randomUUID } from "node:crypto";
 import { fileURLToPath, URL } from "node:url";
+import { mapProductsDir } from "./account";
+import { dataDir } from "./data-dir";
 import { Store } from "./store";
 import { runReadingBridge } from "./readings";
 import { mapRecommendation } from "../mock/scripts/recommend";
@@ -71,17 +73,20 @@ export class MapJobs {
     private enabled = false,
     private generate = (data: any) =>
       runReadingBridge("map_reading_bridge.py", data),
+    private dataRoot = dataDir(),
   ) {}
   static async create(
     store: Store,
     enabled = false,
     generate?: (data: any) => ReturnType<typeof runReadingBridge>,
+    dataRoot = dataDir(),
   ) {
     const jobs = new MapJobs(
       store,
       enabled,
       generate ??
         ((data: any) => runReadingBridge("map_reading_bridge.py", data)),
+      dataRoot,
     );
     await jobs.resume();
     return jobs;
@@ -139,6 +144,7 @@ export class MapJobs {
     lang: Lang,
     retry = false,
   ): Promise<T> {
+    const owner = this.store.tenant();
     const key = hash(context),
       cached = await this.store.get("map-reading:" + key);
     if (cached) return apply(context, facts, cached[lang]) as T;
@@ -183,6 +189,7 @@ export class MapJobs {
           const output = await this.generate({
             context,
             chart: await this.store.get("raw:" + context.profile_id),
+            cache_root: mapProductsDir(this.dataRoot, owner),
           });
           if (hash(output.context) !== key) throw new Error("context_mismatch");
           let values = output.readings;

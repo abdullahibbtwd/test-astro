@@ -102,8 +102,8 @@ export async function buildLocalApp({
       await store.put("auth-owner", id);
     });
   };
-  const maps = new LiveMap(store);
-  const mapJobs = await MapJobs.create(store, allowPaid);
+  const maps = new LiveMap(store, dataRoot);
+  const mapJobs = await MapJobs.create(store, allowPaid, undefined, dataRoot);
   const readings = await ReadingJobs.create(store, undefined, allowPaid);
   const progressive = await ProgressiveReadings.create(
     store,

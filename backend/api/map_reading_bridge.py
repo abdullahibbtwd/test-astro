@@ -33,7 +33,7 @@ def generate(data):
         import ar_routing
         import ground_acg as ga
         from map_place import prepare_place
-        _, plan = prepare_place({'chart': chart, **request})
+        _, plan = prepare_place({'chart': chart, 'cache_root': data.get('cache_root'), **request})
         if dry_run:
             return {'context': context, 'dry_run': True, 'sections': len(plan['sections'])}
         allowed = {r['principle_id'] for r in ga.load_json(ga.ACG_CORPUS_PATH)} | set(ar_routing.traced_ids(plan))
@@ -54,7 +54,8 @@ def generate(data):
     import acg_views as views
     import ar_recommend
     import ar_overall
-    products = run_acg.build_chart_products(chart, str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'map-products'), stages=run_acg.Stages())
+    cache = data.get('cache_root') or str(Path(os.environ.get('DATA_DIR', str(REPO / 'backend' / '.local-data'))) / 'map-products')
+    products = run_acg.build_chart_products(chart, str(cache), stages=run_acg.Stages())
     products['natal'] = chart
     saved = {}
     def write(name, obj, **kwargs):

@@ -8,6 +8,7 @@ import { createHash } from "node:crypto";
 import { buildLocalApp } from "../api/app";
 import { Store } from "../api/store";
 import { deleteAccount } from "../api/account";
+import { prisma } from "../api/db";
 import { fixture } from "../mock/fixtures";
 test("local export excludes credentials; deletion clears account and caches but preserves spending ledger", async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "account-tools-")),
@@ -30,8 +31,16 @@ test("local export excludes credentials; deletion clears account and caches but 
   await seed.put("access:secret", { secret: "never-export" });
   await seed.put("idem:test", { secret: "never-export" });
   await seed.close();
-  fs.mkdirSync(path.join(dir, "map-products"));
-  fs.writeFileSync(path.join(dir, "map-products", "chart.json"), "test");
+  fs.mkdirSync(path.join(dir, "map-products", demoTenant), { recursive: true });
+  fs.writeFileSync(
+    path.join(dir, "map-products", demoTenant, "chart.json"),
+    "test",
+  );
+  fs.mkdirSync(path.join(dir, "map-products", "other-user"), { recursive: true });
+  fs.writeFileSync(
+    path.join(dir, "map-products", "other-user", "chart.json"),
+    "keep",
+  );
   fs.writeFileSync(path.join(dir, "ai-budget.sqlite"), "preserve");
   await clearAuthMode();
   const app = await buildLocalApp({
@@ -72,7 +81,17 @@ test("local export excludes credentials; deletion clears account and caches but 
       (await app.inject({ url: "/v1/profiles", headers })).json(),
       [],
     );
-    assert.equal(fs.existsSync(path.join(dir, "map-products")), false);
+    assert.equal(
+      fs.existsSync(path.join(dir, "map-products", demoTenant)),
+      false,
+    );
+    assert.equal(
+      fs.readFileSync(
+        path.join(dir, "map-products", "other-user", "chart.json"),
+        "utf8",
+      ),
+      "keep",
+    );
     assert.equal(
       fs.readFileSync(path.join(dir, "ai-budget.sqlite"), "utf8"),
       "preserve",
@@ -107,6 +126,48 @@ test("account deletion waits for running work and leaves records intact", async 
     assert.deepEqual(await store.get("me"), { user_id: "test" });
   } finally {
     await store.close();
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("deleting one account removes only that user's map cache", async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "account-map-cache-"));
+  const keep = "map-cache-keep-user";
+  const drop = "map-cache-drop-user";
+  const db = prisma();
+  await db.user.upsert({
+    where: { id: keep },
+    create: { id: keep, displayName: "keep" },
+    update: {},
+  });
+  await db.user.upsert({
+    where: { id: drop },
+    create: { id: drop, displayName: "drop" },
+    update: {},
+  });
+  for (const id of [keep, drop]) {
+    fs.mkdirSync(path.join(dir, "map-products", id), { recursive: true });
+    fs.writeFileSync(path.join(dir, "map-products", id, "chart.json"), id);
+  }
+  fs.writeFileSync(path.join(dir, "map-products", "shared.json"), "shared");
+  try {
+    await deleteAccount(db, drop, dir);
+    assert.equal(
+      fs.existsSync(path.join(dir, "map-products", drop)),
+      false,
+    );
+    assert.equal(
+      fs.readFileSync(path.join(dir, "map-products", keep, "chart.json"), "utf8"),
+      keep,
+    );
+    assert.equal(
+      fs.readFileSync(path.join(dir, "map-products", "shared.json"), "utf8"),
+      "shared",
+    );
+    assert.equal(fs.existsSync(path.join(dir, "map-products")), true);
+  } finally {
+    await db.deletedUser.deleteMany({ where: { id: { in: [keep, drop] } } });
+    await db.user.deleteMany({ where: { id: { in: [keep, drop] } } });
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
