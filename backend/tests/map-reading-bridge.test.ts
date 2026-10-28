@@ -53,6 +53,6 @@ test("all approved map writing pipelines prepare grounded inputs without provide
   }
   await assert.rejects(
     runReadingBridge("map_reading_bridge.py", { chart: raw }),
-    /RuntimeError/,
+    /Paid generation is disabled/,
   );
 });

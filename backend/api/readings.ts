@@ -57,7 +57,15 @@ export function runReadingBridge(
       clearTimeout(timer);
       try {
         const data = JSON.parse(output);
-        if (code || data.error) throw new Error(data.error ?? "ReadingFailed");
+        if (code || data.error) {
+          const detail =
+            typeof data.detail === "string" && data.detail.trim()
+              ? data.detail.trim()
+              : typeof data.error === "string"
+                ? data.error
+                : "ReadingFailed";
+          throw new Error(detail);
+        }
         resolve(data);
       } catch (error) {
         reject(error);

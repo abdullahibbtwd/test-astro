@@ -36,10 +36,20 @@ def generate(data):
         _, plan = prepare_place({'chart': chart, 'cache_root': data.get('cache_root'), **request})
         if dry_run:
             return {'context': context, 'dry_run': True, 'sections': len(plan['sections'])}
+        ok, _ = ga.corpus_ok()
+        if not ok or not Path(ga.ACG_CORPUS_PATH).is_file() or not Path(ga.MAIN_CORPUS_PATH).is_file():
+            raise RuntimeError(
+                'Map reading corpus missing: '
+                f'acg={ga.ACG_CORPUS_PATH} main={ga.MAIN_CORPUS_PATH}'
+            )
         allowed = {r['principle_id'] for r in ga.load_json(ga.ACG_CORPUS_PATH)} | set(ar_routing.traced_ids(plan))
         reading, errors = ar_generate.generate(plan, run_acg.make_generator(models), allowed)
         if errors:
-            raise RuntimeError('Map reading validation failed')
+            # Keep the first errors in the message so the job detail names the AV rule
+            # instead of a bare generation_failed after paid calls already settled.
+            raise RuntimeError(
+                'Map reading validation failed: ' + '; '.join(errors[:12])
+            )
         values = {}
         for lang in ('en', 'tr'):
             doc = ar_render.reading_json(reading, plan, lang)
@@ -92,5 +102,9 @@ if __name__ == '__main__':
             result = generate(data)
         print(json.dumps(result, ensure_ascii=True, separators=(',', ':')))
     except Exception as error:
-        print(json.dumps({'error': type(error).__name__}))
+        message = str(error).strip() or type(error).__name__
+        print(json.dumps({
+            'error': type(error).__name__,
+            'detail': message[:2000],
+        }, ensure_ascii=True, separators=(',', ':')))
         sys.exit(1)

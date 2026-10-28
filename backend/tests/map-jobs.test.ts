@@ -114,6 +114,27 @@ test("failed map jobs require explicit retry and incomplete or stale readings ne
     await store.close();
   }
 });
+test("map job failure keeps the generator validation detail for the app", async () => {
+  const { store, facts, context } = await setup();
+  const jobs = await MapJobs.create(store, true, async () => {
+    throw new Error(
+      "Map reading validation failed: AV5 [en] place_overview does not name 'Ankara'",
+    );
+  });
+  try {
+    await jobs.get(context, facts, "en");
+    await jobs.close();
+    const failed = await jobs.get(context, facts, "en");
+    assert.equal(failed.reading.status, "failed");
+    assert.match(
+      String(failed.reading.error?.detail ?? ""),
+      /AV5 \[en\] place_overview does not name 'Ankara'/,
+    );
+  } finally {
+    await jobs.close();
+    await store.close();
+  }
+});
 test("area reading uses the area context; interrupted work is not automatically restarted", async () => {
   const { store, p } = await setup();
   const facts = { ...collection("area-report.", "en")[0], overview: absent };

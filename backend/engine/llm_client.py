@@ -36,6 +36,7 @@ import json
 import os
 import random
 import re
+import sys
 import threading
 import time
 from dataclasses import dataclass, field
@@ -482,7 +483,8 @@ def _wrap_gemini(fn):
                 delay = _retry_wait_s(exc, waits)
                 status = _provider_status(exc)
                 print(f"[llm] gemini {status} - waiting {delay:.0f}s "
-                      f"({waits + 1}/{GEMINI_429_MAX_WAITS})", flush=True)
+                      f"({waits + 1}/{GEMINI_429_MAX_WAITS})",
+                      file=sys.stderr, flush=True)
                 _log_retry(status, delay, waits + 1)
                 time.sleep(delay)
                 waits += 1

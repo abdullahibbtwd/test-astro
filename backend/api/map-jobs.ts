@@ -113,7 +113,7 @@ export class MapJobs {
         title: "Map reading unavailable",
         status: 503,
         code: "generation_failed",
-        detail: reason,
+        detail: reason.slice(0, 2000),
       },
     };
   }
@@ -240,8 +240,12 @@ export class MapJobs {
             updated_at: new Date().toISOString(),
             stages: [{ name: "reading", status: "ok" }],
           });
-        } catch {
-          await this.save(key, this.failed(job, "generation_failed"));
+        } catch (error) {
+          const reason =
+            error instanceof Error && error.message.trim()
+              ? error.message.trim()
+              : "generation_failed";
+          await this.save(key, this.failed(job, reason));
         }
       })
       .finally(() => this.running.delete(task));
