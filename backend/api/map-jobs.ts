@@ -168,6 +168,9 @@ export class MapJobs {
           error: busyProblem(await this.blockingJob()),
         },
       } as T;
+    const { consumeGeneration, refundUsage } = await import("./limits");
+    await consumeGeneration(owner, "MAP_READING");
+    let charged = true;
     const created = new Date().toISOString();
     const job: Job = {
       job_id: randomUUID(),
@@ -234,6 +237,7 @@ export class MapJobs {
                     : null,
             });
           });
+          charged = false;
           await this.save(key, {
             ...job,
             status: "succeeded",
@@ -241,6 +245,10 @@ export class MapJobs {
             stages: [{ name: "reading", status: "ok" }],
           });
         } catch (error) {
+          if (charged) {
+            await refundUsage(owner, "MAP_READING");
+            charged = false;
+          }
           const reason =
             error instanceof Error && error.message.trim()
               ? error.message.trim()

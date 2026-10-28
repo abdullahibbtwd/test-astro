@@ -1,0 +1,5 @@
+-- Daily generation counters for natal / map / forecast / compatibility.
+ALTER TYPE "UsageKind" ADD VALUE IF NOT EXISTS 'NATAL_READING';
+ALTER TYPE "UsageKind" ADD VALUE IF NOT EXISTS 'MAP_READING';
+ALTER TYPE "UsageKind" ADD VALUE IF NOT EXISTS 'FORECAST_READING';
+ALTER TYPE "UsageKind" ADD VALUE IF NOT EXISTS 'COMPAT_READING';

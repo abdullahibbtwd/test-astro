@@ -1,14 +1,69 @@
 import type { PrismaClient, UsageKind } from "../src/generated/prisma/client.js";
 import { prisma as getPrisma } from "./db";
+import { problemError } from "./job-problems";
+import type { Problem } from "../../frontend/contracts/spec-types";
 
 type Db = PrismaClient;
 type Tx = Parameters<Parameters<PrismaClient["$transaction"]>[0]>[0];
+
+/** Per-user UTC daily caps for paid generation (ASK stays at 20 in ask.ts). */
+export const GENERATION_DAILY_LIMITS = {
+  NATAL_READING: Math.max(
+    1,
+    Number(process.env.ASTRO_DAILY_NATAL_LIMIT ?? 3) || 3,
+  ),
+  MAP_READING: Math.max(
+    1,
+    Number(process.env.ASTRO_DAILY_MAP_LIMIT ?? 5) || 5,
+  ),
+  FORECAST_READING: Math.max(
+    1,
+    Number(process.env.ASTRO_DAILY_FORECAST_LIMIT ?? 5) || 5,
+  ),
+  COMPAT_READING: Math.max(
+    1,
+    Number(process.env.ASTRO_DAILY_COMPAT_LIMIT ?? 3) || 3,
+  ),
+} as const;
+
+export type GenerationUsageKind = keyof typeof GENERATION_DAILY_LIMITS;
 
 /** UTC calendar day at 00:00:00.000Z for UsageCounter.date. */
 export function utcDay(now = new Date()): Date {
   return new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
   );
+}
+
+const generationLimitProblem = (kind: GenerationUsageKind, limit: number): Problem => {
+  const labels: Record<GenerationUsageKind, string> = {
+    NATAL_READING: "natal readings",
+    MAP_READING: "map readings",
+    FORECAST_READING: "forecast readings",
+    COMPAT_READING: "compatibility readings",
+  };
+  return {
+    type: "about:blank",
+    title: `Daily ${labels[kind]} limit reached`,
+    status: 429,
+    code: "rate_limited",
+    detail: `You can generate up to ${limit} new ${labels[kind]} per day. Try again tomorrow.`,
+  };
+};
+
+/**
+ * Atomically consume one paid generation slot for today, or throw a 429 Problem
+ * the app already maps to rate_limited.
+ */
+export async function consumeGeneration(
+  userId: string,
+  kind: GenerationUsageKind,
+  db: Db = getPrisma(),
+): Promise<number> {
+  const limit = GENERATION_DAILY_LIMITS[kind];
+  const count = await tryConsumeUsage(userId, kind, limit, db);
+  if (count == null) throw problemError(generationLimitProblem(kind, limit));
+  return count;
 }
 
 /**

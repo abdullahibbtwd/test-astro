@@ -19,6 +19,8 @@ export type ErrorDescription = {
   kind: string;
   titleKey: string;
   bodyKey?: string;
+  /** Literal server copy when the Problem already has a clear title/detail. */
+  message?: string;
   action: "retry" | "wait" | "none" | "back" | "refresh" | "request";
   retryAfterSec?: number;
 };
@@ -46,13 +48,22 @@ export function describeError(error: unknown, online = true): ErrorDescription {
       titleKey: "notGenerated",
       action: "request",
     };
-  if (code === "rate_limited" || e.status === 429)
+  if (code === "rate_limited" || e.status === 429) {
+    const problem = e.problem ?? (e as Problem);
+    const message =
+      (typeof problem.detail === "string" && problem.detail.trim()) ||
+      (typeof problem.title === "string" &&
+      problem.title !== "Unable to complete request"
+        ? problem.title.trim()
+        : "");
     return {
       kind: "rate_limited",
       titleKey: "errorRateLimited",
+      message: message || undefined,
       action: "retry",
       retryAfterSec: e.retryAfter ?? 0,
     };
+  }
   if (code === "generation_failed")
     return {
       kind: "generation_failed",

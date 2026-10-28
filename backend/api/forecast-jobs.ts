@@ -195,6 +195,10 @@ export class ForecastJobs {
         status: "failed",
         error: busyProblem(await this.blockingJob()),
       };
+    const { consumeGeneration, refundUsage } = await import("./limits");
+    const userId = this.store.tenant();
+    await consumeGeneration(userId, "FORECAST_READING");
+    let charged = true;
     const created = new Date().toISOString();
     const job: Job = {
       job_id: randomUUID(),
@@ -278,6 +282,7 @@ export class ForecastJobs {
           throw new Error("profile_changed");
         await this.store.put("forecast-reading:" + key, readings);
         await this.indexReport(context);
+        charged = false;
         await this.save(key, {
           ...job,
           status: "succeeded",
@@ -285,6 +290,10 @@ export class ForecastJobs {
           stages: [{ name: "reading", status: "ok" }],
         });
       } catch {
+        if (charged) {
+          await refundUsage(userId, "FORECAST_READING");
+          charged = false;
+        }
         await this.save(key, this.failed(job, "generation_failed"));
       }
     })().finally(() => this.running.delete(task));

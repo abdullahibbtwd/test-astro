@@ -396,7 +396,7 @@
   "verySlow": "Bu işlem beklenenden çok daha uzun sürüyor. Tamamlanmazsa lütfen bildirin.",
   "errorOffline": "İnternet bağlantınız yok. Kaydedilen yorumları açabilirsiniz.",
   "errorBusy": "Başka bir yorum hazırlanıyor. Bu yorum, diğeri tamamlandığında başlayacak.",
-  "errorRateLimited": "Çok fazla istek gönderildi. Biraz sonra tekrar deneyin.",
+  "errorRateLimited": "Günlük yorum limitine ulaşıldı. Yarın tekrar deneyin.",
   "errorGeneration": "Bu yorum hazırlanamadı. Tekrar deneyin.",
   "generationPaused": "Bu önizlemede yeni yorumlar duraklatıldı. Kaydedilen yorumları açabilirsiniz.",
   "notGenerated": "Bu yorum henüz hazırlanmadı.",

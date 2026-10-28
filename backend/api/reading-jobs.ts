@@ -73,6 +73,10 @@ export class ReadingJobs {
     if (!this.enabled) return { absence: paused().absence };
     if (this.running.size)
       throw problemError(busyProblem(await this.blockingJob()));
+    const { consumeGeneration, refundUsage } = await import("./limits");
+    const userId = this.store.tenant();
+    await consumeGeneration(userId, "NATAL_READING");
+    let charged = true;
     const created = new Date().toISOString();
     const job: Job = {
       job_id: randomUUID(),
@@ -101,6 +105,10 @@ export class ReadingJobs {
             "profile:" + profile.profile_id,
           );
           if (!current || current.chart_key !== key) {
+            if (charged) {
+              await refundUsage(userId, "NATAL_READING");
+              charged = false;
+            }
             await save(this.failed(job, "profile_changed"));
             return;
           }
@@ -120,6 +128,7 @@ export class ReadingJobs {
               });
             }
           });
+          charged = false;
           await save({
             ...job,
             status: "succeeded",
@@ -127,6 +136,10 @@ export class ReadingJobs {
             stages: [{ name: "reading", status: "ok" }],
           });
         } catch {
+          if (charged) {
+            await refundUsage(userId, "NATAL_READING");
+            charged = false;
+          }
           await save(this.failed(job, "generation_failed"));
         }
       })

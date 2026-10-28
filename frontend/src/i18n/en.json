@@ -396,7 +396,7 @@
   "verySlow": "This is taking much longer than expected. If it doesn't finish, please report it.",
   "errorOffline": "You're offline. Saved readings are still available.",
   "errorBusy": "Another reading is being prepared. This one will start when it's done.",
-  "errorRateLimited": "Too many requests. Try again in a moment.",
+  "errorRateLimited": "Daily reading limit reached. Try again tomorrow.",
   "errorGeneration": "This reading couldn't be prepared. Try again.",
   "generationPaused": "New readings are paused in this preview. Saved readings still open.",
   "notGenerated": "This reading hasn't been prepared yet.",

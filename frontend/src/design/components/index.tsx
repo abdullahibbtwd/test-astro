@@ -408,7 +408,10 @@ export function ErrorNotice({
   if (!error || description.kind === "unauthorized") return null;
   return (
     <Card>
-      <Txt>{t(description.titleKey)}</Txt>
+      <Txt>
+        {description.message ||
+          (description.titleKey ? t(description.titleKey) : "")}
+      </Txt>
       {description.action === "back" && (
         <Button secondary label={t("back")} onPress={() => router.back()} />
       )}

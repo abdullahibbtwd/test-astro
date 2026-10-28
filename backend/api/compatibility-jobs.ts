@@ -120,6 +120,10 @@ export class CompatibilityJobs {
       });
     if (this.running.size)
       throw problemError(busyProblem(await this.blockingJob()));
+    const { consumeGeneration, refundUsage } = await import("./limits");
+    const userId = this.store.tenant();
+    await consumeGeneration(userId, "COMPAT_READING");
+    let charged = true;
     const created = new Date().toISOString();
     const job: Job = {
       job_id: randomUUID(),
@@ -139,12 +143,21 @@ export class CompatibilityJobs {
       readings: null as any,
     };
     await this.save(record);
-    this.start(record);
+    this.start(record, userId, () => {
+      const was = charged;
+      charged = false;
+      return was;
+    });
     return this.get(record.id, lang);
   }
-  private start(record: any) {
+  private start(
+    record: any,
+    userId = this.store.tenant(),
+    takeCharge = () => false,
+  ) {
     const task = Promise.resolve()
       .then(async () => {
+        const { refundUsage } = await import("./limits");
         try {
           const result = await this.generate({
             context: record.context,
@@ -173,9 +186,11 @@ export class CompatibilityJobs {
           }
           if (!(await this.store.get("compat:" + record.id))) return;
           if (!(await this.valid(record))) {
+            if (takeCharge()) await refundUsage(userId, "COMPAT_READING");
             await this.fail(record, "profile_changed");
             return;
           }
+          takeCharge();
           record.readings = result.readings;
           record.job = {
             ...record.job,
@@ -185,6 +200,7 @@ export class CompatibilityJobs {
           };
           await this.save(record);
         } catch {
+          if (takeCharge()) await refundUsage(userId, "COMPAT_READING");
           if (await this.store.get("compat:" + record.id))
             await this.fail(record, "generation_failed");
         }
@@ -230,6 +246,10 @@ export class CompatibilityJobs {
         });
       if (this.running.size)
         throw problemError(busyProblem(await this.blockingJob()));
+      const { consumeGeneration } = await import("./limits");
+      const userId = this.store.tenant();
+      await consumeGeneration(userId, "COMPAT_READING");
+      let charged = true;
       const now = new Date().toISOString();
       r.job = {
         ...r.job,
@@ -241,7 +261,11 @@ export class CompatibilityJobs {
         stages: [{ name: "reading", status: "running" }],
       };
       await this.save(r);
-      this.start(r);
+      this.start(r, userId, () => {
+        const was = charged;
+        charged = false;
+        return was;
+      });
     }
     return this.render(r, lang);
   }
