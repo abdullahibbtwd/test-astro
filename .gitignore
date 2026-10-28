@@ -7,6 +7,10 @@ __pycache__/
 .pytest_cache/
 */.pytest_cache/
 
+# Local audit write-ups (not product docs)
+docs/FEATURE_AUDIT.md
+docs/ASTROLOGY_PROJECT_AUDIT.md
+
 # --- Node ---
 node_modules/
 */node_modules/
