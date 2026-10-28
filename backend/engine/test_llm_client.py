@@ -169,7 +169,9 @@ def test_gemini_429_waits_then_succeeds(monkeypatch):
     from google.genai import errors
     slept = []
     monkeypatch.setattr(lc.time, "sleep", lambda s: slept.append(s))
+    monkeypatch.setattr(lc.random, "uniform", lambda _a, _b: 0)
     monkeypatch.setattr(lc, "GEMINI_429_MAX_WAITS", 2)
+    monkeypatch.setattr(lc, "GEMINI_RETRY_MAX_WAIT_S", 60)
     calls = {"n": 0}
 
     def flaky(*a, **kw):
@@ -180,12 +182,67 @@ def test_gemini_429_waits_then_succeeds(monkeypatch):
             raise exc
         return "ok"
     assert lc._wrap_gemini(flaky)() == "ok"
-    assert slept == [8.0]
+    assert slept == [7.0]
 
 
-def test_retry_delay_parse():
-    assert lc._retry_delay_s(Exception("x retryDelay: '23s'"), 10) == 24.0
-    assert lc._retry_delay_s(Exception("nope"), 10) == 10
+def test_gemini_503_honors_retry_after(monkeypatch):
+    slept = []
+    monkeypatch.setattr(lc.time, "sleep", lambda s: slept.append(s))
+    monkeypatch.setattr(lc.random, "uniform", lambda _a, _b: 0)
+    monkeypatch.setattr(lc, "GEMINI_429_MAX_WAITS", 2)
+    monkeypatch.setattr(lc, "GEMINI_RETRY_MAX_WAIT_S", 60)
+    calls = {"n": 0}
+
+    def flaky(*_a, **_kw):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            exc = Exception('retryDelay: "12s"')
+            exc.code = 503
+            raise exc
+        return "ok"
+
+    assert lc._wrap_gemini(flaky)() == "ok"
+    assert slept == [12.0]
+
+
+def test_retry_wait_honors_retry_after_and_caps(monkeypatch):
+    monkeypatch.setattr(lc.random, "uniform", lambda _a, _b: 0)
+    monkeypatch.setattr(lc, "GEMINI_RETRY_MAX_WAIT_S", 60)
+    assert lc._retry_wait_s(Exception("retryDelay: '12s'"), 0) == 12.0
+    assert lc._retry_wait_s(Exception("retryDelay: '90s'"), 0) == 60.0
+
+
+def test_retry_delay_parse(monkeypatch):
+    monkeypatch.setattr(lc.random, "uniform", lambda _a, _b: 0)
+    monkeypatch.setattr(lc, "GEMINI_RETRY_BASE_S", 1)
+    monkeypatch.setattr(lc, "GEMINI_RETRY_MAX_WAIT_S", 60)
+    assert lc._retry_wait_s(Exception("x retryDelay: '23s'"), 0) == 23.0
+    assert lc._retry_wait_s(Exception("nope"), 0) == 1.0
+    assert lc._retry_wait_s(Exception("nope"), 3) == 8.0
+
+
+def test_gemini_concurrency_queues(monkeypatch):
+    import threading
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    monkeypatch.setenv("GEMINI_MAX_CONCURRENCY", "2")
+    gate = lc._GeminiGate()
+    state = {"inflight": 0, "max": 0}
+    lock = threading.Lock()
+
+    def work(_n):
+        with gate:
+            with lock:
+                state["inflight"] += 1
+                state["max"] = max(state["max"], state["inflight"])
+            time.sleep(0.05)
+            with lock:
+                state["inflight"] -= 1
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        list(pool.map(work, range(6)))
+    assert state["max"] == 2
 
 
 # --- OpenAI normalisation (stubbed SDK) ----------------------------------------

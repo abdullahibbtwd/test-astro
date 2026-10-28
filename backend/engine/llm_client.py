@@ -33,6 +33,7 @@ own retry/backoff loops unchanged.
 from __future__ import annotations
 
 import os
+import random
 import re
 import threading
 import time
@@ -83,14 +84,14 @@ NO_SAMPLING_PREFIXES = (
     "gpt-5", "gpt-6", "o3", "o4",
 )
 
-# Gemini rate limiting. Google returns 429 with a suggested retryDelay; we sleep
-# that long (or an exponential fallback) INSIDE the client before surfacing the
-# error, so the generators' short 3-attempt loops are spent only on real
-# failures. Concurrency is also capped: the section calls run in a thread pool
-# of 6-8, which alone can exceed a fresh key's requests-per-minute quota.
+# Gemini rate limiting. Google returns 429/503 with a suggested retryDelay; we
+# sleep that long (or an exponential backoff with jitter) INSIDE the client
+# before surfacing the error. Each wait is capped. Concurrency is also capped
+# per process: extra calls wait on the gate instead of hitting the quota together.
 GEMINI_MAX_CONCURRENCY = int(os.environ.get("GEMINI_MAX_CONCURRENCY", "8"))
 GEMINI_429_MAX_WAITS = int(os.environ.get("GEMINI_429_MAX_WAITS", "6"))
-_GEMINI_429_FALLBACK_S = (10, 20, 40, 60, 60, 60)
+GEMINI_RETRY_BASE_S = float(os.environ.get("GEMINI_RETRY_BASE_S", "1"))
+GEMINI_RETRY_MAX_WAIT_S = float(os.environ.get("GEMINI_RETRY_MAX_WAIT_S", "60"))
 
 _KEY_FILES = {
     "anthropic": (("ANTHROPIC_API_KEY",), "~/.anthropic_key"),
@@ -276,15 +277,73 @@ def _anthropic_transient() -> tuple:
 # ---------------------------------------------------------------------------
 
 _gemini_clients: dict = {}
-_gemini_gate = threading.BoundedSemaphore(max(1, GEMINI_MAX_CONCURRENCY))
 _RETRY_DELAY_RE = re.compile(r"retryDelay['\"]?\s*[:=]\s*['\"]?(\d+(?:\.\d+)?)s")
 
 
+class _GeminiGate:
+    """Process-wide cap. Callers past the limit wait; they are not dropped."""
+
+    def __init__(self):
+        self._cv = threading.Condition()
+        self._inflight = 0
+
+    def limit(self) -> int:
+        try:
+            return max(1, int(os.environ.get("GEMINI_MAX_CONCURRENCY", "8")))
+        except ValueError:
+            return 8
+
+    def __enter__(self):
+        with self._cv:
+            while self._inflight >= self.limit():
+                self._cv.wait()
+            self._inflight += 1
+        return self
+
+    def __exit__(self, *_exc):
+        with self._cv:
+            self._inflight -= 1
+            self._cv.notify()
+
+
+_gemini_gate = _GeminiGate()
+
+
+def _provider_status(exc) -> Optional[int]:
+    for attr in ("code", "status_code", "status"):
+        value = getattr(exc, attr, None)
+        if isinstance(value, int):
+            return value
+    return None
+
+
+def _parse_retry_after(exc) -> Optional[float]:
+    """Google's 429/503 body carries a RetryInfo.retryDelay like '23s'."""
+    match = _RETRY_DELAY_RE.search(str(exc))
+    if not match:
+        return None
+    return float(match.group(1))
+
+
+def _retry_wait_s(exc, attempt: int) -> float:
+    """Honor retry-after when present. Otherwise exponential backoff.
+    Jitter spreads retries. Neither path waits longer than the max."""
+    max_wait = max(0.0, GEMINI_RETRY_MAX_WAIT_S)
+    parsed = _parse_retry_after(exc)
+    if parsed is not None:
+        base = max(0.0, parsed)
+    else:
+        base = max(0.0, GEMINI_RETRY_BASE_S) * (2 ** attempt)
+    spread = min(base, max_wait) * 0.2
+    jitter = random.uniform(0, spread) if spread else 0.0
+    return min(max_wait, base + jitter)
+
+
 def _retry_delay_s(exc, fallback: float) -> float:
-    """Google's 429 body carries a RetryInfo.retryDelay like '23s'."""
-    m = _RETRY_DELAY_RE.search(str(exc))
-    if m:
-        return min(float(m.group(1)) + 1.0, 120.0)
+    """Back-compat helper. Prefer _retry_wait_s for new call sites."""
+    parsed = _parse_retry_after(exc)
+    if parsed is not None:
+        return min(parsed, max(0.0, GEMINI_RETRY_MAX_WAIT_S))
     return fallback
 
 
@@ -388,24 +447,22 @@ class _GeminiTooManyRequests(Exception):
 
 
 def _wrap_gemini(fn):
-    """Handle Gemini rate limits in place: on 429 sleep for Google's suggested
-    retryDelay (or an exponential fallback) and retry, up to GEMINI_429_MAX_WAITS
-    times; only then re-raise as our transient marker so the caller's own loop
-    can take over."""
+    """On 429 or 503, sleep for retry-after or exponential backoff with jitter,
+    then retry, up to GEMINI_429_MAX_WAITS times. Each sleep is at most
+    GEMINI_RETRY_MAX_WAIT_S. The concurrency gate is inside the call, so a wait
+    does not hold a slot. Only then re-raise as the transient marker."""
     def inner(*a, **kw):
-        from google.genai import errors
         waits = 0
         while True:
             try:
                 return fn(*a, **kw)
-            except errors.ClientError as exc:
-                if getattr(exc, "code", None) not in (429, 408):
+            except Exception as exc:
+                if _provider_status(exc) not in (429, 503):
                     raise
                 if waits >= GEMINI_429_MAX_WAITS:
                     raise _GeminiTooManyRequests(str(exc)) from exc
-                delay = _retry_delay_s(
-                    exc, _GEMINI_429_FALLBACK_S[min(waits, len(_GEMINI_429_FALLBACK_S) - 1)])
-                print(f"[llm] gemini 429 rate limit - waiting {delay:.0f}s "
+                delay = _retry_wait_s(exc, waits)
+                print(f"[llm] gemini {_provider_status(exc)} - waiting {delay:.0f}s "
                       f"({waits + 1}/{GEMINI_429_MAX_WAITS})", flush=True)
                 time.sleep(delay)
                 waits += 1

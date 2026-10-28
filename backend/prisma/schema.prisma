@@ -211,12 +211,13 @@ model BudgetSettings {
 
 /// No FK. On account delete: SET user_id = 'shared' (keep charged toward shared cap).
 model BudgetCall {
-  id       BigInt  @id @default(autoincrement()) @map("id")
-  userId   String  @map("user_id")
-  model    String?
-  reserved BigInt
-  charged  BigInt
-  state    String
+  id        BigInt   @id @default(autoincrement()) @map("id")
+  userId    String   @map("user_id")
+  model     String?
+  reserved  BigInt
+  charged   BigInt
+  state     String
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([userId])
   @@map("budget_calls")

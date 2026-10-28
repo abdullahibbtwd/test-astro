@@ -5,6 +5,9 @@ import os
 from contextlib import closing
 from datetime import date
 
+# A reservation still 'reserved' after this long was left by a dead process.
+DEFAULT_RESERVATION_TTL_S = 1800
+
 
 class BudgetExceeded(RuntimeError):
     pass
@@ -43,6 +46,33 @@ class Budget:
                 raise ValueError("Existing budget must not be changed silently")
             db.commit()
 
+    def _ttl_seconds(self):
+        raw = os.environ.get(
+            "ASTRO_BUDGET_RESERVATION_TTL_S", str(DEFAULT_RESERVATION_TTL_S)
+        )
+        try:
+            ttl = float(raw)
+        except ValueError:
+            ttl = DEFAULT_RESERVATION_TTL_S
+        return max(1.0, ttl)
+
+    def _expire_locked(self, db):
+        """Void reservations older than the TTL. Caller holds the settings lock."""
+        db.execute(
+            "UPDATE budget_calls SET charged=0, state='expired' "
+            "WHERE user_id=%s AND state='reserved' "
+            "AND created_at < now() - (%s * interval '1 second')",
+            (self.user_id, self._ttl_seconds()),
+        )
+
+    def _charged_locked(self, db):
+        row = db.execute(
+            "SELECT COALESCE(SUM(charged),0) FROM budget_calls "
+            "WHERE user_id=%s AND state IN ('reserved','settled')",
+            (self.user_id,),
+        ).fetchone()
+        return int(row[0])
+
     def reserve(self, model, dollars):
         amount = math.ceil(dollars * 1000000)
         if amount <= 0:
@@ -56,13 +86,9 @@ class Budget:
                 ).fetchone()
                 if cap_row is None:
                     raise RuntimeError("budget_settings missing for user")
+                self._expire_locked(db)
                 cap = int(cap_row[0])
-                total = int(
-                    db.execute(
-                        "SELECT COALESCE(SUM(charged),0) FROM budget_calls WHERE user_id=%s",
-                        (self.user_id,),
-                    ).fetchone()[0]
-                )
+                total = self._charged_locked(db)
                 if total + amount > cap:
                     raise BudgetExceeded("Integration testing budget exhausted")
                 row = db.execute(
@@ -77,32 +103,38 @@ class Budget:
         with closing(_pg()) as db:
             with db.transaction():
                 reserved_row = db.execute(
-                    "SELECT reserved FROM budget_calls WHERE id=%s AND user_id=%s",
+                    "SELECT reserved, state FROM budget_calls WHERE id=%s AND user_id=%s",
                     (call_id, self.user_id),
                 ).fetchone()
-                if reserved_row is None:
+                if reserved_row is None or reserved_row[1] == "void":
                     raise BudgetExceeded("Unknown budget reservation")
                 reserved = int(reserved_row[0])
                 if amount < 0 or amount > reserved:
                     raise BudgetExceeded(
                         "Provider usage exceeded reservation; stop and investigate"
                     )
+                updated = db.execute(
+                    "UPDATE budget_calls SET charged=%s, state='settled' "
+                    "WHERE id=%s AND user_id=%s AND state IN ('reserved','expired') "
+                    "RETURNING id",
+                    (amount, call_id, self.user_id),
+                ).fetchone()
+                if updated is None:
+                    raise BudgetExceeded("Unknown budget reservation")
+
+    def release(self, call_id):
+        """Void an unbilled reservation so the spend ledger matches the pre-call state."""
+        with closing(_pg()) as db:
+            with db.transaction():
                 db.execute(
-                    "UPDATE budget_calls SET charged=%s,state=%s WHERE id=%s",
-                    (amount, "settled", call_id),
+                    "DELETE FROM budget_calls "
+                    "WHERE id=%s AND user_id=%s AND state='reserved'",
+                    (call_id, self.user_id),
                 )
 
     def total(self):
         with closing(_pg()) as db:
-            return (
-                int(
-                    db.execute(
-                        "SELECT COALESCE(SUM(charged),0) FROM budget_calls WHERE user_id=%s",
-                        (self.user_id,),
-                    ).fetchone()[0]
-                )
-                / 1000000
-            )
+            return self._charged_locked(db) / 1000000
 
 
 # Standard text rates verified 2026-10-02 (Flash free-tier defaults added for
@@ -114,6 +146,16 @@ RATES = {
     "gemini-3.8-flash": (0.75, 3.75),
     "gpt-6-luna": (0.125, 0.50),
 }
+
+
+def _provider_status(error):
+    for attr in ("code", "status_code", "status"):
+        value = getattr(error, attr, None)
+        if isinstance(value, int):
+            return value
+    if "timeout" in type(error).__name__.lower():
+        return "timeout"
+    return None
 
 
 def _budget_log(entry):
@@ -174,9 +216,15 @@ def install_guard(client, filename):
             try:
                 response = original(model, system, user, **kwargs)
             except Exception as error:
-                _budget_log({"model": model, "error": type(error).__name__, "reserved_usd": reserved})
+                budget.release(reservation)
+                _budget_log({
+                    "model": model,
+                    "error": type(error).__name__,
+                    "status": _provider_status(error),
+                    "void": True,
+                })
                 raise
-            usage = response.usage
+            usage = getattr(response, "usage", None) or {}
             inputs = sum(
                 usage.get(k, 0)
                 for k in (
@@ -186,9 +234,18 @@ def install_guard(client, filename):
                 )
             )
             outputs = usage.get("output_tokens", 0)
-            spent = (inputs * rates[0] + outputs * rates[1]) / 1000000 if inputs + outputs else 0
-            if inputs + outputs:
-                budget.settle(reservation, spent)
+            if not inputs + outputs:
+                budget.release(reservation)
+                _budget_log({
+                    "model": model,
+                    "input_tokens": 0,
+                    "output_tokens": 0,
+                    "usd": 0,
+                    "void": True,
+                })
+                return response
+            spent = (inputs * rates[0] + outputs * rates[1]) / 1000000
+            budget.settle(reservation, spent)
             _budget_log({
                 "model": model,
                 "input_tokens": inputs,
@@ -199,7 +256,6 @@ def install_guard(client, filename):
 
         return bounded
 
-    client.GEMINI_429_MAX_WAITS = 0
     client._PROVIDERS = {
         "gemini": (wrap(client._gemini_complete), client._gemini_transient),
         "openai": (wrap(client._openai_complete), client._openai_transient),
