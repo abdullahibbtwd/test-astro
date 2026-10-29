@@ -87,8 +87,11 @@ Thumbs.db
 **/*.backup-pre-*.json
 **/houses_delta.extract_log.txt
 
-# --- Local-only: contracts, build logs, one-off corpus backups ---
-Contracts/
+# --- Local-only: root Contracts/ tree, build logs, one-off corpus backups ---
+# Use a root-anchored, case-sensitive-friendly path. A bare "Contracts/" is
+# matched case-insensitively by EAS upload ignore and would exclude
+# frontend/contracts/ (breaking the Android JS bundle on EAS).
+/Contracts/
 backend/engine/Astrocartography/*.log
 !backend/engine/Astrocartography/build_gazetteer.log
 **/*.bak-pre-*
