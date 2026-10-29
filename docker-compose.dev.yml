@@ -2,14 +2,17 @@
 # without rebuilding the API image.
 #
 #   docker compose -f docker-compose.dev.yml up -d
-#   # then from backend/ (see README): npm run local-api with DATABASE_URL set
+#   # then from backend/ (see README): npm run local-api:dev
 #
 # Keep docker-compose.yml for the full API+db container stack.
-# Stop that stack first if it is running (shared project name / port 5432).
+# Stop that stack first if it is running (shared project name).
+#
+# Local convenience only: published port 5432 and simple default password.
 
 # Host API should export (see .env.docker.example):
 #   DATABASE_URL=postgres://astrology:astrology@127.0.0.1:5432/astrology
 #   ASTRO_DEMO_AUTH=1
+#   AUTH_ENABLED=0   # or set SUPABASE_URL for real auth against the host API
 
 services:
   db:
