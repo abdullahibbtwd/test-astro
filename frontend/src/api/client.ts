@@ -15,8 +15,8 @@ import {
   getSupabaseSession,
   signOutSupabase,
 } from "../lib/supabase";
-export const apiBase =
-  process.env.EXPO_PUBLIC_API_URL ?? "http://127.0.0.1:4010/v1";
+export { apiBase } from "./api-base";
+import { apiBase } from "./api-base";
 let session: Session | null = null;
 let refreshing: Promise<boolean> | null = null;
 /** Temporary Bearer while bootstrapping /me after Supabase OTP (before Session exists). */
