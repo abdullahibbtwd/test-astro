@@ -9,13 +9,23 @@ ASK_RUN = os.path.join(ROOT, "ask_run")
 CACHE_ROOT = os.path.join(ASK_RUN, "_cache")          # per chart: <chart_key>/ (Phase 0 §12)
 
 # --- models (PA_00 P5): config, so switching later is a one-line change ----------------------
-PA_MODEL = "gpt-6-luna"
+# Prefer ASTRO_ASK_MODEL, else the same default as other paid features (ASTRO_LLM_MODEL /
+# gemini-3.5-flash-lite). Keep ASTRO_ASK_ENABLED off unless Ask is intentionally enabled.
+PA_MODEL = (
+    os.environ.get("ASTRO_ASK_MODEL")
+    or os.environ.get("ASTRO_LLM_MODEL")
+    or "gemini-3.5-flash-lite"
+)
+# OpenAI reasoning effort "none"; Gemini maps this to minimal thinking in llm_client.
 PA_PLANNER_EFFORT = "none"
 PA_COMPOSER_EFFORT = "none"
 PA_PLANNER_MAX_TOKENS = 1200
 PA_COMPOSER_MAX_TOKENS = 2400
-# list price per 1M tokens (USD) for the cost estimate in the audit
-PRICE = {"gpt-6-luna": {"input": 0.10, "cached": 0.01, "output": 0.50}}
+# list price per 1M tokens (USD) for the cost estimate in the audit (must match budget.RATES)
+PRICE = {
+    "gpt-6-luna": {"input": 0.10, "cached": 0.01, "output": 0.50},
+    "gemini-3.5-flash-lite": {"input": 0.30, "cached": 0.30, "output": 2.50},
+}
 
 # --- turn limits (PA_04 §8) ---------------------------------------------------------------------
 MAX_CALLS = 4

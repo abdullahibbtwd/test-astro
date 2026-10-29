@@ -87,10 +87,12 @@ def answer_turn(req,cancel=None,*,complete=None,tool_runner=run_tool,context_fac
         audit['answer_kind']=message['answer_kind']
         audit['evidence_ids']={k:list(dict.fromkeys(x['id'] for p in packs for x in p[k])) for k in ('facts','records','items','prose')}
         audit['usage']=[]
+        price=K.PRICE.get(K.PA_MODEL,{})
+        pin,pout=float(price.get('input',0)),float(price.get('output',0))
         for index,response in enumerate(responses):
             usage=response.usage or {}
             inp=usage.get('input_tokens',0) or 0; cached=usage.get('cache_read_input_tokens',0) or 0; output=usage.get('output_tokens',0) or 0
-            audit['usage'].append({'step':'planner' if index<planner_count else 'composer' if index==planner_count else 'repair','input_tokens':inp,'cached_tokens':cached,'output_tokens':output,'cost_usd_est':((inp+cached)*.125+output*.50)/1000000})
+            audit['usage'].append({'step':'planner' if index<planner_count else 'composer' if index==planner_count else 'repair','input_tokens':inp,'cached_tokens':cached,'output_tokens':output,'cost_usd_est':((inp+cached)*pin+output*pout)/1000000})
         # Hash identifiers are safe to retain; labels and birth inputs are not.
         audit['chart_key']=ctx.chart_key() if packs else None
         audit['other_chart_keys']=[]

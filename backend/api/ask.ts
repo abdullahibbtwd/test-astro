@@ -10,6 +10,7 @@ import type {
 import { Store } from "./store";
 import { validate } from "../../frontend/src/api/zod";
 import { askBackendReady, runAskBridge, type AskRunner } from "./ask-bridge";
+import { ASK_DAILY_LIMIT } from "./limits";
 const problem = (status: number, code: string) => ({
   type: "about:blank",
   title: "Conversation unavailable",
@@ -29,7 +30,7 @@ export class AskService {
     private allowPaid: boolean,
     private runner: AskRunner = runAskBridge,
     private ready = askBackendReady,
-    private dailyLimit = 20,
+    private dailyLimit = ASK_DAILY_LIMIT,
   ) {}
   enabled() {
     return this.allowPaid && this.ready();

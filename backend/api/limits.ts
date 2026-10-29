@@ -6,7 +6,8 @@ import type { Problem } from "../../frontend/contracts/spec-types";
 type Db = PrismaClient;
 type Tx = Parameters<Parameters<PrismaClient["$transaction"]>[0]>[0];
 
-/** Per-user UTC daily caps for paid generation (ASK stays at 20 in ask.ts). */
+/** Per-user UTC daily caps for paid generation. Ask uses the same atomic
+ * usage_counters path via tryConsumeUsage (see ask.ts + ASTRO_DAILY_ASK_LIMIT). */
 export const GENERATION_DAILY_LIMITS = {
   NATAL_READING: Math.max(
     1,
@@ -25,6 +26,12 @@ export const GENERATION_DAILY_LIMITS = {
     Number(process.env.ASTRO_DAILY_COMPAT_LIMIT ?? 3) || 3,
   ),
 } as const;
+
+/** Ask daily ceiling (atomic usage_counters kind ASK). Default 20. */
+export const ASK_DAILY_LIMIT = Math.max(
+  1,
+  Number(process.env.ASTRO_DAILY_ASK_LIMIT ?? 20) || 20,
+);
 
 export type GenerationUsageKind = keyof typeof GENERATION_DAILY_LIMITS;
 

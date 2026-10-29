@@ -383,6 +383,9 @@ def _gemini_complete(model: str, system: SystemT, user: str, *,
         automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
     )
     level = (thinking or GEMINI_THINKING_LEVEL or "").upper()
+    # OpenAI effort "none" / "off" → Gemini's cheapest thinking (project default).
+    if level in ("NONE", "OFF", "0"):
+        level = "MINIMAL"
     if level and level != "DEFAULT":
         cfg["thinking_config"] = types.ThinkingConfig(thinking_level=level)
     sys_text = _system_text(system)
