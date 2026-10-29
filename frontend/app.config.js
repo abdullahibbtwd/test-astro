@@ -1,6 +1,13 @@
-import { createRequire } from "node:module";
-const require = createRequire(import.meta.url);
-const identity = require("./config/identity.json");
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const identity = JSON.parse(
+  fs.readFileSync(
+    path.join(path.dirname(fileURLToPath(import.meta.url)), "config/identity.json"),
+    "utf8",
+  ),
+);
 
 export default ({ config }) => {
   const scheme = process.env.GOOGLE_IOS_URL_SCHEME;
