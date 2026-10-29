@@ -8,8 +8,7 @@
       "supportsTablet": true,
       "usesAppleSignIn": true
     },
-    "android": {
-    },
+    "android": {},
     "plugins": [
       "expo-router",
       "expo-font",
@@ -51,6 +50,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b748e2a7-4809-42b3-92f3-a832813d9d3a"
+      }
+    },
+    "owner": "abddullahibbtwd"
   }
 }

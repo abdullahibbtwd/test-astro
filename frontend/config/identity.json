@@ -1,6 +1,6 @@
 {
   "name": "Astrology",
-  "slug": "astrology-mobile",
+  "slug": "astro",
   "scheme": "astrology-dev",
   "iosBundleIdentifier": "com.example.astrology.dev",
   "androidPackage": "com.example.astrology.dev",
