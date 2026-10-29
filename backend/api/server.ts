@@ -6,20 +6,14 @@ import path from "node:path";
 import { buildLocalApp } from "./app";
 import { dataDir } from "./data-dir";
 import { migrateDeploy } from "./db";
+import { runConfigCheck } from "./config-check";
 
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL =
     "postgres://astrology:astrology@127.0.0.1:5432/astrology";
 }
 
-if (
-  process.env.NODE_ENV === "production" &&
-  process.env.ASTRO_DEMO_AUTH === "1"
-) {
-  throw new Error(
-    "ASTRO_DEMO_AUTH must not be enabled when NODE_ENV=production",
-  );
-}
+runConfigCheck({ throwOnRefuse: true });
 
 await migrateDeploy();
 
