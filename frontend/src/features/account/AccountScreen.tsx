@@ -22,6 +22,7 @@ import {
 import { PlaceSearch } from "../../design/components/PlaceSearch";
 import { useApp } from "../../lib/state";
 import { useMe, useActions, useConfig } from "../../api/hooks";
+import { legalUrl } from "../../config/identity";
 export default function AccountScreen({ page = "profile" }: { page?: string }) {
   const { t } = useTranslation(),
     app = useApp(),
@@ -40,7 +41,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
     }
   };
   const link = (kind: "terms" | "privacy" | "support") => {
-    const url = config.data?.links[kind];
+    const url = legalUrl(kind, config.data?.links[kind]);
     if (url) void Linking.openURL(url);
     else showSnackbar(t("legalUnavailable"));
   };

@@ -34,7 +34,7 @@
   "privacy": "Privacy",
   "legalUnavailable": "Legal text has not been supplied yet. This preview is not ready for public release.",
   "consentTitle": "Your information, your choice.",
-  "consent.birthData.placeholder": "DRAFT CONSENT — I agree to processing my birth data for this preview. Legal wording awaits review.",
+  "consent.birthData": "DRAFT CONSENT — I agree to processing my birth data for this preview. Legal wording awaits review.",
   "marketing": "Send me occasional product news (optional)",
   "nameTitle": "What should we call you?",
   "name": "Your name",

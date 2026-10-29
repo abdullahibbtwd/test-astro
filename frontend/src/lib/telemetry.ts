@@ -106,13 +106,14 @@ export async function initTelemetry() {
     enableAutoSessionTracking: false,
     enableNative: false,
     defaultIntegrations: false,
-    beforeSend: (event) => beforeSendEvent(event as Record<string, unknown>),
+    beforeSend: (event) =>
+      beforeSendEvent(event as unknown as Record<string, unknown>) as typeof event,
     beforeBreadcrumb: (breadcrumb) =>
       beforeBreadcrumbEvent({
         category: breadcrumb.category,
         data: breadcrumb.data as Record<string, unknown> | undefined,
         message: breadcrumb.message,
-      }),
+      }) as typeof breadcrumb | null,
   });
   sink = (report) =>
     Sentry.captureMessage(report.kind, { extra: { diagnostic: report } });

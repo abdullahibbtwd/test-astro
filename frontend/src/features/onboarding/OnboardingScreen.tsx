@@ -24,6 +24,7 @@ import { PlaceSearch } from "../../design/components/PlaceSearch";
 import { DateTimeField } from "../../design/components/DateTimeField";
 import { useApp } from "../../lib/state";
 import { useActions, useConfig } from "../../api/hooks";
+import { identity, legalUrl } from "../../config/identity";
 import { validBirth, todayLocal } from "../../lib/dates";
 import { JobProgress } from "../../design/components/JobProgress";
 import { useGenerated } from "../../api/jobs";
@@ -74,7 +75,7 @@ export default function OnboardingScreen() {
     await actions.patchMe({
       consents: {
         birth_data: {
-          version: "DRAFT-preview-only",
+          version: identity.consentVersion,
           accepted_at: new Date().toISOString(),
         },
         marketing: draft.marketing,
@@ -124,12 +125,12 @@ export default function OnboardingScreen() {
               style={{ flexDirection: "row", gap: dsSpace[3], alignItems: "center" }}
             >
               <Switch
-                accessibilityLabel={t("consent.birthData.placeholder")}
+                accessibilityLabel={t("consent.birthData")}
                 value={draft.consent}
                 onValueChange={(consent) => app.editDraft({ consent })}
               />
               <Txt style={{ flex: 1 }}>
-                {t("consent.birthData.placeholder")}
+                {t("consent.birthData")}
               </Txt>
             </View>
           </Card>
@@ -149,7 +150,7 @@ export default function OnboardingScreen() {
                 label={t(kind)}
                 selected={false}
                 onPress={() => {
-                  const url = config.data?.links[kind];
+                  const url = legalUrl(kind, config.data?.links[kind]);
                   if (url) void Linking.openURL(url);
                   else showSnackbar(t("legalUnavailable"));
                 }}

@@ -19,14 +19,14 @@ const leakPattern =
   /1979-03-30|Sofia|person@example\.com|Bearer eyJ|Sun in Aries|Authorization/i;
 
 test("@sentry/react-native is a declared dependency", async () => {
-  const pkg = JSON.parse(
-    await import("node:fs").then((fs) =>
-      fs.promises.readFile(
-        new URL("../package.json", import.meta.url),
-        "utf8",
-      ),
-    ),
+  const fs = await import("node:fs");
+  const path = await import("node:path");
+  const { fileURLToPath } = await import("node:url");
+  const pkgPath = path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "../package.json",
   );
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
   assert.ok(pkg.dependencies["@sentry/react-native"]);
 });
 

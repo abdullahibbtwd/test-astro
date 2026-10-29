@@ -1,19 +1,14 @@
 {
   "expo": {
-    "name": "Astrology",
-    "slug": "astrology-mobile",
     "version": "0.1.0",
-    "scheme": "astrology-dev",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "bundleIdentifier": "com.example.astrology.dev",
       "supportsTablet": true,
       "usesAppleSignIn": true
     },
     "android": {
-      "package": "com.example.astrology.dev"
     },
     "plugins": [
       "expo-router",

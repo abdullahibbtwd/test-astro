@@ -4,7 +4,8 @@
  * 127.0.0.1:4010).
  */
 export function resolveApiBase(
-  env: { EXPO_PUBLIC_API_URL?: string } = process.env,
+  env: { EXPO_PUBLIC_API_URL?: string | undefined } | NodeJS.ProcessEnv = process
+    .env,
   options: { isDev?: boolean } = {},
 ): string {
   const configured = env.EXPO_PUBLIC_API_URL?.trim();

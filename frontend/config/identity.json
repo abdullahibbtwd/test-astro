@@ -1,0 +1,13 @@
+{
+  "name": "Astrology",
+  "slug": "astrology-mobile",
+  "scheme": "astrology-dev",
+  "iosBundleIdentifier": "com.example.astrology.dev",
+  "androidPackage": "com.example.astrology.dev",
+  "consentVersion": "DRAFT-preview-only",
+  "links": {
+    "privacy": "",
+    "terms": "",
+    "support": ""
+  }
+}

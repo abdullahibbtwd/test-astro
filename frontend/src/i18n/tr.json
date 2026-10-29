@@ -34,7 +34,7 @@
   "privacy": "Gizlilik",
   "legalUnavailable": "Yasal metin henüz sağlanmadı. Bu önizleme yayıma hazır değil.",
   "consentTitle": "Bilgilerin, senin kararın.",
-  "consent.birthData.placeholder": "TASLAK RIZA — Bu önizleme için doğum bilgilerimin işlenmesini kabul ediyorum. Yasal metin inceleme bekliyor.",
+  "consent.birthData": "TASLAK RIZA — Bu önizleme için doğum bilgilerimin işlenmesini kabul ediyorum. Yasal metin inceleme bekliyor.",
   "marketing": "Ara sıra ürün haberleri gönder (isteğe bağlı)",
   "nameTitle": "Sana nasıl hitap edelim?",
   "name": "Adın",
