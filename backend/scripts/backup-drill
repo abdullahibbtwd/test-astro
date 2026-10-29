@@ -1,0 +1,217 @@
+#!/usr/bin/env bash
+# Dump a Postgres database and restore into a throwaway database, then compare
+# row counts. Defaults target astrology_test (never the live astrology DB).
+#
+# Usage:
+#   ./scripts/backup-drill
+#   SOURCE_URL=postgres://… DRILL_DB=astrology_drill_tmp ./scripts/backup-drill
+#
+# If host pg_dump/psql are missing, set:
+#   PG_DOCKER_CONTAINER=astrology-app-db-1
+# to run client tools inside that container (typical local compose).
+set -euo pipefail
+
+SOURCE_URL="${SOURCE_URL:-postgres://astrology:astrology@127.0.0.1:5432/astrology_test}"
+DRILL_DB="${DRILL_DB:-astrology_backup_drill_$$}"
+DUMP_DIR="${DUMP_DIR:-$(mktemp -d "${TMPDIR:-/tmp}/astro-backup-drill.XXXXXX")}"
+DUMP_FILE="${DUMP_DIR}/dump.dump"
+PG_DOCKER_CONTAINER="${PG_DOCKER_CONTAINER:-}"
+
+if [[ "${DRILL_DB}" == "astrology" ]]; then
+  echo "REFUSE: DRILL_DB must not be the live database name 'astrology'" >&2
+  exit 1
+fi
+
+eval "$(
+  python3 - <<'PY' "${SOURCE_URL}"
+import sys, urllib.parse
+u = urllib.parse.urlparse(sys.argv[1])
+assert u.scheme.startswith("postgres"), u.scheme
+db = (u.path or "/").lstrip("/") or "astrology_test"
+user = urllib.parse.unquote(u.username or "")
+password = urllib.parse.unquote(u.password or "")
+host = u.hostname or "127.0.0.1"
+port = u.port or 5432
+# Emit assignments without printing to the terminal beyond the eval.
+print(f"SOURCE_DB={db!r}")
+print(f"PGUSER={user!r}")
+print(f"PGPASSWORD={password!r}")
+print(f"PGHOST={host!r}")
+print(f"PGPORT={port!r}")
+PY
+)"
+
+if [[ "${SOURCE_DB}" == "astrology" && "${ALLOW_LIVE_SOURCE:-}" != "1" ]]; then
+  echo "REFUSE: refusing to dump live database 'astrology' (set ALLOW_LIVE_SOURCE=1 to override)" >&2
+  exit 1
+fi
+
+run_pg() {
+  local bin="$1"
+  shift
+  if [[ -n "${PG_DOCKER_CONTAINER}" ]]; then
+    # Inside the official image, connect on local socket as the container user.
+    docker exec -e PGPASSWORD="${PGPASSWORD}" "${PG_DOCKER_CONTAINER}" \
+      "${bin}" -U "${PGUSER}" -d "$@"
+  else
+    command -v "${bin}" >/dev/null || {
+      echo "Missing ${bin}. Install PostgreSQL client tools or set PG_DOCKER_CONTAINER." >&2
+      exit 1
+    }
+    PGPASSWORD="${PGPASSWORD}" "${bin}" -h "${PGHOST}" -p "${PGPORT}" -U "${PGUSER}" "$@"
+  fi
+}
+
+# When using docker, dump/restore talk to databases by name inside the container.
+dump_db() {
+  if [[ -n "${PG_DOCKER_CONTAINER}" ]]; then
+    docker exec -e PGPASSWORD="${PGPASSWORD}" "${PG_DOCKER_CONTAINER}" \
+      pg_dump -U "${PGUSER}" -d "${SOURCE_DB}" --format=custom \
+      >"${DUMP_FILE}"
+  else
+    PGPASSWORD="${PGPASSWORD}" pg_dump --format=custom --file="${DUMP_FILE}" "${SOURCE_URL}"
+  fi
+}
+
+sql_maint() {
+  local sql="$1"
+  if [[ -n "${PG_DOCKER_CONTAINER}" ]]; then
+    docker exec -e PGPASSWORD="${PGPASSWORD}" "${PG_DOCKER_CONTAINER}" \
+      psql -U "${PGUSER}" -d postgres -v ON_ERROR_STOP=1 -c "${sql}"
+  else
+    local maint
+    maint="$(python3 - <<PY
+import urllib.parse
+u=urllib.parse.urlparse("${SOURCE_URL}")
+print(urllib.parse.urlunparse((u.scheme,u.netloc,"/postgres",'','','')))
+PY
+)"
+    PGPASSWORD="${PGPASSWORD}" psql "${maint}" -v ON_ERROR_STOP=1 -c "${sql}"
+  fi
+}
+
+restore_db() {
+  if [[ -n "${PG_DOCKER_CONTAINER}" ]]; then
+    docker exec -i -e PGPASSWORD="${PGPASSWORD}" "${PG_DOCKER_CONTAINER}" \
+      pg_restore -U "${PGUSER}" -d "${DRILL_DB}" --clean --if-exists --no-owner \
+      <"${DUMP_FILE}"
+  else
+    local drill_url
+    drill_url="$(python3 - <<PY
+import urllib.parse
+u=urllib.parse.urlparse("${SOURCE_URL}")
+print(urllib.parse.urlunparse((u.scheme,u.netloc,"/${DRILL_DB}",'','','')))
+PY
+)"
+    PGPASSWORD="${PGPASSWORD}" pg_restore --clean --if-exists --no-owner --dbname="${drill_url}" "${DUMP_FILE}"
+  fi
+}
+
+if [[ -z "${PG_DOCKER_CONTAINER}" ]] && ! command -v pg_dump >/dev/null; then
+  if docker ps --format '{{.Names}}' 2>/dev/null | grep -qx 'astrology-app-db-1'; then
+    PG_DOCKER_CONTAINER=astrology-app-db-1
+    echo "backup-drill: using docker exec ${PG_DOCKER_CONTAINER} (host pg_dump missing)"
+  fi
+fi
+
+echo "backup-drill: dumping database name=${SOURCE_DB} (password not printed)"
+dump_db
+
+echo "backup-drill: creating throwaway database name=${DRILL_DB}"
+sql_maint "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${DRILL_DB}' AND pid <> pg_backend_pid();" >/dev/null 2>&1 || true
+sql_maint "DROP DATABASE IF EXISTS \"${DRILL_DB}\";"
+sql_maint "CREATE DATABASE \"${DRILL_DB}\";"
+
+echo "backup-drill: restoring into name=${DRILL_DB}"
+restore_db || true
+# pg_restore may exit non-zero with benign notices when using --clean on empty DB;
+# row-count compare is the pass/fail gate.
+
+echo "backup-drill: comparing table row counts"
+export SOURCE_DB DRILL_DB PGHOST PGPORT PGUSER PGPASSWORD PG_DOCKER_CONTAINER
+python3 - <<'PY'
+import json, os, subprocess, sys
+
+source_db = os.environ["SOURCE_DB"]
+drill_db = os.environ["DRILL_DB"]
+container = os.environ.get("PG_DOCKER_CONTAINER") or ""
+
+def counts(database: str) -> dict[str, int]:
+    sql = """
+    SELECT c.relname, (xpath('//row/c/text()', query_to_xml(format('SELECT COUNT(*) AS c FROM %I', c.relname), false, true, '')))[1]::text::bigint AS n
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE c.relkind = 'r' AND n.nspname = 'public'
+    ORDER BY 1;
+    """
+    # Simpler portable approach: list tables then count.
+    list_sql = """
+    SELECT c.relname
+    FROM pg_class c
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE c.relkind = 'r' AND n.nspname = 'public'
+    ORDER BY 1;
+    """
+    env = os.environ.copy()
+    if container:
+        tables = subprocess.check_output(
+            ["docker", "exec", "-e", f"PGPASSWORD={env['PGPASSWORD']}", container,
+             "psql", "-U", env["PGUSER"], "-d", database, "-At", "-c", list_sql],
+            text=True,
+        ).splitlines()
+        out = {}
+        for table in tables:
+            n = subprocess.check_output(
+                ["docker", "exec", "-e", f"PGPASSWORD={env['PGPASSWORD']}", container,
+                 "psql", "-U", env["PGUSER"], "-d", database, "-At",
+                 "-c", f'SELECT COUNT(*) FROM "{table}"'],
+                text=True,
+            ).strip()
+            out[table] = int(n)
+        return out
+    try:
+        import psycopg
+    except ImportError as exc:
+        raise SystemExit("psycopg required for non-docker mode") from exc
+    url = (
+        f"postgres://{env['PGUSER']}:{env['PGPASSWORD']}"
+        f"@{env['PGHOST']}:{env['PGPORT']}/{database}"
+    )
+    out = {}
+    with psycopg.connect(url) as conn:
+        with conn.cursor() as cur:
+            cur.execute(list_sql)
+            tables = [r[0] for r in cur.fetchall()]
+            for table in tables:
+                cur.execute(f'SELECT COUNT(*)::bigint FROM "{table}"')
+                out[table] = int(cur.fetchone()[0])
+    return out
+
+a, b = counts(source_db), counts(drill_db)
+names = sorted(set(a) | set(b))
+mismatches = [
+    {"table": name, "source": a.get(name), "restored": b.get(name)}
+    for name in names
+    if a.get(name) != b.get(name)
+]
+report = {
+    "tables": len(names),
+    "matched": len(names) - len(mismatches),
+    "mismatches": mismatches,
+    "source_total_rows": sum(a.values()),
+    "restored_total_rows": sum(b.values()),
+}
+print(json.dumps(report, indent=2))
+sys.exit(1 if mismatches else 0)
+PY
+STATUS=$?
+
+echo "backup-drill: dropping throwaway database name=${DRILL_DB}"
+sql_maint "DROP DATABASE IF EXISTS \"${DRILL_DB}\";"
+rm -rf "${DUMP_DIR}"
+
+if [[ "${STATUS}" -ne 0 ]]; then
+  echo "backup-drill FAILED: row counts differ (or probe failed)" >&2
+  exit "${STATUS}"
+fi
+echo "backup-drill OK: dump → restore → row counts match"
