@@ -37,6 +37,43 @@ export function scrubError() {
   return { message: "Application error", tags: { area: "frontend" } };
 }
 
+/** Sentry beforeSend: drop PII, reading text, emails, Authorization, birth data. */
+export function beforeSendEvent(event: Record<string, unknown>) {
+  const diagnostic =
+    event.extra &&
+    typeof event.extra === "object" &&
+    (event.extra as { diagnostic?: unknown }).diagnostic
+      ? { diagnostic: (event.extra as { diagnostic: unknown }).diagnostic }
+      : undefined;
+  return {
+    ...scrubError(),
+    type: event.type,
+    // Only our pre-scrubbed structural diagnostic is forwarded.
+    extra: diagnostic,
+  };
+}
+
+/** Sentry beforeBreadcrumb: keep navigation/http shells only; drop everything else. */
+export function beforeBreadcrumbEvent(breadcrumb: {
+  category?: string;
+  data?: Record<string, unknown>;
+  message?: string;
+}) {
+  if (breadcrumb.category === "navigation")
+    return {
+      category: "navigation",
+      data: safeEvent("navigation", {
+        route: String(breadcrumb.data?.to ?? breadcrumb.data?.route ?? ""),
+      }).properties,
+    };
+  if (breadcrumb.category === "http")
+    return {
+      category: "http",
+      data: { status_code: breadcrumb.data?.status_code },
+    };
+  return null;
+}
+
 type Diagnostic = {
   kind: "error" | "contract_violation";
   schema?: string;
@@ -69,27 +106,16 @@ export async function initTelemetry() {
     enableAutoSessionTracking: false,
     enableNative: false,
     defaultIntegrations: false,
-    beforeSend: (event) => ({
-      ...scrubError(), type: event.type,
-      // Only our pre-scrubbed structural diagnostic is forwarded.
-      extra: event.extra?.diagnostic ? { diagnostic: event.extra.diagnostic } : undefined,
-    }),
-    beforeBreadcrumb: (breadcrumb) => {
-      if (breadcrumb.category === "navigation")
-        return {
-          category: "navigation",
-          data: safeEvent("navigation", { route: breadcrumb.data?.to ?? "" })
-            .properties,
-        };
-      if (breadcrumb.category === "http")
-        return {
-          category: "http",
-          data: { status_code: breadcrumb.data?.status_code },
-        };
-      return null;
-    },
+    beforeSend: (event) => beforeSendEvent(event as Record<string, unknown>),
+    beforeBreadcrumb: (breadcrumb) =>
+      beforeBreadcrumbEvent({
+        category: breadcrumb.category,
+        data: breadcrumb.data as Record<string, unknown> | undefined,
+        message: breadcrumb.message,
+      }),
   });
-  sink = (report) => Sentry.captureMessage(report.kind, { extra: { diagnostic: report } });
+  sink = (report) =>
+    Sentry.captureMessage(report.kind, { extra: { diagnostic: report } });
 }
 // Never forward error.message, user content, response payloads, or caller context.
 export function reportError(
