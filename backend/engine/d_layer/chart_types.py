@@ -156,8 +156,12 @@ class SectorRuler(TypedDict):
 class SectorRulers(TypedDict):
     """Precomputed sector rulership per house system. Keys are the string house
     numbers "1".."12"; every house is always present (every sign has a domicile
-    ruler under the traditional map)."""
-    placidus: dict[str, SectorRuler]
+    ruler under the traditional map).
+
+    ``placidus`` is omitted when Placidus cusps are undefined (polar latitudes),
+    matching ``compute_sector_rulers`` which skips systems with ``cusps is None``.
+    """
+    placidus: NotRequired[dict[str, SectorRuler]]
     whole_sign: dict[str, SectorRuler]
 
 

@@ -504,7 +504,6 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "placidus",
         "whole_sign"
       ],
       "properties": {
@@ -514,7 +513,8 @@
         "whole_sign": {
           "$ref": "#/$defs/SectorRulerMap"
         }
-      }
+      },
+      "description": "Placidus rulers are omitted (not null) when Placidus cusps are undefined above the polar circle; whole_sign remains required."
     },
     "Meta": {
       "type": "object",
