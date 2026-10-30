@@ -28,6 +28,7 @@ import { Store, SYSTEM_TENANT } from "./store";
 import { bridge, computeBirthChart as defaultBirthChart } from "./engine";
 import { dataDir } from "./data-dir";
 import { defaults } from "./defaults";
+import { applyMapStyleEnv } from "./map-style-config";
 import { endpoints } from "../../frontend/scripts/endpoints";
 import { validate, schemas } from "../../frontend/src/api/zod";
 import type { BirthProfile, Me } from "../../frontend/contracts/spec-types";
@@ -518,6 +519,7 @@ export async function buildLocalApp({
               result = defaults("config");
               result.flags.askAstrology = ask.enabled();
               result.flags.guestOnboarding = guestOnboarding && allowPaid;
+              result.map_style_url = applyMapStyleEnv(result.map_style_url);
               break;
             case "get /meta/catalogue":
               result = defaults(`catalogue.${lang}`);

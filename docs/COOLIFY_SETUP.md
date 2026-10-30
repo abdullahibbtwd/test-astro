@@ -65,6 +65,15 @@ Marking **secret** vs **public**. Use placeholders; supply real values in Coolif
 | `ASTRO_ASK_ENABLED` | public | `0` — leave off until Ask works with your chosen model |
 | `ASTRO_DEMO_AUTH` | public | `0` — **must** stay `0` in production |
 
+### Map basemap styles (optional)
+
+| Name | Kind | Notes |
+| --- | --- | --- |
+| `ASTRO_MAP_STYLE_LIGHT` | public | Absolute **https** MapLibre style JSON URL for light theme. Overrides `config.json` `map_style_url.light`. Leave unset for the country-outline preview. `config:check` refuses non-https values. |
+| `ASTRO_MAP_STYLE_DARK` | public | Same for dark theme. |
+
+These are **not secrets**, but any provider API key embedded in the style URL is sent to every app install and is visible to anyone who inspects `/meta/config` or network traffic. Prefer tokenless public styles, or a proxy that does not put keys in the client URL. Demo placeholder: `https://demotiles.maplibre.org/style.json`.
+
 ### Optional tuning (set on the Coolify service when needed; omit rather than empty-string)
 
 | Name | Kind | Notes |

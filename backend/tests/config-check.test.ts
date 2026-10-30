@@ -199,3 +199,40 @@ test("same-host SUPABASE_JWKS_URL does not warn", () => {
   });
   assert.ok(!w.some((f) => f.names.includes("SUPABASE_JWKS_URL")));
 });
+
+test("https map style URLs pass; empty is fine", () => {
+  const result = checkConfig(
+    {
+      ...base(),
+      ASTRO_MAP_STYLE_LIGHT: "https://demotiles.maplibre.org/style.json",
+      ASTRO_MAP_STYLE_DARK: "https://demotiles.maplibre.org/style.json",
+    },
+    os.tmpdir(),
+  );
+  assert.equal(result.ok, true);
+  assert.equal(
+    checkConfig({ ...base(), ASTRO_MAP_STYLE_LIGHT: "" }, os.tmpdir()).ok,
+    true,
+  );
+});
+
+test("REFUSE: ASTRO_MAP_STYLE_* must be https", () => {
+  const http = refuses({
+    ...base(),
+    ASTRO_MAP_STYLE_LIGHT: "http://example.com/style.json",
+  });
+  assert.ok(http.some((f) => f.names.includes("ASTRO_MAP_STYLE_LIGHT")));
+  assert.match(
+    formatConfigCheck({ ok: false, findings: http }),
+    /must use https/,
+  );
+  const bad = refuses({
+    ...base(),
+    ASTRO_MAP_STYLE_DARK: "not-a-url",
+  });
+  assert.ok(bad.some((f) => f.names.includes("ASTRO_MAP_STYLE_DARK")));
+  assert.match(
+    formatConfigCheck({ ok: false, findings: bad }),
+    /absolute https URL/,
+  );
+});

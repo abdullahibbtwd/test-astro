@@ -5,6 +5,10 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import {
+  MAP_STYLE_ENV,
+  validateMapStyleUrl,
+} from "./map-style-config";
 
 export type ConfigFinding = {
   level: "refuse" | "warn";
@@ -175,6 +179,11 @@ export function checkConfig(
       ["SUPABASE_JWKS_URL", "SUPABASE_URL"],
       "SUPABASE_JWKS_URL host differs from SUPABASE_URL",
     );
+  }
+
+  for (const name of Object.values(MAP_STYLE_ENV)) {
+    const message = validateMapStyleUrl(name, env[name]);
+    if (message) refuse([name], message);
   }
 
   return {
