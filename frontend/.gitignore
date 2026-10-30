@@ -1,6 +1,7 @@
 node_modules/
 .expo/
 dist/
+# Expo CNG: regenerate with `npm run prebuild:android` / `prebuild:ios` (do not commit).
 android/
 ios/
 .env*

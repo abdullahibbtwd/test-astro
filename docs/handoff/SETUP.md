@@ -73,7 +73,14 @@ adb reverse tcp:8081 tcp:8081
 npm start -- --localhost --port 8081
 ```
 
-Build/install a native development client with `npm run android` on a configured Android environment. MapLibre/Skia and other native modules mean Expo Go is insufficient. Only one Metro instance should generate Expo typed routes for a checkout.
+`frontend/android/` and `frontend/ios/` are gitignored on purpose (Expo continuous native generation). From `frontend/`, regenerate then install with:
+
+```bash
+npm run prebuild:android   # or prebuild:ios
+npm run android            # requires JDK + Android SDK; Expo Go is not enough
+```
+
+Cloud APK/AAB builds do not need a local `android/` tree: `eas build -p android --profile preview` reads `app.config.js` / `eas.json`. MapLibre/Skia and other native modules mean Expo Go is insufficient. Only one Metro instance should generate Expo typed routes for a checkout.
 
 Demo login: **demo@example.com / 000000**. This is a mock credential, not an account-service password. The demo reuses fixed chart positions for entered births; use the real API to test calculations.
 
