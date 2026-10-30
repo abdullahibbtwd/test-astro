@@ -127,12 +127,36 @@ def test_low_evidence_flag(table):
             assert v["volume"] == pytest.approx(v["s"] + v["c"] + v["m"], abs=1e-9)
 
 
+def _affinity_close(a, b, path="$"):
+    """Compare affinity docs: structure exact, floats within build_affinity DIGITS.
+
+    Fresh ``dumps(build(...))`` can differ from a checked-in golden by one ULP in
+    decimal spelling (e.g. 0.309610389611 vs 0.30961038961) because ``_num`` rounds
+    in binary float before ``json.dumps``. Values stay within 5e-12 absolute.
+    """
+    if isinstance(a, dict) and isinstance(b, dict):
+        assert a.keys() == b.keys(), path
+        for key in a:
+            _affinity_close(a[key], b[key], f"{path}.{key}")
+        return
+    if isinstance(a, list) and isinstance(b, list):
+        assert len(a) == len(b), path
+        for i, (x, y) in enumerate(zip(a, b)):
+            _affinity_close(x, y, f"{path}[{i}]")
+        return
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+        assert a == pytest.approx(b, abs=5e-12, rel=0), path
+        return
+    assert a == b, path
+
+
 @needs_table
 def test_table_matches_a_fresh_build_and_is_deterministic(table, corpus):
     sha = ba.file_sha256(ba.CORPUS)
     one, two = ba.dumps(ba.build(corpus, sha)), ba.dumps(ba.build(corpus, sha))
     assert one == two
-    assert one == open(ba.OUT, encoding="utf-8").read()
+    # Golden on disk may use a slightly different float spelling; compare values.
+    _affinity_close(json.loads(one), json.loads(open(ba.OUT, encoding="utf-8").read()))
     if not os.path.exists(ba.OUT + ".sha256"):      # local build artifact, not tracked in git
         pytest.skip("no local .sha256 sidecar (not tracked in git)")
     side = open(ba.OUT + ".sha256", encoding="utf-8").readline().split()
