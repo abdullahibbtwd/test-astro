@@ -45,15 +45,20 @@ export class JobWatcher {
   }
   setActive(active: boolean) {
     this.active = active;
-    if (active)
+    if (active) {
+      // Foreground/focus resume must not wait out a stale inter-poll latch.
+      this.lastStart = -Infinity;
       for (const e of this.entries.values())
         e.due = Math.min(e.due, this.now());
+    }
     this.schedule();
   }
   clear() {
     this.entries.clear();
     this.completed.clear();
     this.active = false;
+    this.running = false;
+    this.lastStart = -Infinity;
     this.schedule();
   }
   private schedule() {

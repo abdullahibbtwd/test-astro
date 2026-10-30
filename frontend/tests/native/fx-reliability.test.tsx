@@ -15,10 +15,16 @@ let mockFocusCleanup: (() => void) | undefined;
 jest.mock("expo-router", () => ({
   Stack: { Screen: () => null },
   router: { back: jest.fn() },
-  useFocusEffect: (callback: () => () => void) => {
+  useFocusEffect: (callback: () => (() => void) | void) => {
     require("react").useEffect(() => {
-      mockFocusCleanup = callback();
-      return () => mockFocusCleanup?.();
+      // Keep the cleanup local so an earlier screen unmount cannot blur a later one.
+      const cleanup = callback();
+      mockFocusCleanup =
+        typeof cleanup === "function" ? cleanup : undefined;
+      return () => {
+        cleanup?.();
+        if (mockFocusCleanup === cleanup) mockFocusCleanup = undefined;
+      };
     }, [callback]);
   },
 }));
