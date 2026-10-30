@@ -48,6 +48,8 @@ backend/engine/Interpretation_layer/test/*.pdf
 **/personal_principles.json
 # Generated charts contain real birth data
 **/chart.json
+# Shared Libra-ascendant fixture for principles_grounding tests (no PII).
+!backend/engine/retrival_contract/chart.json
 
 # --- Synastry personal outputs / generated artifacts (privacy; not source) ---
 **/personal_relationship_principles.json

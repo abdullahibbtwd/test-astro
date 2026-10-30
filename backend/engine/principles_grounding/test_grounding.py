@@ -71,9 +71,15 @@ def _load_grounded() -> dict:
     return {r["principle_id"]: r for r in _grounded_list()}
 
 
-def _ground_one(record: dict, chart: dict, reading: str = "natal"):
-    """Run the gate on a single record; return (kept_bool, drop_or_None)."""
-    res = ground([record], chart, reading=reading)
+def _ground_one(record: dict, chart: dict, reading: str = "natal",
+                house_policy=None):
+    """Run the gate on a single record; return (kept_bool, drop_or_None).
+
+    Default ``house_policy=None`` honors each record's declared house_system
+    (needed for whole_sign vs placidus divergence checks). Pass
+    ``house_policy="placidus"`` to exercise the production Placidus-only policy.
+    """
+    res = ground([record], chart, reading=reading, house_policy=house_policy)
     if res.kept:
         return True, None
     return False, res.drops[0]
@@ -234,7 +240,11 @@ def test_7_fk_casing():
     }
     ok, errs = validate_about(bad)
     assert not ok, "lowercase 'taurus' must fail FK validation"
-    assert any("sign off-vocabulary" in e for e in errs), errs
+    # Builtin path says "sign off-vocabulary"; jsonschema says "is not one of".
+    assert any(
+        "sign off-vocabulary" in e or ("taurus" in e and "not one of" in e)
+        for e in errs
+    ), errs
 
     good = dict(bad, sign="Taurus")
     ok, errs = validate_about(good)
@@ -399,7 +409,9 @@ def test_aggregate_run():
     val = validate_invariants(full)
     assert val["reconcilable_with_null_field"] == 0, val["reconcilable_with_null_field"]
 
-    res = ground(full, chart, reading="natal")
+    # Honor each record's declared house_system so whole_sign node/house
+    # principles bundle under their own system (production default is placidus).
+    res = ground(full, chart, reading="natal", house_policy=None)
     kept_ids = {r["principle_id"] for r in res.kept}
     # keeps
     assert "mars-sign-aries-delineation" in kept_ids
@@ -478,7 +490,11 @@ def test_e1_element_retired():
     ok, errs = validate_about({"factor_type": "element", "point": "Sun",
                                "extraction_confidence": "high",
                                "extraction_source": "deterministic"})
-    assert not ok and any("off-vocabulary" in e for e in errs), errs
+    # Builtin path says "off-vocabulary"; jsonschema says "is not one of".
+    assert not ok and any(
+        "off-vocabulary" in e or ("element" in e and "not one of" in e)
+        for e in errs
+    ), errs
     idx = _load_grounded()
     expect_house_domain = {
         "sun-element-motivation-recharge", "moon-element-instinct-security",
