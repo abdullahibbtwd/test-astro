@@ -2,6 +2,7 @@ import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/
 import { useCountries } from "./countries";
 import type { StyleSpecification } from "@maplibre/maplibre-react-native";
 import { useMapStyle } from "./style";
+import { resolveBasemap } from "./basemap";
 import { useMapSelection } from "./selection";
 import { mapGlyphImages } from "./glyph-images";
 import { paranCoordinates, paranCrossLayout } from "./paran-symbol";
@@ -18,9 +19,10 @@ import {
   type LineLayerSpecification,
 } from "@maplibre/maplibre-react-native";
 import { useConfig } from "../../api/hooks";
+import { useOnline } from "../../api/online";
 import { useTheme } from "../../design/theme";
 import { colors } from "../../design/tokens";
-import { Txt, ErrorNotice, Skeleton } from "../../design/components";
+import { Txt, Skeleton } from "../../design/components";
 import { useTranslation } from "react-i18next";
 import { heatCells } from "./geometry";
 import { bandColor } from "../../design/bands";
@@ -59,14 +61,22 @@ export function MapCanvasNative({
 }) {
   const camera = useRef<CameraRef>(null);
   const config = useConfig(),
+    online = useOnline(),
     theme = useTheme(),
     dark = theme === colors.dark,
     { t } = useTranslation(),
     [zoom, setZoom] = useState(2),
     cells = useMemo(() => (heat ? heatCells(heat) : undefined), [heat]);
-  const style = config.data?.map_style_url[dark ? "dark" : "light"];
-  // Country outline preview when no provider style is configured (dev + release).
-  const preview = !style;
+  const style = config.data?.map_style_url[dark ? "dark" : "light"]?.trim();
+  const mapStyle = useMapStyle(style && online ? style : undefined);
+  const mode = resolveBasemap({
+    styleUrl: style,
+    online,
+    stylePending: mapStyle.isPending,
+    hasStyle: !!mapStyle.data,
+  });
+  // Country outlines when URL empty, style fetch fails, or device is offline.
+  const preview = mode === "preview";
   const countries = useCountries(preview);
   const previewStyle = useMemo<StyleSpecification>(
     () => ({
@@ -106,8 +116,7 @@ export function MapCanvasNative({
     }),
     [dark, countries.data],
   );
-  const mapStyle = useMapStyle(style),
-    selectedPoint = useMapSelection((s) => s.point),
+  const selectedPoint = useMapSelection((s) => s.point),
     selectedArea = useMapSelection((s) => s.area);
   useEffect(() => {
     if (selectedPoint)
@@ -161,22 +170,7 @@ export function MapCanvasNative({
         .flatMap(([key, value]) => [key, value[dark ? 1 : 0]!]),
       theme.ink3,
     ];
-  if (!style && !preview)
-    return (
-      <View style={{ padding: dsSpace[6], backgroundColor: theme.surfaceAlt, gap: dsSpace[3] }}>
-        <Txt>{t("mapStyleMissing")}</Txt>
-        <Txt kind="caption">{t("mapSearchAvailable")}</Txt>
-      </View>
-    );
-  if (preview && countries.isPending) return <Skeleton />;
-  if (!preview && mapStyle.isPending) return <Skeleton />;
-  if (!preview && !mapStyle.data)
-    return (
-      <ErrorNotice
-        error={mapStyle.error}
-        retry={() => void mapStyle.refetch()}
-      />
-    );
+  if (mode === "loading" || (preview && countries.isPending)) return <Skeleton />;
   return (
     <View
       style={
