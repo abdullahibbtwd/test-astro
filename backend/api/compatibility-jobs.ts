@@ -135,6 +135,9 @@ export class CompatibilityJobs {
       });
     if (this.running.size)
       throw problemError(busyProblem(await this.blockingJob()));
+    const gate = new Promise<void>(() => {});
+    this.running.add(gate);
+    try {
     const { consumeGeneration, refundUsageIfNoSettledSpend } = await import(
       "./limits"
     );
@@ -167,6 +170,9 @@ export class CompatibilityJobs {
       return was;
     });
     return this.get(record.id, lang);
+    } finally {
+      this.running.delete(gate);
+    }
   }
   private start(
     record: any,
@@ -276,27 +282,33 @@ export class CompatibilityJobs {
         });
       if (this.running.size)
         throw problemError(busyProblem(await this.blockingJob()));
-      const { consumeGeneration } = await import("./limits");
-      const userId = this.store.tenant();
-      await consumeGeneration(userId, "COMPAT_READING");
-      let charged = true;
-      const started = new Date();
-      const now = started.toISOString();
-      r.job = {
-        ...r.job,
-        job_id: randomUUID(),
-        status: "running",
-        created_at: now,
-        updated_at: now,
-        error: null,
-        stages: [{ name: "reading", status: "running" }],
-      };
-      await this.save(r);
-      this.start(r, userId, started, () => {
-        const was = charged;
-        charged = false;
-        return was;
-      });
+      const gate = new Promise<void>(() => {});
+      this.running.add(gate);
+      try {
+        const { consumeGeneration } = await import("./limits");
+        const userId = this.store.tenant();
+        await consumeGeneration(userId, "COMPAT_READING");
+        let charged = true;
+        const started = new Date();
+        const now = started.toISOString();
+        r.job = {
+          ...r.job,
+          job_id: randomUUID(),
+          status: "running",
+          created_at: now,
+          updated_at: now,
+          error: null,
+          stages: [{ name: "reading", status: "running" }],
+        };
+        await this.save(r);
+        this.start(r, userId, started, () => {
+          const was = charged;
+          charged = false;
+          return was;
+        });
+      } finally {
+        this.running.delete(gate);
+      }
     }
     return this.render(r, lang);
   }

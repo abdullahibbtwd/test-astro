@@ -73,6 +73,9 @@ export class ReadingJobs {
     if (!this.enabled) return { absence: paused().absence };
     if (this.running.size)
       throw problemError(busyProblem(await this.blockingJob()));
+    const gate = new Promise<void>(() => {});
+    this.running.add(gate);
+    try {
     const { consumeGeneration, refundUsageIfNoSettledSpend } = await import(
       "./limits"
     );
@@ -162,5 +165,8 @@ export class ReadingJobs {
       .finally(() => this.running.delete(task));
     this.running.add(task);
     return { job };
+    } finally {
+      this.running.delete(gate);
+    }
   }
 }

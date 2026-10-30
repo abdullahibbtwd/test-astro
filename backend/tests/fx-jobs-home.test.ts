@@ -1,5 +1,12 @@
 import test from "node:test";
-import { clearAuthMode, dataDbPath, openStore, tempDataDir, wipeDemoTenant } from "./helpers";
+import {
+  clearAuthMode,
+  clearUsageCounters,
+  dataDbPath,
+  openStore,
+  tempDataDir,
+  wipeDemoTenant,
+} from "./helpers";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
@@ -15,6 +22,7 @@ import { fixture, collection } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
 
 test("all four guards return busy with the blocking job and no second generator call", async () => {
+  await clearUsageCounters();
   for (const kind of ["forecast", "natal", "map", "compatibility"]) {
     const store = await openStore(),
       a = fixture("profile.1.en"),

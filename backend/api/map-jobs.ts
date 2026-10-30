@@ -183,6 +183,9 @@ export class MapJobs {
           error: busyProblem(await this.blockingJob()),
         },
       } as T;
+    const gate = new Promise<void>(() => {});
+    this.running.add(gate);
+    try {
     const { consumeGeneration, refundUsageIfNoSettledSpend } = await import(
       "./limits"
     );
@@ -278,6 +281,9 @@ export class MapJobs {
       .finally(() => this.running.delete(task));
     this.running.add(task);
     return { ...facts, [field(context)]: { status: "pending", job } } as T;
+    } finally {
+      this.running.delete(gate);
+    }
   }
   async reports(lang: Lang): Promise<ReportRef[]> {
     const refs: ReportRef[] = [];

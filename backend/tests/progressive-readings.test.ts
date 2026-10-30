@@ -153,7 +153,13 @@ test("ONB anonymous guards do no work and concurrent requests join; completing s
         jobs.section(profile, "core_identity", "tr", true),
       ),
     ]);
-    assert.equal(new Set(results.map((r) => r.job?.job_id)).size, 1);
+    // Join while in flight; callers that arrive after ready may return { section }
+    // with no job id, so only count defined ids — and require a single draft.
+    const jobIds = [
+      ...new Set(results.map((r) => r.job?.job_id).filter(Boolean)),
+    ];
+    assert.equal(jobIds.length, 1);
+    assert.equal(counts.draft, 1);
     await jobs.close();
     const complete = await jobs.complete(profile, "tr", true);
     await waitUntil(() => counts.draft >= 5, "anonymous completion");

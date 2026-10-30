@@ -210,6 +210,10 @@ export class ForecastJobs {
         status: "failed",
         error: busyProblem(await this.blockingJob()),
       };
+    // Hold the busy slot before any await so a concurrent get cannot slip through.
+    const gate = new Promise<void>(() => {});
+    this.running.add(gate);
+    try {
     const { consumeGeneration, refundUsageIfNoSettledSpend } = await import(
       "./limits"
     );
@@ -322,5 +326,8 @@ export class ForecastJobs {
     })().finally(() => this.running.delete(task));
     this.running.add(task);
     return { status: "pending", job };
+    } finally {
+      this.running.delete(gate);
+    }
   }
 }
