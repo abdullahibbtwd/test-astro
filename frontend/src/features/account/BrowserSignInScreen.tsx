@@ -18,6 +18,7 @@ import {
   type SignInTicket,
 } from "../../lib/browser-signin";
 import { ApiError, setSession, routeAfterSignIn } from "../../api/client";
+import { resolveRoute } from "../../lib/routes";
 export default function BrowserSignInScreen() {
   const { provider: raw } = useLocalSearchParams<{ provider?: string }>();
   const provider = raw === "google" ? "google" : "email";
@@ -87,7 +88,7 @@ export default function BrowserSignInScreen() {
           await setSession(session);
           await cancelBrowserSignIn(ticket);
           current.current = null;
-          router.replace(routeAfterSignIn());
+          router.replace(resolveRoute(routeAfterSignIn()));
         }
       } catch (e) {
         if (!stopped) {

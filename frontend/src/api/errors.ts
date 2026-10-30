@@ -34,7 +34,8 @@ export function describeError(error: unknown, online = true): ErrorDescription {
   const reason = e.problem?.absence?.reason ?? e.absence?.reason;
   if (!online || error instanceof NetworkError)
     return { kind: "offline", titleKey: "errorOffline", action: "retry" };
-  if (code === "otp_invalid")
+  // Client-only remap of unauthorized OTP failures (not a Problem.code).
+  if (error instanceof ApiError && error.code === "otp_invalid")
     return { kind: "otp_invalid", titleKey: "errorOtpInvalid", action: "none" };
   if (code === "unauthorized")
     return { kind: "unauthorized", titleKey: "", action: "none" };

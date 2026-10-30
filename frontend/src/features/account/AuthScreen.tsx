@@ -20,6 +20,7 @@ import { useTheme } from "../../design/theme";
 import { useActions } from "../../api/hooks";
 import { routeAfterSignIn } from "../../api/client";
 import { ApiError, NetworkError } from "../../api/errors";
+import { resolveRoute } from "../../lib/routes";
 import { showDemoLoginHint, isSupabaseAuth } from "../../lib/supabase";
 
 const demoBackend =
@@ -47,7 +48,7 @@ export default function AuthScreen() {
     setProviderError(undefined);
     try {
       const session = await providerSignIn(provider);
-      if (session) router.replace(routeAfterSignIn());
+      if (session) router.replace(resolveRoute(routeAfterSignIn()));
     } catch (e) {
       if (e instanceof ProviderUnavailable)
         showSnackbar(t("providerUnavailable"));
@@ -88,7 +89,7 @@ export default function AuthScreen() {
     setAuthError(undefined);
     try {
       await actions.verify(email, value);
-      router.replace(routeAfterSignIn());
+      router.replace(resolveRoute(routeAfterSignIn()));
     } catch (e) {
       setAuthError(explainAuthError(e));
       setCode("");

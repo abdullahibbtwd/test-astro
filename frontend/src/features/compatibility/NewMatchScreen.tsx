@@ -130,7 +130,7 @@ export default function NewMatchScreen() {
         addPersonParams={{
           returnTo: "match",
           // Keep the other selected person as A after save; new person becomes B.
-          a: picker === "a" ? b || app.me?.self_profile_id : a,
+          a: picker === "a" ? b || app.me?.self_profile_id || undefined : a,
         }}
       />
       <Choices>

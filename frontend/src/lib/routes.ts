@@ -30,6 +30,8 @@ const patterns: { pathname: string; parts: string[] }[] = [
   { pathname: "/", parts: [] },
   { pathname: "/(auth)/link", parts: ["(auth)", "link"] },
   { pathname: "/(auth)/welcome", parts: ["(auth)", "welcome"] },
+  { pathname: "/(auth)/core", parts: ["(auth)", "core"] },
+  { pathname: "/(auth)/unlocked", parts: ["(auth)", "unlocked"] },
   { pathname: "/(tabs)/ahead", parts: ["(tabs)", "ahead"] },
   { pathname: "/(tabs)/chart", parts: ["(tabs)", "chart"] },
   { pathname: "/(tabs)", parts: ["(tabs)"] },
