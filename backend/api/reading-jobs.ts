@@ -18,6 +18,8 @@ import type {
 type ReadingPayload = {
   profileId: string;
   chartKey: string;
+  /** ISO time of the usage consume at enqueue; used for refunds. */
+  chargedAt?: string;
 };
 
 const MAX_ATTEMPTS = 3;
@@ -140,31 +142,21 @@ export class ReadingJobs {
   private async runClaimed(row: DbJob) {
     const payload = row.payload as ReadingPayload;
     const userId = row.userId;
-    const {
-      consumeGeneration,
-      refundUsageIfNoSettledSpend,
-    } = await import("./limits");
-    // Charge once on the first claim; retries keep that reservation.
-    let charged = false;
-    const started = row.startedAt ?? new Date();
+    const { refundUsageIfNoSettledSpend } = await import("./limits");
+    const chargedAt = payload.chargedAt
+      ? new Date(payload.chargedAt)
+      : row.createdAt;
     try {
-      if (row.attempts <= 1) {
-        await consumeGeneration(userId, "NATAL_READING");
-        charged = true;
-      }
       await this.store.runAsAsync(userId, async () => {
         const profile = await this.store.get<BirthProfile>(
           "profile:" + payload.profileId,
         );
         if (!profile || profile.chart_key !== payload.chartKey) {
-          if (charged) {
-            await refundUsageIfNoSettledSpend(
-              userId,
-              "NATAL_READING",
-              started,
-            );
-            charged = false;
-          }
+          await refundUsageIfNoSettledSpend(
+            userId,
+            "NATAL_READING",
+            chargedAt,
+          );
           await this.finishFailed(row.id, "profile_changed");
           return;
         }
@@ -181,14 +173,11 @@ export class ReadingJobs {
           "profile:" + profile.profile_id,
         );
         if (!current || current.chart_key !== payload.chartKey) {
-          if (charged) {
-            await refundUsageIfNoSettledSpend(
-              userId,
-              "NATAL_READING",
-              started,
-            );
-            charged = false;
-          }
+          await refundUsageIfNoSettledSpend(
+            userId,
+            "NATAL_READING",
+            chargedAt,
+          );
           await this.finishFailed(row.id, "profile_changed");
           return;
         }
@@ -222,13 +211,7 @@ export class ReadingJobs {
       });
     } catch {
       if (!(await this.stillOwns(row))) return;
-      const latest = await prisma().job.findUnique({ where: { id: row.id } });
-      const attempts = latest?.attempts ?? row.attempts;
-      const max = latest?.maxAttempts || MAX_ATTEMPTS;
-      if (attempts >= max && charged) {
-        await refundUsageIfNoSettledSpend(userId, "NATAL_READING", started);
-      }
-      await this.failOrRetry(row);
+      await this.failOrRetry(row, chargedAt);
     }
   }
 
@@ -254,12 +237,18 @@ export class ReadingJobs {
     await this.mirrorStoreJob(updated);
   }
 
-  private async failOrRetry(row: DbJob) {
+  private async failOrRetry(row: DbJob, chargedAt: Date) {
     const latest = await prisma().job.findUnique({ where: { id: row.id } });
     if (!latest || latest.status !== "running") return;
     const attempts = latest.attempts;
     const max = latest.maxAttempts || MAX_ATTEMPTS;
     if (attempts >= max) {
+      const { refundUsageIfNoSettledSpend } = await import("./limits");
+      await refundUsageIfNoSettledSpend(
+        row.userId,
+        "NATAL_READING",
+        chargedAt,
+      );
       await this.finishFailed(row.id, "generation_failed");
       return;
     }
@@ -344,9 +333,13 @@ export class ReadingJobs {
 
     if (!this.enabled) return { absence: paused().absence };
 
+    // Charge at enqueue so rate limits reject before a job row is created.
+    const { consumeGeneration } = await import("./limits");
+    await consumeGeneration(userId, "NATAL_READING");
     const payload: ReadingPayload = {
       profileId: profile.profile_id,
       chartKey: key,
+      chargedAt: new Date().toISOString(),
     };
 
     if (row && retry && row.status === "failed") {

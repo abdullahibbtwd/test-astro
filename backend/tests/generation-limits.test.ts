@@ -188,6 +188,7 @@ test("failed natal refunds when no settled paid call was made", async () => {
     `DELETE FROM budget_calls WHERE user_id = $1`,
     userId,
   );
+  process.env.ASTRO_JOB_FAST = "1";
   const jobs = await ReadingJobs.create(
     store,
     async () => {
@@ -196,7 +197,18 @@ test("failed natal refunds when no settled paid call was made", async () => {
     true,
   );
   try {
-    await jobs.get(p, "en");
+    const enqueued = await jobs.get(p, "en");
+    assert.ok(enqueued.job);
+    const start = Date.now();
+    while (Date.now() - start < 10_000) {
+      const job = await jobs.getJob(enqueued.job!.job_id);
+      if (job?.status === "failed") break;
+      await new Promise((r) => setTimeout(r, 20));
+    }
+    assert.equal(
+      (await jobs.getJob(enqueued.job!.job_id))?.status,
+      "failed",
+    );
     await jobs.close();
     const rows = await prisma().$queryRawUnsafe<{ count: number }[]>(
       `SELECT count FROM usage_counters
