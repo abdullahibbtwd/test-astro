@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { findPendingAstrologerMarkers } from "../src/features/step3/placeholders";
 
 const root = process.cwd();
 const identity = JSON.parse(
@@ -12,6 +13,32 @@ const tr = JSON.parse(
   fs.readFileSync(path.join(root, "src/i18n/tr.json"), "utf8"),
 );
 const failures: string[] = [];
+
+/** Step 3 unfinished-copy markers must be gone before a store release. */
+function scanPendingAstrologer(dir: string, rel = ""): void {
+  for (const name of fs.readdirSync(dir)) {
+    if (name === "node_modules" || name === "artifacts" || name.startsWith("."))
+      continue;
+    const full = path.join(dir, name);
+    const next = rel ? `${rel}/${name}` : name;
+    const stat = fs.statSync(full);
+    if (stat.isDirectory()) {
+      scanPendingAstrologer(full, next);
+      continue;
+    }
+    if (!/\.(tsx?|jsx?|json)$/.test(name)) continue;
+    // release-check.ts only documents the gate; skip self-matches on this file.
+    if (next.replace(/\\/g, "/").endsWith("scripts/release-check.ts")) continue;
+    const text = fs.readFileSync(full, "utf8");
+    const hits = findPendingAstrologerMarkers(text);
+    if (hits.length)
+      failures.push(
+        `${next} still contains Step 3 pending-astrologer copy (${hits.join(", ")}) — replace before release.`,
+      );
+  }
+}
+scanPendingAstrologer(path.join(root, "src"));
+scanPendingAstrologer(path.join(root, "app"));
 
 if (/draft/i.test(String(identity.consentVersion ?? "")))
   failures.push(
