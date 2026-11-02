@@ -21,9 +21,10 @@ import { buildLocalApp } from "../api/app";
 import { fixture, collection } from "../mock/fixtures";
 import { validate } from "../../frontend/src/api/zod";
 
-test("all four guards return busy with the blocking job and no second generator call", async () => {
+test("forecast/map/compat guards return busy with the blocking job and no second generator call", async () => {
+  // Natal readings use the durable Postgres worker and allow concurrency.
   await clearUsageCounters();
-  for (const kind of ["forecast", "natal", "map", "compatibility"]) {
+  for (const kind of ["forecast", "map", "compatibility"]) {
     const store = await openStore(),
       a = fixture("profile.1.en"),
       b = { ...a, profile_id: "b", chart_key: "b", label: "B" };
@@ -41,11 +42,9 @@ test("all four guards return busy with the blocking job and no second generator 
     const jobs =
       kind === "forecast"
         ? await ForecastJobs.create(store, true, generate)
-        : kind === "natal"
-          ? await ReadingJobs.create(store, generate, true)
-          : kind === "map"
-            ? await MapJobs.create(store, true, generate)
-            : await CompatibilityJobs.create(store, true, generate);
+        : kind === "map"
+          ? await MapJobs.create(store, true, generate)
+          : await CompatibilityJobs.create(store, true, generate);
     const facts = collection("place-report.", "en")[0];
     let first: any, busy: any;
     try {
@@ -72,13 +71,6 @@ test("all four guards return busy with the blocking job and no second generator 
             "en",
           )
         ).reading.error;
-      } else if (jobs instanceof ReadingJobs) {
-        first = await jobs.get(a, "en");
-        try {
-          await jobs.get(b, "en");
-        } catch (e: any) {
-          busy = e.problem;
-        }
       } else {
         const input = {
           profile_a_id: a.profile_id,
