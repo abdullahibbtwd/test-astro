@@ -25,9 +25,9 @@ enum JobKind {
 }
 
 enum JobStatus {
-  queued
+  pending
   running
-  ok
+  done
   failed
 }
 
@@ -150,20 +150,29 @@ model Reading {
 }
 
 model Job {
-  id        String    @id @map("id")
-  userId    String    @map("user_id")
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  profileId String?   @map("profile_id")
-  profile   Profile?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  kind      JobKind
-  status    JobStatus
-  lookupKey String    @map("lookup_key")
-  payload   Json
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id          String    @id @map("id")
+  userId      String    @map("user_id")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileId   String?   @map("profile_id")
+  profile     Profile?  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  kind        JobKind
+  status      JobStatus
+  lookupKey   String    @map("lookup_key")
+  payload     Json
+  /// Failed attempt count after a claim; job fails when this reaches maxAttempts.
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(3) @map("max_attempts")
+  error       Json?
+  startedAt   DateTime? @map("started_at")
+  finishedAt  DateTime? @map("finished_at")
+  /// Worker may claim only when availableAt <= now (backoff after failures).
+  availableAt DateTime  @default(now()) @map("available_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   @@unique([userId, kind, lookupKey])
   @@index([userId, status])
+  @@index([status, availableAt])
   @@map("jobs")
 }
 

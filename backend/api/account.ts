@@ -90,7 +90,7 @@ export async function deleteAccount(
   const blocking = await db.job.count({
     where: {
       userId,
-      status: { in: ["queued", "running"] },
+      status: { in: ["pending", "running"] },
       updatedAt: { gt: freshAfter },
     },
   });
