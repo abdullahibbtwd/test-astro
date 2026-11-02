@@ -7,7 +7,6 @@ export const flagDefaults: Record<string, boolean> = {
   familyCompatibility: false,
   compatibilityScore: false,
   elementNotes: false,
-  regionOutlines: false,
   dayScoreNumbers: true,
   homeEnergyTile: false,
 };
