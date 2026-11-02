@@ -77,3 +77,73 @@ test("multi-user mode allows any email through startEmail", async () => {
   await auth.startEmail("stranger@example.com");
   assert.ok(calls.some((url) => url.includes("/otp")));
 });
+
+/**
+ * Google sign-in token exchange lives in `api/supabase-auth.ts` (`provider`).
+ * The API never calls Google directly: it POSTs the Google `id_token` to
+ * Supabase `/auth/v1/token?grant_type=id_token`, which verifies it with Google.
+ * These tests mock that upstream exchange.
+ */
+test("Google id_token exchange: valid token logs the owner in", async () => {
+  const bodies: unknown[] = [];
+  const auth = new SupabaseAuth(config, async (url, init) => {
+    const href = String(url);
+    if (href.includes("/token?grant_type=id_token")) {
+      bodies.push(JSON.parse(String(init?.body)));
+      return Response.json({
+        access_token: "access-google",
+        refresh_token: "refresh-google",
+        expires_in: 3600,
+      });
+    }
+    if (href.endsWith("/user")) return Response.json(user);
+    throw new Error(`unexpected url ${href}`);
+  });
+  const session = await auth.provider("google", "valid-google-id-token");
+  assert.equal(session.access_token, "access-google");
+  assert.equal(session.refresh_token, "refresh-google");
+  assert.equal(session.user.email, config.ownerEmail);
+  assert.deepEqual(bodies, [
+    { provider: "google", id_token: "valid-google-id-token" },
+  ]);
+});
+
+test("Google id_token exchange: invalid token returns 401", async () => {
+  const auth = new SupabaseAuth(config, async (url) => {
+    if (String(url).includes("/token?grant_type=id_token"))
+      return new Response(JSON.stringify({ error: "invalid_grant" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    throw new Error("should not continue after invalid token");
+  });
+  await assert.rejects(auth.provider("google", "invalid-token"), {
+    statusCode: 401,
+    message: "Authentication unavailable",
+  });
+});
+
+test("Google id_token exchange: expired token returns 401", async () => {
+  const auth = new SupabaseAuth(config, async (url) => {
+    if (String(url).includes("/token?grant_type=id_token"))
+      return new Response(JSON.stringify({ error: "token expired" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    throw new Error("should not continue after expired token");
+  });
+  await assert.rejects(auth.provider("google", "expired-token"), {
+    statusCode: 401,
+    message: "Authentication unavailable",
+  });
+});
+
+test("Google id_token exchange: network failure returns 503 without crashing", async () => {
+  const auth = new SupabaseAuth(config, async () => {
+    throw new TypeError("fetch failed");
+  });
+  await assert.rejects(auth.provider("google", "any-token"), {
+    statusCode: 503,
+    message: "Authentication unavailable",
+  });
+});

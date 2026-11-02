@@ -7,12 +7,14 @@ import { buildLocalApp } from "./app";
 import { dataDir } from "./data-dir";
 import { migrateDeploy } from "./db";
 import { runConfigCheck } from "./config-check";
+import { initSentry } from "./sentry";
 
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL =
     "postgres://astrology:astrology@127.0.0.1:5432/astrology";
 }
 
+initSentry();
 runConfigCheck({ throwOnRefuse: true });
 
 await migrateDeploy();
