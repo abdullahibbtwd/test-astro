@@ -44,6 +44,9 @@ test("all generated fixtures validate and contain no internal keys or unambiguou
       }
   }
   for (const entry of manifest) {
+    // Mock fixture pack may still ship schemas removed from the live contract
+    // (e.g. RegionGeometry after /geo/regions was dropped).
+    if (!schemas[entry.schema]) continue;
     const value = JSON.parse(
       fs.readFileSync(`${fixtureRoot}/${entry.file}`, "utf8"),
     );
