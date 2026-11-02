@@ -145,7 +145,6 @@ export const endpoints: Endpoint[] = [
     { body: "RecommendationRequest" },
   ),
   endpoint("get", "/geo/countries.geojson", "CountryGeometry", "WRAP"),
-  endpoint("get", "/geo/regions/{iso2}.geojson", "RegionGeometry", "WRAP"),
   endpoint(
     "get",
     "/profiles/{id}/calendar/months/{month}",

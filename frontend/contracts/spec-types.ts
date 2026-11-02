@@ -535,4 +535,3 @@ export interface ReportPage { items: ReportRef[]; next_cursor: string | null }
 export interface JobAccepted { job: Job }
 export interface GenerationAbsent { status: "absent"; absence: Absence }
 export type CountryGeometry = GeoJSON.FeatureCollection<GeoJSON.Polygon | GeoJSON.MultiPolygon, { iso2: string; name_tr: string; name_en: string }>;
-export type RegionGeometry = GeoJSON.FeatureCollection<GeoJSON.Polygon | GeoJSON.MultiPolygon, { admin1_id: string; iso2: string; name_tr: string; name_en: string }>;
