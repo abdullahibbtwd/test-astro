@@ -1,0 +1,65 @@
+[
+  {
+    "id": "kano_2024",
+    "birth": {
+      "year": 2001,
+      "month": 12,
+      "day": 28,
+      "hour": 8,
+      "minute": 0,
+      "latitude": 12.0,
+      "longitude": 8.52,
+      "place": "Kano"
+    },
+    "natal_sun": {
+      "sign": "Capricorn",
+      "dms": "6°36'18\"",
+      "longitude": 276.605
+    },
+    "return_year": 2024,
+    "expected_utc": "2024-12-27T20:56:00Z",
+    "notes": "6° Capricorn = 270 + 6.605 = 276.605° (not 306.605°)."
+  },
+  {
+    "id": "london_2024",
+    "birth": {
+      "year": 2003,
+      "month": 2,
+      "day": 1,
+      "hour": 9,
+      "minute": 0,
+      "latitude": 51.5074,
+      "longitude": -0.1278,
+      "place": "London"
+    },
+    "natal_sun": {
+      "sign": "Aquarius",
+      "dms": "12°04'40\"",
+      "longitude": 312.078
+    },
+    "return_year": 2024,
+    "expected_utc": "2024-02-01T11:20:00Z",
+    "notes": "February London is GMT; birth local maps to UTC+0 via L1."
+  },
+  {
+    "id": "madrid_2024",
+    "birth": {
+      "year": 1994,
+      "month": 1,
+      "day": 2,
+      "hour": 12,
+      "minute": 0,
+      "latitude": 40.4168,
+      "longitude": -3.7038,
+      "place": "Madrid"
+    },
+    "natal_sun": {
+      "sign": "Capricorn",
+      "dms": "11°49'23\"",
+      "longitude": 281.823
+    },
+    "return_year": 2024,
+    "expected_utc": "2024-01-02T18:01:00Z",
+    "notes": "January Madrid is CET (UTC+1); L1 converts local noon to 11:00 UTC."
+  }
+]
