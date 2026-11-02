@@ -53,6 +53,7 @@ const patterns: { pathname: string; parts: string[] }[] = [
   { pathname: "/map/recommend", parts: ["map", "recommend"] },
   { pathname: "/map/recommend/result", parts: ["map", "recommend", "result"] },
   { pathname: "/match/new", parts: ["match", "new"] },
+  { pathname: "/match/family", parts: ["match", "family"] },
   { pathname: "/profile/about", parts: ["profile", "about"] },
   { pathname: "/profile", parts: ["profile"] },
   { pathname: "/profile/location", parts: ["profile", "location"] },
