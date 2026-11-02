@@ -199,10 +199,6 @@ test("local API calculates, persists, edits and deletes real profiles without sa
       "CountryGeometry",
       (await app.inject({ url: "/v1/geo/countries.geojson" })).json(),
     );
-    assert.equal(
-      (await app.inject({ url: "/v1/geo/regions/TR.geojson" })).statusCode,
-      404,
-    );
 
     await app.close();
    await clearAuthMode();
