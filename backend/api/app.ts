@@ -24,6 +24,8 @@ import { computeCalendar } from "./calendar";
 import Fastify from "fastify";
 import { randomBytes, randomUUID, createHash } from "node:crypto";
 import { ReadingJobs } from "./reading-jobs";
+import { toApiJob } from "./job-api";
+import { prisma } from "./db";
 import { Store, SYSTEM_TENANT } from "./store";
 import { bridge, computeBirthChart as defaultBirthChart } from "./engine";
 import { dataDir } from "./data-dir";
@@ -1169,10 +1171,20 @@ export async function buildLocalApp({
                   .send(value.job.error);
               return reply.code(202).send({ job: value.job });
             }
-            case "get /jobs/{job_id}":
+            case "get /jobs/{job_id}": {
+              const durable =
+                tenantId &&
+                (await prisma().job.findFirst({
+                  where: { id: p.job_id, userId: tenantId },
+                }));
+              if (durable?.kind === "READING") {
+                result = toApiJob(durable);
+                break;
+              }
               result = await store.get("job:" + p.job_id);
               if (!result) throw issue(404);
               break;
+            }
             case "get /reports": {
               const natal = [];
               for (const r of await store.list<any>("report:")) {

@@ -27,6 +27,11 @@ export async function openStore(): Promise<Store> {
   // Shared Postgres replaces per-test :memory: DBs — wipe default-tenant KV so
   // job/unit tests do not see leftover ready/pending rows from earlier cases.
   await prisma().record.deleteMany({ where: { tenantId: DEFAULT_TENANT } });
+  // Durable READING workers claim globally; clear leftover pending/running rows
+  // so a later buildLocalApp worker cannot pick them up with the real generator.
+  await prisma().job.deleteMany({
+    where: { userId: DEFAULT_TENANT, kind: "READING" },
+  });
   return Store.open({ databaseUrl: TEST_DATABASE_URL });
 }
 
