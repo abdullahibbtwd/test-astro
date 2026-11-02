@@ -4,6 +4,7 @@ import { openStore, clearUsageCounters } from "./helpers";
 import { DEFAULT_TENANT } from "../api/store";
 import { ReadingJobs } from "../api/reading-jobs";
 import { prisma } from "../api/db";
+import { utcDay } from "../api/limits";
 import { fixture } from "../mock/fixtures";
 
 process.env.ASTRO_JOB_FAST = "1";
@@ -168,6 +169,66 @@ test("failing job reaches failed after 3 retries", async () => {
     assert.equal(calls, 3);
     const seen = await jobs.get(profile, "en");
     assert.equal(seen.job?.status, "failed");
+  } finally {
+    await jobs.close();
+    await store.close();
+    await prisma().job.deleteMany({
+      where: { userId: DEFAULT_TENANT, kind: "READING" },
+    });
+  }
+});
+
+test("job that fails 3 times refunds natal usage", async () => {
+  await clearUsageCounters();
+  await wipeReadingJobs();
+  const store = await openStore();
+  const profile = {
+    ...fixture("profile.1.en"),
+    chart_key: "durable-refund-key",
+  };
+  await store.put("profile:" + profile.profile_id, profile);
+  await store.put("raw:" + profile.profile_id, {});
+  const userId = store.tenant();
+  await prisma().$executeRawUnsafe(
+    `DELETE FROM usage_counters WHERE user_id = $1 AND kind = 'NATAL_READING'`,
+    userId,
+  );
+  await prisma().$executeRawUnsafe(
+    `DELETE FROM budget_calls WHERE user_id = $1`,
+    userId,
+  );
+  const jobs = await ReadingJobs.create(
+    store,
+    async () => {
+      throw new Error("provider failed before settle");
+    },
+    true,
+  );
+  try {
+    const enqueued = await jobs.get(profile, "en");
+    assert.ok(enqueued.job);
+    const afterEnqueue = await prisma().$queryRawUnsafe<{ count: number }[]>(
+      `SELECT count FROM usage_counters
+       WHERE user_id = $1 AND kind = 'NATAL_READING' AND date = $2::date`,
+      userId,
+      utcDay(),
+    );
+    assert.equal(Number(afterEnqueue[0]?.count ?? 0), 1);
+
+    await waitJob(jobs, enqueued.job!.job_id, "failed", 10_000);
+    const row = await prisma().job.findUnique({
+      where: { id: enqueued.job!.job_id },
+    });
+    assert.equal(row?.status, "failed");
+    assert.equal(row?.attempts, 3);
+
+    const afterFail = await prisma().$queryRawUnsafe<{ count: number }[]>(
+      `SELECT count FROM usage_counters
+       WHERE user_id = $1 AND kind = 'NATAL_READING' AND date = $2::date`,
+      userId,
+      utcDay(),
+    );
+    assert.equal(Number(afterFail[0]?.count ?? 0), 0);
   } finally {
     await jobs.close();
     await store.close();
