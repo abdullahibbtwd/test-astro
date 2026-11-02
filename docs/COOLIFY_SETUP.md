@@ -88,6 +88,7 @@ These are **not secrets**, but any provider API key embedded in the style URL is
 | `ANTHROPIC_API_KEY` | **secret** | only if using Claude model ids |
 | `OPENAI_REASONING_EFFORT` | public | OpenAI only |
 | `GEMINI_MAX_CONCURRENCY` / `GEMINI_429_MAX_WAITS` / `GEMINI_RETRY_*` | public | Gemini client tuning |
+| `SENTRY_DSN` | **secret** | Backend error reporting. Leave unset/empty to disable (API warns and continues). Never commit a real DSN; set the value only in Coolify secrets. Scrubs emails, birth dates, tokens, and request bodies. |
 
 ### Paths fixed by compose/image
 
@@ -110,7 +111,7 @@ These are **not secrets**, but any provider API key embedded in the style URL is
 | `ACG_LIVE` | Engine test harness only |
 | `CI` | Frontend CI bundle behavior — not the API container |
 
-Do **not** put `SUPABASE_SECRET_KEY`, `GEMINI_API_KEY`, or `POSTGRES_PASSWORD` in the mobile app or EAS public env.
+Do **not** put `SUPABASE_SECRET_KEY`, `GEMINI_API_KEY`, `POSTGRES_PASSWORD`, or `SENTRY_DSN` in the mobile app or EAS public env. (The app uses `EXPO_PUBLIC_SENTRY_DSN` separately if client reporting is enabled.)
 
 ---
 
