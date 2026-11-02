@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
 """
-solar_return.py — Solar Return *moment* finder (instant only, no chart).
+solar_return.py — Solar Return moment finder + chart (via L1 ``compute_chart``).
 
+Moment
+------
 Given a natal Sun longitude and a calendar year, find the UTC datetime(s) when
-the transiting Sun returns to that longitude. Chart construction is left to
-``compute_chart`` (Phase 2).
+the transiting Sun returns to that longitude.
+
+Chart
+-----
+``compute_solar_return_chart`` builds the return chart at that moment for a
+chosen location by calling L1 ``compute_chart(..., utc_override=moment)`` —
+same shape as a natal chart (points, houses, aspects, angles). No chart logic
+is duplicated here.
 
 Ephemeris path is identical to L1: ``swe.calc_ut(jd, swe.SUN, EPHE_FLAG)`` with
 ``EPHE_FLAG = FLG_MOSEPH | FLG_SPEED`` via ``compute_chart``.
 
-Edge cases handled here
------------------------
+Edge cases (moment)
+-------------------
 * All math is in UTC — timezone / DST belong to natal-Sun derivation (L1), not
   to the return search.
 * Southern hemisphere and polar latitudes do not affect geocentric Sun
-  longitude; this module never reads latitude.
+  longitude; the moment finder never reads latitude.
 * Leap years: the search window covers a full calendar year plus a 2-day margin.
 * Natal Sun near 0° Aries: residuals use a signed±180° difference so the 0/360
   wrap does not invent or miss a root.
@@ -31,7 +39,8 @@ from typing import Optional
 
 import swisseph as swe  # type: ignore[import-not-found]
 
-from compute_chart import EPHE_FLAG, _norm360, julian_day_ut
+from chart_types import Chart
+from compute_chart import BirthData, EPHE_FLAG, _norm360, compute_chart, julian_day_ut
 
 # Daily Sun motion is ~1°. A true zero-crossing over a 1-day step moves f by
 # ~1°; the signed180 wrap at ±180° jumps by ~360°. Reject the wrap.
@@ -167,3 +176,52 @@ def sun_longitude_at(utc: datetime) -> float:
     if utc.tzinfo is None:
         raise ValueError("utc must be timezone-aware")
     return _sun_longitude(julian_day_ut(utc.astimezone(timezone.utc)))
+
+
+def compute_solar_return_chart(
+    moment_utc: datetime,
+    latitude: float,
+    longitude: float,
+) -> Chart:
+    """
+    Build a Solar Return chart at ``moment_utc`` for ``(latitude, longitude)``.
+
+    Reuses L1 ``compute_chart`` with ``utc_override`` (same path ACG relocation
+    uses). The returned dict has the natal chart shape: ``points``, ``sectors``,
+    ``axes``, ``relations``, etc. Planet longitudes are fixed by the moment;
+    houses and angles depend on the return location.
+
+    Parameters
+    ----------
+    moment_utc:
+        Timezone-aware UTC instant from ``find_solar_return_utc``.
+    latitude, longitude:
+        Return location in degrees (east/north positive).
+
+    Raises
+    ------
+    ValueError
+        If ``moment_utc`` is naive (no tzinfo), or latitude/longitude are
+        outside the valid geographic range.
+    """
+    if moment_utc.tzinfo is None:
+        raise ValueError("moment_utc must be timezone-aware")
+    if not (-90.0 <= latitude <= 90.0):
+        raise ValueError(f"latitude out of range: {latitude}")
+    if not (-180.0 <= longitude <= 180.0):
+        raise ValueError(f"longitude out of range: {longitude}")
+
+    instant = moment_utc.astimezone(timezone.utc)
+    # BirthData calendar fields are placeholders when utc_override is set;
+    # the instant is taken entirely from utc_override (sub-minute precision).
+    bd = BirthData(
+        year=instant.year,
+        month=instant.month,
+        day=instant.day,
+        hour=instant.hour,
+        minute=instant.minute,
+        latitude=latitude,
+        longitude=longitude,
+        time_precision="exact",
+    )
+    return compute_chart(bd, utc_override=instant)
