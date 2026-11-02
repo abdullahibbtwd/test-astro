@@ -676,7 +676,6 @@ save("config", "Config", {
     homeEnergyTile: false,
     dayScoreNumbers: true,
     elementNotes: false,
-    regionOutlines: false,
     showTraces: false,
   },
   polling: {

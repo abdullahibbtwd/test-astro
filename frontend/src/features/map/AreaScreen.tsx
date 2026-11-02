@@ -3,7 +3,6 @@ import { useCountries } from "./countries";
 import { BandChip } from "../../design/components/BandChip";
 import { View } from "react-native";
 import { ReportSurface as Screen } from "./ReportSurface";
-import type { FeatureCollection, Polygon, MultiPolygon } from "geojson";
 import { useMapSelection } from "./selection";
 import { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
@@ -19,7 +18,6 @@ import {
 import { useCatalogue } from "../../api/hooks";
 import { useApi } from "../../api/resource";
 import { useProfile } from "../shared/useProfile";
-import { useFlags } from "../../lib/flags";
 import { Generated } from "../shared/Blocks";
 import type { AreaReport, Goal } from "../../../contracts/spec-types";
 export default function AreaScreen() {
@@ -29,34 +27,21 @@ export default function AreaScreen() {
     }>(),
     { id } = useProfile(),
     { t } = useTranslation(),
-    flags = useFlags(),
     catalogue = useCatalogue().data,
     [goal, setGoal] = useState<Goal>("love"),
     q = useApi<AreaReport>(
-      `/profiles/${id}/acg/${kind === "region" ? "regions" : "countries"}/${encodeURIComponent(areaId)}`,
+      `/profiles/${id}/acg/countries/${encodeURIComponent(areaId)}`,
       "AreaReport",
-      !!id && (kind !== "region" || flags.regionOutlines),
+      !!id && kind !== "region",
     ),
     d = q.data;
   const countries = useCountries(kind !== "region");
-  const regions = useApi<FeatureCollection<Polygon | MultiPolygon>>(
-    kind === "region" && flags.regionOutlines
-      ? `/geo/regions/${d?.area.iso2 ?? ""}.geojson`
-      : "/geo/countries.geojson",
-    kind === "region" && flags.regionOutlines
-      ? "RegionGeometry"
-      : "CountryGeometry",
-    kind === "region" && flags.regionOutlines && !!d,
-  );
-  const geometry = kind === "region" ? regions : countries;
   useEffect(() => {
-    const feature = geometry.data?.features.find((f) =>
-      kind === "region"
-        ? f.properties?.admin1_id === areaId
-        : f.properties?.iso2 === areaId,
+    const feature = countries.data?.features.find(
+      (f) => f.properties?.iso2 === areaId,
     );
     if (feature) useMapSelection.getState().selectArea(feature);
-  }, [geometry.data, areaId, kind]);
+  }, [countries.data, areaId]);
   return (
     <Screen list back title={d?.area.name ?? t("areaReport")}>
       {q.isPending && <Skeleton />}
@@ -106,18 +91,6 @@ export default function AreaScreen() {
                 }
               />
             </View>
-          ))}
-          {flags.regionOutlines &&
-            d.regions?.map((r) => (
-            <Row
-              key={r.admin1_id}
-              label={r.name}
-              onPress={() =>
-                router.push(
-                  `/map/area/${r.admin1_id}?kind=region&profile=${id}`,
-                )
-              }
-            />
           ))}
           <Txt kind="caption">{d.footer}</Txt>
         </>

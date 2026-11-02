@@ -22,7 +22,7 @@ export function validateContract<T>(
 ): T {
   const envelope =
     name.startsWith("FeatureCollection") ||
-    ["CountryGeometry", "RegionGeometry"].includes(name)
+    name === "CountryGeometry"
       ? collection
       : name === "AcgLines"
         ? z

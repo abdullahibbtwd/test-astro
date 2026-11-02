@@ -963,10 +963,6 @@ export async function buildLocalApp({
             case "get /geo/countries.geojson":
               result = defaults("geo-countries-simple");
               break;
-            case "get /geo/regions/{iso2}.geojson":
-              if (!/^[A-Z]{2}$/.test(p.iso2 ?? "")) throw issue(400);
-              // Region outlines stay in the optional mock fixture pack, not API defaults.
-              throw issue(404);
             case "get /profiles/{id}/chart":
               result = await store.get("chart:" + p.id);
               break;

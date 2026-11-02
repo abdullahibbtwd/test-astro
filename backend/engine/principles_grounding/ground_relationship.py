@@ -913,5 +913,11 @@ def main() -> None:
         print(f"  {r['principle_id']}: {r['bound_statement'][:90]}")
 
 
+# Public aliases — family / Match callers reuse these; do not fork the math.
+aspect_holds = _aspect_holds
+mk_aspect = _mk_aspect
+ground_aspect = _ground_aspect
+
+
 if __name__ == "__main__":
     main()

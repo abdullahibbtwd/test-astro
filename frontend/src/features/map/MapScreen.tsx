@@ -28,7 +28,6 @@ import { useCatalogue } from "../../api/hooks";
 import { useApi } from "../../api/resource";
 import { request } from "../../api/client";
 import { useApp } from "../../lib/state";
-import { useFlags } from "../../lib/flags";
 import { useProfile } from "../shared/useProfile";
 import { MapCanvas } from "./MapCanvas";
 import { planetColors } from "./mapColors";
@@ -51,7 +50,6 @@ export default function MapScreen() {
     app = useApp(),
     catalogue = useCatalogue().data,
     { t } = useTranslation(),
-    flags = useFlags(),
     [goal, setGoal] = useState<Goal>(),
     [layers, setLayers] = useState(false),
     [legend, setLegend] = useState(false),
@@ -75,10 +73,10 @@ export default function MapScreen() {
         `/map/line/${body}/${angle}?profile=${id}${goal ? `&goal=${goal}` : ""}`,
       ),
     place = (p: PlaceCandidate) => {
-      if (p.kind === "region" && !flags.regionOutlines) return;
+      if (p.kind === "region") return;
       router.push(
-        p.kind === "country" || p.kind === "region"
-          ? routes.area(p.place_id.replace(/^(iso2|admin1):/, ""), p.kind, id)
+        p.kind === "country"
+          ? routes.area(p.place_id.replace(/^iso2:/, ""), "country", id)
           : routes.place(p.place_id, { profile: id, goal: goal || undefined }),
       );
     };

@@ -1,0 +1,359 @@
+{
+  "id": "sofia_ayse_romantic",
+  "notes": "Project love-match fixtures (astrologist SUBJECT × PARTNER). Expected aspects from Match aspect_holds.",
+  "person_a": {
+    "label": "Ben",
+    "birth": {
+      "date": "1979-03-30",
+      "time": "06:30",
+      "latitude": 42.6977,
+      "longitude": 23.3219,
+      "place": "Sofia"
+    }
+  },
+  "person_b": {
+    "label": "Ayşe",
+    "birth": {
+      "date": "1988-12-28",
+      "time": "13:00",
+      "latitude": 42.1354,
+      "longitude": 24.7453,
+      "place": "Plovdiv"
+    }
+  },
+  "expected_aspects": [
+    {
+      "a_point": "Sun",
+      "b_point": "Sun",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 1.943,
+      "separation": 91.943,
+      "applying": true
+    },
+    {
+      "a_point": "Sun",
+      "b_point": "Venus",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 4.484,
+      "separation": 115.516,
+      "applying": false
+    },
+    {
+      "a_point": "Sun",
+      "b_point": "Saturn",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 3.709,
+      "separation": 93.709,
+      "applying": false
+    },
+    {
+      "a_point": "Sun",
+      "b_point": "Uranus",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 7.342,
+      "separation": 97.342,
+      "applying": false
+    },
+    {
+      "a_point": "Sun",
+      "b_point": "Neptune",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 0.904,
+      "separation": 89.096,
+      "applying": true
+    },
+    {
+      "a_point": "Moon",
+      "b_point": "Sun",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 0.559,
+      "separation": 119.441,
+      "applying": true
+    },
+    {
+      "a_point": "Moon",
+      "b_point": "Moon",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 0.869,
+      "separation": 120.869,
+      "applying": true
+    },
+    {
+      "a_point": "Moon",
+      "b_point": "Saturn",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 1.207,
+      "separation": 121.207,
+      "applying": false
+    },
+    {
+      "a_point": "Moon",
+      "b_point": "Uranus",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 4.84,
+      "separation": 124.84,
+      "applying": false
+    },
+    {
+      "a_point": "Moon",
+      "b_point": "Neptune",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 3.406,
+      "separation": 116.594,
+      "applying": true
+    },
+    {
+      "a_point": "Mercury",
+      "b_point": "Jupiter",
+      "type": "sextile",
+      "scheme": "modern",
+      "orb": 1.696,
+      "separation": 58.304,
+      "applying": true
+    },
+    {
+      "a_point": "Mercury",
+      "b_point": "Saturn",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 6.501,
+      "separation": 83.499,
+      "applying": false
+    },
+    {
+      "a_point": "Mercury",
+      "b_point": "Uranus",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 2.868,
+      "separation": 87.132,
+      "applying": false
+    },
+    {
+      "a_point": "Venus",
+      "b_point": "Sun",
+      "type": "sextile",
+      "scheme": "modern",
+      "orb": 5.688,
+      "separation": 54.312,
+      "applying": true
+    },
+    {
+      "a_point": "Venus",
+      "b_point": "Moon",
+      "type": "opposition",
+      "scheme": "modern",
+      "orb": 5.998,
+      "separation": 174.002,
+      "applying": false
+    },
+    {
+      "a_point": "Venus",
+      "b_point": "Jupiter",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 4.275,
+      "separation": 85.725,
+      "applying": false
+    },
+    {
+      "a_point": "Venus",
+      "b_point": "Saturn",
+      "type": "sextile",
+      "scheme": "modern",
+      "orb": 3.922,
+      "separation": 56.078,
+      "applying": true
+    },
+    {
+      "a_point": "Venus",
+      "b_point": "Uranus",
+      "type": "sextile",
+      "scheme": "modern",
+      "orb": 0.289,
+      "separation": 59.711,
+      "applying": true
+    },
+    {
+      "a_point": "Mars",
+      "b_point": "Mercury",
+      "type": "sextile",
+      "scheme": "modern",
+      "orb": 1.884,
+      "separation": 61.884,
+      "applying": true
+    },
+    {
+      "a_point": "Mars",
+      "b_point": "Jupiter",
+      "type": "sextile",
+      "scheme": "modern",
+      "orb": 3.113,
+      "separation": 63.113,
+      "applying": true
+    },
+    {
+      "a_point": "Mars",
+      "b_point": "Uranus",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 7.677,
+      "separation": 82.323,
+      "applying": true
+    },
+    {
+      "a_point": "Jupiter",
+      "b_point": "Mercury",
+      "type": "opposition",
+      "scheme": "modern",
+      "orb": 7.053,
+      "separation": 172.947,
+      "applying": true
+    },
+    {
+      "a_point": "Jupiter",
+      "b_point": "Jupiter",
+      "type": "sextile",
+      "scheme": "modern",
+      "orb": 2.056,
+      "separation": 62.056,
+      "applying": false
+    },
+    {
+      "a_point": "Saturn",
+      "b_point": "Sun",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 1.491,
+      "separation": 118.509,
+      "applying": true
+    },
+    {
+      "a_point": "Saturn",
+      "b_point": "Moon",
+      "type": "conjunction",
+      "scheme": "modern",
+      "orb": 1.181,
+      "separation": 1.181,
+      "applying": true
+    },
+    {
+      "a_point": "Saturn",
+      "b_point": "Venus",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 4.936,
+      "separation": 94.936,
+      "applying": false
+    },
+    {
+      "a_point": "Saturn",
+      "b_point": "Saturn",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 3.257,
+      "separation": 116.743,
+      "applying": true
+    },
+    {
+      "a_point": "Saturn",
+      "b_point": "Uranus",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 6.89,
+      "separation": 113.11,
+      "applying": true
+    },
+    {
+      "a_point": "Saturn",
+      "b_point": "Neptune",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 1.356,
+      "separation": 121.356,
+      "applying": false
+    },
+    {
+      "a_point": "Uranus",
+      "b_point": "Mercury",
+      "type": "sextile",
+      "scheme": "modern",
+      "orb": 1.468,
+      "separation": 61.468,
+      "applying": false
+    },
+    {
+      "a_point": "Uranus",
+      "b_point": "Jupiter",
+      "type": "opposition",
+      "scheme": "modern",
+      "orb": 6.465,
+      "separation": 173.535,
+      "applying": true
+    },
+    {
+      "a_point": "Uranus",
+      "b_point": "Pluto",
+      "type": "conjunction",
+      "scheme": "modern",
+      "orb": 6.053,
+      "separation": 6.053,
+      "applying": true
+    },
+    {
+      "a_point": "Neptune",
+      "b_point": "Venus",
+      "type": "conjunction",
+      "scheme": "modern",
+      "orb": 7.116,
+      "separation": 7.116,
+      "applying": true
+    },
+    {
+      "a_point": "Neptune",
+      "b_point": "Mars",
+      "type": "trine",
+      "scheme": "modern",
+      "orb": 2.061,
+      "separation": 117.939,
+      "applying": true
+    },
+    {
+      "a_point": "Pluto",
+      "b_point": "Mercury",
+      "type": "square",
+      "scheme": "modern",
+      "orb": 3.877,
+      "separation": 93.877,
+      "applying": false
+    },
+    {
+      "a_point": "Pluto",
+      "b_point": "Venus",
+      "type": "sextile",
+      "scheme": "modern",
+      "orb": 4.736,
+      "separation": 55.264,
+      "applying": true
+    },
+    {
+      "a_point": "Pluto",
+      "b_point": "Mars",
+      "type": "opposition",
+      "scheme": "modern",
+      "orb": 0.319,
+      "separation": 179.681,
+      "applying": false
+    }
+  ]
+}

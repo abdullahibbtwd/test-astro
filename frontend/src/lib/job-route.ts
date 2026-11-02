@@ -17,14 +17,9 @@ export function routeFor(key: readonly unknown[]): string {
           goal: q.get("focus_goal") ?? undefined,
         }),
       );
-    if (parts[4] === "countries" || parts[4] === "regions")
-      return routeUrl(
-        routes.area(
-          parts[5] ?? "",
-          parts[4] === "countries" ? "country" : "region",
-          profile,
-        ),
-      );
+    if (parts[4] === "countries")
+      return routeUrl(routes.area(parts[5] ?? "", "country", profile));
+    if (parts[4] === "regions") return `/(tabs)/map?profile=${profile}`;
     if (parts[4] === "recommendations")
       return `/map/recommend/result?profile=${profile}&request=${encodeURIComponent(String(key[3] ?? "{}"))}`;
     return `/(tabs)/map?profile=${profile}`;

@@ -1,122 +1,65 @@
-import { Fragment, useMemo, useState } from "react";
-import { useWindowDimensions } from "react-native";
-import { SvgCss } from "react-native-svg/css";
+import { useMemo, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
-import {
-  Screen,
-  Txt,
-  Button,
-  Choices,
-  Skeleton,
-  ErrorNotice,
-} from "../../design/components";
-import { PlaceSearch } from "../../design/components/PlaceSearch";
 import { useApi } from "../../api/resource";
 import { useProfile } from "../shared/useProfile";
 import { useApp } from "../../lib/state";
-import { useTheme } from "../../design/theme";
-import { Generated } from "../shared/Blocks";
-import { nativeWheelSvg } from "../../../packages/wheel-core/native-svg";
+import { SolarReturnSkeleton } from "../step3/SolarReturnSkeleton";
+import { buildSolarReturnSkeleton } from "../step3/math";
 import type { SolarReturn } from "../../../contracts/spec-types";
+
+/**
+ * Solar Return route screen — skeleton UI over Phase 1–2 math.
+ * Interpretation is always the pending-astrologer placeholder until copy ships.
+ */
 export default function SolarReturnScreen() {
   const params = useLocalSearchParams<{ year: string }>(),
-    { id, profile, tz } = useProfile(),
+    { id, profile } = useProfile(),
     app = useApp(),
     { t } = useTranslation(),
-    c = useTheme(),
-    { width } = useWindowDimensions(),
-    [place, setPlace] = useState<string>(),
-    [selectPlace, setSelectPlace] = useState(false);
-  const current =
-    place ??
+    initialYear = Number.parseInt(params.year || "", 10),
+    [year, setYear] = useState(
+      Number.isFinite(initialYear) ? initialYear : new Date().getFullYear(),
+    );
+  const placeId =
     (profile?.is_self
       ? app.me?.current_place?.place_id
-      : profile?.current_place?.place_id) ??
-    profile?.birth.place.place_id;
+      : profile?.current_place?.place_id) ?? profile?.birth.place.place_id;
   const query = useApi<SolarReturn>(
-      `/profiles/${id}/solar-return?year=${params.year}${current ? `&place_id=${encodeURIComponent(current)}` : ""}`,
-      "SolarReturn",
-      !!id,
-    ),
-    data = query.data;
-  const xml = useMemo(
-    () =>
-      data
-        ? nativeWheelSvg(data.chart, c.dark ? "dark" : "light")
-        : null,
-    [data, c.dark],
+    `/profiles/${id}/solar-return?year=${year}${placeId ? `&place_id=${encodeURIComponent(placeId)}` : ""}`,
+    "SolarReturn",
+    !!id,
   );
+  const model = useMemo(() => {
+    if (!query.data) return null;
+    return buildSolarReturnSkeleton({
+      return_utc: query.data.return_utc,
+      year,
+      chart: query.data.chart,
+      place_label: query.data.place?.name,
+    });
+  }, [query.data, year]);
+  const status = query.isPending
+    ? "loading"
+    : query.error
+      ? "error"
+      : model
+        ? "ready"
+        : "idle";
   return (
-    <Screen back title={`${t("solar_return")} ${params.year}`}>
-      <Choices>
-        {[new Date().getFullYear(), new Date().getFullYear() + 1].map(
-          (year) => (
-            <Button
-              key={year}
-              secondary
-              label={String(year)}
-              onPress={() => router.setParams({ year: String(year) })}
-            />
-          ),
-        )}
-      </Choices>
-      <Txt>{t("birthdayPlace")}</Txt>
-      <Button
-        secondary
-        label={data?.place.name ?? t("changePlace")}
-        onPress={() => setSelectPlace(!selectPlace)}
-      />
-      {selectPlace && (
-        <PlaceSearch
-          onConfirm={(value) => {
-            setPlace(value.place_id);
-            setSelectPlace(false);
-          }}
-        />
-      )}
-      {query.isPending && <Skeleton />}
-      {data && (
-        <>
-          <Txt>
-            {new Intl.DateTimeFormat(app.language, {
-              dateStyle: "long",
-              timeStyle: "short",
-              timeZone: tz,
-            }).format(new Date(data.return_utc))}
-          </Txt>
-          {xml && (
-            <SvgCss xml={xml} width="100%" height={Math.min(width - 40, 480)} />
-          )}
-          <Generated
-            part={data.reading}
-            retry={() => {
-              void query.retry();
-            }}
-          >
-            {(part) => (
-              <>
-                {part.sections.map((section) => (
-                  <Fragment key={section.key}>
-                    <Txt key={`${section.key}title`} kind="title">
-                      {section.title}
-                    </Txt>
-                    <Txt key={section.key} kind="reading">
-                      {section.text}
-                    </Txt>
-                  </Fragment>
-                ))}
-              </>
-            )}
-          </Generated>
-        </>
-      )}
-      <ErrorNotice
-        error={query.error}
-        retry={() => {
-          void query.refetch();
-        }}
-      />
-    </Screen>
+    <SolarReturnSkeleton
+      title={t("solar_return")}
+      year={year}
+      onYearChange={(next) => {
+        setYear(next);
+        router.setParams({ year: String(next) });
+      }}
+      status={status}
+      model={model}
+      error={query.error}
+      onRetry={() => {
+        void query.refetch();
+      }}
+    />
   );
 }
