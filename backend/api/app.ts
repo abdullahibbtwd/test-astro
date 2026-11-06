@@ -43,6 +43,7 @@ import {
 } from "./solar-return";
 import { endpoints } from "../../frontend/scripts/endpoints";
 import { validate, schemas } from "../../frontend/src/api/zod";
+import { sanitizeLabel } from "./safe-text";
 import type { BirthProfile, Me } from "../../frontend/contracts/spec-types";
 const digest = (s: string) => createHash("sha256").update(s).digest("hex");
 const issue = (status: number, message = "Request unavailable") =>
@@ -96,6 +97,35 @@ export async function buildLocalApp({
     logger: false,
     bodyLimit: 65536,
     trustProxy: trustProxyHops > 0 ? trustProxyHops : false,
+  });
+  // Empty application/json bodies must not 400 before auth (DELETE/etc.).
+  app.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    (_req, body, done) => {
+      const raw = typeof body === "string" ? body : body?.toString("utf8") ?? "";
+      if (!raw.trim()) {
+        done(null, {});
+        return;
+      }
+      try {
+        done(null, JSON.parse(raw));
+      } catch (err) {
+        done(err as Error, undefined);
+      }
+    },
+  );
+  // Mobile API: no CORS (browsers are not first-party clients). Browser sign-in
+  // routes set their own headers and reject cross-origin POSTs.
+  app.addHook("onSend", async (_request, reply, payload) => {
+    reply.header("X-Content-Type-Options", "nosniff");
+    reply.header("Referrer-Policy", "no-referrer");
+    reply.header("X-Frame-Options", "DENY");
+    reply.header(
+      "Cache-Control",
+      reply.getHeader("Cache-Control") ?? "no-store",
+    );
+    return payload;
   });
   // onRequest: coarse per-IP (before JWT). Authed buckets: enforceUserRateLimit after resolveTenant.
   const rateLimiter = registerRateLimit(app, readRateLimitConfig());
@@ -695,6 +725,12 @@ export async function buildLocalApp({
               break;
             case "patch /me": {
               const { current_place_id } = body;
+              if (Object.hasOwn(body, "display_name")) {
+                const name = sanitizeLabel(String(body.display_name ?? ""), 80);
+                if (name == null && String(body.display_name ?? "").trim() !== "")
+                  throw issue(400);
+                body.display_name = name ?? "";
+              }
               const updates = Object.fromEntries(
                 [
                   "display_name",
@@ -767,12 +803,12 @@ export async function buildLocalApp({
               break;
             case "post /profiles":
             case "patch /profiles/{id}": {
-              const label = (body.label ?? profile?.label ?? "").trim();
+              const label =
+                sanitizeLabel(body.label ?? profile?.label ?? "", 40) ?? "";
               const date = body.birth_date ?? profile?.birth.date,
                 time = body.birth_time ?? profile?.birth.time;
               if (
                 !label ||
-                label.length > 40 ||
                 !/^\d{4}-\d{2}-\d{2}$/.test(date ?? "") ||
                 date < "1900-01-01" ||
                 date > now().slice(0, 10) ||
