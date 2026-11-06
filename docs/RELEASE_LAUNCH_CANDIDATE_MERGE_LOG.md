@@ -48,3 +48,15 @@ Do not push to main. Do not deploy.
 - `payments/setup-docs`: merged cleanly. Conflicts: none.
   - setup-docs: docs-only tip; conflicts: none.
   - re-ran enforcement tests (prior multi-file argv glitch): ℹ tests 11 ℹ pass 11 ℹ fail 0 
+
+## Layer 6 — ux/01 to ux/10
+- `ux/01-screen-inventory`: merged cleanly. Conflicts: none.
+- `ux/02-shared-states`: merged cleanly. Conflicts: none.
+- `ux/03-error-mapping`: merged cleanly. Conflicts: none.
+- `ux/04-job-states`: merged cleanly. Conflicts: none.
+- `ux/05-offline`: CONFLICT — resolving...
+frontend/src/design/components/index.tsx
+frontend/src/features/ask/ChatScreen.tsx
+STOP_FOR_MANUAL:ux/05-offline
+  - Conflicts in `frontend/src/design/components/index.tsx` and `frontend/src/features/ask/ChatScreen.tsx`.
+  - Resolution: kept `StandardErrorState` from ux/02; adopted `useOnline` + disable-retry-when-offline + `offlineDisabled` caption from ux/05; Chat shows both cached-offline banner and `offlineDisabled` copy.

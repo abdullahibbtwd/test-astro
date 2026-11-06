@@ -1,10 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Linking, View } from "react-native";
 import { router, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { Screen, Txt, Button, ErrorNotice, Row } from "../../design/components";
 import { usePaymentsUiEnabled } from "../../lib/flags";
 import { useMe } from "../../api/hooks";
+import { useOnline } from "../../api/online";
 import { accessToken, apiBase } from "../../api/client";
 import { getPaymentProvider } from "../../payments";
 import { showSnackbar } from "../../design/components/Snackbar";
@@ -37,6 +38,7 @@ async function fetchBillingStatus(): Promise<BillingStatus> {
 export default function SubscriptionScreen() {
   const { t } = useTranslation();
   const enabled = usePaymentsUiEnabled();
+  const online = useOnline();
   const me = useMe();
   const [status, setStatus] = useState<BillingStatus | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,9 +65,12 @@ export default function SubscriptionScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      if (enabled) void load();
-    }, [enabled, load]),
+      if (enabled && online) void load();
+    }, [enabled, online, load]),
   );
+  useEffect(() => {
+    if (!online) setLoading(false);
+  }, [online]);
 
   if (!enabled) {
     return (
@@ -76,6 +81,7 @@ export default function SubscriptionScreen() {
   }
 
   const restore = async () => {
+    if (!online) return;
     setRestoring(true);
     setError(null);
     try {
@@ -103,6 +109,7 @@ export default function SubscriptionScreen() {
 
   return (
     <Screen title={t("subscriptionTitle")} back>
+      {!online && <Txt muted>{t("offlineDisabled")}</Txt>}
       {loading && (
         <View style={{ paddingVertical: 24, alignItems: "center" }}>
           <ActivityIndicator />
@@ -113,9 +120,7 @@ export default function SubscriptionScreen() {
         <>
           <Txt kind="title">{t("subscriptionPlan")}</Txt>
           <Txt>{status.plan_id}</Txt>
-          {status.free_launch && (
-            <Txt muted>{t("subscriptionFreeLaunch")}</Txt>
-          )}
+          {status.free_launch && <Txt muted>{t("subscriptionFreeLaunch")}</Txt>}
           {status.subscription ? (
             <>
               <Row
@@ -140,7 +145,7 @@ export default function SubscriptionScreen() {
       <Button
         label={restoring ? t("subscriptionRestoring") : t("paywallRestore")}
         onPress={() => void restore()}
-        disabled={restoring}
+        disabled={!online || restoring}
       />
       <Button secondary label={t("subscriptionManage")} onPress={manage} />
       <Button

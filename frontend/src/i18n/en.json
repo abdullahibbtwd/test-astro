@@ -136,6 +136,7 @@
   "homeBody": "Start with your chart. Keep the people who matter close.",
   "openCharts": "Explore your charts",
   "offline": "Offline · showing saved information",
+  "offlineDisabled": "Connect to the internet to use this action.",
   "selectDate": "Choose date",
   "selectTime": "Choose time",
   "done": "Done",

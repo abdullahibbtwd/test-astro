@@ -10,6 +10,7 @@ import {
   EmptyState,
 } from "../../design/components";
 import { usePaymentsUiEnabled } from "../../lib/flags";
+import { useOnline } from "../../api/online";
 import { getPaymentProvider, type StoreProduct } from "../../payments";
 
 /** Product ids come from owner-filled store ids — empty until configured. Prices from store only. */
@@ -18,6 +19,7 @@ const PLACEHOLDER_PRODUCT_IDS: string[] = [];
 export default function PaywallScreen() {
   const { t } = useTranslation();
   const enabled = usePaymentsUiEnabled();
+  const online = useOnline();
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(false);
   const [products, setProducts] = useState<StoreProduct[]>([]);
@@ -25,6 +27,10 @@ export default function PaywallScreen() {
 
   useEffect(() => {
     if (!enabled) return;
+    if (!online) {
+      setLoading(false);
+      return;
+    }
     let cancelled = false;
     (async () => {
       setLoading(true);
@@ -45,7 +51,7 @@ export default function PaywallScreen() {
     return () => {
       cancelled = true;
     };
-  }, [enabled]);
+  }, [enabled, online]);
 
   if (!enabled) {
     return (
@@ -56,6 +62,7 @@ export default function PaywallScreen() {
   }
 
   const buy = async (productId: string) => {
+    if (!online) return;
     setPurchasing(true);
     setError(null);
     try {
@@ -73,6 +80,7 @@ export default function PaywallScreen() {
     <Screen title={t("paywallTitle")} back>
       <Txt kind="title">{t("paywallHeadline")}</Txt>
       <Txt muted>{t("paywallBody")}</Txt>
+      {!online && <Txt muted>{t("offlineDisabled")}</Txt>}
       {loading && (
         <View style={{ paddingVertical: 24, alignItems: "center" }}>
           <ActivityIndicator />
@@ -87,11 +95,9 @@ export default function PaywallScreen() {
           <Txt kind="title">{p.title ?? p.productId}</Txt>
           <Txt muted>{p.priceString ?? t("paywallPriceFromStore")}</Txt>
           <Button
-            label={
-              purchasing ? t("paywallPurchasing") : t("paywallSubscribe")
-            }
+            label={purchasing ? t("paywallPurchasing") : t("paywallSubscribe")}
             onPress={() => void buy(p.productId)}
-            disabled={purchasing || !p.productId}
+            disabled={!online || purchasing || !p.productId}
           />
         </View>
       ))}

@@ -7,7 +7,10 @@ const snapshot = () => onlineManager.isOnline();
 export function useOnline() {
   return useSyncExternalStore(subscribe, snapshot, snapshot);
 }
+export function offlineError(online: boolean, hasData: boolean) {
+  return !online && !hasData ? offline : undefined;
+}
 export function useOfflineError(hasData: boolean) {
   const online = useOnline();
-  return !online && !hasData ? offline : undefined;
+  return offlineError(online, hasData);
 }

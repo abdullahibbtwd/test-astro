@@ -18,6 +18,7 @@ import {
 } from "../../design/components";
 import { usePages } from "../../api/pages";
 import { request } from "../../api/client";
+import { useOnline } from "../../api/online";
 import { useApp } from "../../lib/state";
 import { useFlags } from "../../lib/flags";
 import { askContext } from "../../api/sse";
@@ -27,6 +28,7 @@ export default function ThreadsScreen() {
     app = useApp(),
     { t } = useTranslation(),
     flags = useFlags(),
+    online = useOnline(),
     query = usePages<ThreadPage>(
       "/ask/threads",
       "ThreadPage",
@@ -42,6 +44,7 @@ export default function ThreadsScreen() {
     }, [refetch, flags.askAstrology]),
   );
   const create = async () => {
+    if (!online) return;
     setBusy(true);
     try {
       const thread = await request<Thread>("POST", "/ask/threads", "Thread", {
@@ -66,9 +69,11 @@ export default function ThreadsScreen() {
     );
   return (
     <Screen back title={t("ask")}>
+      {!online && <Txt muted>{t("offlineDisabled")}</Txt>}
       <Button
         label={t("newConversation")}
         loading={busy}
+        disabled={!online}
         onPress={() => {
           void create();
         }}

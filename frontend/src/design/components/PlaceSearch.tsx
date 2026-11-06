@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { usePlaces } from "../../api/hooks";
+import { useOnline } from "../../api/online";
 import { useApp } from "../../lib/state";
 import type { Place } from "../../../contracts/spec-types";
 import { Button, Card, ErrorNotice, Field, Row, Skeleton, Txt } from "./index";
@@ -10,11 +11,12 @@ export function PlaceSearch({
   onConfirm: (place: Place) => void;
 }) {
   const { t } = useTranslation(),
-    app = useApp();
+    app = useApp(),
+    online = useOnline();
   const [text, setText] = useState(""),
     [debounced, setDebounced] = useState(""),
     [selected, setSelected] = useState<Place | null>(null);
-  const results = usePlaces(debounced);
+  const results = usePlaces(online ? debounced : "");
   useEffect(() => {
     const id = setTimeout(() => setDebounced(text.trim()), 250);
     return () => clearTimeout(id);
@@ -38,7 +40,13 @@ export function PlaceSearch({
           setSelected(null);
         }}
         autoCorrect={false}
+        editable={online}
       />
+      {!online && (
+        <Txt kind="caption" muted>
+          {t("offlineDisabled")}
+        </Txt>
+      )}
       {selected ? (
         <Card>
           <Txt kind="title">{selected.name}</Txt>
@@ -48,7 +56,11 @@ export function PlaceSearch({
               .join(" · ")}
           </Txt>
           <Txt>{t("confirmPlace")}</Txt>
-          <Button label={t("yes")} onPress={() => choose(selected)} />
+          <Button
+            label={t("yes")}
+            disabled={!online}
+            onPress={() => choose(selected)}
+          />
           <Button
             secondary
             label={t("change")}
@@ -75,7 +87,7 @@ export function PlaceSearch({
                 detail={[place.admin1, place.country_name]
                   .filter(Boolean)
                   .join(" · ")}
-                onPress={() => setSelected(place)}
+                onPress={online ? () => setSelected(place) : undefined}
               />
             ),
           )}
