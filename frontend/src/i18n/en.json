@@ -516,5 +516,6 @@
   "guestStartAgain": "Start again",
   "guestExpired": "Your preview has ended. Let’s start again.",
   "guestContinueAccount": "Continue to my account",
-  "guestTime": "Time"
+  "guestTime": "Time",
+  "errorPremiumRequired": "This feature needs a Premium subscription."
 }

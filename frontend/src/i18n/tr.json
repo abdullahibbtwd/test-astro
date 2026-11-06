@@ -516,5 +516,6 @@
   "guestStartAgain": "Yeniden başla",
   "guestExpired": "Ön izlemen sona erdi. Yeniden başlayalım.",
   "guestContinueAccount": "Hesabıma devam et",
-  "guestTime": "Saat"
+  "guestTime": "Saat",
+  "errorPremiumRequired": "Bu özellik Premium abonelik gerektirir."
 }

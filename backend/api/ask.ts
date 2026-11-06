@@ -38,7 +38,7 @@ export class AskService {
   }
   async quota() {
     const { prisma } = await import("./db");
-    const { utcDay } = await import("./limits");
+    const { utcDay, resolveDailyLimit } = await import("./limits");
     const me = (await this.store.get<Me>("me"))!;
     const day = utcDay();
     const row = await prisma().usageCounter.findUnique({
@@ -48,8 +48,11 @@ export class AskService {
     });
     const reset = new Date(day);
     reset.setUTCDate(reset.getUTCDate() + 1);
+    const dailyLimit = this.enabled()
+      ? await resolveDailyLimit(me.user_id, "ASK")
+      : 0;
     const quota = {
-      limit_per_day: this.enabled() ? this.dailyLimit : 0,
+      limit_per_day: dailyLimit,
       used_today: row?.count ?? 0,
       resets_at: reset.toISOString(),
     };
@@ -87,6 +90,9 @@ export class AskService {
   }
   async create(profile_id: string) {
     if (!this.enabled()) throw issue(503, "upstream_unavailable");
+    const meGate = (await this.store.get<Me>("me"))!;
+    const { requireFeature } = await import("./feature-gates");
+    await requireFeature(meGate.user_id, "ask");
     if (!(await this.store.get("profile:" + profile_id)))
       throw issue(404, "not_found");
     const thread: Thread = {
@@ -150,11 +156,14 @@ export class AskService {
       );
       if (!profile) throw issue(409, "conflict");
       const me = (await this.store.get<Me>("me"))!;
-      const { tryConsumeUsage } = await import("./limits");
-      if (this.active.size >= this.dailyLimit)
+      const { requireFeature } = await import("./feature-gates");
+      await requireFeature(me.user_id, "ask");
+      const { tryConsumeUsage, resolveDailyLimit } = await import("./limits");
+      const dailyLimit = await resolveDailyLimit(me.user_id, "ASK");
+      if (this.active.size >= dailyLimit)
         throw issue(429, "rate_limited");
       if (
-        (await tryConsumeUsage(me.user_id, "ASK", this.dailyLimit)) == null
+        (await tryConsumeUsage(me.user_id, "ASK", dailyLimit)) == null
       )
         throw issue(429, "rate_limited");
       const quota = await this.quota();

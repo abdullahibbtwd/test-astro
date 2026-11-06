@@ -147,8 +147,11 @@ export class CompatibilityJobs {
     );
     if (existing) return this.get(existing.id, lang);
     // Family uses aspect math + placeholder only — no paid LLM path.
-    if (input.type === "family")
+    if (input.type === "family") {
+      const { requireFeature } = await import("./feature-gates");
+      await requireFeature(this.store.tenant(), "family");
       return this.createFamilyMath(context, profiles, lang);
+    }
     if (!this.enabled)
       throw Object.assign(new Error("generation_paused"), {
         statusCode: 200,

@@ -61,7 +61,7 @@ fs.writeFileSync(
       )
       .replace(
         "| 'upstream_unavailable' | 'internal';",
-        "| 'upstream_unavailable' | 'internal' | 'busy' | 'account_required' | 'read_ahead_limit';",
+        "| 'upstream_unavailable' | 'internal' | 'busy' | 'account_required' | 'read_ahead_limit' | 'premium_required';",
       )
       .replace(
         "detail?: string;",

@@ -1,13 +1,19 @@
 import type { PrismaClient, UsageKind } from "../src/generated/prisma/client.js";
 import { prisma as getPrisma } from "./db";
+import { computeEntitlements } from "./entitlements";
 import { problemError } from "./job-problems";
+import {
+  getPlan,
+  loadPlansConfig,
+  type DailyLimitKey,
+  type PlansConfig,
+} from "./plans";
 import type { Problem } from "../../frontend/contracts/spec-types";
 
 type Db = PrismaClient;
 type Tx = Parameters<Parameters<PrismaClient["$transaction"]>[0]>[0];
 
-/** Per-user UTC daily caps for paid generation. Ask uses the same atomic
- * usage_counters path via tryConsumeUsage (see ask.ts + ASTRO_DAILY_ASK_LIMIT). */
+/** Env / built-in fallbacks when plans.json daily_limits.* is null. */
 export const GENERATION_DAILY_LIMITS = {
   NATAL_READING: Math.max(
     1,
@@ -27,13 +33,29 @@ export const GENERATION_DAILY_LIMITS = {
   ),
 } as const;
 
-/** Ask daily ceiling (atomic usage_counters kind ASK). Default 20. */
+/** Ask daily ceiling fallback (atomic usage_counters kind ASK). Default 20. */
 export const ASK_DAILY_LIMIT = Math.max(
   1,
   Number(process.env.ASTRO_DAILY_ASK_LIMIT ?? 20) || 20,
 );
 
 export type GenerationUsageKind = keyof typeof GENERATION_DAILY_LIMITS;
+
+const USAGE_TO_PLAN_KEY: Record<GenerationUsageKind | "ASK", DailyLimitKey> = {
+  ASK: "ask",
+  NATAL_READING: "natal_reading",
+  MAP_READING: "map_reading",
+  FORECAST_READING: "forecast_reading",
+  COMPAT_READING: "compat_reading",
+};
+
+const ENV_FALLBACK: Record<GenerationUsageKind | "ASK", number> = {
+  ASK: ASK_DAILY_LIMIT,
+  NATAL_READING: GENERATION_DAILY_LIMITS.NATAL_READING,
+  MAP_READING: GENERATION_DAILY_LIMITS.MAP_READING,
+  FORECAST_READING: GENERATION_DAILY_LIMITS.FORECAST_READING,
+  COMPAT_READING: GENERATION_DAILY_LIMITS.COMPAT_READING,
+};
 
 /** UTC calendar day at 00:00:00.000Z for UsageCounter.date. */
 export function utcDay(now = new Date()): Date {
@@ -42,7 +64,10 @@ export function utcDay(now = new Date()): Date {
   );
 }
 
-const generationLimitProblem = (kind: GenerationUsageKind, limit: number): Problem => {
+const generationLimitProblem = (
+  kind: GenerationUsageKind,
+  limit: number,
+): Problem => {
   const labels: Record<GenerationUsageKind, string> = {
     NATAL_READING: "natal readings",
     MAP_READING: "map readings",
@@ -59,15 +84,44 @@ const generationLimitProblem = (kind: GenerationUsageKind, limit: number): Probl
 };
 
 /**
+ * Resolve the daily cap for a user from their active plan, falling back to
+ * ASTRO_DAILY_* env defaults when the plan value is null/unset.
+ */
+export async function resolveDailyLimit(
+  userId: string,
+  kind: GenerationUsageKind | "ASK",
+  opts?: {
+    db?: Db;
+    config?: PlansConfig;
+    env?: NodeJS.ProcessEnv;
+    now?: Date;
+  },
+): Promise<number> {
+  const config = opts?.config ?? loadPlansConfig();
+  const db = opts?.db ?? getPrisma();
+  const computed = await computeEntitlements(db, userId, {
+    config,
+    env: opts?.env,
+    now: opts?.now,
+  });
+  const plan = getPlan(computed.plan_id, config);
+  const key = USAGE_TO_PLAN_KEY[kind];
+  const fromPlan = plan.daily_limits?.[key];
+  if (typeof fromPlan === "number" && Number.isFinite(fromPlan) && fromPlan >= 1)
+    return Math.floor(fromPlan);
+  return ENV_FALLBACK[kind];
+}
+
+/**
  * Atomically consume one paid generation slot for today, or throw a 429 Problem
- * the app already maps to rate_limited.
+ * the app already maps to rate_limited. Cap comes from the user's plan.
  */
 export async function consumeGeneration(
   userId: string,
   kind: GenerationUsageKind,
   db: Db = getPrisma(),
 ): Promise<number> {
-  const limit = GENERATION_DAILY_LIMITS[kind];
+  const limit = await resolveDailyLimit(userId, kind, { db });
   const count = await tryConsumeUsage(userId, kind, limit, db);
   if (count == null) throw problemError(generationLimitProblem(kind, limit));
   return count;
