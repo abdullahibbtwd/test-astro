@@ -51,6 +51,7 @@ export async function buildLocalApp({
   generateForecast,
   calculateCalendar = computeCalendar,
   generateCompatibility,
+  generateFamilyAspects,
   computeBirthChart = defaultBirthChart,
   auth,
   jwt,
@@ -73,6 +74,8 @@ export async function buildLocalApp({
   calculateCalendar?: typeof computeCalendar;
   generateForecast?: (data: any) => Promise<any>;
   generateCompatibility?: (data: unknown) => Promise<any>;
+  /** Test hook: replace family_aspects_bridge.py. */
+  generateFamilyAspects?: (data: any) => Promise<any>;
   computeBirthChart?: typeof defaultBirthChart;
 }) {
   const demoAuth = process.env.ASTRO_DEMO_AUTH === "1";
@@ -146,6 +149,7 @@ export async function buildLocalApp({
     store,
     allowPaid,
     generateCompatibility,
+    generateFamilyAspects,
   );
   const now = () => new Date().toISOString();
   const initializeAccount = async (tenantId: string, email = "") => {
