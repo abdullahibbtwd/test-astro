@@ -15,4 +15,9 @@ test("ChatScreen send path clears busy in finally", () => {
   expect(src).toMatch(/finally\s*\{[\s\S]*setBusy\(false\)/);
   expect(src).toMatch(/maxLength=\{1000\}/);
   expect(src).toMatch(/abort\.signal\.aborted \? "interrupted" : "failed"/);
+  // Failed Ask messages must use describeError — not the connection chrome key "error".
+  expect(src).toMatch(/describeError\(error\)/);
+  expect(src).not.toMatch(
+    /message\.status === "failed" \? "error" : "interrupted"/,
+  );
 });

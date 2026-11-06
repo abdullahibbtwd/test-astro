@@ -64,7 +64,9 @@ beforeEach(async () => {
 test.each([
   [new NetworkError(), "errorOffline", true],
   [{ code: "busy" }, "errorBusy", false],
-  [{ status: 503 }, "errorServer", true],
+  [{ status: 503 }, "errorUnavailable", true],
+  [new ApiError(403, "premium_required"), "errorPremiumRequired", true],
+  [{ code: "timeout" }, "errorTimeout", true],
 ] as const)("notice %s has the correct action", async (error, key, retry) => {
   await render(<ErrorNotice error={error} retry={jest.fn()} />);
   expect(screen.getByText(i18n.t(key))).toBeOnTheScreen();

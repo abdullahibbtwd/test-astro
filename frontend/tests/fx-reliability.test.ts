@@ -1,7 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { QueryClient, dehydrate, hydrate } from "@tanstack/react-query";
-import { ApiError, NetworkError, describeError } from "../src/api/errors";
+import {
+  ApiError,
+  NetworkError,
+  TimeoutError,
+  describeError,
+  parseRetryAfter,
+} from "../src/api/errors";
+import en from "../src/i18n/en.json";
+import tr from "../src/i18n/tr.json";
 import {
   validateContract,
   ContractError,
@@ -29,7 +37,15 @@ test("every error category has an appropriate message and action", () => {
     [{ code: "generation_failed" }, "generation_failed", "retry"],
     [{ absence: { reason: "generation_paused" } }, "paused", "none"],
     [{ absence: { reason: "not_generated" } }, "not_generated", "request"],
-    [{ code: "upstream_unavailable" }, "server", "retry"],
+    [{ code: "upstream_unavailable" }, "unavailable", "retry"],
+    [new ApiError(503, "upstream_unavailable"), "unavailable", "retry"],
+    [{ code: "timeout" }, "timeout", "retry"],
+    [new ApiError(408, "timeout"), "timeout", "retry"],
+    [
+      new ApiError(403, "premium_required"),
+      "premium_required",
+      "retry",
+    ],
     [{ code: "internal" }, "server", "retry"],
     [{ status: 502 }, "server", "retry"],
     [{ code: "not_found" }, "not_found", "back"],
@@ -49,6 +65,39 @@ test("every error category has an appropriate message and action", () => {
     5,
   );
 });
+
+test("backend codes map to distinct friendly EN/TR message keys", () => {
+  const cases: [unknown, string][] = [
+    [new NetworkError(), "errorOffline"],
+    [new ApiError(429, "rate_limited", 12), "errorRateLimited"],
+    [new ApiError(503, "upstream_unavailable"), "errorUnavailable"],
+    [new TimeoutError(), "errorTimeout"],
+    [{ code: "timeout" }, "errorTimeout"],
+    [new ApiError(403, "premium_required"), "errorPremiumRequired"],
+    [{ code: "busy" }, "errorBusy"],
+  ];
+  for (const [error, titleKey] of cases) {
+    const d = describeError(error);
+    assert.equal(d.titleKey, titleKey);
+    assert.ok(
+      (en as Record<string, string>)[titleKey],
+      `missing en ${titleKey}`,
+    );
+    assert.ok(
+      (tr as Record<string, string>)[titleKey],
+      `missing tr ${titleKey}`,
+    );
+    // Historical bug: busy must never surface as the connection-error chrome key.
+    if (d.kind === "busy") assert.notEqual(d.titleKey, "error");
+  }
+  assert.equal(describeError(new TimeoutError()).kind, "timeout");
+  assert.equal(parseRetryAfter("7"), 7);
+  assert.equal(parseRetryAfter("not-a-date"), 0);
+  const httpDate = new Date(Date.now() + 15_000).toUTCString();
+  const parsed = parseRetryAfter(httpDate);
+  assert.ok(parsed >= 10 && parsed <= 20, `Retry-After HTTP-date → ${parsed}`);
+});
+
 test("old running jobs remain very slow, never failed", () => {
   const now = Date.now();
   assert.equal(
