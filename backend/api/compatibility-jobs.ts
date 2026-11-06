@@ -4,6 +4,14 @@ import { Store } from "./store";
 import { runReadingBridge } from "./readings";
 import { validate } from "../../frontend/src/api/zod";
 import { stableHash as hash } from "./stable-hash";
+import {
+  FAMILY_COMPATIBILITY_PLACEHOLDER,
+  familyPlaceholderReadings,
+  relationshipTypeFromFamilyRelation,
+  runFamilyAspectsBridge,
+  type FamilyAspectsInput,
+  type FamilyAspectsOutput,
+} from "./family-aspects";
 import type {
   BirthProfile,
   ReportRef,
@@ -34,11 +42,17 @@ export class CompatibilityJobs {
           ? { ASTRO_BUDGET_USER: String(data.budget_user) }
           : undefined,
       ),
+    private generateFamilyAspects: (
+      data: FamilyAspectsInput,
+    ) => Promise<FamilyAspectsOutput> = runFamilyAspectsBridge,
   ) {}
   static async create(
     store: Store,
     enabled = false,
     generate?: (data: any) => ReturnType<typeof runReadingBridge>,
+    generateFamilyAspects?: (
+      data: FamilyAspectsInput,
+    ) => Promise<FamilyAspectsOutput>,
   ) {
     const jobs = new CompatibilityJobs(
       store,
@@ -53,6 +67,7 @@ export class CompatibilityJobs {
               ? { ASTRO_BUDGET_USER: String(data.budget_user) }
               : undefined,
           )),
+      generateFamilyAspects ?? runFamilyAspectsBridge,
     );
     await jobs.resume();
     return jobs;
@@ -104,10 +119,10 @@ export class CompatibilityJobs {
   async create(input: CompatibilityInput, lang: Lang): Promise<Compatibility> {
     if (
       input.profile_a_id === input.profile_b_id ||
-      (input.type !== "family" && input.family_relation)
+      (input.type !== "family" && input.family_relation) ||
+      (input.type === "family" && !input.family_relation)
     )
       throw issue(400);
-    if (input.type === "family") throw issue(503);
     const profiles = await Promise.all(
       [input.profile_a_id, input.profile_b_id].map(async (id) => {
         const p = await this.store.get<BirthProfile>("profile:" + id);
@@ -118,6 +133,8 @@ export class CompatibilityJobs {
     const context = {
       version: 1,
       type: input.type,
+      family_relation:
+        input.type === "family" ? (input.family_relation ?? null) : null,
       people: profiles.map((p) => ({
         profile_id: p.profile_id,
         chart_key: p.chart_key,
@@ -128,6 +145,9 @@ export class CompatibilityJobs {
       (r) => hash(r.context) === hash(context),
     );
     if (existing) return this.get(existing.id, lang);
+    // Family uses aspect math + placeholder only — no paid LLM path.
+    if (input.type === "family")
+      return this.createFamilyMath(context, profiles, lang);
     if (!this.enabled)
       throw Object.assign(new Error("generation_paused"), {
         statusCode: 200,
@@ -173,6 +193,60 @@ export class CompatibilityJobs {
     } finally {
       this.running.delete(gate);
     }
+  }
+  /** Sync family path: family_aspects_bridge math + placeholder reading. */
+  private async createFamilyMath(
+    context: any,
+    profiles: BirthProfile[],
+    lang: Lang,
+  ): Promise<Compatibility> {
+    const charts = await Promise.all(
+      profiles.map(async (p) => {
+        const raw = await this.store.get("raw:" + p.profile_id);
+        if (!raw)
+          throw Object.assign(new Error("Chart unavailable"), {
+            statusCode: 503,
+          });
+        return raw;
+      }),
+    );
+    const relationship_type = relationshipTypeFromFamilyRelation(
+      context.family_relation,
+    );
+    const math = await this.generateFamilyAspects({
+      chart_a: charts[0],
+      chart_b: charts[1],
+      relationship_type,
+      profile_a_label: profiles[0].label,
+      profile_b_label: profiles[1].label,
+    });
+    const created = new Date().toISOString();
+    const job: Job = {
+      job_id: randomUUID(),
+      kind: "compatibility",
+      status: "succeeded",
+      created_at: created,
+      updated_at: created,
+      eta_seconds: null,
+      error: null,
+      stages: [{ name: "reading", status: "ok" }],
+    };
+    const readings = familyPlaceholderReadings(
+      math.interpretation ?? FAMILY_COMPATIBILITY_PLACEHOLDER,
+    );
+    const record = {
+      id: randomUUID(),
+      context,
+      job,
+      created_at: created,
+      readings,
+      aspects: math.aspects ?? [],
+    };
+    validate("Compatibility", {
+      ...(await this.render(record, lang)),
+    });
+    await this.save(record);
+    return this.get(record.id, lang);
   }
   private start(
     record: any,
@@ -257,10 +331,10 @@ export class CompatibilityJobs {
         };
       }),
     );
-    return {
+    const base: Compatibility & { aspects?: unknown } = {
       compatibility_id: record.id,
       type: record.context.type,
-      family_relation: null,
+      family_relation: record.context.family_relation ?? null,
       people: { a: people[0], b: people[1] },
       created_at: record.created_at,
       score: null,
@@ -270,6 +344,10 @@ export class CompatibilityJobs {
           ? { status: "failed", error: record.job.error }
           : { status: "pending", job: record.job },
     };
+    // Aspects are math-only extras for the family skeleton (Zod passthrough).
+    if (record.context.type === "family" && Array.isArray(record.aspects))
+      base.aspects = record.aspects;
+    return base;
   }
   async get(id: string, lang: Lang, retry = false): Promise<Compatibility> {
     const r = await this.store.get("compat:" + id);
