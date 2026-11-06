@@ -117,7 +117,7 @@ export default function RecommendScreen() {
           />
           <Chip
             compact
-            label="Türkiye"
+            label={t("turkey")}
             selected={scope === "TR"}
             onPress={() => setScope("TR")}
           />

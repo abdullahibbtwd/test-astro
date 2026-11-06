@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { Txt } from "../../design/components";
 import {
   PENDING_ASTROLOGER_BANNER_TEST_ID,
@@ -7,6 +8,7 @@ import {
 
 /** High-visibility unfinished-content banner — must not ship in release. */
 export function PendingAstrologerBanner({ detail }: { detail: string }) {
+  const { t } = useTranslation();
   return (
     <View
       testID={PENDING_ASTROLOGER_BANNER_TEST_ID}
@@ -20,7 +22,7 @@ export function PendingAstrologerBanner({ detail }: { detail: string }) {
       }}
     >
       <Txt kind="caption" style={{ color: "#FFFFFF", fontWeight: "700" }}>
-        Unfinished — {PENDING_ASTROLOGER_MARK}
+        {t("unfinished", { mark: PENDING_ASTROLOGER_MARK })}
       </Txt>
       <Txt kind="caption" style={{ color: "#FFFFFF" }}>
         {detail}
