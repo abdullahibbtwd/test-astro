@@ -1,4 +1,7 @@
-import { Field as DesignField, SelectField } from "../../design-system/components/Fields";
+import {
+  Field as DesignField,
+  SelectField,
+} from "../../design-system/components/Fields";
 import ArrowUpDown from "lucide-react-native/icons/arrow-up-down";
 import { ProfilePicker } from "../../design/components/ProfileSwitcher";
 import { IconButton } from "../../design/components/IconButton";
@@ -18,6 +21,7 @@ import {
 } from "../../design/components";
 import { useProfiles, useCatalogue } from "../../api/hooks";
 import { request } from "../../api/client";
+import { useOnline } from "../../api/online";
 import { useApp } from "../../lib/state";
 import { useFlags } from "../../lib/flags";
 import type {
@@ -34,6 +38,7 @@ export default function NewMatchScreen() {
     profiles = useProfiles(),
     cat = useCatalogue(),
     flags = useFlags(),
+    online = useOnline(),
     [a, setA] = useState(params.a ?? app.me?.self_profile_id ?? ""),
     [b, setB] = useState(params.other ?? ""),
     [type, setType] = useState<CompatType>(),
@@ -64,7 +69,7 @@ export default function NewMatchScreen() {
     if (params.other && profiles.data) selectB(params.other);
   }, [params.other, profiles.data, selectB]);
   const create = async () => {
-    if (!type || a === b || !a || !b) return;
+    if (!online || !type || a === b || !a || !b) return;
     setBusy(true);
     setError(undefined);
     try {
@@ -101,12 +106,15 @@ export default function NewMatchScreen() {
   );
   return (
     <Screen back title={t("newCompatibility")}>
-      <DesignField label={t("personA")}><SelectField
-        accessibilityLabel={t("personA")}
-        valueLabel={profiles.data?.find((p) => p.profile_id === a)?.label}
-        placeholder={t("choosePerson")}
-        onPress={() => setPicker("a")}
-      /></DesignField>
+      {!online && <Txt muted>{t("offlineDisabled")}</Txt>}
+      <DesignField label={t("personA")}>
+        <SelectField
+          accessibilityLabel={t("personA")}
+          valueLabel={profiles.data?.find((p) => p.profile_id === a)?.label}
+          placeholder={t("choosePerson")}
+          onPress={() => setPicker("a")}
+        />
+      </DesignField>
       <IconButton
         accessibilityLabel={t("swapPeople")}
         icon={<ArrowUpDown size={22} color={c.ink} />}
@@ -115,12 +123,14 @@ export default function NewMatchScreen() {
           setB(a);
         }}
       />
-      <DesignField label={t("personB")}><SelectField
-        accessibilityLabel={t("personB")}
-        valueLabel={profiles.data?.find((p) => p.profile_id === b)?.label}
-        placeholder={t("choosePerson")}
-        onPress={() => setPicker("b")}
-      /></DesignField>
+      <DesignField label={t("personB")}>
+        <SelectField
+          accessibilityLabel={t("personB")}
+          valueLabel={profiles.data?.find((p) => p.profile_id === b)?.label}
+          placeholder={t("choosePerson")}
+          onPress={() => setPicker("b")}
+        />
+      </DesignField>
       <ProfilePicker
         open={!!picker}
         selectedId={picker === "a" ? a : b}
@@ -161,7 +171,7 @@ export default function NewMatchScreen() {
       <Button
         label={t("createReport")}
         loading={busy}
-        disabled={!a || !b || a === b || !type}
+        disabled={!online || !a || !b || a === b || !type}
         onPress={() => {
           void create();
         }}

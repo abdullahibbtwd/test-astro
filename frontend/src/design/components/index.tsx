@@ -1,12 +1,17 @@
 import { ArrowLeft, ChevronRight } from "../../design-system/LegacyIcons";
 import { AppText } from "../../design-system/text/AppText";
-import { size as dsSize, space as dsSpace, radius as dsRadius, opacity as dsOpacity } from "../../design-system/theme/tokens";
+import {
+  size as dsSize,
+  space as dsSpace,
+  radius as dsRadius,
+  opacity as dsOpacity,
+} from "../../design-system/theme/tokens";
 import { TextInputField } from "../../design-system/components/Fields";
 import { ScreenBackdrop } from "../../design-system/components/ScreenBackdrop";
 import { ContentList, type ContentListProps } from "./ContentList";
 import { useSnackbarLayout } from "./snackbar-store";
 import { useCallback, useEffect, useState } from "react";
-import { onlineManager } from "@tanstack/react-query";
+import { useOnline } from "../../api/online";
 import { describeError } from "../../api/errors";
 import { ContractError } from "../../api/contract-validation";
 import { reportError } from "../../lib/telemetry";
@@ -24,7 +29,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, router, useFocusEffect } from "expo-router";
-
 
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme";
@@ -47,13 +51,56 @@ export function Txt({
   minimumFontScale?: number;
 }) {
   const c = useTheme();
-  const variant = kind === "reading" ? "bodyLg" : kind === "title" ? "displaySection" : kind === "display" ? "displayTitle" : kind === "caption" ? "caption" : "body";
-  const content = Array.isArray(children) && children.every(child => typeof child === "string" || typeof child === "number") ? children.join("") : typeof children === "number" ? String(children) : children;
-  return <AppText variant={variant} color={muted ? "inkSoft" : kind === "title" || kind === "display" ? "accent" : "ink"}
-    accessibilityRole={kind === "title" || kind === "display" ? "header" : undefined}
-    selectable={kind === "reading"} numberOfLines={numberOfLines}
-    adjustsFontSizeToFit={adjustsFontSizeToFit} minimumFontScale={minimumFontScale}
-    style={[{ color: muted ? c.ink2 : kind === "title" || kind === "display" ? c.accent : c.ink }, style]}>{content}</AppText>;
+  const variant =
+    kind === "reading"
+      ? "bodyLg"
+      : kind === "title"
+        ? "displaySection"
+        : kind === "display"
+          ? "displayTitle"
+          : kind === "caption"
+            ? "caption"
+            : "body";
+  const content =
+    Array.isArray(children) &&
+    children.every(
+      (child) => typeof child === "string" || typeof child === "number",
+    )
+      ? children.join("")
+      : typeof children === "number"
+        ? String(children)
+        : children;
+  return (
+    <AppText
+      variant={variant}
+      color={
+        muted
+          ? "inkSoft"
+          : kind === "title" || kind === "display"
+            ? "accent"
+            : "ink"
+      }
+      accessibilityRole={
+        kind === "title" || kind === "display" ? "header" : undefined
+      }
+      selectable={kind === "reading"}
+      numberOfLines={numberOfLines}
+      adjustsFontSizeToFit={adjustsFontSizeToFit}
+      minimumFontScale={minimumFontScale}
+      style={[
+        {
+          color: muted
+            ? c.ink2
+            : kind === "title" || kind === "display"
+              ? c.accent
+              : c.ink,
+        },
+        style,
+      ]}
+    >
+      {content}
+    </AppText>
+  );
 }
 
 export function Screen({
@@ -142,7 +189,13 @@ export function Screen({
           </Pressable>
         )}
         {pinned && (
-          <View style={{ paddingHorizontal: dsSpace[4], paddingVertical: dsSpace[2], gap: dsSpace[1] }}>
+          <View
+            style={{
+              paddingHorizontal: dsSpace[4],
+              paddingVertical: dsSpace[2],
+              gap: dsSpace[1],
+            }}
+          >
             {pinned}
           </View>
         )}
@@ -156,7 +209,9 @@ export function Screen({
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={[
               styles.screen,
-              arch && { paddingHorizontal: dsSize.screenPaddingX + dsSize.archInset },
+              arch && {
+                paddingHorizontal: dsSize.screenPaddingX + dsSize.archInset,
+              },
               scrollProps?.contentContainerStyle,
             ]}
           >
@@ -210,9 +265,18 @@ export function Button({
           alignItems: "center",
           justifyContent: "center",
           borderWidth: 1,
-          borderColor: danger ? c.danger : secondary ? c.borderControl : c.primary,
-          backgroundColor: secondary ? undefined : danger ? c.danger : c.primary,
-          opacity: disabled || loading ? dsOpacity.disabled : pressed ? .88 : 1,
+          borderColor: danger
+            ? c.danger
+            : secondary
+              ? c.borderControl
+              : c.primary,
+          backgroundColor: secondary
+            ? undefined
+            : danger
+              ? c.danger
+              : c.primary,
+          opacity:
+            disabled || loading ? dsOpacity.disabled : pressed ? 0.88 : 1,
         },
       ]}
     >
@@ -316,7 +380,21 @@ export function Row({
   );
 }
 export function Field({ label, ...props }: TextInputProps & { label: string }) {
-  return <View style={{ gap: dsSpace[2] }}><AppText variant="label" color="inkSoft">{label}</AppText><View style={{ flexDirection: "row" }}><TextInputField {...props} value={props.value ?? ""} onChangeText={props.onChangeText ?? (() => {})} accessibilityLabel={label} /></View></View>;
+  return (
+    <View style={{ gap: dsSpace[2] }}>
+      <AppText variant="label" color="inkSoft">
+        {label}
+      </AppText>
+      <View style={{ flexDirection: "row" }}>
+        <TextInputField
+          {...props}
+          value={props.value ?? ""}
+          onChangeText={props.onChangeText ?? (() => {})}
+          accessibilityLabel={label}
+        />
+      </View>
+    </View>
+  );
 }
 
 export function Chip({
@@ -386,10 +464,9 @@ export function ErrorNotice({
   retry?: () => void;
 }) {
   const { t } = useTranslation();
-  const [online, setOnline] = useState(onlineManager.isOnline());
+  const online = useOnline();
   const description = describeError(error, online);
   const [remaining, setRemaining] = useState(0);
-  useEffect(() => onlineManager.subscribe(setOnline), []);
   useEffect(() => {
     setRemaining(description.retryAfterSec ?? 0);
     const timer = setInterval(
@@ -419,7 +496,7 @@ export function ErrorNotice({
         ["retry", "refresh", "request"].includes(description.action) && (
           <Button
             secondary
-            disabled={remaining > 0}
+            disabled={!online || remaining > 0}
             label={
               remaining > 0
                 ? t("retryCountdown", { seconds: remaining })
@@ -434,6 +511,11 @@ export function ErrorNotice({
             onPress={retry}
           />
         )}
+      {!online && (
+        <Txt kind="caption" muted>
+          {t("offlineDisabled")}
+        </Txt>
+      )}
     </Card>
   );
 }
