@@ -1,0 +1,22 @@
+# Gitleaks config — report findings by rule/path/commit only; never print secret values in docs.
+title = "astrology-app"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Checked-in examples and public placeholders"
+paths = [
+  '''\.env\.example$''',
+  '''\.env\..*\.example$''',
+  '''\.env\.docker\.example$''',
+  '''frontend/\.env\.example$''',
+  '''docs/.*\.md$''',
+]
+regexes = [
+  '''sb_publishable_\.\.\.''',
+  '''YOUR_PROJECT_REF''',
+  '''examplePublicKey''',
+  '''fake-webhook-secret''',
+  '''astrology:astrology@''',
+]
