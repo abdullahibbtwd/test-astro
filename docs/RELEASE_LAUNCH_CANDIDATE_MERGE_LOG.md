@@ -93,3 +93,4 @@ frontend/src/design/components/index.tsx
 - Frontend contract build/types/zod: pass (regen not committed; hash churn only).
 - Frontend typecheck/lint: fixed post-merge (useFlags return type; unused Txt; i18n `ts` types; service_unavailable remap).
 - Frontend release:check: BLOCKED on owner identity/legal/map/API inputs (expected; not agent-fillable).
+- GitHub Actions: branch pushed (`origin/release/launch-candidate` @ 0b7bbf8); workflow status not readable here (private repo; `gh` not authenticated). Owner can confirm at https://github.com/radulshishkov/astrology-app/actions?query=branch%3Arelease%2Flaunch-candidate
