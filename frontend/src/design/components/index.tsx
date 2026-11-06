@@ -406,6 +406,13 @@ export function ErrorNotice({
       reportError(error);
   }, [error, description.kind]);
   if (!error || description.kind === "unauthorized") return null;
+  if (description.kind === "premium_required")
+    return (
+      <Card>
+        <Txt kind="title">🔒 {t("lockedFeatureTitle")}</Txt>
+        <Txt muted>{t("lockedFeatureBody")}</Txt>
+      </Card>
+    );
   return (
     <Card>
       <Txt>

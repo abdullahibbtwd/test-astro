@@ -10,6 +10,13 @@ export { NativeStubProvider } from "./native-stub";
 
 export type MobileProviderChoice = "unset" | "fake" | "revenuecat" | "native";
 
+const providers: Record<Exclude<MobileProviderChoice, "unset">, PaymentProvider> =
+  {
+    fake: new FakeProvider(),
+    revenuecat: new RevenueCatStubProvider(),
+    native: new NativeStubProvider(),
+  };
+
 /** Resolve mobile provider. Default Fake until owner sets EXPO_PUBLIC_PAYMENT_PROVIDER. */
 export function getPaymentProvider(
   choice?: MobileProviderChoice,
@@ -18,7 +25,5 @@ export function getPaymentProvider(
     choice ??
     (process.env.EXPO_PUBLIC_PAYMENT_PROVIDER as MobileProviderChoice | undefined) ??
     "fake";
-  if (selected === "revenuecat") return new RevenueCatStubProvider();
-  if (selected === "native") return new NativeStubProvider();
-  return new FakeProvider();
+  return selected === "unset" ? providers.fake : providers[selected];
 }

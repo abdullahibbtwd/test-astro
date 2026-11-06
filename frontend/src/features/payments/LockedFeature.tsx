@@ -19,7 +19,7 @@ export function LockedFeature({
   if (!premium) return null;
   return (
     <View style={{ gap: 12, paddingVertical: 16 }}>
-      <Txt kind="title">{t("lockedFeatureTitle")}</Txt>
+      <Txt kind="title">🔒 {t("lockedFeatureTitle")}</Txt>
       <Txt muted>
         {feature
           ? t("lockedFeatureBodyNamed", { feature })
