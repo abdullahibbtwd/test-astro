@@ -445,7 +445,8 @@ export class CompatibilityJobs {
   }
   async remove(id: string) {
     const r = await this.store.get("compat:" + id);
-    if (r) await this.store.remove("job:" + r.job.job_id);
+    if (!r) throw issue(404);
+    if (r.job?.job_id) await this.store.remove("job:" + r.job.job_id);
     await this.store.remove("compat:" + id);
   }
 }
