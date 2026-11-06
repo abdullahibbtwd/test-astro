@@ -83,3 +83,13 @@ frontend/src/design/components/index.tsx
 - `docs/ai-ask-enablement-runbook`: already in main/RC — no merge. Conflicts: none.
 - `docs/compat-scoring-blocked`: already in main/RC — no merge. Conflicts: none.
 - `docs/notifications-channels`: already in main/RC — no merge. Conflicts: none.
+
+## Final verification
+- Prisma empty DB (`astrology_rc_empty`): 7 migrations applied, exit 0.
+- Prisma current (`astrology_test`): no pending migrations, exit 0.
+- Backend Node: 147 tests, 145 pass, 0 fail, 2 skipped.
+- Backend pytest (CI set): 114 passed, 9 skipped.
+- Frontend unit: 91/91 pass. Native: 24 suites / 88 tests pass.
+- Frontend contract build/types/zod: pass (regen not committed; hash churn only).
+- Frontend typecheck/lint: fixed post-merge (useFlags return type; unused Txt; i18n `ts` types; service_unavailable remap).
+- Frontend release:check: BLOCKED on owner identity/legal/map/API inputs (expected; not agent-fillable).
