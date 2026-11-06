@@ -31,7 +31,11 @@ import { bridge, computeBirthChart as defaultBirthChart } from "./engine";
 import { dataDir } from "./data-dir";
 import { defaults } from "./defaults";
 import { applyMapStyleEnv } from "./map-style-config";
-import { registerRateLimit, readRateLimitConfig } from "./rate-limit";
+import {
+  registerRateLimit,
+  readRateLimitConfig,
+  readTrustProxyHops,
+} from "./rate-limit";
 import { endpoints } from "../../frontend/scripts/endpoints";
 import { validate, schemas } from "../../frontend/src/api/zod";
 import type { BirthProfile, Me } from "../../frontend/contracts/spec-types";
@@ -72,8 +76,16 @@ export async function buildLocalApp({
   computeBirthChart?: typeof defaultBirthChart;
 }) {
   const demoAuth = process.env.ASTRO_DEMO_AUTH === "1";
-  const app = Fastify({ logger: false, bodyLimit: 65536 });
-  registerRateLimit(app, readRateLimitConfig());
+  // Coolify/Traefik: ASTRO_TRUST_PROXY_HOPS=1. Cloudflare in front: +1 (usually 2).
+  // Default 0 — request.ip is the TCP peer; X-Forwarded-For is ignored.
+  const trustProxyHops = readTrustProxyHops();
+  const app = Fastify({
+    logger: false,
+    bodyLimit: 65536,
+    trustProxy: trustProxyHops > 0 ? trustProxyHops : false,
+  });
+  // onRequest: coarse per-IP (before JWT). Authed buckets: enforceUserRateLimit after resolveTenant.
+  const rateLimiter = registerRateLimit(app, readRateLimitConfig());
   const dataRoot = dbPath === ":memory:" ? dataDir() : path.dirname(dbPath);
   const store = await Store.open(
     process.env.DATABASE_URL
@@ -467,7 +479,13 @@ export async function buildLocalApp({
               /^Bearer /,
               "",
             );
+            // Auth first, then per-user limits keyed on verified owner (never raw Authorization).
             tenantId = await resolveTenant(token);
+            if (
+              rateLimiter?.enforceUserRateLimit(request, reply, tenantId)
+            ) {
+              return;
+            }
           }
           const run = async <T>(fn: () => Promise<T>): Promise<T> =>
             tenantId ? store.runAsAsync(tenantId, fn) : fn();

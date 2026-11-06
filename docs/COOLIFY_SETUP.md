@@ -78,6 +78,8 @@ These are **not secrets**, but any provider API key embedded in the style URL is
 
 | Name | Kind | Notes |
 | --- | --- | --- |
+| `ASTRO_TRUST_PROXY_HOPS` | public | **Set `1` on Coolify/Traefik** so `request.ip` is the real client. If Cloudflare (or another CDN) sits in front of Traefik, use `2`. Default `0` treats the proxy as the client and ignores spoofed `X-Forwarded-For`. Details: [RATE_LIMIT.md](./RATE_LIMIT.md). |
+| `ASTRO_RATE_LIMIT_IP_MAX` / `ASTRO_RATE_LIMIT_MAX` / `ASTRO_RATE_LIMIT_EXPENSIVE_MAX` / `ASTRO_RATE_LIMIT_JOB_MAX` | public | In-process HTTP limits (memory only; reset on restart). Defaults **300** IP / 120 general / 40 expensive / **180** job-poll per minute. |
 | `ASTRO_BUDGET_LIMIT` | public | USD cap (code default `20`; `config:check` warns when set) |
 | `ASTRO_BUDGET_USER` | public | ledger partition (warns when set) |
 | `ASTRO_BUDGET_LOG` | public | path for JSONL spend/retry log |
