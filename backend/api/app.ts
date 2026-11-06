@@ -323,6 +323,10 @@ export async function buildLocalApp({
     return record.owner;
   };
   if (auth) registerBrowserSignIn(app, auth, session);
+  const { registerBillingStatus } = await import(
+    "./payments/billing-status-route"
+  );
+  registerBillingStatus(app, resolveTenant);
   const calendarContext = async (profile: BirthProfile) => {
     const me = (await store.get<Me>("me"))!;
     const current =
