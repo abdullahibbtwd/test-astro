@@ -76,3 +76,10 @@ frontend/src/design/components/index.tsx
 
 ## Layer 7 — android/release-readiness
 - Committed stash onto `android/release-readiness` then merged cleanly. Conflicts: none.
+- Follow-up: added Android docs + `frontend/plugins` hardening plugin. Conflicts: none.
+- Layer 6 note: fx-reliability premium assertion updated to lock body copy; native suite green after fix.
+
+## Layer 8 — docs/*
+- `docs/ai-ask-enablement-runbook`: already in main/RC — no merge. Conflicts: none.
+- `docs/compat-scoring-blocked`: already in main/RC — no merge. Conflicts: none.
+- `docs/notifications-channels`: already in main/RC — no merge. Conflicts: none.
