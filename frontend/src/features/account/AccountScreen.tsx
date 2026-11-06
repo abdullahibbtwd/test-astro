@@ -238,6 +238,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
                   : "deleteExplanation",
               )}
             </Txt>
+            <Txt muted>{t("deleteSubscriptionNote")}</Txt>
             {!confirm ? (
               <Button
                 secondary
