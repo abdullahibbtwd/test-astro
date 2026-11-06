@@ -24,13 +24,14 @@ import { PlaceSearch } from "../../design/components/PlaceSearch";
 import { DateTimeField } from "../../design/components/DateTimeField";
 import { useApp } from "../../lib/state";
 import { useActions, useConfig } from "../../api/hooks";
-import { identity, legalUrl } from "../../config/identity";
+import { legalUrl } from "../../config/identity";
 import { validBirth, todayLocal } from "../../lib/dates";
 import { JobProgress } from "../../design/components/JobProgress";
 import { useGenerated } from "../../api/jobs";
 import type { NatalReading } from "../../../contracts/spec-types";
 import { mockToday } from "../../api/client";
 import type { Place } from "../../../contracts/spec-types";
+import { acceptBirthDataConsent } from "../consent";
 const steps = [
   "consent",
   "name",
@@ -72,15 +73,7 @@ export default function OnboardingScreen() {
     go("details");
   };
   const consent = async () => {
-    await actions.patchMe({
-      consents: {
-        birth_data: {
-          version: identity.consentVersion,
-          accepted_at: new Date().toISOString(),
-        },
-        marketing: draft.marketing,
-      },
-    });
+    await actions.patchMe(acceptBirthDataConsent(draft.marketing));
     go("name");
   };
   const saveBirth = async (place: Place) => {
@@ -116,25 +109,37 @@ export default function OnboardingScreen() {
   return (
     <Screen headerless back>
       <Progress step={steps.indexOf(step) + 1} total={steps.length} />
-      {["birth-date", "birth-time", "birth-place"].includes(step) && <View style={{ alignItems: "center" }}><ChartWheel width={180} /></View>}
+      {["birth-date", "birth-time", "birth-place"].includes(step) && (
+        <View style={{ alignItems: "center" }}>
+          <ChartWheel width={180} />
+        </View>
+      )}
       {step === "consent" ? (
         <>
           <Txt kind="display">{t("consentTitle")}</Txt>
           <Card>
             <View
-              style={{ flexDirection: "row", gap: dsSpace[3], alignItems: "center" }}
+              style={{
+                flexDirection: "row",
+                gap: dsSpace[3],
+                alignItems: "center",
+              }}
             >
               <Switch
                 accessibilityLabel={t("consent.birthData")}
                 value={draft.consent}
                 onValueChange={(consent) => app.editDraft({ consent })}
               />
-              <Txt style={{ flex: 1 }}>
-                {t("consent.birthData")}
-              </Txt>
+              <Txt style={{ flex: 1 }}>{t("consent.birthData")}</Txt>
             </View>
           </Card>
-          <View style={{ flexDirection: "row", gap: dsSpace[3], alignItems: "center" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: dsSpace[3],
+              alignItems: "center",
+            }}
+          >
             <Switch
               accessibilityLabel={t("marketing")}
               value={draft.marketing}

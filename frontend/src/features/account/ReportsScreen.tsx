@@ -17,12 +17,12 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Screen,
-  Txt,
   Row,
   Chip,
   Button,
   Skeleton,
   ErrorNotice,
+  EmptyState,
 } from "../../design/components";
 import { useReports, useActions } from "../../api/hooks";
 import { useFlags } from "../../lib/flags";
@@ -162,7 +162,7 @@ export default function ReportsScreen() {
           reports.isPending ? (
             <Skeleton />
           ) : !reports.error ? (
-            <Txt muted>{t("emptyReports")}</Txt>
+            <EmptyState titleKey="emptyReports" />
           ) : null
         }
         renderItem={({ item }) => (

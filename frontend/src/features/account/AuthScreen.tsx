@@ -1,6 +1,12 @@
-import { GuestWelcomeScreen, WelcomeFooter } from "../onboarding/GuestOnboarding";
+import {
+  GuestWelcomeScreen,
+  WelcomeFooter,
+} from "../onboarding/GuestOnboarding";
 import { Title } from "../../design-system/components/Title";
-import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
+import {
+  space as dsSpace,
+  radius as dsRadius,
+} from "../../design-system/theme/tokens";
 import { Emblem } from "../../design-system/components/Ornament";
 import { showSnackbar } from "../../design/components/Snackbar";
 import Constants from "expo-constants";
@@ -18,6 +24,7 @@ import {
 } from "../../design/components";
 import { useTheme } from "../../design/theme";
 import { useActions } from "../../api/hooks";
+import { useOnline } from "../../api/online";
 import { routeAfterSignIn } from "../../api/client";
 import { ApiError, NetworkError } from "../../api/errors";
 import { resolveRoute } from "../../lib/routes";
@@ -35,11 +42,13 @@ export default function AuthScreen() {
     }>(),
     { t } = useTranslation(),
     c = useTheme(),
-    actions = useActions();
+    actions = useActions(),
+    online = useOnline();
   const [providerBusy, setProviderBusy] = useState(false),
     [providerError, setProviderError] = useState<unknown>(),
     [authError, setAuthError] = useState<unknown>();
   const signIn = async (provider: "google" | "apple") => {
+    if (!online) return;
     if (!demoBackend && provider === "google") {
       router.push("/(auth)/link?provider=google");
       return;
@@ -84,7 +93,7 @@ export default function AuthScreen() {
     return error;
   };
   const verify = async (value: string) => {
-    if (submitting.current) return;
+    if (!online || submitting.current) return;
     submitting.current = true;
     setAuthError(undefined);
     try {
@@ -105,6 +114,7 @@ export default function AuthScreen() {
         <Txt kind="display">
           {t(mode === "email" ? "emailTitle" : "checkInbox")}
         </Txt>
+        {!online && <Txt muted>{t("offlineDisabled")}</Txt>}
         {mode === "email" ? (
           <>
             <Field
@@ -117,7 +127,7 @@ export default function AuthScreen() {
             />
             <Button
               label={t("sendCode")}
-              disabled={!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)}
+              disabled={!online || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)}
               loading={actions.isPending}
               onPress={() => {
                 setAuthError(undefined);
@@ -136,6 +146,7 @@ export default function AuthScreen() {
             <Txt muted>{t("codeHint")}</Txt>
             <Pressable
               onPress={() => input.current?.focus()}
+              accessibilityRole="button"
               accessibilityLabel={t("code")}
             >
               <View style={{ flexDirection: "row", gap: dsSpace[2] }}>
@@ -165,6 +176,8 @@ export default function AuthScreen() {
               textContentType="oneTimeCode"
               autoComplete="sms-otp"
               maxLength={6}
+              editable={online}
+              maxFontSizeMultiplier={1.5}
               style={{ position: "absolute", width: 1, height: 1, opacity: 0 }}
               onChangeText={(value) => {
                 const digits = value.replace(/\D/g, "").slice(0, 6);
@@ -176,7 +189,7 @@ export default function AuthScreen() {
             <Button
               label={cooldown ? `${t("resend")} (${cooldown})` : t("resend")}
               secondary
-              disabled={cooldown > 0}
+              disabled={!online || cooldown > 0}
               onPress={() => {
                 setAuthError(undefined);
                 void actions
@@ -200,14 +213,26 @@ export default function AuthScreen() {
     );
   return (
     <Screen headerless arch grain footer={<WelcomeFooter />}>
-      <Title variant="displayHero">{Constants.expoConfig?.name ?? "Astrology"}</Title>
-      <View style={{ alignItems: "center" }}><Emblem width={120} /></View>
+      <Title variant="displayHero">
+        {Constants.expoConfig?.name ?? "Astrology"}
+      </Title>
+      <View style={{ alignItems: "center" }}>
+        <Emblem width={120} />
+      </View>
       <Txt kind="display">{t("guestMore")}</Txt>
       <Txt muted>{t("guestUnlockBody")}</Txt>
+      {!online && <Txt muted>{t("offlineDisabled")}</Txt>}
       <ErrorNotice error={providerError} />
-      <Button secondary label={t("googleContinue")} loading={providerBusy} onPress={() => void signIn("google")} />
+      <Button
+        secondary
+        label={t("googleContinue")}
+        loading={providerBusy}
+        disabled={!online}
+        onPress={() => void signIn("google")}
+      />
       <Button
         label={t("emailContinue")}
+        disabled={!online}
         onPress={() => router.push("/(auth)/welcome?mode=email")}
       />
       <Button secondary label={t("back")} onPress={() => router.back()} />

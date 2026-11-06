@@ -66,7 +66,8 @@ export interface Problem {
   type: string; title: string; status: number;
   code: 'validation_error' | 'unauthorized' | 'forbidden' | 'not_found' | 'conflict'
       | 'out_of_range' | 'rate_limited' | 'generation_failed' | 'absent'
-      | 'upstream_unavailable' | 'internal' | 'busy' | 'account_required' | 'read_ahead_limit';
+      | 'upstream_unavailable' | 'internal' | 'busy' | 'account_required' | 'read_ahead_limit'
+      | 'premium_required';
   blocking_job_id?: string;
   detail?: string;                               // developer text, never shown to users
   fields?: { field: string; issue: string }[];   // validation_error

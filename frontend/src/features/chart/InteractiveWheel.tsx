@@ -170,8 +170,6 @@ export function InteractiveWheel({
       <View
         onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
         style={{ width: "100%", aspectRatio: 1, overflow: "hidden" }}
-        accessibilityLabel={t("chartWheel")}
-        accessibilityHint={t("chartWheelHint")}
       >
         <GestureDetector
           gesture={Gesture.Simultaneous(
@@ -179,7 +177,15 @@ export function InteractiveWheel({
             Gesture.Race(pan, Gesture.Exclusive(doubleTap, press)),
           )}
         >
-          <Animated.View style={[{ width, height: width }, animated]}>
+          <Animated.View
+            accessible={!screenReader}
+            accessibilityRole="image"
+            accessibilityLabel={t("chartWheel")}
+            accessibilityHint={t("chartWheelHint")}
+            accessibilityElementsHidden={screenReader}
+            importantForAccessibility={screenReader ? "no-hide-descendants" : "auto"}
+            style={[{ width, height: width }, animated]}
+          >
             <SvgCss
               xml={
                 selection

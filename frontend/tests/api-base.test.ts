@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { resolveApiBase } from "../src/api/api-base";
+import {
+  assertProductionApiUrl,
+  resolveApiBase,
+} from "../src/api/api-base";
 
 test("dev may fall back to the local mock API", () => {
   assert.equal(
@@ -31,4 +34,24 @@ test("release profile must not resolve to loopback mock", () => {
     const base = resolveApiBase({}, { isDev: false });
     assert.doesNotMatch(base, /127\.0\.0\.1:4010/);
   }, /EXPO_PUBLIC_API_URL is missing/);
+});
+
+test("assertProductionApiUrl rejects empty, http, and sslip.io", () => {
+  assert.throws(() => assertProductionApiUrl(""), /empty/);
+  assert.throws(() => assertProductionApiUrl(undefined), /empty/);
+  assert.throws(
+    () => assertProductionApiUrl("http://api.example.test/v1"),
+    /https/,
+  );
+  assert.throws(
+    () =>
+      assertProductionApiUrl(
+        "https://nh5cvuocsjpsl8e3o0kbrbkz.187.127.233.163.sslip.io/v1",
+      ),
+    /sslip\.io/,
+  );
+  assert.equal(
+    assertProductionApiUrl("https://api.example.test/v1"),
+    "https://api.example.test/v1",
+  );
 });

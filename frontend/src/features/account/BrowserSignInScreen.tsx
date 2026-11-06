@@ -17,12 +17,14 @@ import {
   cancelBrowserSignIn,
   type SignInTicket,
 } from "../../lib/browser-signin";
+import { useOnline } from "../../api/online";
 import { ApiError, setSession, routeAfterSignIn } from "../../api/client";
 import { resolveRoute } from "../../lib/routes";
 export default function BrowserSignInScreen() {
   const { provider: raw } = useLocalSearchParams<{ provider?: string }>();
   const provider = raw === "google" ? "google" : "email";
   const { t } = useTranslation();
+  const online = useOnline();
   const [email, setEmail] = useState(""),
     [ticket, setTicket] = useState<SignInTicket | null>(null),
     [busy, setBusy] = useState(false),
@@ -32,7 +34,7 @@ export default function BrowserSignInScreen() {
     starting = useRef(false),
     auto = useRef(false);
   const start = useCallback(async () => {
-    if (starting.current) return;
+    if (!online || starting.current) return;
     starting.current = true;
     setBusy(true);
     setError(undefined);
@@ -56,7 +58,7 @@ export default function BrowserSignInScreen() {
       starting.current = false;
       if (alive.current) setBusy(false);
     }
-  }, [provider, email]);
+  }, [provider, email, online]);
   useEffect(() => {
     alive.current = true;
     return () => {
@@ -65,17 +67,18 @@ export default function BrowserSignInScreen() {
     };
   }, []);
   useEffect(() => {
-    if (provider === "google" && !auto.current) {
+    if (provider === "google" && online && !auto.current) {
       auto.current = true;
       void start();
     }
-  }, [provider, start]); // One browser launch on entry.
+  }, [provider, online, start]); // One browser launch on entry.
   useEffect(() => {
     if (!ticket) return;
     let stopped = false,
       checking = false;
     const check = async () => {
-      if (stopped || checking || AppState.currentState !== "active") return;
+      if (stopped || checking || !online || AppState.currentState !== "active")
+        return;
       if (Date.now() >= Date.parse(ticket.expires_at)) {
         setError(new ApiError(401, "unauthorized"));
         setTicket(null);
@@ -110,7 +113,7 @@ export default function BrowserSignInScreen() {
       clearInterval(timer);
       listener.remove();
     };
-  }, [ticket]);
+  }, [ticket, online]);
   return (
     <Screen back>
       <Txt kind="display">
@@ -122,6 +125,7 @@ export default function BrowserSignInScreen() {
               : "emailTitle",
         )}
       </Txt>
+      {!online && <Txt muted>{t("offlineDisabled")}</Txt>}
       {provider === "email" && !ticket && (
         <Field
           label={t("email")}
@@ -130,6 +134,7 @@ export default function BrowserSignInScreen() {
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
+          editable={online}
         />
       )}
       <Txt muted>
@@ -150,6 +155,7 @@ export default function BrowserSignInScreen() {
             <Button
               secondary
               label={t("reopenSignIn")}
+              disabled={!online}
               onPress={() => void Linking.openURL(ticket.url!).catch(setError)}
             />
           )}
@@ -169,7 +175,8 @@ export default function BrowserSignInScreen() {
           label={t(provider === "google" ? "googleContinue" : "sendSignInLink")}
           loading={busy}
           disabled={
-            provider === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+            !online ||
+            (provider === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
           }
           onPress={() => void start()}
         />

@@ -10,6 +10,7 @@ import {
   Row,
   Skeleton,
   ErrorNotice,
+  EmptyState,
 } from "../../design/components";
 import { useApp } from "../../lib/state";
 import { formatDate } from "../../lib/dates";
@@ -26,6 +27,13 @@ export default function ChartsScreen() {
         <Skeleton />
       ) : (
         <>
+          {!profiles.error && (profiles.data?.length ?? 0) === 0 && (
+            <EmptyState
+              titleKey="emptyCharts"
+              actionKey="addPerson"
+              onAction={() => router.push("/profile/charts/new")}
+            />
+          )}
           {[...(profiles.data ?? [])]
             .sort(
               (a, b) =>

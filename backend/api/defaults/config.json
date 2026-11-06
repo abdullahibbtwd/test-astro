@@ -11,7 +11,8 @@
     "homeEnergyTile": false,
     "dayScoreNumbers": true,
     "elementNotes": false,
-    "showTraces": false
+    "showTraces": false,
+    "paymentsUi": false
   },
   "polling": {
     "initial_ms": [

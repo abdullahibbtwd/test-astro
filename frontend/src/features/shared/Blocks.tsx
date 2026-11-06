@@ -21,6 +21,8 @@ import { useTheme } from "../../design/theme";
 import { useFlags } from "../../lib/flags";
 import { useApp } from "../../lib/state";
 import { formatDate } from "../../lib/dates";
+import { isPremiumRequired } from "../../api/errors";
+import { LockedFeature } from "../payments/LockedFeature";
 import type {
   GeneratedPart,
   CalendarEventRef,
@@ -63,6 +65,8 @@ export function Generated<T>({
       </Txt>
     );
   if (part.status === "ready") return <>{children(part)}</>;
+  if (part.status === "failed" && isPremiumRequired(part.error))
+    return <LockedFeature error={part.error} />;
   return (
     <>
       <Skeleton variant="lines" lines={3} />

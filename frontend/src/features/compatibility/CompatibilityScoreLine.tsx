@@ -1,5 +1,4 @@
-import { Text } from "react-native";
-import { useTheme } from "../../design/theme";
+import { AppText } from "../../design-system/text/AppText";
 import type { Compatibility } from "../../../contracts/spec-types";
 
 /** True only for a displayable numeric score — never null / empty / NaN. */
@@ -26,11 +25,10 @@ export function CompatibilityScoreLine({
   score: Compatibility["score"];
   enabled: boolean;
 }) {
-  const theme = useTheme();
   if (!enabled || !isPresentCompatibilityScore(score)) return null;
   return (
-    <Text testID="compatibility-score" style={{ color: theme.ink }}>
+    <AppText testID="compatibility-score">
       {score.value} / 100 · {score.label}
-    </Text>
+    </AppText>
   );
 }

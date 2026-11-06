@@ -945,7 +945,7 @@ export interface components {
             title: string;
             status: number;
             /** @enum {string} */
-            code: "validation_error" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "out_of_range" | "rate_limited" | "generation_failed" | "absent" | "upstream_unavailable" | "internal" | "busy" | "account_required" | "read_ahead_limit";
+            code: "validation_error" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "out_of_range" | "rate_limited" | "generation_failed" | "absent" | "upstream_unavailable" | "internal" | "busy" | "account_required" | "read_ahead_limit" | "premium_required";
             blocking_job_id?: string;
             detail?: string;
             fields?: {

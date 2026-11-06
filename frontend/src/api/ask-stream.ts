@@ -1,5 +1,11 @@
 import { fetch } from "expo/fetch";
-import { apiBase, accessToken, refreshSession, ApiError } from "./client";
+import {
+  apiBase,
+  accessToken,
+  refreshSession,
+  ApiError,
+  parseRetryAfter,
+} from "./client";
 import { SSEParser, askContext } from "./sse";
 import { useApp } from "../lib/state";
 import type { AskContext } from "../../contracts/spec-types";
@@ -35,7 +41,7 @@ export async function streamAnswer(
     throw new ApiError(
       response.status,
       problem?.code ?? "upstream_unavailable",
-      Number(response.headers.get("Retry-After")) || 0,
+      parseRetryAfter(response.headers.get("Retry-After")),
       problem ?? undefined,
     );
   }

@@ -12,6 +12,7 @@ import {
   Button,
 } from "../../design/components";
 import { validate } from "../../api/zod";
+import { useOnline } from "../../api/online";
 import { useCatalogue } from "../../api/hooks";
 import { useProfile } from "../shared/useProfile";
 import { MapSearch } from "./MapSearch";
@@ -35,6 +36,7 @@ export default function RecommendScreen() {
   }
   const { id } = useProfile(),
     { t } = useTranslation(),
+    online = useOnline(),
     cat = useCatalogue().data,
     [goal, setGoal] = useState<Goal | "overall">(initial.goal ?? "overall"),
     [text, setText] = useState(initial.query_text ?? ""),
@@ -69,6 +71,7 @@ export default function RecommendScreen() {
     "central_asia",
   ] as const;
   const submit = () => {
+    if (!online) return;
     const body: RecommendationRequest = {
       ...(text.trim() ? { query_text: text.trim() } : { goal }),
       scope,
@@ -80,6 +83,7 @@ export default function RecommendScreen() {
   };
   return (
     <Screen back title={t("whereShouldIGo")}>
+      {!online && <Txt muted>{t("offlineDisabled")}</Txt>}
       <Choices gap={dsSpace[3]}>
         {(["overall", ...Object.keys(cat.goals)] as (Goal | "overall")[]).map(
           (g) => (
@@ -113,7 +117,7 @@ export default function RecommendScreen() {
           />
           <Chip
             compact
-            label="Türkiye"
+            label={t("turkey")}
             selected={scope === "TR"}
             onPress={() => setScope("TR")}
           />
@@ -234,7 +238,7 @@ export default function RecommendScreen() {
           </View>
         </View>
       )}
-      <Button label={t("findPlaces")} onPress={submit} />
+      <Button label={t("findPlaces")} disabled={!online} onPress={submit} />
     </Screen>
   );
 }

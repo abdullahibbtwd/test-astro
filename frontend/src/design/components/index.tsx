@@ -1,12 +1,17 @@
 import { ArrowLeft, ChevronRight } from "../../design-system/LegacyIcons";
 import { AppText } from "../../design-system/text/AppText";
-import { size as dsSize, space as dsSpace, radius as dsRadius, opacity as dsOpacity } from "../../design-system/theme/tokens";
+import {
+  size as dsSize,
+  space as dsSpace,
+  radius as dsRadius,
+  opacity as dsOpacity,
+} from "../../design-system/theme/tokens";
 import { TextInputField } from "../../design-system/components/Fields";
 import { ScreenBackdrop } from "../../design-system/components/ScreenBackdrop";
 import { ContentList, type ContentListProps } from "./ContentList";
 import { useSnackbarLayout } from "./snackbar-store";
 import { useCallback, useEffect, useState } from "react";
-import { onlineManager } from "@tanstack/react-query";
+import { useOnline } from "../../api/online";
 import { describeError } from "../../api/errors";
 import { ContractError } from "../../api/contract-validation";
 import { reportError } from "../../lib/telemetry";
@@ -25,10 +30,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, router, useFocusEffect } from "expo-router";
 
-
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme";
 import type { PropsWithChildren } from "react";
+export { EmptyState } from "./EmptyState";
 export function Txt({
   children,
   kind = "body",
@@ -47,13 +52,56 @@ export function Txt({
   minimumFontScale?: number;
 }) {
   const c = useTheme();
-  const variant = kind === "reading" ? "bodyLg" : kind === "title" ? "displaySection" : kind === "display" ? "displayTitle" : kind === "caption" ? "caption" : "body";
-  const content = Array.isArray(children) && children.every(child => typeof child === "string" || typeof child === "number") ? children.join("") : typeof children === "number" ? String(children) : children;
-  return <AppText variant={variant} color={muted ? "inkSoft" : kind === "title" || kind === "display" ? "accent" : "ink"}
-    accessibilityRole={kind === "title" || kind === "display" ? "header" : undefined}
-    selectable={kind === "reading"} numberOfLines={numberOfLines}
-    adjustsFontSizeToFit={adjustsFontSizeToFit} minimumFontScale={minimumFontScale}
-    style={[{ color: muted ? c.ink2 : kind === "title" || kind === "display" ? c.accent : c.ink }, style]}>{content}</AppText>;
+  const variant =
+    kind === "reading"
+      ? "bodyLg"
+      : kind === "title"
+        ? "displaySection"
+        : kind === "display"
+          ? "displayTitle"
+          : kind === "caption"
+            ? "caption"
+            : "body";
+  const content =
+    Array.isArray(children) &&
+    children.every(
+      (child) => typeof child === "string" || typeof child === "number",
+    )
+      ? children.join("")
+      : typeof children === "number"
+        ? String(children)
+        : children;
+  return (
+    <AppText
+      variant={variant}
+      color={
+        muted
+          ? "inkSoft"
+          : kind === "title" || kind === "display"
+            ? "accent"
+            : "ink"
+      }
+      accessibilityRole={
+        kind === "title" || kind === "display" ? "header" : undefined
+      }
+      selectable={kind === "reading"}
+      numberOfLines={numberOfLines}
+      adjustsFontSizeToFit={adjustsFontSizeToFit}
+      minimumFontScale={minimumFontScale}
+      style={[
+        {
+          color: muted
+            ? c.ink2
+            : kind === "title" || kind === "display"
+              ? c.accent
+              : c.ink,
+        },
+        style,
+      ]}
+    >
+      {content}
+    </AppText>
+  );
 }
 
 export function Screen({
@@ -142,7 +190,13 @@ export function Screen({
           </Pressable>
         )}
         {pinned && (
-          <View style={{ paddingHorizontal: dsSpace[4], paddingVertical: dsSpace[2], gap: dsSpace[1] }}>
+          <View
+            style={{
+              paddingHorizontal: dsSpace[4],
+              paddingVertical: dsSpace[2],
+              gap: dsSpace[1],
+            }}
+          >
             {pinned}
           </View>
         )}
@@ -156,7 +210,9 @@ export function Screen({
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={[
               styles.screen,
-              arch && { paddingHorizontal: dsSize.screenPaddingX + dsSize.archInset },
+              arch && {
+                paddingHorizontal: dsSize.screenPaddingX + dsSize.archInset,
+              },
               scrollProps?.contentContainerStyle,
             ]}
           >
@@ -210,9 +266,18 @@ export function Button({
           alignItems: "center",
           justifyContent: "center",
           borderWidth: 1,
-          borderColor: danger ? c.danger : secondary ? c.borderControl : c.primary,
-          backgroundColor: secondary ? undefined : danger ? c.danger : c.primary,
-          opacity: disabled || loading ? dsOpacity.disabled : pressed ? .88 : 1,
+          borderColor: danger
+            ? c.danger
+            : secondary
+              ? c.borderControl
+              : c.primary,
+          backgroundColor: secondary
+            ? undefined
+            : danger
+              ? c.danger
+              : c.primary,
+          opacity:
+            disabled || loading ? dsOpacity.disabled : pressed ? 0.88 : 1,
         },
       ]}
     >
@@ -223,8 +288,8 @@ export function Button({
           variant="button"
           align="center"
           color={secondary ? (danger ? "danger" : "accent") : "onPrimary"}
-          numberOfLines={1}
-          style={{ flexShrink: 0 }}
+          numberOfLines={2}
+          style={{ flexShrink: 1 }}
         >
           {label}
         </AppText>
@@ -274,7 +339,7 @@ export function Row({
   const c = useTheme();
   return (
     <Pressable
-      accessibilityRole={onPress ? "button" : undefined}
+      accessibilityRole={onPress || onLongPress ? "button" : undefined}
       accessibilityLabel={[label, detail].filter(Boolean).join(", ")}
       disabled={!onPress && !onLongPress}
       onPress={onPress}
@@ -294,6 +359,7 @@ export function Row({
           style={{
             width: 44,
             height: 44,
+            flexShrink: 0,
             borderRadius: 22,
             alignItems: "center",
             justifyContent: "center",
@@ -303,10 +369,10 @@ export function Row({
           {leading}
         </View>
       )}
-      <View style={{ flex: 1, gap: dsSpace[1] }}>
-        <Txt>{label}</Txt>
+      <View style={{ flex: 1, minWidth: 0, gap: dsSpace[1] }}>
+        <Txt style={{ flexShrink: 1 }}>{label}</Txt>
         {detail && (
-          <Txt kind="caption" muted>
+          <Txt kind="caption" muted style={{ flexShrink: 1 }}>
             {detail}
           </Txt>
         )}
@@ -316,7 +382,21 @@ export function Row({
   );
 }
 export function Field({ label, ...props }: TextInputProps & { label: string }) {
-  return <View style={{ gap: dsSpace[2] }}><AppText variant="label" color="inkSoft">{label}</AppText><View style={{ flexDirection: "row" }}><TextInputField {...props} value={props.value ?? ""} onChangeText={props.onChangeText ?? (() => {})} accessibilityLabel={label} /></View></View>;
+  return (
+    <View style={{ gap: dsSpace[2] }}>
+      <AppText variant="label" color="inkSoft">
+        {label}
+      </AppText>
+      <View style={{ flexDirection: "row" }}>
+        <TextInputField
+          {...props}
+          value={props.value ?? ""}
+          onChangeText={props.onChangeText ?? (() => {})}
+          accessibilityLabel={label}
+        />
+      </View>
+    </View>
+  );
 }
 
 export function Chip({
@@ -354,10 +434,12 @@ export function Chip({
     >
       <Txt
         kind={compact ? "caption" : undefined}
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.8}
-        style={{ color: selected ? c.onPrimary : c.ink }}
+        numberOfLines={2}
+        style={{
+          color: selected ? c.onPrimary : c.ink,
+          flexShrink: 1,
+          textAlign: "center",
+        }}
       >
         {label}
       </Txt>
@@ -378,63 +460,113 @@ export function Choices({
     </View>
   );
 }
-export function ErrorNotice({
+/**
+ * Standard error / retry / offline surface for every screen.
+ * `cachedOffline` shows the soft offline banner while cached content remains visible.
+ */
+export function StandardErrorState({
   error,
   retry,
+  cachedOffline = false,
 }: {
-  error: unknown;
+  error?: unknown | null;
   retry?: () => void;
+  cachedOffline?: boolean;
 }) {
   const { t } = useTranslation();
-  const [online, setOnline] = useState(onlineManager.isOnline());
-  const description = describeError(error, online);
+  const online = useOnline();
+  const description =
+    error != null ? describeError(error, online) : null;
   const [remaining, setRemaining] = useState(0);
-  useEffect(() => onlineManager.subscribe(setOnline), []);
   useEffect(() => {
-    setRemaining(description.retryAfterSec ?? 0);
+    setRemaining(description?.retryAfterSec ?? 0);
     const timer = setInterval(
       () => setRemaining((n) => Math.max(0, n - 1)),
       1000,
     );
     return () => clearInterval(timer);
-  }, [error, description.retryAfterSec]);
+  }, [error, description?.retryAfterSec]);
   useEffect(() => {
     if (
       error &&
+      description &&
       (description.kind === "invalid" || error instanceof ContractError)
     )
       reportError(error);
-  }, [error, description.kind]);
-  if (!error || description.kind === "unauthorized") return null;
+  }, [error, description]);
+  if (description?.kind === "premium_required")
+    return (
+      <Card>
+        <Txt kind="title">🔒 {t("lockedFeatureTitle")}</Txt>
+        <Txt muted>{t("lockedFeatureBody")}</Txt>
+      </Card>
+    );
+  const showBanner = cachedOffline && !online;
+  const showError =
+    error != null && !!description && description.kind !== "unauthorized";
+  if (!showBanner && !showError) return null;
   return (
-    <Card>
-      <Txt>
-        {description.message ||
-          (description.titleKey ? t(description.titleKey) : "")}
-      </Txt>
-      {description.action === "back" && (
-        <Button secondary label={t("back")} onPress={() => router.back()} />
-      )}
-      {retry &&
-        ["retry", "refresh", "request"].includes(description.action) && (
-          <Button
-            secondary
-            disabled={remaining > 0}
-            label={
-              remaining > 0
-                ? t("retryCountdown", { seconds: remaining })
-                : t(
-                    description.action === "refresh"
-                      ? "refresh"
-                      : description.action === "request"
-                        ? "requestReading"
-                        : "retry",
-                  )
-            }
-            onPress={retry}
-          />
-        )}
-    </Card>
+    <View style={{ gap: dsSpace[3] }}>
+      {showBanner ? (
+        <View accessible accessibilityRole="text">
+          <Txt kind="caption">{t("offline")}</Txt>
+        </View>
+      ) : null}
+      {showError && description ? (
+        <Card>
+          <Txt>
+            {description.message ||
+              (description.titleKey ? t(description.titleKey) : "")}
+          </Txt>
+          {description.action === "back" && (
+            <Button secondary label={t("back")} onPress={() => router.back()} />
+          )}
+          {retry &&
+            ["retry", "refresh", "request"].includes(description.action) && (
+              <Button
+                secondary
+                disabled={!online || remaining > 0}
+                label={
+                  remaining > 0
+                    ? t("retryCountdown", { seconds: remaining })
+                    : t(
+                        description.action === "refresh"
+                          ? "refresh"
+                          : description.action === "request"
+                            ? "requestReading"
+                            : "retry",
+                      )
+                }
+                onPress={retry}
+              />
+            )}
+          {!online ? (
+            <Txt kind="caption" muted>
+              {t("offlineDisabled")}
+            </Txt>
+          ) : null}
+        </Card>
+      ) : null}
+    </View>
+  );
+}
+
+/** Alias kept for existing call sites — prefer StandardErrorState for new code. */
+export function ErrorNotice({
+  error,
+  retry,
+  cachedOffline,
+}: {
+  error: unknown;
+  retry?: () => void;
+  cachedOffline?: boolean;
+}) {
+  return (
+    <StandardErrorState
+      error={error}
+      retry={retry}
+      cachedOffline={cachedOffline}
+    />
   );
 }
 

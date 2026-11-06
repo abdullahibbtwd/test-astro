@@ -1,24 +1,43 @@
 {
-  "cli": { "appVersionSource": "local" },
+  "cli": {
+    "appVersionSource": "remote",
+    "promptToConfigurePushNotifications": false
+  },
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "node": "22.14.0",
+      "channel": "development",
+      "android": {
+        "image": "sdk-57",
+        "ndk": "27.1.12297006",
+        "buildType": "apk",
+        "withoutCredentials": true
+      }
     },
     "preview": {
       "distribution": "internal",
-      "android": { "buildType": "apk" },
-      "env": {
-        "EXPO_PUBLIC_API_URL": "https://nh5cvuocsjpsl8e3o0kbrbkz.187.127.233.163.sslip.io/v1",
-        "EXPO_PUBLIC_AUTH_MODE": "supabase"
+      "node": "22.14.0",
+      "channel": "preview",
+      "android": {
+        "image": "sdk-57",
+        "ndk": "27.1.12297006",
+        "buildType": "apk"
       }
     },
     "production": {
-      "autoIncrement": true,
-      "env": {
-        "EXPO_PUBLIC_API_URL": "https://nh5cvuocsjpsl8e3o0kbrbkz.187.127.233.163.sslip.io/v1",
-        "EXPO_PUBLIC_AUTH_MODE": "supabase"
+      "node": "22.14.0",
+      "channel": "production",
+      "autoIncrement": "versionCode",
+      "android": {
+        "image": "sdk-57",
+        "ndk": "27.1.12297006",
+        "buildType": "app-bundle"
       }
     }
+  },
+  "submit": {
+    "production": {}
   }
 }

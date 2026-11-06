@@ -7,7 +7,7 @@ import { useMapSelection } from "./selection";
 import { mapGlyphImages } from "./glyph-images";
 import { paranCoordinates, paranCrossLayout } from "./paran-symbol";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   Map,
   Images,
@@ -387,6 +387,14 @@ export function MapCanvasNative({
           </GeoJSONSource>
         )}
       </Map>
+      <View
+        accessible
+        accessibilityRole="image"
+        accessibilityLabel={t("map")}
+        accessibilityHint={t("mapCanvasHint")}
+        pointerEvents="none"
+        style={StyleSheet.absoluteFill}
+      />
       {preview && (
         <View
           pointerEvents="none"

@@ -23,12 +23,15 @@ import { PlaceSearch } from "../../design/components/PlaceSearch";
 import { useApp } from "../../lib/state";
 import { useMe, useActions, useConfig } from "../../api/hooks";
 import { legalUrl } from "../../config/identity";
+import { usePaymentsUiEnabled } from "../../lib/flags";
+import { withdrawBirthDataConsent } from "../consent";
 export default function AccountScreen({ page = "profile" }: { page?: string }) {
   const { t } = useTranslation(),
     app = useApp(),
     me = useMe(),
     actions = useActions(),
     config = useConfig();
+  const paymentsUi = usePaymentsUiEnabled();
   const [confirm, setConfirm] = useState(false),
     [word, setWord] = useState(""),
     [error, setError] = useState<unknown>(null);
@@ -46,6 +49,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
     else showSnackbar(t("legalUnavailable"));
   };
   const details = me.data ?? app.me;
+  const birthDataConsent = details?.consents.birth_data;
   return (
     <Screen
       largeTitle
@@ -59,6 +63,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
           {[
             "myCharts",
             "savedReports",
+            ...(paymentsUi ? (["subscription"] as const) : []),
             "settings",
             "notifications",
             "privacy",
@@ -111,7 +116,10 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
               <Chip
                 key={theme}
                 label={t(theme)}
-                selected={app.theme === theme || (theme === "dark" && app.theme === "system")}
+                selected={
+                  app.theme === theme ||
+                  (theme === "dark" && app.theme === "system")
+                }
                 onPress={() => void run(() => actions.patchMe({ theme }))}
               />
             ))}
@@ -210,10 +218,35 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
         <>
           <Row
             label={t("consentStatus")}
-            detail={
-              details?.consents.birth_data?.accepted_at ?? t("notAccepted")
-            }
+            detail={birthDataConsent ? t("consentAccepted") : t("notAccepted")}
           />
+          {birthDataConsent && (
+            <>
+              <Row
+                label={t("consentVersion")}
+                detail={birthDataConsent.version}
+              />
+              <Row
+                label={t("consentAcceptedAt")}
+                detail={birthDataConsent.accepted_at}
+              />
+              <Button
+                secondary
+                danger
+                label={t("withdrawConsent")}
+                loading={actions.isPending}
+                onPress={() =>
+                  void run(() =>
+                    actions.patchMe(
+                      withdrawBirthDataConsent(
+                        details?.consents.marketing ?? false,
+                      ),
+                    ),
+                  )
+                }
+              />
+            </>
+          )}
           <Button
             secondary
             label={t("downloadData")}
@@ -235,6 +268,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
                   : "deleteExplanation",
               )}
             </Txt>
+            <Txt muted>{t("deleteSubscriptionNote")}</Txt>
             {!confirm ? (
               <Button
                 secondary

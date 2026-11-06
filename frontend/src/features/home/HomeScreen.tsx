@@ -167,7 +167,11 @@ export default function HomeScreen() {
                         opacity: pressed ? 0.88 : 1,
                       })}
                     >
-                      <Txt kind="caption" numberOfLines={1}>
+                      <Txt
+                        kind="caption"
+                        numberOfLines={2}
+                        style={{ textAlign: "center", flexShrink: 1 }}
+                      >
                         {t("exploreArea", { area: tile.label })}
                       </Txt>
                     </Pressable>

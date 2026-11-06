@@ -1,7 +1,7 @@
 import { space as dsSpace } from "../../design-system/theme/tokens";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
-import { Row, Txt } from "../../design/components";
+import { Row, Txt, EmptyState } from "../../design/components";
 import { Glyph } from "../../design/components/Glyph";
 import { AspectGlyph } from "../../design/components/AspectGlyph";
 import type { ChartData, Catalogue } from "../../../contracts/spec-types";
@@ -89,7 +89,7 @@ export function ChartTables({
             </View>
           ) : null;
         })}
-        {!chart.aspects.length && <Txt muted>{t("noAspects")}</Txt>}
+        {!chart.aspects.length && <EmptyState titleKey="noAspects" />}
       </View>
     );
   return null;

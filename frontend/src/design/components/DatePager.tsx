@@ -40,12 +40,18 @@ export function DatePager({
         onPress={onPick}
         style={{
           flex: 1,
+          minWidth: 0,
           minHeight: 44,
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <Txt style={{ textAlign: "center" }}>{label}</Txt>
+        <Txt
+          numberOfLines={2}
+          style={{ textAlign: "center", flexShrink: 1 }}
+        >
+          {label}
+        </Txt>
       </Pressable>
       <IconButton
         accessibilityLabel={t("next")}
@@ -56,6 +62,7 @@ export function DatePager({
       {onToday && (
         <Pressable
           accessibilityRole="button"
+          accessibilityLabel={t("today")}
           onPress={onToday}
           style={{
             minHeight: 44,
@@ -65,7 +72,9 @@ export function DatePager({
             justifyContent: "center",
           }}
         >
-          <Txt style={{ color: c.accent }}>{t("today")}</Txt>
+          <Txt numberOfLines={2} style={{ color: c.accent, flexShrink: 1 }}>
+            {t("today")}
+          </Txt>
         </Pressable>
       )}
     </View>

@@ -5,12 +5,14 @@ import { useTheme } from "../theme";
 export function IconButton({
   icon,
   accessibilityLabel,
+  accessibilityHint,
   onPress,
   badge,
   disabled = false,
 }: {
   icon: ReactNode;
   accessibilityLabel: string;
+  accessibilityHint?: string;
   onPress: () => void;
   badge?: boolean;
   disabled?: boolean;
@@ -20,6 +22,7 @@ export function IconButton({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}

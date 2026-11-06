@@ -52,6 +52,21 @@ enum UsageKind {
   COMPAT_READING
 }
 
+enum SubscriptionStatus {
+  active
+  grace
+  expired
+  canceled
+  refunded
+}
+
+enum StoreSource {
+  apple
+  google
+  fake
+  none
+}
+
 model User {
   id                String   @id @map("id")
   email             String?
@@ -65,15 +80,36 @@ model User {
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
 
-  sessions    Session[]
-  profiles    Profile[]
-  jobs        Job[]
-  readings    Reading[]
-  usage       UsageCounter[]
-  records     Record[]
-  guestClaims GuestSession[] @relation("ClaimedBy")
+  sessions      Session[]
+  profiles      Profile[]
+  jobs          Job[]
+  readings      Reading[]
+  usage         UsageCounter[]
+  records       Record[]
+  guestClaims   GuestSession[] @relation("ClaimedBy")
+  subscriptions Subscription[]
 
   @@map("users")
+}
+
+/// Per-user store subscription / entitlement row (one logical subscription).
+model Subscription {
+  id                    String             @id @default(cuid()) @map("id")
+  userId                String             @map("user_id")
+  user                  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId                String             @map("plan_id")
+  status                SubscriptionStatus
+  expiresAt             DateTime?          @map("expires_at")
+  sourceStore           StoreSource        @map("source_store")
+  originalTransactionId String?            @map("original_transaction_id")
+  productId             String?            @map("product_id")
+  createdAt             DateTime           @default(now()) @map("created_at")
+  updatedAt             DateTime           @updatedAt @map("updated_at")
+
+  @@unique([sourceStore, originalTransactionId])
+  @@index([userId])
+  @@index([status, expiresAt])
+  @@map("subscriptions")
 }
 
 /// Prevents ensureAccount from recreating a deleted tenant id.
@@ -252,4 +288,17 @@ model SystemConfig {
   value Json
 
   @@map("system_config")
+}
+
+/// Idempotency log for store/provider webhook events (primary key = provider event id).
+model PaymentEvent {
+  id          String   @id @map("id")
+  provider    String
+  type        String
+  userId      String?  @map("user_id")
+  payload     Json
+  processedAt DateTime @default(now()) @map("processed_at")
+
+  @@index([userId])
+  @@map("payment_events")
 }

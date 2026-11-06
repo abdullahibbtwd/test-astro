@@ -189,6 +189,8 @@ export class MapJobs {
     const { consumeGeneration, refundUsageIfNoSettledSpend } = await import(
       "./limits"
     );
+    const { requireFeature } = await import("./feature-gates");
+    await requireFeature(owner, "map");
     await consumeGeneration(owner, "MAP_READING");
     let charged = true;
     const started = new Date();

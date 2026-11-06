@@ -1,4 +1,7 @@
-import { space as dsSpace, radius as dsRadius } from "../../design-system/theme/tokens";
+import {
+  space as dsSpace,
+  radius as dsRadius,
+} from "../../design-system/theme/tokens";
 import { resolveRoute } from "../../lib/routes";
 import { formatDay, formatMonth } from "../../lib/dates";
 import {
@@ -12,7 +15,6 @@ import { AccessibilityInfo, Share, View, FlatList } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import * as Crypto from "expo-crypto";
 import { Stack, router, useLocalSearchParams } from "expo-router";
-import { useNetInfo } from "@react-native-community/netinfo";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import {
@@ -24,11 +26,14 @@ import {
   Chip,
   ErrorNotice,
   Skeleton,
+  StandardErrorState,
 } from "../../design/components";
+import { describeError } from "../../api/errors";
 import { useTheme } from "../../design/theme";
 import { useApi } from "../../api/resource";
+import { useOnline } from "../../api/online";
 import { useMe, useProfiles } from "../../api/hooks";
-import { request, updateSessionMe } from "../../api/client";
+import { request, updateSessionMe, ApiError } from "../../api/client";
 import { streamAnswer } from "../../api/ask-stream";
 import { askContext } from "../../api/sse";
 import { validate } from "../../api/zod";
@@ -50,7 +55,7 @@ export default function ChatScreen() {
     app = useApp(),
     flags = useFlags(),
     colors = useTheme(),
-    network = useNetInfo(),
+    online = useOnline(),
     profiles = useProfiles(),
     me = useMe();
   const query = useApi<Thread>(
@@ -115,7 +120,7 @@ export default function ChatScreen() {
       value.length > 1000 ||
       left === 0 ||
       readOnly ||
-      network.isConnected === false
+      !online
     )
       return;
     const payload =
@@ -221,7 +226,20 @@ export default function ChatScreen() {
                 (message) => message.message_id === data.message_id,
               )?.text || t("ready"),
             );
-          } else if (event === "error") throw new Error("Answer failed");
+          } else if (event === "error") {
+            const problem =
+              raw && typeof raw === "object"
+                ? (raw as { code?: string; title?: string; detail?: string })
+                : null;
+            if (problem?.code)
+              throw new ApiError(
+                409,
+                problem.code,
+                0,
+                problem as never,
+              );
+            throw new ApiError(502, "upstream_unavailable");
+          }
         },
       );
       const result = await query.refetch();
@@ -303,7 +321,8 @@ export default function ChatScreen() {
             </Choices>
           )}
           {readOnly && <Txt>{t("deletedSubject")}</Txt>}
-          {network.isConnected === false && <Txt>{t("offline")}</Txt>}
+          <StandardErrorState cachedOffline={!online} />
+          {!online && <Txt>{t("offlineDisabled")}</Txt>}
           {left <= 5 && (
             <Txt kind="caption">
               {left
@@ -328,11 +347,7 @@ export default function ChatScreen() {
           <Button
             label={t(busy ? "stop" : "send")}
             disabled={
-              !busy &&
-              (!text.trim() ||
-                left === 0 ||
-                readOnly ||
-                network.isConnected === false)
+              !busy && (!text.trim() || left === 0 || readOnly || !online)
             }
             onPress={() => {
               if (busy) controller.current?.abort();
@@ -436,7 +451,12 @@ export default function ChatScreen() {
               maxWidth: message.role === "user" ? "90%" : "100%",
             }}
           >
-            <Txt kind={message.role === "assistant" ? "reading" : "body"} style={{ color: message.role === "user" ? colors.onPrimary : colors.ink }}>
+            <Txt
+              kind={message.role === "assistant" ? "reading" : "body"}
+              style={{
+                color: message.role === "user" ? colors.onPrimary : colors.ink,
+              }}
+            >
               {message.text}
             </Txt>
             {message.role === "assistant" && (
@@ -503,7 +523,14 @@ export default function ChatScreen() {
                 )}
                 {message.status !== "complete" && !busy && (
                   <Txt muted>
-                    {t(message.status === "failed" ? "error" : "interrupted")}
+                    {message.status === "failed"
+                      ? (() => {
+                          const d = describeError(error);
+                          // Never fall back to generic connection copy for busy/etc.
+                          return d.message ||
+                            (d.titleKey ? t(d.titleKey) : t("errorServer"));
+                        })()
+                      : t("interrupted")}
                   </Txt>
                 )}
               </>

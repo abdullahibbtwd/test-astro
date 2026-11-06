@@ -14,6 +14,7 @@ import {
   Chip,
   ErrorNotice,
   Skeleton,
+  EmptyState,
 } from "../../design/components";
 import { useCatalogue } from "../../api/hooks";
 import { useApi } from "../../api/resource";
@@ -66,6 +67,9 @@ export default function AreaScreen() {
             {(data) => <Txt kind="reading">{data.text}</Txt>}
           </Generated>
           <Txt kind="title">{t("lines")}</Txt>
+          {d.lines_crossing.length === 0 && (
+            <EmptyState titleKey="emptyAreaLines" />
+          )}
           {d.lines_crossing.map((l, i) => (
             <Row
               key={i}

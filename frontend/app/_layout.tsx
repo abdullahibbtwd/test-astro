@@ -123,7 +123,7 @@ export default function RootLayout() {
   if (error)
     return (
       <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
-        <AppText>Secure storage could not be opened. Restart the app.</AppText>
+        <AppText>{i18n.t("secureStorageError")}</AppText>
       </View>
     );
   if (!ready || (!loaded && !fontError)) return null;
@@ -154,7 +154,17 @@ export default function RootLayout() {
                 headerStyle: { backgroundColor: c.bg },
                 headerTintColor: c.accent,
                 headerTitleStyle: { ...dsType.displaySection, color: c.accent },
-                headerTitle: ({ children }) => <AppText variant="displaySection" color="accent" numberOfLines={1}>{children}</AppText>,
+                headerTitle: ({ children }) => (
+                  <AppText
+                    variant="displaySection"
+                    color="accent"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.8}
+                  >
+                    {children}
+                  </AppText>
+                ),
                 headerShadowVisible: false,
                 headerBackButtonDisplayMode: "minimal",
                 contentStyle: { backgroundColor: c.bg },

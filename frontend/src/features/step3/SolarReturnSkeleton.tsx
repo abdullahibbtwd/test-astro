@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { TextInput, useWindowDimensions, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { SvgCss } from "react-native-svg/css";
 import {
   Screen,
@@ -26,7 +27,7 @@ export function SolarReturnSkeleton({
   model,
   error,
   onRetry,
-  title = "Solar Return",
+  title,
 }: {
   year: number;
   onYearChange: (year: number) => void;
@@ -36,7 +37,8 @@ export function SolarReturnSkeleton({
   onRetry?: () => void;
   title?: string;
 }) {
-  const c = useTheme(),
+  const { t } = useTranslation(),
+    c = useTheme(),
     { width } = useWindowDimensions(),
     [draft, setDraft] = useState(String(year));
   const xml = useMemo(
@@ -48,15 +50,16 @@ export function SolarReturnSkeleton({
   );
   const years = [new Date().getFullYear(), new Date().getFullYear() + 1];
   return (
-    <Screen back title={`${title} ${year}`}>
+    <Screen back title={`${title ?? t("solar_return")} ${year}`}>
       <PendingAstrologerBanner detail={SOLAR_RETURN_PLACEHOLDER} />
-      <Txt kind="caption">Year</Txt>
+      <Txt kind="caption">{t("year")}</Txt>
       <TextInput
         testID="solar-return-year-input"
-        accessibilityLabel="Solar return year"
+        accessibilityLabel={t("solarReturnYear")}
         keyboardType="number-pad"
         value={draft}
         onChangeText={setDraft}
+        maxFontSizeMultiplier={1.5}
         onEndEditing={() => {
           const next = Number.parseInt(draft, 10);
           if (Number.isFinite(next) && next >= 1900 && next <= 2100)
@@ -94,11 +97,11 @@ export function SolarReturnSkeleton({
       {status === "ready" && model && (
         <View testID="solar-return-ready" style={{ gap: 12 }}>
           <Txt>
-            Return UTC: {model.return_utc}
+            {t("returnUtc")}: {model.return_utc}
             {model.place_label ? ` · ${model.place_label}` : ""}
           </Txt>
           <Txt kind="caption">
-            Math: {model.math.moment} → {model.math.chart}
+            {t("math")}: {model.math.moment} → {model.math.chart}
           </Txt>
           {xml && (
             <SvgCss
@@ -107,7 +110,7 @@ export function SolarReturnSkeleton({
               height={Math.min(width - 40, 480)}
             />
           )}
-          <Txt kind="title">Interpretation</Txt>
+          <Txt kind="title">{t("interpretation")}</Txt>
           <View testID="solar-return-placeholder">
             <Txt kind="reading">{model.interpretation}</Txt>
           </View>
