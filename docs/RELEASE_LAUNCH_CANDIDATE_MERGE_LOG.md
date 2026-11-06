@@ -68,3 +68,7 @@ frontend/src/features/account/AuthScreen.tsx
 frontend/src/design/components/Segmented.tsx
 frontend/tests/native/fx-shell.test.tsx
   - Conflicts in Segmented.tsx + fx-shell.test.tsx: 2-line TR tabs (ux/08) with AppText 1.5 font cap (ux/07).
+- `ux/09-consent`: merged cleanly. Conflicts: none.
+- `ux/10-subscription-ui`: CONFLICT
+frontend/src/design/components/index.tsx
+  - Conflicts in index.tsx: kept StandardErrorState + offline; added premium_required lock card from ux/10.

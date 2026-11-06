@@ -494,6 +494,13 @@ export function StandardErrorState({
     )
       reportError(error);
   }, [error, description]);
+  if (description?.kind === "premium_required")
+    return (
+      <Card>
+        <Txt kind="title">🔒 {t("lockedFeatureTitle")}</Txt>
+        <Txt muted>{t("lockedFeatureBody")}</Txt>
+      </Card>
+    );
   const showBanner = cachedOffline && !online;
   const showError =
     error != null && !!description && description.kind !== "unauthorized";
