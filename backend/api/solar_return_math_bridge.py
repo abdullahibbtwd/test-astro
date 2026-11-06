@@ -11,12 +11,14 @@ from pathlib import Path
 
 ENGINE = Path(__file__).resolve().parents[1] / "engine"
 sys.path.insert(0, str(ENGINE / "d_layer"))
+sys.path.insert(0, str(ENGINE / "rules"))
 
 PLACEHOLDER = "[Solar return reading — pending astrologer]"
 
 
 def generate(data: dict) -> dict:
     from solar_return import compute_solar_return_chart, find_solar_return_utc
+    from load_rules import has_interpretation_framework, load_solar_return_rules
 
     lon = float(data["natal_sun_longitude"])
     year = int(data["year"])
@@ -24,11 +26,17 @@ def generate(data: dict) -> dict:
     longitude = float(data["longitude"])
     moment = find_solar_return_utc(lon, year)
     chart = compute_solar_return_chart(moment, latitude, longitude)
+    rules = load_solar_return_rules()
+    # Empty framework → placeholder only (never invent prose from empty rules).
+    interpretation = PLACEHOLDER
+    if has_interpretation_framework(rules):
+        interpretation = PLACEHOLDER  # still await astrologer copy wiring
     return {
         "return_utc": moment.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "year": year,
         "chart": chart,
-        "interpretation": PLACEHOLDER,
+        "interpretation": interpretation,
+        "rules_status": (rules.get("_meta") or {}).get("status", "UNKNOWN"),
         "math": {
             "moment": "find_solar_return_utc",
             "chart": "compute_solar_return_chart",

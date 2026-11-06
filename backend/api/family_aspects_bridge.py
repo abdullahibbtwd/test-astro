@@ -11,14 +11,17 @@ from pathlib import Path
 ENGINE = Path(__file__).resolve().parents[1] / "engine"
 sys.path.insert(0, str(ENGINE / "principles_grounding"))
 sys.path.insert(0, str(ENGINE / "d_layer"))
+sys.path.insert(0, str(ENGINE / "rules"))
 
 PLACEHOLDER = "[Family compatibility reading — pending astrologer]"
 
 
 def generate(data: dict) -> dict:
     from synastry_aspects import compute_synastry_aspects
+    from load_rules import load_family_rules
 
     relationship_type = data.get("relationship_type", "romantic")
+    rules = load_family_rules()
     aspects = compute_synastry_aspects(
         data["chart_a"], data["chart_b"], relationship_type,
     )
@@ -28,6 +31,7 @@ def generate(data: dict) -> dict:
         "profile_b_label": data.get("profile_b_label", "B"),
         "aspects": aspects,
         "interpretation": PLACEHOLDER,
+        "rules_status": (rules.get("_meta") or {}).get("status", "UNKNOWN"),
         "math": {"aspects": "compute_synastry_aspects"},
     }
 
