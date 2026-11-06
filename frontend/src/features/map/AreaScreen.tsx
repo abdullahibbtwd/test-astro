@@ -42,6 +42,13 @@ export default function AreaScreen() {
     );
     if (feature) useMapSelection.getState().selectArea(feature);
   }, [countries.data, areaId]);
+  if (kind === "region") {
+    return (
+      <Screen list back title={t("areaReport")}>
+        <Txt muted>{t("regionReportsUnavailable")}</Txt>
+      </Screen>
+    );
+  }
   return (
     <Screen list back title={d?.area.name ?? t("areaReport")}>
       {q.isPending && <Skeleton />}

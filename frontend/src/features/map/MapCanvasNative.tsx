@@ -69,7 +69,7 @@ export function MapCanvasNative({
     cells = useMemo(() => (heat ? heatCells(heat) : undefined), [heat]);
   const style = config.data?.map_style_url[dark ? "dark" : "light"]?.trim();
   const mapStyle = useMapStyle(style && online ? style : undefined);
-  const mode = resolveBasemap({
+  const { mode, reason } = resolveBasemap({
     styleUrl: style,
     online,
     stylePending: mapStyle.isPending,
@@ -77,6 +77,12 @@ export function MapCanvasNative({
   });
   // Country outlines when URL empty, style fetch fails, or device is offline.
   const preview = mode === "preview";
+  const previewCaption =
+    reason === "offline"
+      ? t("previewMapOffline")
+      : reason === "style_failed"
+        ? t("previewMapFailed")
+        : t("previewMap");
   const countries = useCountries(preview);
   const previewStyle = useMemo<StyleSpecification>(
     () => ({
@@ -181,7 +187,9 @@ export function MapCanvasNative({
     >
       <Map
         mapStyle={preview ? previewStyle : mapStyle.data!}
+        // MapLibre shows style/provider attribution; keep visible for license compliance.
         attribution
+        logo={false}
         onRegionDidChange={(e) => setZoom(e.nativeEvent.zoom)}
         onPress={(e) => onPoint?.(e.nativeEvent.lngLat, zoom, false)}
         onLongPress={(e) => onPoint?.(e.nativeEvent.lngLat, zoom, true)}
@@ -382,15 +390,21 @@ export function MapCanvasNative({
       {preview && (
         <View
           pointerEvents="none"
+          testID="map-preview-fallback"
           style={{
             position: "absolute",
             bottom: fill ? 76 : 8,
             left: 8,
+            right: 8,
             backgroundColor: theme.surface,
             padding: dsSpace[1],
+            borderRadius: dsRadius.sm,
+            opacity: 0.92,
           }}
         >
-          <Txt kind="caption">{t("previewMap")}</Txt>
+          <Txt kind="caption" muted>
+            {previewCaption}
+          </Txt>
         </View>
       )}
     </View>
