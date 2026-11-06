@@ -251,3 +251,27 @@ test("refundUsageIfNoSettledSpend is a no-op once spend exists", async () => {
   assert.equal(Number(rows[0]?.count), 1);
   await store.close();
 });
+
+test("per-user daily limits are independent between two users", async () => {
+  const a = "limit-user-a";
+  const b = "limit-user-b";
+  for (const id of [a, b]) {
+    await prisma().user.upsert({
+      where: { id },
+      create: { id, displayName: id },
+      update: {},
+    });
+    await prisma().$executeRawUnsafe(
+      `DELETE FROM usage_counters WHERE user_id = $1 AND kind = 'ASK'`,
+      id,
+    );
+  }
+  const limit = 2;
+  assert.equal(await tryConsumeUsage(a, "ASK", limit), 1);
+  assert.equal(await tryConsumeUsage(a, "ASK", limit), 2);
+  assert.equal(await tryConsumeUsage(a, "ASK", limit), null);
+  // B still has a full budget.
+  assert.equal(await tryConsumeUsage(b, "ASK", limit), 1);
+  assert.equal(await tryConsumeUsage(b, "ASK", limit), 2);
+  assert.equal(await tryConsumeUsage(b, "ASK", limit), null);
+});

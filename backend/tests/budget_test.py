@@ -193,6 +193,64 @@ class BudgetTests(unittest.TestCase):
             ]
         self.assertEqual(states, ["expired", "reserved"])
 
+    def test_budget_alerts_at_80_and_100_percent(self):
+        import tempfile
+        from pathlib import Path
+
+        log = Path(tempfile.mkdtemp()) / "budget.jsonl"
+        previous = os.environ.get("ASTRO_BUDGET_LOG")
+        os.environ["ASTRO_BUDGET_LOG"] = str(log)
+        try:
+            budget = Budget("ignored", 10, user_id=self.user_id)
+            budget.reserve("test", 7)  # 70% — no 80 alert yet
+            budget.reserve("test", 1.5)  # crosses 80%
+            text = log.read_text(encoding="utf-8")
+            self.assertIn('"level": "warn_80"', text)
+            with self.assertRaises(BudgetExceeded):
+                budget.reserve("test", 3)  # would exceed → 100 alert + raise
+            text = log.read_text(encoding="utf-8")
+            self.assertIn('"level": "exhausted_100"', text)
+            self.assertNotRegex(text, r"@|birth|Bearer ")
+        finally:
+            if previous is None:
+                os.environ.pop("ASTRO_BUDGET_LOG", None)
+            else:
+                os.environ["ASTRO_BUDGET_LOG"] = previous
+
+    def test_mocked_settle_writes_reading_cost_without_pii(self):
+        import tempfile
+        from pathlib import Path
+
+        log = Path(tempfile.mkdtemp()) / "budget.jsonl"
+        previous = os.environ.get("ASTRO_BUDGET_LOG")
+        os.environ["ASTRO_BUDGET_LOG"] = str(log)
+
+        class Resp:
+            usage = {"input_tokens": 1000, "output_tokens": 500}
+
+        def complete(*_a, **_k):
+            return Resp()
+
+        try:
+            _budget, bounded = self._guard(complete)
+            bounded(
+                "gemini-3.5-flash-lite",
+                "system prompt",
+                "user chart secrets should not log",
+                max_tokens=64,
+            )
+            text = log.read_text(encoding="utf-8")
+            self.assertIn('"event": "reading_cost"', text)
+            self.assertIn("input_tokens", text)
+            self.assertIn("output_tokens", text)
+            self.assertNotIn("user chart secrets", text)
+            self.assertNotIn("system prompt", text)
+        finally:
+            if previous is None:
+                os.environ.pop("ASTRO_BUDGET_LOG", None)
+            else:
+                os.environ["ASTRO_BUDGET_LOG"] = previous
+
 
 if __name__ == "__main__":
     unittest.main()

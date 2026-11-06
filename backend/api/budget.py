@@ -90,12 +90,35 @@ class Budget:
                 cap = int(cap_row[0])
                 total = self._charged_locked(db)
                 if total + amount > cap:
+                    _emit_budget_alert(
+                        "exhausted_100",
+                        ratio=1.0,
+                        spent_usd=total / 1000000,
+                        cap_usd=cap / 1000000,
+                    )
                     raise BudgetExceeded("Integration testing budget exhausted")
+                before = total / cap if cap else 0.0
                 row = db.execute(
                     "INSERT INTO budget_calls(user_id,model,reserved,charged,state) "
                     "VALUES (%s,%s,%s,%s,%s) RETURNING id",
                     (self.user_id, model, amount, amount, "reserved"),
                 ).fetchone()
+                after_total = total + amount
+                after = after_total / cap if cap else 0.0
+                if before < 0.8 <= after:
+                    _emit_budget_alert(
+                        "warn_80",
+                        ratio=after,
+                        spent_usd=after_total / 1000000,
+                        cap_usd=cap / 1000000,
+                    )
+                if after >= 1.0:
+                    _emit_budget_alert(
+                        "exhausted_100",
+                        ratio=after,
+                        spent_usd=after_total / 1000000,
+                        cap_usd=cap / 1000000,
+                    )
                 return int(row[0])
 
     def settle(self, call_id, dollars):
@@ -165,6 +188,25 @@ def _budget_log(entry):
         return
     with open(path, "a", encoding="utf-8") as stream:
         stream.write(json.dumps(entry, ensure_ascii=True) + "\n")
+
+
+def _emit_budget_alert(level: str, *, ratio: float, spent_usd: float, cap_usd: float):
+    """Warn at 80% and 100% of the org ledger. No personal data."""
+    entry = {
+        "event": "budget_alert",
+        "level": level,  # "warn_80" | "exhausted_100"
+        "ratio": round(ratio, 4),
+        "spent_usd": round(spent_usd, 6),
+        "cap_usd": round(cap_usd, 6),
+    }
+    _budget_log(entry)
+    # Stderr for Coolify / log drains; ASTRO_BUDGET_LOG for durable review.
+    # Parent Node process may also emit Sentry when it sees BudgetExceeded.
+    print(
+        f"BUDGET_ALERT level={level} ratio={entry['ratio']} "
+        f"spent_usd={entry['spent_usd']} cap_usd={entry['cap_usd']}",
+        flush=True,
+    )
 
 
 def install_guard(client, filename):
@@ -248,11 +290,14 @@ def install_guard(client, filename):
                 return response
             spent = (inputs * rates[0] + outputs * rates[1]) / 1000000
             budget.settle(reservation, spent)
+            # Per-reading cost line — tokens + estimated USD only (no prompts/PII).
             _budget_log({
+                "event": "reading_cost",
                 "model": model,
                 "input_tokens": inputs,
                 "output_tokens": outputs,
                 "usd": spent,
+                "reserved_usd": reserved,
             })
             return response
 

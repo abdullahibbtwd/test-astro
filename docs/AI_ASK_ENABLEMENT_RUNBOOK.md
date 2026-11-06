@@ -17,9 +17,36 @@ Related inventory: `docs/CREDENTIALS_INVENTORY.md`. Config gate: `npm run config
 
 Client flag `askAstrology` is derived from Ask readiness (`allowPaid` + `ASTRO_ASK_ENABLED` + bridge files), not from a free-standing “on” in production config alone.
 
+## Owner first-week spend cap
+
+**BLOCKED until owner supplies the dollar amount.** Code hard-ceiling remains
+**US$20** (`budget.py` rejects higher). When the owner names a first-week cap
+`C` (must satisfy `0 < C ≤ 20`), set on Coolify API:
+
+```text
+ASTRO_BUDGET_LIMIT=<C>
+ASTRO_BUDGET_USER=shared
+ASTRO_BUDGET_LOG=/app/backend/.local-data/budget.jsonl
+SENTRY_DSN=<coolify secret>
+```
+
+Alerts: `BUDGET_ALERT` on stderr + JSONL at **80%** (`warn_80`) and **100%**
+(`exhausted_100`). Natal jobs that hit the cap surface as
+`generation_paused` (absence), not a stuck spinner.
+
+Cost estimate (no network):
+
+```bash
+node backend/scripts/estimate-ai-spend.mjs \
+  --cost-per-reading=0.05 \
+  --readings-per-user-day=2 \
+  --users=25 \
+  --days=30
+```
+
 ## Preconditions checklist (before any enable)
 
-1. **Approval** — written spend cap (≤ US$20 unless product raises `ASTRO_BUDGET_LIMIT` carefully; code rejects >20 unless you change budget.py).  
+1. **Approval** — written spend cap `C` with `0 < C ≤ 20` (see above).  
 2. **Secrets on Coolify only** — `GEMINI_API_KEY` or `GOOGLE_API_KEY` (or `~/.gemini_key` on host). Never commit.  
 3. **Ask extras** — `OPENAI_API_KEY` (or `~/.openai_key`) if Ask path requires OpenAI; `ASTRO_PA_ROOT` pointing at `backend/engine`; PA files present.  
 4. **Refuse list empty** — `OPENAI_BASE_URL` and `GOOGLE_GENAI_USE_VERTEXAI` must be **unset**.  
