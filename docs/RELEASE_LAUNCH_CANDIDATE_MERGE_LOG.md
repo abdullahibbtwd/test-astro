@@ -73,3 +73,6 @@ frontend/tests/native/fx-shell.test.tsx
 frontend/src/design/components/index.tsx
   - Conflicts in index.tsx: kept StandardErrorState + offline; added premium_required lock card from ux/10.
 - Layer 6 verification: FE unit 12/12 pass (fail 0); native 1 failed, 4 passed, 5 total.
+
+## Layer 7 — android/release-readiness
+- Committed stash onto `android/release-readiness` then merged cleanly. Conflicts: none.
