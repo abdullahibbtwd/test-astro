@@ -56,17 +56,34 @@ function withReleaseSigning(config) {
   });
 }
 
+function withBackupAndCleartext(config) {
+  return AndroidConfig.Manifest.withAndroidManifest(config, (cfg) => {
+    const app = AndroidConfig.Manifest.getMainApplicationOrThrow(
+      cfg.modResults,
+    );
+    // Tokens may still briefly exist in app-private dirs during migration;
+    // disable cloud/device backup for the application.
+    app.$["android:allowBackup"] = "false";
+    app.$["android:fullBackupContent"] = "false";
+    app.$["android:dataExtractionRules"] = "@xml/secure_store_data_extraction_rules";
+    // Release must not allow cleartext; debug manifests may still enable it.
+    app.$["android:usesCleartextTraffic"] = "false";
+    return cfg;
+  });
+}
+
 function withAndroidReleaseHardening(config) {
   config = AndroidConfig.Permissions.withBlockedPermissions(
     config,
     BLOCKED_PERMISSIONS,
   );
   config = withReleaseSigning(config);
+  config = withBackupAndCleartext(config);
   return config;
 }
 
 export default createRunOncePlugin(
   withAndroidReleaseHardening,
   "with-android-release-hardening",
-  "1.0.0",
+  "1.1.0",
 );

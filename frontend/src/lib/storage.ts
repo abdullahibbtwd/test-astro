@@ -3,6 +3,7 @@ import * as Crypto from "expo-crypto";
 import { Platform } from "react-native";
 import { File, Paths } from "expo-file-system";
 import { createMMKV, type MMKV } from "react-native-mmkv";
+import { secureGet, secureRemove, secureSet } from "./secure-kv";
 
 const memory = new Map<string, string>();
 let storage: MMKV | undefined;
@@ -52,9 +53,8 @@ function durableFile(key: string) {
 }
 
 /**
- * Survives app restarts without Keychain entitlements (needed on unsigned iOS
- * Simulator builds) and without SecureStore's 2048-byte value limit (Supabase
- * session JWTs often exceed that).
+ * Non-secret durable prefs (api-base, me shell). Tokens use SecureStore via
+ * tokenStorage / secure-kv (chunked past the 2048-byte item limit).
  */
 export const durableStorage = {
   getItem: async (key: string): Promise<string | null> => {
@@ -86,10 +86,52 @@ export const durableStorage = {
 };
 
 const SESSION_KEY = "session";
+const ACCESS_KEY = "session-access";
+const REFRESH_KEY = "session-refresh";
+
+type TokenSession = {
+  access_token?: string;
+  refresh_token?: string;
+  [k: string]: unknown;
+};
 
 export const tokenStorage = {
-  get: () => durableStorage.getItem(SESSION_KEY),
-  set: (session: unknown) =>
-    durableStorage.setItem(SESSION_KEY, JSON.stringify(session)),
-  clear: () => durableStorage.removeItem(SESSION_KEY),
+  get: async (): Promise<string | null> => {
+    const shellRaw = await durableStorage.getItem(SESSION_KEY);
+    if (!shellRaw) return null;
+    try {
+      const shell = JSON.parse(shellRaw) as TokenSession;
+      // Migrate legacy plaintext session files that still held tokens.
+      if (shell.access_token) {
+        await secureSet(ACCESS_KEY, shell.access_token);
+        if (shell.refresh_token)
+          await secureSet(REFRESH_KEY, shell.refresh_token);
+        const { access_token: _a, refresh_token: _r, ...rest } = shell;
+        await durableStorage.setItem(SESSION_KEY, JSON.stringify(rest));
+        return JSON.stringify(shell);
+      }
+      const access_token = await secureGet(ACCESS_KEY);
+      if (!access_token) return null;
+      const refresh_token = (await secureGet(REFRESH_KEY)) ?? "";
+      return JSON.stringify({ ...shell, access_token, refresh_token });
+    } catch {
+      return null;
+    }
+  },
+  set: async (session: unknown): Promise<void> => {
+    const value = session as TokenSession;
+    const access = String(value.access_token ?? "");
+    const refresh = String(value.refresh_token ?? "");
+    if (access) await secureSet(ACCESS_KEY, access);
+    else await secureRemove(ACCESS_KEY);
+    if (refresh) await secureSet(REFRESH_KEY, refresh);
+    else await secureRemove(REFRESH_KEY);
+    const { access_token: _a, refresh_token: _r, ...rest } = value;
+    await durableStorage.setItem(SESSION_KEY, JSON.stringify(rest));
+  },
+  clear: async (): Promise<void> => {
+    await durableStorage.removeItem(SESSION_KEY);
+    await secureRemove(ACCESS_KEY);
+    await secureRemove(REFRESH_KEY);
+  },
 };

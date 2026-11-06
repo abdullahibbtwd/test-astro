@@ -39,7 +39,8 @@ export default function Gallery() {
   const { t } = useTranslation(),
     app = useApp(),
     [value, setValue] = useState("");
-  if (!__DEV__ && process.env.EXPO_PUBLIC_FX_AUDIT !== "1") return null;
+  // Release builds never expose the FX gallery / audit surfaces.
+  if (!__DEV__) return null;
   if (fx === "export-audit") return <ExportAudit />;
   if (fx === "list-audit") return <ListAudit />;
   if (fx) {

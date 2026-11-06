@@ -1,7 +1,7 @@
 import { createClient, type Session as SupabaseSession } from "@supabase/supabase-js";
 import { AppState, type NativeEventSubscription } from "react-native";
 import { ApiError, NetworkError } from "../api/errors";
-import { durableStorage } from "./storage";
+import { secureKvAdapter } from "./secure-kv";
 
 const url = process.env.EXPO_PUBLIC_SUPABASE_URL ?? "";
 const publishableKey = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "";
@@ -13,9 +13,8 @@ export const supabaseConfigured =
 export const supabase = supabaseConfigured
   ? createClient(url.replace(/\/$/, ""), publishableKey, {
       auth: {
-        // File-backed storage (not SecureStore): persists across restarts on
-        // unsigned iOS builds and avoids SecureStore's 2048-byte limit.
-        storage: durableStorage,
+        // Chunked SecureStore (Keychain/Keystore) — not plaintext document files.
+        storage: secureKvAdapter,
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: false,
