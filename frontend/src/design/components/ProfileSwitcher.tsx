@@ -71,9 +71,9 @@ export function ProfilePicker({
               alignItems: "center",
             }}
           >
-            <View style={{ flex: 1 }}>
-              <Txt>{p.label}</Txt>
-              <Txt kind="caption" muted>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <Txt style={{ flexShrink: 1 }}>{p.label}</Txt>
+              <Txt kind="caption" muted style={{ flexShrink: 1 }}>
                 {t(p.is_self ? "self" : p.relation)}
               </Txt>
             </View>
@@ -139,13 +139,19 @@ export function ProfileSwitcher({
             backgroundColor: c.accentSoft,
             alignItems: "center",
             justifyContent: "center",
+            flexShrink: 0,
           }}
         >
           <Txt kind="caption">{label.charAt(0)}</Txt>
         </View>
         <Txt
           numberOfLines={1}
-          style={{ maxWidth: 160, fontFamily: dsType.input.fontFamily }}
+          style={{
+            maxWidth: 140,
+            minWidth: 0,
+            flexShrink: 1,
+            fontFamily: dsType.input.fontFamily,
+          }}
         >
           {label}
         </Txt>

@@ -52,7 +52,14 @@ export function ContentList({
       windowSize={7}
       onEndReachedThreshold={0.5}
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ paddingHorizontal: dsSpace[8], paddingTop: dsSpace[6], paddingBottom: dsSpace[12] }}
+      contentContainerStyle={{
+        paddingHorizontal: dsSpace[8],
+        paddingTop: dsSpace[6],
+        paddingBottom: dsSpace[12],
+        width: "100%",
+        maxWidth: sheet ? undefined : 680,
+        alignSelf: "center",
+      }}
       {...props}
     />
   );
@@ -90,7 +97,14 @@ export function ContentSections({
       initialNumToRender={8}
       maxToRenderPerBatch={8}
       windowSize={7}
-      contentContainerStyle={{ paddingHorizontal: dsSpace[8], paddingTop: dsSpace[6], paddingBottom: dsSpace[12] }}
+      contentContainerStyle={{
+        paddingHorizontal: dsSpace[8],
+        paddingTop: dsSpace[6],
+        paddingBottom: dsSpace[12],
+        width: "100%",
+        maxWidth: 680,
+        alignSelf: "center",
+      }}
       keyboardShouldPersistTaps="handled"
     />
   );

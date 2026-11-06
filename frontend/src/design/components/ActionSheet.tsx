@@ -40,8 +40,15 @@ export function ActionSheet({
             gap: dsSpace[3],
           }}
         >
-          <View>{action.icon}</View>
-          <Txt style={{ color: action.destructive ? c.danger : c.ink }}>
+          <View style={{ flexShrink: 0 }}>{action.icon}</View>
+          <Txt
+            style={{
+              color: action.destructive ? c.danger : c.ink,
+              flex: 1,
+              minWidth: 0,
+              flexShrink: 1,
+            }}
+          >
             {action.label}
           </Txt>
         </Pressable>

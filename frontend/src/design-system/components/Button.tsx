@@ -48,8 +48,8 @@ export function Button({
         color={variant === "primary" ? "onPrimary" : "accent"}
         align="center"
         lang={lang}
-        numberOfLines={1}
-        style={{ flexShrink: 0 }}
+        numberOfLines={2}
+        style={{ flexShrink: 1 }}
       >
         {children}
       </AppText>

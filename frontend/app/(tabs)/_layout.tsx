@@ -30,17 +30,35 @@ export default function TabLayout() {
         headerStyle: { backgroundColor: c.bg },
         headerShadowVisible: false,
         headerTitleStyle: { ...dsType.displaySection, color: c.accent },
-        headerTitle: ({ children }) => <AppText variant="displaySection" color="accent" numberOfLines={1}>{children}</AppText>,
+        headerTitle: ({ children }) => (
+          <AppText
+            variant="displaySection"
+            color="accent"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.8}
+          >
+            {children}
+          </AppText>
+        ),
         tabBarStyle: {
           backgroundColor: c.bg,
           borderTopColor: c.hair,
-          height: 70,
+          minHeight: 70,
           paddingBottom: 8,
+          paddingTop: 4,
         },
         tabBarActiveTintColor: c.accent,
         tabBarInactiveTintColor: c.ink3,
         tabBarLabel: ({ children, color }) => (
-          <AppText variant="caption" numberOfLines={1} adjustsFontSizeToFit style={{ color }}>{children}</AppText>
+          <AppText
+            variant="caption"
+            numberOfLines={2}
+            align="center"
+            style={{ color, flexShrink: 1 }}
+          >
+            {children}
+          </AppText>
         ),
         headerLeft: () => (
           <Pressable

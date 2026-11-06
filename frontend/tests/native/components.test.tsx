@@ -22,6 +22,7 @@ test("disabled and busy buttons cannot submit", async () => {
     user = userEvent.setup();
   await render(<Button label="Save" disabled onPress={onPress} />);
   expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+  expect(screen.getByText("SAVE").props.numberOfLines).toBe(2);
   await user.press(screen.getByRole("button", { name: "Save" }));
   expect(onPress).not.toHaveBeenCalled();
 });
@@ -34,6 +35,7 @@ test("inputs and choice chips expose accessible names and state", async () => {
   );
   expect(screen.getByLabelText("Name")).toHaveDisplayValue("Ada");
   expect(screen.getByRole("radio", { name: "English" })).toBeChecked();
+  expect(screen.getByText("English").props.numberOfLines).toBe(2);
 });
 test("place selection requires explicit confirmation after candidate tap", async () => {
   await i18n.changeLanguage("en");

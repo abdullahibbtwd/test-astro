@@ -27,7 +27,9 @@ export function ListRow({
         borderBottomColor: colors.hairline,
       }}
     >
-      <AppText style={{ flex: 1 }}>{children}</AppText>
+      <AppText style={{ flex: 1, minWidth: 0, flexShrink: 1 }}>
+        {children}
+      </AppText>
       <Glyph name="chevron-right" />
     </Pressable>
   );

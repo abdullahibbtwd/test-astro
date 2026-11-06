@@ -288,8 +288,8 @@ export function Button({
           variant="button"
           align="center"
           color={secondary ? (danger ? "danger" : "accent") : "onPrimary"}
-          numberOfLines={1}
-          style={{ flexShrink: 0 }}
+          numberOfLines={2}
+          style={{ flexShrink: 1 }}
         >
           {label}
         </AppText>
@@ -359,6 +359,7 @@ export function Row({
           style={{
             width: 44,
             height: 44,
+            flexShrink: 0,
             borderRadius: 22,
             alignItems: "center",
             justifyContent: "center",
@@ -368,10 +369,10 @@ export function Row({
           {leading}
         </View>
       )}
-      <View style={{ flex: 1, gap: dsSpace[1] }}>
-        <Txt>{label}</Txt>
+      <View style={{ flex: 1, minWidth: 0, gap: dsSpace[1] }}>
+        <Txt style={{ flexShrink: 1 }}>{label}</Txt>
         {detail && (
-          <Txt kind="caption" muted>
+          <Txt kind="caption" muted style={{ flexShrink: 1 }}>
             {detail}
           </Txt>
         )}
@@ -433,10 +434,12 @@ export function Chip({
     >
       <Txt
         kind={compact ? "caption" : undefined}
-        numberOfLines={1}
-        adjustsFontSizeToFit
-        minimumFontScale={0.8}
-        style={{ color: selected ? c.onPrimary : c.ink }}
+        numberOfLines={2}
+        style={{
+          color: selected ? c.onPrimary : c.ink,
+          flexShrink: 1,
+          textAlign: "center",
+        }}
       >
         {label}
       </Txt>

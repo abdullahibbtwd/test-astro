@@ -26,7 +26,9 @@ export function Field({
       <AppText variant="label" color="inkSoft">
         {label}
       </AppText>
-      <View style={{ flexDirection: "row", gap: space[2] }}>{children}</View>
+      <View style={{ flexDirection: "row", minWidth: 0, gap: space[2] }}>
+        {children}
+      </View>
       {error ? (
         <View
           accessibilityLiveRegion="polite"

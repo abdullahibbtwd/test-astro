@@ -64,3 +64,7 @@ STOP_FOR_MANUAL:ux/05-offline
 - `ux/07-accessibility`: CONFLICT
 frontend/src/features/account/AuthScreen.tsx
   - Conflicts in AuthScreen.tsx: kept both `editable={online}` (ux/05) and `maxFontSizeMultiplier={1.5}` (ux/07).
+- `ux/08-layout`: CONFLICT
+frontend/src/design/components/Segmented.tsx
+frontend/tests/native/fx-shell.test.tsx
+  - Conflicts in Segmented.tsx + fx-shell.test.tsx: 2-line TR tabs (ux/08) with AppText 1.5 font cap (ux/07).
