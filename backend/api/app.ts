@@ -14,6 +14,7 @@ import type { JwtAuth } from "./jwt-auth";
 import type { SupabaseAdmin } from "./supabase-admin";
 import { MapJobs, mapContext } from "./map-jobs";
 import { exportAccount, deleteAccount } from "./account";
+import { withComputedEntitlements } from "./entitlements";
 import { startCleanupTimer } from "./cleanup";
 import { prisma } from "./db";
 import { LiveMap } from "./map";
@@ -172,7 +173,7 @@ export async function buildLocalApp({
       },
       update: email ? { email } : {},
     });
-    const me: Me = {
+    const me: Me = await withComputedEntitlements(prisma(), {
       ...defaults("me.en"),
       user_id: tenantId,
       email: email || defaults("me.en").email,
@@ -182,7 +183,7 @@ export async function buildLocalApp({
       consents: { birth_data: null, marketing: false },
       created_at: now(),
       ask_quota: { limit_per_day: 0, used_today: 0, resets_at: now() },
-    };
+    });
     await store.put("me", me);
     return me;
   };
@@ -286,12 +287,13 @@ export async function buildLocalApp({
     }
     return store.runAsAsync(tenantId, async () => {
       await ask.quota();
+      const stored = (await store.get<Me>("me"))!;
       return {
         access_token: access,
         refresh_token: refresh,
         access_expires_at: new Date(expires).toISOString(),
         is_new_user: !me.self_profile_id,
-        me: (await store.get<Me>("me"))!,
+        me: await withComputedEntitlements(prisma(), stored),
       };
     });
   };
@@ -680,7 +682,10 @@ export async function buildLocalApp({
                 });
               return reply.code(202).send();
             case "get /me":
-              result = { ...me, ask_quota: await ask.quota() };
+              result = await withComputedEntitlements(prisma(), {
+                ...me,
+                ask_quota: await ask.quota(),
+              });
               break;
             case "patch /me": {
               const { current_place_id } = body;
