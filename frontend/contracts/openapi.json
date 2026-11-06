@@ -7739,7 +7739,8 @@
               "internal",
               "busy",
               "account_required",
-              "read_ahead_limit"
+              "read_ahead_limit",
+              "premium_required"
             ]
           },
           "blocking_job_id": {

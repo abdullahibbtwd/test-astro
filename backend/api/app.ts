@@ -1007,6 +1007,8 @@ export async function buildLocalApp({
               result = await store.get("chart:" + p.id);
               break;
             case "get /profiles/{id}/solar-return": {
+              const { requireFeature } = await import("./feature-gates");
+              await requireFeature(tenantId!, "reports");
               const yearRaw = q.year?.trim();
               let year: number;
               if (!yearRaw) year = new Date().getUTCFullYear();

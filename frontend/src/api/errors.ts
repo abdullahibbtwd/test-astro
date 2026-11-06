@@ -79,7 +79,24 @@ export function describeError(error: unknown, online = true): ErrorDescription {
     return { kind: "invalid", titleKey: "errorInvalid", action: "none" };
   if (code === "conflict")
     return { kind: "conflict", titleKey: "errorConflict", action: "refresh" };
+  if (code === "premium_required" || isPremiumRequired(error))
+    return {
+      kind: "premium_required",
+      titleKey: "errorPremiumRequired",
+      action: "none",
+    };
   if (error instanceof ContractError)
     return { kind: "server", titleKey: "errorServer", action: "retry" };
   return { kind: "server", titleKey: "errorServer", action: "retry" };
+}
+
+/** True when the API refused a premium-gated feature. */
+export function isPremiumRequired(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  const e = error as Partial<ApiError> & { problem?: Problem; code?: string };
+  return (
+    e.code === "premium_required" ||
+    e.problem?.code === "premium_required" ||
+    (error instanceof ApiError && error.code === "premium_required")
+  );
 }
