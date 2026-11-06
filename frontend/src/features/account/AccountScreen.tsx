@@ -23,12 +23,14 @@ import { PlaceSearch } from "../../design/components/PlaceSearch";
 import { useApp } from "../../lib/state";
 import { useMe, useActions, useConfig } from "../../api/hooks";
 import { legalUrl } from "../../config/identity";
+import { usePaymentsUiEnabled } from "../../lib/flags";
 export default function AccountScreen({ page = "profile" }: { page?: string }) {
   const { t } = useTranslation(),
     app = useApp(),
     me = useMe(),
     actions = useActions(),
     config = useConfig();
+  const paymentsUi = usePaymentsUiEnabled();
   const [confirm, setConfirm] = useState(false),
     [word, setWord] = useState(""),
     [error, setError] = useState<unknown>(null);
@@ -59,6 +61,7 @@ export default function AccountScreen({ page = "profile" }: { page?: string }) {
           {[
             "myCharts",
             "savedReports",
+            ...(paymentsUi ? (["subscription"] as const) : []),
             "settings",
             "notifications",
             "privacy",

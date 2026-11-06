@@ -61,6 +61,8 @@ const patterns: { pathname: string; parts: string[] }[] = [
   { pathname: "/profile/privacy", parts: ["profile", "privacy"] },
   { pathname: "/profile/reports", parts: ["profile", "reports"] },
   { pathname: "/profile/settings", parts: ["profile", "settings"] },
+  { pathname: "/profile/subscription", parts: ["profile", "subscription"] },
+  { pathname: "/paywall", parts: ["paywall"] },
   { pathname: "/profile/charts", parts: ["profile", "charts"] },
   { pathname: "/profile/charts/new", parts: ["profile", "charts", "new"] },
   { pathname: "/(onboarding)/[step]", parts: ["(onboarding)", "[step]"] },
