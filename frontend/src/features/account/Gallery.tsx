@@ -11,8 +11,9 @@ import MoreHorizontal from "lucide-react-native/icons/ellipsis";
 import { useTheme } from "../../design/theme";
 import { useLocalSearchParams } from "expo-router";
 import { JobProgress } from "../../design/components/JobProgress";
+import { Generated } from "../shared/Blocks";
 import { NetworkError } from "../../api/errors";
-import type { Job } from "../../../contracts/spec-types";
+import type { GeneratedPart, Job } from "../../../contracts/spec-types";
 import { diagnosticReports } from "../../lib/telemetry";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -39,13 +40,15 @@ export default function Gallery() {
     app = useApp(),
     [value, setValue] = useState("");
   if (!__DEV__ && process.env.EXPO_PUBLIC_FX_AUDIT !== "1") return null;
-  if (fx === "export-audit") return <ExportAudit/>;
+  if (fx === "export-audit") return <ExportAudit />;
   if (fx === "list-audit") return <ListAudit />;
   if (fx) {
+    const status =
+      fx === "queued" ? "queued" : fx === "succeeded" ? "succeeded" : "running";
     const job: Job = {
       job_id: "gallery",
       kind: "natal_reading",
-      status: "running",
+      status,
       created_at: new Date(
         Date.now() - (fx === "very-slow" ? 30 : 4) * 60_000,
       ).toISOString(),
@@ -60,6 +63,18 @@ export default function Gallery() {
       busy: { code: "busy" },
       server: { status: 503 },
     };
+    const generated = (
+      fx === "succeeded"
+        ? { status: "ready", text: t("ready") }
+        : fx === "failed"
+          ? { status: "failed", error: { code: "generation_failed" } }
+          : fx === "paused"
+            ? {
+                status: "absent",
+                absence: { reason: "generation_paused" },
+              }
+            : { status: "pending", job }
+    ) as GeneratedPart<{ text: string }>;
     return (
       <Screen back title={t("gallery")}>
         <Choices>
@@ -72,7 +87,11 @@ export default function Gallery() {
             />
           ))}
         </Choices>
-        {fx === "slow" || fx === "very-slow" ? (
+        {["queued", "running", "succeeded", "failed", "paused"].includes(fx) ? (
+          <Generated part={generated} retry={() => {}}>
+            {(part) => <Txt>{part.text}</Txt>}
+          </Generated>
+        ) : fx === "slow" || fx === "very-slow" ? (
           <JobProgress job={job} retry={() => {}} />
         ) : (
           <ErrorNotice error={errors[fx]} retry={() => {}} />
