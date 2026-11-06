@@ -30,6 +30,14 @@ export function authEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   return env.AUTH_ENABLED !== "0";
 }
 
+/**
+ * Production-like: NODE_ENV=production (Dockerfile/Coolify) or explicit
+ * ASTRO_PRODUCTION_LIKE=1 for staging that must fail closed the same way.
+ */
+export function isProductionLike(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.NODE_ENV === "production" || env.ASTRO_PRODUCTION_LIKE === "1";
+}
+
 /** Whether a Gemini key is available via env or ~/.gemini_key (existence only). */
 export function geminiKeyPresent(
   env: NodeJS.ProcessEnv = process.env,
@@ -88,10 +96,12 @@ export function checkConfig(
   const warn = (names: string[], message: string) =>
     findings.push({ level: "warn", names, message });
 
-  if (env.NODE_ENV === "production" && env.ASTRO_DEMO_AUTH === "1") {
+  const productionLike = isProductionLike(env);
+
+  if (productionLike && env.ASTRO_DEMO_AUTH === "1") {
     refuse(
       ["NODE_ENV", "ASTRO_DEMO_AUTH"],
-      "ASTRO_DEMO_AUTH must not be enabled when NODE_ENV=production",
+      "ASTRO_DEMO_AUTH must not be enabled in production-like config",
     );
   }
 
@@ -100,6 +110,51 @@ export function checkConfig(
       ["AUTH_ENABLED", "SUPABASE_URL"],
       "AUTH_ENABLED is on but SUPABASE_URL is missing",
     );
+  }
+
+  // Production must have a real issuer/JWKS source (derived from SUPABASE_URL).
+  if (productionLike && !env.SUPABASE_URL?.trim()) {
+    refuse(
+      ["NODE_ENV", "SUPABASE_URL"],
+      "Production-like config requires SUPABASE_URL (JWT issuer/JWKS source)",
+    );
+  }
+
+  if (productionLike && !authEnabled(env)) {
+    refuse(
+      ["NODE_ENV", "AUTH_ENABLED"],
+      "AUTH_ENABLED must not be 0 in production-like config",
+    );
+  }
+
+  if (productionLike && env.ASTRO_RATE_LIMIT_DISABLED === "1") {
+    refuse(
+      ["NODE_ENV", "ASTRO_RATE_LIMIT_DISABLED"],
+      "ASTRO_RATE_LIMIT_DISABLED must not be enabled in production-like config",
+    );
+  }
+
+  if (productionLike) {
+    const provider = (env.ASTRO_PAYMENT_PROVIDER ?? "").trim().toLowerCase();
+    const webhookSecret = env.ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET?.trim();
+    if (!provider || provider === "unset") {
+      refuse(
+        ["NODE_ENV", "ASTRO_PAYMENT_PROVIDER"],
+        "ASTRO_PAYMENT_PROVIDER must be set explicitly in production-like config (not fake/unset)",
+      );
+    } else if (provider === "fake") {
+      if (!webhookSecret) {
+        refuse(
+          ["NODE_ENV", "ASTRO_PAYMENT_PROVIDER", "ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET"],
+          "Fake payment provider in production-like config requires ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET",
+        );
+      } else if (webhookSecret === "fake-webhook-secret") {
+        refuse(
+          ["NODE_ENV", "ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET"],
+          "ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET must not use the built-in default value",
+        );
+      }
+    }
   }
 
   if (env.ASTRO_ALLOW_PAID === "1" && !geminiKeyPresent(env, home)) {
@@ -126,7 +181,7 @@ export function checkConfig(
     );
   }
 
-  if (env.NODE_ENV === "production") {
+  if (productionLike) {
     const db =
       env.DATABASE_URL?.trim() ||
       "postgres://astrology:astrology@127.0.0.1:5432/astrology";
