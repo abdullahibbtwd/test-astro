@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://astrology.local/schemas/benchmark-case.json",
+  "title": "AstrologyBenchmarkCase",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "birth", "expected"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable case id / filename stem."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["solar_return", "family"],
+      "description": "Which engine surface this benchmark exercises."
+    },
+    "birth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["date", "time", "latitude", "longitude"],
+      "properties": {
+        "date": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "time": {
+          "type": "string",
+          "pattern": "^\\d{2}:\\d{2}$"
+        },
+        "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+        "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+        "place": { "type": ["string", "null"] },
+        "tz": { "type": ["string", "null"] }
+      }
+    },
+    "birth_b": {
+      "description": "Second person birth data when kind=family.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["date", "time", "latitude", "longitude"],
+      "properties": {
+        "date": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "time": { "type": "string", "pattern": "^\\d{2}:\\d{2}$" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "place": { "type": ["string", "null"] },
+        "tz": { "type": ["string", "null"] }
+      }
+    },
+    "target_year": {
+      "type": "integer",
+      "minimum": 1900,
+      "maximum": 2100,
+      "description": "Solar return year (required when kind=solar_return)."
+    },
+    "relationship_type": {
+      "type": "string",
+      "enum": ["romantic", "parent_child", "sibling"],
+      "description": "Family aspect selection key when kind=family."
+    },
+    "expected": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "return_utc": {
+          "type": "string",
+          "description": "Expected solar return instant (ISO-8601 UTC)."
+        },
+        "ascendant": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "sign": { "type": ["string", "null"] },
+            "longitude": { "type": ["number", "null"] }
+          }
+        },
+        "key_placements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["body"],
+            "properties": {
+              "body": { "type": "string" },
+              "sign": { "type": ["string", "null"] },
+              "longitude": { "type": ["number", "null"] },
+              "house": { "type": ["integer", "null"] }
+            }
+          }
+        },
+        "aspects": {
+          "type": "array",
+          "description": "Expected synastry rows when kind=family.",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": ["a_point", "b_point", "type"],
+            "properties": {
+              "a_point": { "type": "string" },
+              "b_point": { "type": "string" },
+              "type": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "sample_reading": {
+      "description": "Approved sample prose; null until the astrologer delivers copy.",
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "lang": { "type": "string", "enum": ["en", "tr"] },
+        "title": { "type": "string" },
+        "sections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["key", "title", "text"],
+            "properties": {
+              "key": { "type": "string" },
+              "title": { "type": "string" },
+              "text": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "mapping": {
+      "description": "Optional notes mapping placements → reading sections.",
+      "type": "object",
+      "additionalProperties": true
+    },
+    "notes": {
+      "type": ["string", "null"]
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "solar_return" } } },
+      "then": {
+        "required": ["target_year"],
+        "properties": {
+          "expected": { "required": ["return_utc"] }
+        }
+      }
+    }
+  ]
+}
