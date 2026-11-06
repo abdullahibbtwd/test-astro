@@ -63,6 +63,8 @@ function wipeMapProductsCache(dataRoot: string, userId: string) {
  * - queued/running jobs older than 15 minutes are treated as dead (ignored for 409)
  * - Tombstone is written before wipe so a failed provider delete cannot recreate the account
  * - If deleteAuthUser fails, throw a retryable error after local wipe/tombstone
+ * - Subscription + payment_event rows for this user are removed from our DB
+ * - Store billing is NOT canceled here — the user must cancel in App Store / Play
  */
 export async function deleteAccount(
   db: PrismaClient,
@@ -107,6 +109,9 @@ export async function deleteAccount(
     });
     await tx.session.deleteMany({ where: { userId } });
     await tx.usageCounter.deleteMany({ where: { userId } });
+    // Subscriptions cascade with User; payment_events have no FK — clear explicitly.
+    await tx.subscription.deleteMany({ where: { userId } });
+    await tx.paymentEvent.deleteMany({ where: { userId } });
     await tx.budgetCall.updateMany({
       where: { userId },
       data: { userId: "shared" },

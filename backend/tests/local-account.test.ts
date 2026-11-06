@@ -250,3 +250,50 @@ test("account export rebuilds a missing dossier through the real bridge", async 
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+test("account deletion removes subscription and payment_event rows", async () => {
+  const userId = createHash("sha256")
+    .update("delete-sub@example.com")
+    .digest("hex");
+  const dir = tempDataDir("delete-sub-");
+  const db = prisma();
+  await db.paymentEvent.deleteMany({ where: { userId } });
+  await db.subscription.deleteMany({ where: { userId } });
+  await db.deletedUser.deleteMany({ where: { id: userId } });
+  await db.user.upsert({
+    where: { id: userId },
+    create: { id: userId, displayName: "delete-sub" },
+    update: {},
+  });
+  await db.subscription.create({
+    data: {
+      userId,
+      planId: "premium",
+      status: "active",
+      expiresAt: new Date(Date.now() + 86400000),
+      sourceStore: "fake",
+      originalTransactionId: `txn-delete-${userId}`,
+      productId: "fake.premium",
+    },
+  });
+  await db.paymentEvent.create({
+    data: {
+      id: `evt-delete-${userId}`,
+      provider: "fake",
+      type: "purchase",
+      userId,
+      payload: { ok: true },
+    },
+  });
+  try {
+    await deleteAccount(db, userId, dir);
+    assert.equal(await db.subscription.count({ where: { userId } }), 0);
+    assert.equal(await db.paymentEvent.count({ where: { userId } }), 0);
+    assert.equal(await db.user.count({ where: { id: userId } }), 0);
+  } finally {
+    await db.paymentEvent.deleteMany({ where: { userId } });
+    await db.subscription.deleteMany({ where: { userId } });
+    await db.deletedUser.deleteMany({ where: { id: userId } });
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
