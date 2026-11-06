@@ -10,6 +10,9 @@ const ABUSE_PATTERNS: RegExp[] = [
   /act\s+as\s+(dan|developer\s+mode|unfiltered)/i,
   /reveal\s+(your\s+)?(system\s+prompt|hidden\s+instructions)/i,
   /do\s+not\s+follow\s+astrology/i,
+  /new\s+instructions?\s*:/i,
+  /<\/?\s*system\s*>/i,
+  /\[\[\s*system\s*\]\]/i,
 ];
 
 export type AskGuardResult =
