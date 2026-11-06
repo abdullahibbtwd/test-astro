@@ -15,3 +15,15 @@ export const problemError = (problem: Problem) =>
     statusCode: problem.status,
     problem,
   });
+
+/** True when the LLM spend ledger refused the call (hard cap). */
+export function isBudgetExhaustedError(error: unknown): boolean {
+  const msg = String(
+    error && typeof error === "object" && "message" in error
+      ? (error as { message: unknown }).message
+      : error,
+  );
+  return /BudgetExceeded|budget exhausted|Integration testing budget/i.test(
+    msg,
+  );
+}

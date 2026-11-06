@@ -3,7 +3,8 @@ import { Prisma } from "../src/generated/prisma/client.js";
 import type { Job as DbJob } from "../src/generated/prisma/client.js";
 import { prisma } from "./db";
 import { toApiJob } from "./job-api";
-import { paused } from "./job-problems";
+import { isBudgetExhaustedError, paused } from "./job-problems";
+import { reportBudgetAlert } from "./sentry";
 import { generateReading } from "./readings";
 import { Store } from "./store";
 import { validate } from "../../frontend/src/api/zod";
@@ -34,6 +35,15 @@ function backoffMs(attempt: number): number {
 }
 
 function failureProblem(detail: string): Problem {
+  if (detail === "budget_exhausted") {
+    return {
+      type: "about:blank",
+      title: "Generation paused",
+      status: 503,
+      code: "generation_paused",
+      detail: "Spending cap reached",
+    };
+  }
   return {
     type: "about:blank",
     title: "Reading could not be prepared",
@@ -209,8 +219,18 @@ export class ReadingJobs {
         });
         await this.store.put("job:" + row.id, toApiJob(done));
       });
-    } catch {
+    } catch (error) {
       if (!(await this.stillOwns(row))) return;
+      if (isBudgetExhaustedError(error)) {
+        reportBudgetAlert("exhausted_100");
+        await refundUsageIfNoSettledSpend(
+          userId,
+          "NATAL_READING",
+          chargedAt,
+        );
+        await this.finishFailed(row.id, "budget_exhausted");
+        return;
+      }
       await this.failOrRetry(row, chargedAt);
     }
   }
@@ -327,6 +347,14 @@ export class ReadingJobs {
     }
 
     if (row && !(retry && row.status === "failed")) {
+      const err = row.error as Problem | null;
+      if (
+        row.status === "failed" &&
+        (err?.code === "generation_paused" ||
+          err?.detail === "Spending cap reached")
+      ) {
+        return { absence: paused().absence };
+      }
       if (this.enabled) void this.wake();
       return { job: toApiJob(row) };
     }

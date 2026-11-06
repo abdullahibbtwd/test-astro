@@ -103,4 +103,19 @@ export function sentryEnabled(): boolean {
   return initialized;
 }
 
+/** Budget threshold alert — no personal data in the message. */
+export function reportBudgetAlert(
+  level: "warn_80" | "exhausted_100",
+  details: { ratio?: number; spent_usd?: number; cap_usd?: number } = {},
+): void {
+  const message = `budget_alert:${level}`;
+  console.warn(message, details);
+  if (!initialized) return;
+  Sentry.captureMessage(message, {
+    level: level === "exhausted_100" ? "error" : "warning",
+    tags: { budget_alert: level },
+    extra: details,
+  });
+}
+
 export { Sentry };
