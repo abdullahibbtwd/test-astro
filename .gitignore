@@ -15,7 +15,13 @@ docs/ASTROLOGY_PROJECT_AUDIT.md
 node_modules/
 */node_modules/
 
+# Env files (never commit). Allow checked-in examples only.
 .env
+.env.*
+!.env.example
+!.env.*.example
+!**/.env.example
+!**/.env.*.example
 # --- Personal run outputs (real birth data + readings) ---
 runs/
 synastry_run/
