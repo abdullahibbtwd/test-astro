@@ -26,10 +26,11 @@ import {
   Skeleton,
   StandardErrorState,
 } from "../../design/components";
+import { describeError } from "../../api/errors";
 import { useTheme } from "../../design/theme";
 import { useApi } from "../../api/resource";
 import { useMe, useProfiles } from "../../api/hooks";
-import { request, updateSessionMe } from "../../api/client";
+import { request, updateSessionMe, ApiError } from "../../api/client";
 import { streamAnswer } from "../../api/ask-stream";
 import { askContext } from "../../api/sse";
 import { validate } from "../../api/zod";
@@ -222,7 +223,20 @@ export default function ChatScreen() {
                 (message) => message.message_id === data.message_id,
               )?.text || t("ready"),
             );
-          } else if (event === "error") throw new Error("Answer failed");
+          } else if (event === "error") {
+            const problem =
+              raw && typeof raw === "object"
+                ? (raw as { code?: string; title?: string; detail?: string })
+                : null;
+            if (problem?.code)
+              throw new ApiError(
+                409,
+                problem.code,
+                0,
+                problem as never,
+              );
+            throw new ApiError(502, "upstream_unavailable");
+          }
         },
       );
       const result = await query.refetch();
@@ -506,7 +520,14 @@ export default function ChatScreen() {
                 )}
                 {message.status !== "complete" && !busy && (
                   <Txt muted>
-                    {t(message.status === "failed" ? "error" : "interrupted")}
+                    {message.status === "failed"
+                      ? (() => {
+                          const d = describeError(error);
+                          // Never fall back to generic connection copy for busy/etc.
+                          return d.message ||
+                            (d.titleKey ? t(d.titleKey) : t("errorServer"));
+                        })()
+                      : t("interrupted")}
                   </Txt>
                 )}
               </>

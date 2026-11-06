@@ -409,6 +409,8 @@
   "errorOffline": "You're offline. Saved readings are still available.",
   "errorBusy": "Another reading is being prepared. This one will start when it's done.",
   "errorRateLimited": "Daily reading limit reached. Try again tomorrow.",
+  "errorTimeout": "That took too long. Check your connection and try again.",
+  "errorUnavailable": "The service is temporarily unavailable. Try again shortly.",
   "errorGeneration": "This reading couldn't be prepared. Try again.",
   "generationPaused": "New readings are paused in this preview. Saved readings still open.",
   "notGenerated": "This reading hasn't been prepared yet.",

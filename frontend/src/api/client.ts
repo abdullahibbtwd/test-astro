@@ -1,5 +1,5 @@
-import { ApiError, NetworkError } from "./errors";
-export { ApiError, NetworkError } from "./errors";
+import { ApiError, NetworkError, parseRetryAfter } from "./errors";
+export { ApiError, NetworkError, parseRetryAfter } from "./errors";
 import type { Problem } from "../../contracts/spec-types";
 import { useCapabilities } from "../lib/capabilities";
 import createClient from "openapi-fetch";
@@ -224,7 +224,7 @@ export async function request<T>(
     throw new ApiError(
       response.response.status,
       error?.code ?? "upstream_unavailable",
-      Number(response.response.headers.get("Retry-After") ?? 0),
+      parseRetryAfter(response.response.headers.get("Retry-After")),
       error,
     );
   }

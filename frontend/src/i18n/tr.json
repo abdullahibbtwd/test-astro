@@ -409,6 +409,8 @@
   "errorOffline": "İnternet bağlantınız yok. Kaydedilen yorumları açabilirsiniz.",
   "errorBusy": "Başka bir yorum hazırlanıyor. Bu yorum, diğeri tamamlandığında başlayacak.",
   "errorRateLimited": "Günlük yorum limitine ulaşıldı. Yarın tekrar deneyin.",
+  "errorTimeout": "İşlem çok uzun sürdü. Bağlantınızı kontrol edip tekrar deneyin.",
+  "errorUnavailable": "Hizmet geçici olarak kullanılamıyor. Kısa süre sonra tekrar deneyin.",
   "errorGeneration": "Bu yorum hazırlanamadı. Tekrar deneyin.",
   "generationPaused": "Bu önizlemede yeni yorumlar duraklatıldı. Kaydedilen yorumları açabilirsiniz.",
   "notGenerated": "Bu yorum henüz hazırlanmadı.",
