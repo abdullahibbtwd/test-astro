@@ -15,6 +15,7 @@ import {
   Button,
   Skeleton,
   ErrorNotice,
+  EmptyState,
 } from "../../design/components";
 import { usePages } from "../../api/pages";
 import { request } from "../../api/client";
@@ -73,7 +74,7 @@ export default function MatchScreen() {
               />
             ))
         : !query.isPending &&
-          !query.error && <Txt muted>{t("emptyCompatibility")}</Txt>}
+          !query.error && <EmptyState titleKey="emptyCompatibility" />}
       {query.hasNextPage && (
         <Button
           secondary

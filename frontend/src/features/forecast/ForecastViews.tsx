@@ -20,6 +20,7 @@ import {
   Row,
   Skeleton,
   ErrorNotice,
+  EmptyState,
 } from "../../design/components";
 import {
   Generated,
@@ -178,7 +179,7 @@ export function DayView({
           <Domains items={data.domains} />
           <Txt kind="title">{t("importantTransits")}</Txt>
           {!data.transits.length && !data.events.length && (
-            <Txt muted>{t("noTransits")}</Txt>
+            <EmptyState titleKey="noTransits" />
           )}
           <ItemRows
             profile={profile}

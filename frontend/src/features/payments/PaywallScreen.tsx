@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { router } from "expo-router";
-import { Screen, Txt, Button, ErrorNotice } from "../../design/components";
+import {
+  Screen,
+  Txt,
+  Button,
+  ErrorNotice,
+  EmptyState,
+} from "../../design/components";
 import { usePaymentsUiEnabled } from "../../lib/flags";
 import { getPaymentProvider, type StoreProduct } from "../../payments";
 
@@ -74,7 +80,7 @@ export default function PaywallScreen() {
         </View>
       )}
       {!loading && products.length === 0 && !error && (
-        <Txt muted>{t("paywallNoProducts")}</Txt>
+        <EmptyState titleKey="paywallNoProducts" />
       )}
       {products.map((p) => (
         <View key={p.productId} style={{ gap: 8, marginVertical: 12 }}>

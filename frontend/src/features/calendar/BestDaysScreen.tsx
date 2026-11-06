@@ -20,6 +20,7 @@ import {
   Chip,
   Skeleton,
   ErrorNotice,
+  EmptyState,
 } from "../../design/components";
 import { useApi } from "../../api/resource";
 import { useCatalogue } from "../../api/hooks";
@@ -46,6 +47,9 @@ export default function BestDaysScreen() {
     <Screen back title={selected?.label ?? t("bestDays")}>
       <Txt muted>{t("next90")}</Txt>
       {query.isPending && <Skeleton />}
+      {data && !activity && data.activities.length === 0 && (
+        <EmptyState titleKey="emptyBestDays" />
+      )}
       {data &&
         !activity &&
         data.activities.map((item) => (

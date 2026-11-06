@@ -14,7 +14,8 @@ import {
   Choices,
   Chip,
   Skeleton,
-  ErrorNotice,
+  EmptyState,
+  StandardErrorState,
 } from "../../design/components";
 import { AspectGlyph } from "../../design/components/AspectGlyph";
 import { useApp } from "../../lib/state";
@@ -25,8 +26,7 @@ import { ChartDetailSheet } from "./ChartDetailSheet";
 import type { BirthProfile } from "../../../contracts/spec-types";
 import type { Selection } from "./facts";
 export default function ChartScreen() {
-  const { t } = useTranslation(),
-    app = useApp(),
+  const app = useApp(),
     profiles = useProfiles(),
     network = useNetInfo();
   const active =
@@ -35,9 +35,13 @@ export default function ChartScreen() {
     ) ?? profiles.data?.find((p) => p.is_self);
   return (
     <Screen embedded>
-      {network.isConnected === false && (
-        <Txt kind="caption">{t("offline")}</Txt>
-      )}
+      <StandardErrorState
+        cachedOffline={network.isConnected === false}
+        error={profiles.error}
+        retry={() => {
+          void profiles.refetch();
+        }}
+      />
       {profiles.isPending ? (
         <Skeleton />
       ) : active ? (
@@ -46,14 +50,8 @@ export default function ChartScreen() {
           profile={active}
         />
       ) : (
-        !profiles.error && <Txt>{t("missingProfile")}</Txt>
+        !profiles.error && <EmptyState titleKey="missingProfile" />
       )}
-      <ErrorNotice
-        error={profiles.error}
-        retry={() => {
-          void profiles.refetch();
-        }}
-      />
     </Screen>
   );
 }

@@ -23,6 +23,7 @@ import {
   Row,
   Skeleton,
   ErrorNotice,
+  EmptyState,
 } from "../../design/components";
 import { JobProgress } from "../../design/components/JobProgress";
 import { useProfiles } from "../../api/hooks";
@@ -46,7 +47,7 @@ export default function ReadingScreen() {
         {profiles.isPending ? (
           <Skeleton />
         ) : (
-          !profiles.error && <Txt>{t("missingProfile")}</Txt>
+          !profiles.error && <EmptyState titleKey="missingProfile" />
         )}
         <ErrorNotice
           error={profiles.error}

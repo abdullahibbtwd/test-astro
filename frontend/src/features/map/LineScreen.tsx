@@ -5,7 +5,7 @@ import { View } from "react-native";
 import { ReportSurface as Screen } from "./ReportSurface";
 import { useLocalSearchParams, router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Txt, Row, ErrorNotice, Skeleton } from "../../design/components";
+import { Txt, Row, ErrorNotice, Skeleton, EmptyState } from "../../design/components";
 import { Glyph } from "../../design/components/Glyph";
 import { useCatalogue } from "../../api/hooks";
 import { useApi } from "../../api/resource";
@@ -56,7 +56,7 @@ export default function LineScreen() {
               />
             </View>
           ))}
-          {q.data?.places.length === 0 && <Txt>{t("noResults")}</Txt>}
+          {q.data?.places.length === 0 && <EmptyState titleKey="noResults" />}
         </>
       )}
     </Screen>
