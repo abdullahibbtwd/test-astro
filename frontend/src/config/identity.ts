@@ -13,6 +13,15 @@ export type AppIdentity = {
     terms: string;
     support: string;
   };
+  /**
+   * Owner attestation of API-hosted MapLibre style URLs (not read by the app
+   * binary — Coolify `ASTRO_MAP_STYLE_*` → `/meta/config`). Required nonempty
+   * https URLs before release:check passes.
+   */
+  mapStyleUrls?: {
+    light: string;
+    dark: string;
+  };
 };
 
 export const identity = identityJson as AppIdentity;

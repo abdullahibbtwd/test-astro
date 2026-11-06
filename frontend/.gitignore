@@ -6,6 +6,12 @@ android/
 ios/
 .env*
 !.env.example
+# Signing material — never commit. EAS stores the release keystore remotely.
+*.jks
+*.keystore
+credentials.json
+google-services.json
+GoogleService-Info.plist
 # Fixtures live under backend/mock/fixtures (ignored there).
 artifacts/
 *.tsbuildinfo
