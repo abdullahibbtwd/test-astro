@@ -99,6 +99,8 @@ export async function buildLocalApp({
   });
   // onRequest: coarse per-IP (before JWT). Authed buckets: enforceUserRateLimit after resolveTenant.
   const rateLimiter = registerRateLimit(app, readRateLimitConfig());
+  const { registerPaymentWebhook } = await import("./payments/webhook-route");
+  registerPaymentWebhook(app);
   const dataRoot = dbPath === ":memory:" ? dataDir() : path.dirname(dbPath);
   const store = await Store.open(
     process.env.DATABASE_URL

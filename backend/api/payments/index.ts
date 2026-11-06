@@ -8,6 +8,8 @@ export * from "./types";
 export { FakeProvider, fakeSamplePayloads } from "./fake-provider";
 export { RevenueCatStubProvider } from "./revenuecat-stub";
 export { NativeStubProvider } from "./native-stub";
+export { applyPaymentEvent } from "./apply-event";
+export { registerPaymentWebhook } from "./webhook-route";
 
 /**
  * Resolve the active payment provider.
