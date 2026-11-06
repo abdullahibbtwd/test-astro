@@ -72,7 +72,7 @@ test.each([
   [new NetworkError(), "errorOffline", true],
   [{ code: "busy" }, "errorBusy", false],
   [{ status: 503 }, "errorUnavailable", true],
-  [new ApiError(403, "premium_required"), "errorPremiumRequired", true],
+  [new ApiError(403, "premium_required"), "lockedFeatureBody", false],
   [{ code: "timeout" }, "errorTimeout", true],
 ] as const)("notice %s has the correct action", async (error, key, retry) => {
   await render(<ErrorNotice error={error} retry={jest.fn()} />);
