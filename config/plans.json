@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "provider": "unset",
+  "free_launch": {
+    "entitle_all": true,
+    "description": "When true (or ASTRO_FREE_LAUNCH_ENTITLE_ALL=1), every authenticated user is treated as fully entitled. Set false after paid launch."
+  },
+  "feature_catalog": {
+    "ask": {
+      "id": "ask",
+      "description": "Ask Astrology conversations",
+      "premium": null
+    },
+    "family": {
+      "id": "family",
+      "description": "Family compatibility",
+      "premium": null
+    },
+    "reports": {
+      "id": "reports",
+      "description": "Saved / solar-return style reports",
+      "premium": null
+    },
+    "map": {
+      "id": "map",
+      "description": "Map / place readings",
+      "premium": null
+    }
+  },
+  "plans": [
+    {
+      "id": "free",
+      "name": "",
+      "display_name_en": "",
+      "display_name_tr": "",
+      "store_product_ids": {
+        "apple": "",
+        "google": ""
+      },
+      "features": [],
+      "daily_limits": {
+        "ask": null,
+        "natal_reading": null,
+        "map_reading": null,
+        "forecast_reading": null,
+        "compat_reading": null
+      }
+    },
+    {
+      "id": "premium",
+      "name": "",
+      "display_name_en": "",
+      "display_name_tr": "",
+      "store_product_ids": {
+        "apple": "",
+        "google": ""
+      },
+      "features": ["ask", "family", "reports", "map"],
+      "daily_limits": {
+        "ask": null,
+        "natal_reading": null,
+        "map_reading": null,
+        "forecast_reading": null,
+        "compat_reading": null
+      }
+    }
+  ],
+  "default_plan_id": "free",
+  "notes": [
+    "OWNER INPUT REQUIRED: plan names (name / display_name_*), which features are premium (feature_catalog.*.premium true|false), free-tier daily_limits numbers, store product IDs, and provider (revenuecat | native).",
+    "null daily_limits fall back to ASTRO_DAILY_* env vars (or built-in defaults) until the owner sets numbers.",
+    "null feature premium means the gate is inactive until the owner marks the feature true or false.",
+    "Prices must never be stored here; they come from the store at runtime."
+  ]
+}
