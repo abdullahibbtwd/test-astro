@@ -3,12 +3,18 @@ on:
   push:
     paths:
       - "backend/**"
+      - "frontend/package.json"
+      - "frontend/package-lock.json"
+      - "frontend/src/api/**"
       - "requirements-handoff.txt"
       - ".github/workflows/backend-tests.yml"
       - "Dockerfile"
   pull_request:
     paths:
       - "backend/**"
+      - "frontend/package.json"
+      - "frontend/package-lock.json"
+      - "frontend/src/api/**"
       - "requirements-handoff.txt"
       - ".github/workflows/backend-tests.yml"
       - "Dockerfile"
@@ -49,7 +55,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: backend/package-lock.json
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
 
       - uses: actions/setup-python@v5
         with:
@@ -69,6 +77,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements-handoff.txt
+
+      # Backend imports shared validators from frontend/src/api/zod; Node resolves
+      # `zod` from that package tree, so frontend deps must be present.
+      - name: Install frontend npm deps (shared validators)
+        working-directory: frontend
+        run: npm ci
 
       - name: Install backend npm deps and Prisma client
         working-directory: backend

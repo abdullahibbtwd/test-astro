@@ -6,8 +6,8 @@ import YAML from "yaml";
 import { endpoints } from "./endpoints";
 
 const blocks = [
-  "FE_02_API_CONTRACT_SPEC.md",
-  "FE_09_ASK_ASTROLOGY_SPEC.md",
+  "../docs/frontend/FE_02_API_CONTRACT_SPEC.md",
+  "../docs/frontend/FE_09_ASK_ASTROLOGY_SPEC.md",
 ].flatMap((file) =>
   [...fs.readFileSync(file, "utf8").matchAll(/```ts\r?\n([\s\S]*?)```/g)].map(
     (match) => match[1],

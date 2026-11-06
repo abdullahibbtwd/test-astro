@@ -1,9 +1,17 @@
 name: Frontend contract and shell
 on:
   push:
-    paths: ['frontend/**', 'Chart_wheel/**', '.github/workflows/frontend-contract.yml']
+    paths:
+      - 'frontend/**'
+      - 'docs/frontend/**'
+      - 'Chart_wheel/**'
+      - '.github/workflows/frontend-contract.yml'
   pull_request:
-    paths: ['frontend/**', 'Chart_wheel/**', '.github/workflows/frontend-contract.yml']
+    paths:
+      - 'frontend/**'
+      - 'docs/frontend/**'
+      - 'Chart_wheel/**'
+      - '.github/workflows/frontend-contract.yml'
 permissions:
   contents: read
 jobs:
