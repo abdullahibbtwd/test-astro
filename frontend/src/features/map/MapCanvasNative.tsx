@@ -398,7 +398,7 @@ export function MapCanvasNative({
             right: 8,
             backgroundColor: theme.surface,
             padding: dsSpace[1],
-            borderRadius: dsRadius.sm,
+            borderRadius: dsRadius.md,
             opacity: 0.92,
           }}
         >

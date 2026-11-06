@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useProfiles } from "../../api/hooks";
 import { FamilyCompatibilitySkeleton } from "../step3/FamilyCompatibilitySkeleton";
@@ -30,11 +30,14 @@ export default function FamilyCompatibilityScreen({
 }) {
   const { t } = useTranslation(),
     profiles = useProfiles(),
-    list =
-      profiles.data?.map((p) => ({
-        id: p.profile_id,
-        label: p.label,
-      })) ?? [],
+    list = useMemo(
+      () =>
+        profiles.data?.map((p) => ({
+          id: p.profile_id,
+          label: p.label,
+        })) ?? [],
+      [profiles.data],
+    ),
     [a, setA] = useState(""),
     [b, setB] = useState(""),
     [relationshipType, setRelationshipType] =

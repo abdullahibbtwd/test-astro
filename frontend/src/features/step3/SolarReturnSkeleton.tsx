@@ -65,7 +65,7 @@ export function SolarReturnSkeleton({
         }}
         style={{
           borderWidth: 1,
-          borderColor: c.line,
+          borderColor: c.borderControl,
           borderRadius: 8,
           paddingHorizontal: 12,
           paddingVertical: 10,

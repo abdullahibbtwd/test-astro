@@ -28,6 +28,16 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
+      # Extracted fixtures are gitignored; the ZIP is tracked (see docs/handoff/SETUP.md).
+      - name: Extract demo fixtures
+        working-directory: .
+        run: |
+          unzip -q fixtures/frontend-demo-fixtures.zip -d .
+          mkdir -p backend/mock
+          rm -rf backend/mock/fixtures
+          mv FE/mock-api/fixtures backend/mock/fixtures
+          rm -rf FE
+          test -f backend/mock/fixtures/manifest.json
       - run: npm run contract:build && npm run contract:types && npm run contract:zod
       - run: git diff --exit-code -- openapi.yaml contracts src/api/schema.d.ts src/api/zod
       - run: npm run typecheck && npm run lint
@@ -36,5 +46,4 @@ jobs:
       - run: npm run bundle
         env:
           CI: '1'
-# Private birth-data fixtures are intentionally not uploaded to CI.
-# Run npm run check locally with the fixture pack before accepting a phase.
+# Live account databases are not uploaded to CI; the demo fixture ZIP is extracted above.

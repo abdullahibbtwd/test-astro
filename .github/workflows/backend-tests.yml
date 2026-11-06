@@ -91,6 +91,16 @@ jobs:
           npx prisma generate
           npx prisma migrate deploy
 
+      # Extracted fixtures are gitignored; the ZIP is tracked (see docs/handoff/SETUP.md).
+      - name: Extract demo fixtures
+        run: |
+          unzip -q fixtures/frontend-demo-fixtures.zip -d .
+          mkdir -p backend/mock
+          rm -rf backend/mock/fixtures
+          mv FE/mock-api/fixtures backend/mock/fixtures
+          rm -rf FE
+          test -f backend/mock/fixtures/manifest.json
+
       - name: Backend Node test suite
         working-directory: backend
         run: npm test

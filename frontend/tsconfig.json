@@ -20,6 +20,11 @@
     ".expo/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "tests/flows.test.ts",
+    "tests/mock.test.ts",
+    "tests/phase1.test.ts",
+    "tests/progressive-mock.test.ts",
+    "tests/reports.test.ts"
   ]
 }

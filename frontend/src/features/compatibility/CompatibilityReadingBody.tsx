@@ -4,7 +4,11 @@ import { ReadingSection } from "../profiles/ReadingScreen";
 import { CompatibilityScoreLine } from "./CompatibilityScoreLine";
 import type { Compatibility } from "../../../contracts/spec-types";
 
-type ReadyReading = Extract<Compatibility["reading"], { status: "ready" }>;
+/** Payload from GeneratedPart ready state (status already gated by <Generated>). */
+type ReadyReadingContent = Omit<
+  Extract<Compatibility["reading"], { status: "ready" }>,
+  "status"
+>;
 
 /** Reading sections + optional score line (hidden when score absent / flag off). */
 export function CompatibilityReadingBody({
@@ -12,7 +16,7 @@ export function CompatibilityReadingBody({
   score,
   scoreEnabled,
 }: {
-  reading: ReadyReading;
+  reading: ReadyReadingContent;
   score: Compatibility["score"];
   scoreEnabled: boolean;
 }) {

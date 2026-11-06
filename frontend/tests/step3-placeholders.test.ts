@@ -7,7 +7,7 @@ import {
   assertNoPendingAstrologerMarkers,
   findPendingAstrologerMarkers,
   SOLAR_RETURN_PLACEHOLDER,
-} from "../src/features/step3/placeholders.ts";
+} from "../src/features/step3/placeholders";
 
 test("release gate fails while Step 3 placeholders remain in source", () => {
   const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -25,7 +25,7 @@ test("release gate fails while Step 3 placeholders remain in source", () => {
 
 test("math builders attach the unfinished interpretation markers", async () => {
   const { buildFamilySkeleton, buildSolarReturnSkeleton } = await import(
-    "../src/features/step3/math.ts"
+    "../src/features/step3/math"
   );
   const solar = buildSolarReturnSkeleton({
     return_utc: "2024-01-01T00:00:00Z",
