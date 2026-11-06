@@ -107,6 +107,59 @@ test("purchase then renew; duplicate event is idempotent", async () => {
   }
 });
 
+test("unknown event types are ignored safely; stale timestamps rejected", async () => {
+  process.env.ASTRO_PAYMENT_PROVIDER = "fake";
+  process.env.ASTRO_FREE_LAUNCH_ENTITLE_ALL = "0";
+  const dir = tempDataDir();
+  const app = await buildLocalApp({
+    dbPath: dir + "/app.sqlite",
+    allowPaid: false,
+  });
+  try {
+    const id = await ensureUser();
+    const unknown = await postWebhook(app, {
+      event_id: "fake-evt-unknown-1",
+      type: "not_a_real_event",
+      status: "active",
+      user_id: id,
+      plan_id: "premium",
+      product_id: "fake.premium",
+      original_transaction_id: "fake-txn-unk",
+      occurred_at: new Date().toISOString(),
+      expires_at: "2027-01-01T00:00:00.000Z",
+    });
+    assert.equal(unknown.statusCode, 200);
+    assert.equal(unknown.json().applied, false);
+    assert.equal(unknown.json().reason, "unknown_type");
+    assert.equal(
+      await prisma().subscription.count({ where: { userId: id } }),
+      0,
+    );
+
+    const stale = await postWebhook(app, {
+      event_id: "fake-evt-stale-1",
+      type: "purchase",
+      status: "active",
+      user_id: id,
+      plan_id: "premium",
+      product_id: "fake.premium",
+      original_transaction_id: "fake-txn-stale",
+      occurred_at: new Date(Date.now() - 60 * 60_000).toISOString(),
+      expires_at: "2027-01-01T00:00:00.000Z",
+    });
+    assert.equal(stale.statusCode, 200);
+    assert.equal(stale.json().applied, false);
+    assert.equal(stale.json().reason, "stale_or_future");
+    assert.equal(
+      await prisma().subscription.count({ where: { userId: id } }),
+      0,
+    );
+  } finally {
+    await app.close();
+    delete process.env.ASTRO_FREE_LAUNCH_ENTITLE_ALL;
+  }
+});
+
 test("cancel, refund, grace, billing_retry, restore, expire samples", async () => {
   process.env.ASTRO_PAYMENT_PROVIDER = "fake";
   const dir = tempDataDir();

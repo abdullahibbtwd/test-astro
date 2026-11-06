@@ -46,10 +46,24 @@ export class FakeProvider implements PaymentProvider {
   parseWebhookEvent(rawBody: string | Buffer): NormalizedPaymentEvent {
     const text = typeof rawBody === "string" ? rawBody : rawBody.toString("utf8");
     const body = JSON.parse(text) as Record<string, unknown>;
-    const type = String(body.type ?? "unknown") as PaymentEventType;
+    const allowed: PaymentEventType[] = [
+      "purchase",
+      "renew",
+      "restore",
+      "grace",
+      "billing_retry",
+      "cancel",
+      "refund",
+      "expire",
+      "unknown",
+    ];
+    const rawType = String(body.type ?? "unknown");
+    const type = (allowed.includes(rawType as PaymentEventType)
+      ? rawType
+      : "unknown") as PaymentEventType;
     return {
       event_id: String(body.event_id ?? ""),
-      type: type || "unknown",
+      type,
       user_id: body.user_id == null ? null : String(body.user_id),
       plan_id: body.plan_id == null ? null : String(body.plan_id),
       product_id: body.product_id == null ? null : String(body.product_id),
@@ -89,7 +103,8 @@ export function fakeSamplePayloads(): Record<string, object> {
     plan_id: "premium",
     product_id: "fake.premium",
     original_transaction_id: "fake-txn-1",
-    occurred_at: "2026-11-06T12:00:00.000Z",
+    // Fresh relative timestamps so replay-window tests stay valid.
+    occurred_at: new Date().toISOString(),
   };
   return {
     purchase: {

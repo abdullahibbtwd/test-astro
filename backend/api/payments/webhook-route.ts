@@ -23,9 +23,8 @@ export function registerPaymentWebhook(app: FastifyInstance): void {
   });
 
   app.post("/v1/webhooks/payments", async (request, reply) => {
-    const provider = getPaymentProvider(
-      (process.env.ASTRO_PAYMENT_PROVIDER as "fake" | undefined) ?? "fake",
-    );
+    // Never default to "fake" here — that bypassed production provider guards.
+    const provider = getPaymentProvider();
     const raw =
       (request as RawRequest).rawBody ??
       (typeof request.body === "string"
