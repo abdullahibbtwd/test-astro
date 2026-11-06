@@ -5,17 +5,38 @@ import type { NormalizedPaymentEvent } from "./types";
 
 export type ApplyResult =
   | { applied: true; subscription_id: string | null }
-  | { applied: false; reason: "duplicate" | "missing_user" | "missing_event_id" };
+  | {
+      applied: false;
+      reason:
+        | "duplicate"
+        | "missing_user"
+        | "missing_event_id"
+        | "unknown_type"
+        | "stale_or_future";
+    };
+
+/** Reject events older/newer than this window (replay / clock skew). */
+export const WEBHOOK_TIMESTAMP_TOLERANCE_MS = 15 * 60_000;
+
+const KNOWN_TYPES = new Set([
+  "purchase",
+  "renew",
+  "restore",
+  "grace",
+  "billing_retry",
+  "cancel",
+  "refund",
+  "expire",
+]);
 
 function statusForEvent(
   event: NormalizedPaymentEvent,
-): "active" | "grace" | "expired" | "canceled" | "refunded" {
-  if (event.status) return event.status;
+): "active" | "grace" | "expired" | "canceled" | "refunded" | null {
   switch (event.type) {
     case "purchase":
     case "renew":
     case "restore":
-      return "active";
+      return event.status === "grace" ? "grace" : "active";
     case "grace":
     case "billing_retry":
       return "grace";
@@ -26,8 +47,18 @@ function statusForEvent(
     case "expire":
       return "expired";
     default:
-      return "active";
+      return null;
   }
+}
+
+export function webhookTimestampFresh(
+  occurredAt: string,
+  now = Date.now(),
+  toleranceMs = WEBHOOK_TIMESTAMP_TOLERANCE_MS,
+): boolean {
+  const ts = Date.parse(occurredAt);
+  if (!Number.isFinite(ts)) return false;
+  return Math.abs(now - ts) <= toleranceMs;
 }
 
 /**
@@ -45,6 +76,40 @@ export async function applyPaymentEvent(
     where: { id: event.event_id },
   });
   if (existing) return { applied: false, reason: "duplicate" };
+
+  if (!KNOWN_TYPES.has(event.type) || event.type === "unknown") {
+    try {
+      await db.paymentEvent.create({
+        data: {
+          id: event.event_id,
+          provider: providerId,
+          type: event.type || "unknown",
+          userId: event.user_id,
+          payload: event.raw as object,
+        },
+      });
+    } catch {
+      return { applied: false, reason: "duplicate" };
+    }
+    return { applied: false, reason: "unknown_type" };
+  }
+
+  if (!webhookTimestampFresh(event.occurred_at)) {
+    try {
+      await db.paymentEvent.create({
+        data: {
+          id: event.event_id,
+          provider: providerId,
+          type: event.type,
+          userId: event.user_id,
+          payload: event.raw as object,
+        },
+      });
+    } catch {
+      return { applied: false, reason: "duplicate" };
+    }
+    return { applied: false, reason: "stale_or_future" };
+  }
 
   if (!event.user_id) {
     await db.paymentEvent.create({
@@ -87,57 +152,43 @@ export async function applyPaymentEvent(
     "premium";
 
   const status = statusForEvent(event);
+  if (!status) return { applied: false, reason: "unknown_type" };
   const expiresAt = event.expires_at ? new Date(event.expires_at) : null;
   const txn = event.original_transaction_id;
 
   let subscriptionId: string | null = null;
 
-  await db.$transaction(async (tx) => {
-    await tx.paymentEvent.create({
-      data: {
-        id: event.event_id,
-        provider: providerId,
-        type: event.type,
-        userId: event.user_id,
-        payload: event.raw as object,
-      },
-    });
+  try {
+    await db.$transaction(async (tx) => {
+      await tx.paymentEvent.create({
+        data: {
+          id: event.event_id,
+          provider: providerId,
+          type: event.type,
+          userId: event.user_id,
+          payload: event.raw as object,
+        },
+      });
 
-    if (txn) {
-      const row = await tx.subscription.upsert({
-        where: {
-          sourceStore_originalTransactionId: {
+      if (txn) {
+        const row = await tx.subscription.upsert({
+          where: {
+            sourceStore_originalTransactionId: {
+              sourceStore: event.source_store,
+              originalTransactionId: txn,
+            },
+          },
+          create: {
+            userId: event.user_id!,
+            planId,
+            status,
+            expiresAt,
             sourceStore: event.source_store,
             originalTransactionId: txn,
+            productId: event.product_id,
           },
-        },
-        create: {
-          userId: event.user_id!,
-          planId,
-          status,
-          expiresAt,
-          sourceStore: event.source_store,
-          originalTransactionId: txn,
-          productId: event.product_id,
-        },
-        update: {
-          userId: event.user_id!,
-          planId,
-          status,
-          expiresAt,
-          productId: event.product_id,
-        },
-      });
-      subscriptionId = row.id;
-    } else {
-      const latest = await tx.subscription.findFirst({
-        where: { userId: event.user_id! },
-        orderBy: { updatedAt: "desc" },
-      });
-      if (latest) {
-        const row = await tx.subscription.update({
-          where: { id: latest.id },
-          data: {
+          update: {
+            userId: event.user_id!,
             planId,
             status,
             expiresAt,
@@ -146,21 +197,47 @@ export async function applyPaymentEvent(
         });
         subscriptionId = row.id;
       } else {
-        const row = await tx.subscription.create({
-          data: {
-            userId: event.user_id!,
-            planId,
-            status,
-            expiresAt,
-            sourceStore: event.source_store,
-            originalTransactionId: null,
-            productId: event.product_id,
-          },
+        const latest = await tx.subscription.findFirst({
+          where: { userId: event.user_id! },
+          orderBy: { updatedAt: "desc" },
         });
-        subscriptionId = row.id;
+        if (latest) {
+          const row = await tx.subscription.update({
+            where: { id: latest.id },
+            data: {
+              planId,
+              status,
+              expiresAt,
+              productId: event.product_id,
+            },
+          });
+          subscriptionId = row.id;
+        } else {
+          const row = await tx.subscription.create({
+            data: {
+              userId: event.user_id!,
+              planId,
+              status,
+              expiresAt,
+              sourceStore: event.source_store,
+              originalTransactionId: null,
+              productId: event.product_id,
+            },
+          });
+          subscriptionId = row.id;
+        }
       }
-    }
-  });
+    });
+  } catch {
+    // Concurrent duplicate delivery: primary key on payment_events.id.
+    const raced = await db.paymentEvent.findUnique({
+      where: { id: event.event_id },
+    });
+    if (raced) return { applied: false, reason: "duplicate" };
+    throw Object.assign(new Error("Payment event apply failed"), {
+      statusCode: 503,
+    });
+  }
 
   const computed = await computeEntitlements(db, event.user_id);
   await syncUserEntitlementsJson(db, event.user_id, computed);

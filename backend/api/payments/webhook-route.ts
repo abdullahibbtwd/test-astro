@@ -23,7 +23,7 @@ export function registerPaymentWebhook(app: FastifyInstance): void {
   });
 
   app.post("/v1/webhooks/payments", async (request, reply) => {
-    // Do not default to "fake" — that bypassed the production guard in getPaymentProvider.
+    // Never default to "fake" — that bypassed the production guard in getPaymentProvider.
     const provider = getPaymentProvider();
     const raw =
       (request as RawRequest).rawBody ??
