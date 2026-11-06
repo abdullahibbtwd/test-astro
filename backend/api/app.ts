@@ -31,6 +31,7 @@ import { bridge, computeBirthChart as defaultBirthChart } from "./engine";
 import { dataDir } from "./data-dir";
 import { defaults } from "./defaults";
 import { applyMapStyleEnv } from "./map-style-config";
+import { registerRateLimit, readRateLimitConfig } from "./rate-limit";
 import { endpoints } from "../../frontend/scripts/endpoints";
 import { validate, schemas } from "../../frontend/src/api/zod";
 import type { BirthProfile, Me } from "../../frontend/contracts/spec-types";
@@ -72,6 +73,7 @@ export async function buildLocalApp({
 }) {
   const demoAuth = process.env.ASTRO_DEMO_AUTH === "1";
   const app = Fastify({ logger: false, bodyLimit: 65536 });
+  registerRateLimit(app, readRateLimitConfig());
   const dataRoot = dbPath === ":memory:" ? dataDir() : path.dirname(dbPath);
   const store = await Store.open(
     process.env.DATABASE_URL
