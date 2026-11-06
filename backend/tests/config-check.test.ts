@@ -38,9 +38,85 @@ test("REFUSE: NODE_ENV=production with ASTRO_DEMO_AUTH=1", () => {
     NODE_ENV: "production",
     ASTRO_DEMO_AUTH: "1",
     DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",
+    SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
+    ASTRO_PAYMENT_PROVIDER: "revenuecat",
   });
   assert.ok(bad.some((f) => f.names.includes("ASTRO_DEMO_AUTH")));
   assert.match(formatConfigCheck({ ok: false, findings: bad }), /REFUSE/);
+});
+
+test("REFUSE: production-like without SUPABASE_URL (issuer/JWKS)", () => {
+  const bad = refuses({
+    ...base(),
+    NODE_ENV: "production",
+    AUTH_ENABLED: "0",
+    DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",
+    ASTRO_PAYMENT_PROVIDER: "revenuecat",
+  });
+  assert.ok(bad.some((f) => f.names.includes("SUPABASE_URL")));
+});
+
+test("REFUSE: production-like with AUTH_ENABLED=0", () => {
+  const bad = refuses({
+    ...base(),
+    NODE_ENV: "production",
+    AUTH_ENABLED: "0",
+    SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
+    DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",
+    ASTRO_PAYMENT_PROVIDER: "revenuecat",
+  });
+  assert.ok(bad.some((f) => f.names.includes("AUTH_ENABLED")));
+});
+
+test("REFUSE: production-like with ASTRO_RATE_LIMIT_DISABLED=1", () => {
+  const bad = refuses({
+    ...base(),
+    NODE_ENV: "production",
+    SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
+    DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",
+    ASTRO_PAYMENT_PROVIDER: "revenuecat",
+    ASTRO_RATE_LIMIT_DISABLED: "1",
+  });
+  assert.ok(bad.some((f) => f.names.includes("ASTRO_RATE_LIMIT_DISABLED")));
+});
+
+test("REFUSE: production-like without ASTRO_PAYMENT_PROVIDER", () => {
+  const bad = refuses({
+    ...base(),
+    NODE_ENV: "production",
+    SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
+    DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",
+  });
+  assert.ok(bad.some((f) => f.names.includes("ASTRO_PAYMENT_PROVIDER")));
+});
+
+test("REFUSE: production-like fake provider without webhook secret", () => {
+  const bad = refuses({
+    ...base(),
+    NODE_ENV: "production",
+    SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
+    DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",
+    ASTRO_PAYMENT_PROVIDER: "fake",
+  });
+  assert.ok(
+    bad.some((f) => f.names.includes("ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET")),
+  );
+});
+
+test("REFUSE: production-like fake provider with default webhook secret", () => {
+  const bad = refuses({
+    ...base(),
+    ASTRO_PRODUCTION_LIKE: "1",
+    SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
+    DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",
+    ASTRO_PAYMENT_PROVIDER: "fake",
+    ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET: "fake-webhook-secret",
+  });
+  assert.ok(
+    bad.some((f) =>
+      f.message.includes("must not use the built-in default value"),
+    ),
+  );
 });
 
 test("REFUSE: AUTH_ENABLED on but SUPABASE_URL missing", () => {
@@ -119,8 +195,12 @@ test("production with non-default remote DATABASE_URL passes refuse rules", () =
   const result = checkConfig(
     {
       ...base(),
+      AUTH_ENABLED: "1",
       NODE_ENV: "production",
       DATABASE_URL: "postgres://app:secret@db.internal:5432/astrology",
+      SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
+      SUPABASE_SECRET_KEY: "sb_secret_test",
+      ASTRO_PAYMENT_PROVIDER: "revenuecat",
     },
     os.tmpdir(),
   );
