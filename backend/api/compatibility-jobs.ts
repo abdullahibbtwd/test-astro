@@ -4,6 +4,7 @@ import { Store } from "./store";
 import { runReadingBridge } from "./readings";
 import { validate } from "../../frontend/src/api/zod";
 import { stableHash as hash } from "./stable-hash";
+import { computeCompatibilityScore } from "./compatibility-score";
 import type {
   BirthProfile,
   ReportRef,
@@ -263,7 +264,11 @@ export class CompatibilityJobs {
       family_relation: null,
       people: { a: people[0], b: people[1] },
       created_at: record.created_at,
-      score: null,
+      // Remains null until docs/COMPATIBILITY_SCORING.md unblocks a formula.
+      score: computeCompatibilityScore({
+        type: record.context.type,
+        aspects: record.aspects,
+      }),
       reading: record.readings
         ? { ...record.readings[lang], status: "ready" }
         : record.job.status === "failed"
