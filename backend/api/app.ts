@@ -97,6 +97,23 @@ export async function buildLocalApp({
     bodyLimit: 65536,
     trustProxy: trustProxyHops > 0 ? trustProxyHops : false,
   });
+  // Empty application/json bodies (common on DELETE) must not 400 before auth.
+  app.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    (req, body, done) => {
+      const raw = typeof body === "string" ? body : body?.toString("utf8") ?? "";
+      if (!raw.trim()) {
+        done(null, {});
+        return;
+      }
+      try {
+        done(null, JSON.parse(raw));
+      } catch (err) {
+        done(err as Error, undefined);
+      }
+    },
+  );
   // onRequest: coarse per-IP (before JWT). Authed buckets: enforceUserRateLimit after resolveTenant.
   const rateLimiter = registerRateLimit(app, readRateLimitConfig());
   const { registerPaymentWebhook } = await import("./payments/webhook-route");
