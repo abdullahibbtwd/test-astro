@@ -15,7 +15,7 @@ export const flagDefaults: Record<string, boolean> = {
   paymentsUi: false,
 };
 const defaults = flagDefaults;
-export function useFlags() {
+export function useFlags(): Record<string, boolean> {
   const config = useConfig();
   const unavailable = useCapabilities((s) => s.unavailable);
   return {

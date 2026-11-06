@@ -65,8 +65,8 @@ const isVisibleText = (value: string): boolean => {
 };
 
 const lineAndColumn = (
-  sourceFile: ts.SourceFile,
-  node: ts.Node,
+  sourceFile: import("typescript").SourceFile,
+  node: import("typescript").Node,
 ): string => {
   const location = sourceFile.getLineAndCharacterOfPosition(node.getStart());
   return `${location.line + 1}:${location.character + 1}`;
@@ -98,7 +98,7 @@ test("app and feature TSX contain no hardcoded user-visible strings", () => {
       ts.ScriptKind.TSX,
     );
 
-    const report = (node: ts.Node, value: string) => {
+    const report = (node: import("typescript").Node, value: string) => {
       if (isVisibleText(value)) {
         failures.push(
           `${file}:${lineAndColumn(sourceFile, node)} ${JSON.stringify(value.trim())}`,
@@ -106,7 +106,9 @@ test("app and feature TSX contain no hardcoded user-visible strings", () => {
       }
     };
 
-    const inspectLiteralBranches = (expression: ts.Expression): void => {
+    const inspectLiteralBranches = (
+      expression: import("typescript").Expression,
+    ): void => {
       if (
         ts.isStringLiteral(expression) ||
         ts.isNoSubstitutionTemplateLiteral(expression)
@@ -126,7 +128,7 @@ test("app and feature TSX contain no hardcoded user-visible strings", () => {
       }
     };
 
-    const visit = (node: ts.Node): void => {
+    const visit = (node: import("typescript").Node): void => {
       if (ts.isJsxText(node)) report(node, node.text);
 
       if (

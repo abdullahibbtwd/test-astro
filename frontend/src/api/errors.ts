@@ -107,7 +107,8 @@ export function describeError(error: unknown, online = true): ErrorDescription {
   if (
     status === 503 ||
     code === "upstream_unavailable" ||
-    code === "service_unavailable"
+    // Not yet in Problem.code union; still remap any 503-style alias.
+    String(code ?? "") === "service_unavailable"
   )
     return {
       kind: "unavailable",

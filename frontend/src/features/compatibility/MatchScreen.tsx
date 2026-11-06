@@ -10,7 +10,6 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Screen,
-  Txt,
   Row,
   Button,
   Skeleton,
