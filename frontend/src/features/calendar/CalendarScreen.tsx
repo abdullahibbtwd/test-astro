@@ -18,6 +18,7 @@ import {
   Button,
   Skeleton,
   ErrorNotice,
+  EmptyState,
 } from "../../design/components";
 import { useCatalogue } from "../../api/hooks";
 import { useApi } from "../../api/resource";
@@ -167,16 +168,26 @@ export default function CalendarScreen({
               }
             />
             <Txt kind="title">{t("thisMonth")}</Txt>
-            {calendarRows(
-              [
-                ...data.lunations,
-                ...data.eclipses,
-                ...data.retrograde_periods,
-                ...data.major_transits,
-                ...data.periods,
-              ],
-              id,
-              lang,
+            {[
+              ...data.lunations,
+              ...data.eclipses,
+              ...data.retrograde_periods,
+              ...data.major_transits,
+              ...data.periods,
+            ].length === 0 ? (
+              <EmptyState titleKey="emptyCalendar" />
+            ) : (
+              calendarRows(
+                [
+                  ...data.lunations,
+                  ...data.eclipses,
+                  ...data.retrograde_periods,
+                  ...data.major_transits,
+                  ...data.periods,
+                ],
+                id,
+                lang,
+              )
             )}
           </>
         )

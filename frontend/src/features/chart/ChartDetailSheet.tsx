@@ -4,7 +4,14 @@ import { View } from "react-native";
 import { Sheet } from "../../design/components/Sheet";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
-import { Txt, Row, Button, Choices, Chip } from "../../design/components";
+import {
+  Txt,
+  Row,
+  Button,
+  Choices,
+  Chip,
+  EmptyState,
+} from "../../design/components";
 import { Glyph } from "../../design/components/Glyph";
 import { AspectGlyph } from "../../design/components/AspectGlyph";
 import { useGenerated } from "../../api/jobs";
@@ -169,7 +176,7 @@ export function ChartDetailSheet({
               .map((p) => bodyChip(p.body))}
           </Choices>
           {!chart.points.some((p) => p.sign === selection.sign) && (
-            <Txt muted>{t("noPlanets")}</Txt>
+            <EmptyState titleKey="noPlanets" />
           )}
           <Txt>{t("houses")}</Txt>
           <Choices>

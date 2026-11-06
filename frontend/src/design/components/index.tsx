@@ -29,6 +29,7 @@ import { Stack, router, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../theme";
 import type { PropsWithChildren } from "react";
+export { EmptyState } from "./EmptyState";
 export function Txt({
   children,
   kind = "body",
@@ -378,63 +379,102 @@ export function Choices({
     </View>
   );
 }
-export function ErrorNotice({
+/**
+ * Standard error / retry / offline surface for every screen.
+ * `cachedOffline` shows the soft offline banner while cached content remains visible.
+ */
+export function StandardErrorState({
   error,
   retry,
+  cachedOffline = false,
 }: {
-  error: unknown;
+  error?: unknown | null;
   retry?: () => void;
+  cachedOffline?: boolean;
 }) {
   const { t } = useTranslation();
   const [online, setOnline] = useState(onlineManager.isOnline());
-  const description = describeError(error, online);
+  const description =
+    error != null ? describeError(error, online) : null;
   const [remaining, setRemaining] = useState(0);
   useEffect(() => onlineManager.subscribe(setOnline), []);
   useEffect(() => {
-    setRemaining(description.retryAfterSec ?? 0);
+    setRemaining(description?.retryAfterSec ?? 0);
     const timer = setInterval(
       () => setRemaining((n) => Math.max(0, n - 1)),
       1000,
     );
     return () => clearInterval(timer);
-  }, [error, description.retryAfterSec]);
+  }, [error, description?.retryAfterSec]);
   useEffect(() => {
     if (
       error &&
+      description &&
       (description.kind === "invalid" || error instanceof ContractError)
     )
       reportError(error);
-  }, [error, description.kind]);
-  if (!error || description.kind === "unauthorized") return null;
+  }, [error, description]);
+  const showBanner = cachedOffline && !online;
+  const showError =
+    error != null && !!description && description.kind !== "unauthorized";
+  if (!showBanner && !showError) return null;
   return (
-    <Card>
-      <Txt>
-        {description.message ||
-          (description.titleKey ? t(description.titleKey) : "")}
-      </Txt>
-      {description.action === "back" && (
-        <Button secondary label={t("back")} onPress={() => router.back()} />
-      )}
-      {retry &&
-        ["retry", "refresh", "request"].includes(description.action) && (
-          <Button
-            secondary
-            disabled={remaining > 0}
-            label={
-              remaining > 0
-                ? t("retryCountdown", { seconds: remaining })
-                : t(
-                    description.action === "refresh"
-                      ? "refresh"
-                      : description.action === "request"
-                        ? "requestReading"
-                        : "retry",
-                  )
-            }
-            onPress={retry}
-          />
-        )}
-    </Card>
+    <View style={{ gap: dsSpace[3] }}>
+      {showBanner ? (
+        <View accessible accessibilityRole="text">
+          <Txt kind="caption">{t("offline")}</Txt>
+        </View>
+      ) : null}
+      {showError && description ? (
+        <Card>
+          <Txt>
+            {description.message ||
+              (description.titleKey ? t(description.titleKey) : "")}
+          </Txt>
+          {description.action === "back" && (
+            <Button secondary label={t("back")} onPress={() => router.back()} />
+          )}
+          {retry &&
+            ["retry", "refresh", "request"].includes(description.action) && (
+              <Button
+                secondary
+                disabled={remaining > 0}
+                label={
+                  remaining > 0
+                    ? t("retryCountdown", { seconds: remaining })
+                    : t(
+                        description.action === "refresh"
+                          ? "refresh"
+                          : description.action === "request"
+                            ? "requestReading"
+                            : "retry",
+                      )
+                }
+                onPress={retry}
+              />
+            )}
+        </Card>
+      ) : null}
+    </View>
+  );
+}
+
+/** Alias kept for existing call sites — prefer StandardErrorState for new code. */
+export function ErrorNotice({
+  error,
+  retry,
+  cachedOffline,
+}: {
+  error: unknown;
+  retry?: () => void;
+  cachedOffline?: boolean;
+}) {
+  return (
+    <StandardErrorState
+      error={error}
+      retry={retry}
+      cachedOffline={cachedOffline}
+    />
   );
 }
 

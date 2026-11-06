@@ -16,6 +16,7 @@ import {
   Choices,
   Skeleton,
   ErrorNotice,
+  EmptyState,
 } from "../../design/components";
 import { useApi } from "../../api/resource";
 import { useCatalogue } from "../../api/hooks";
@@ -227,30 +228,40 @@ export default function OverviewScreen({
               </View>
             </ScrollView>
           ) : periods ? (
-            Object.entries(cat.data.goals).map(([goal, label]) => (
-              <View key={goal}>
-                <Txt kind="title">{label}</Txt>
-                {calendarRows(
-                  values?.filter((p) => p.goal === goal) ?? [],
-                  id,
-                  lang,
-                )}
-              </View>
-            ))
+            (values?.length ?? 0) === 0 ? (
+              <EmptyState titleKey="emptyPeriods" />
+            ) : (
+              Object.entries(cat.data.goals).map(([goal, label]) => (
+                <View key={goal}>
+                  <Txt kind="title">{label}</Txt>
+                  {calendarRows(
+                    values?.filter((p) => p.goal === goal) ?? [],
+                    id,
+                    lang,
+                  )}
+                </View>
+              ))
+            )
+          ) : [
+              ...data.eclipses,
+              ...data.lunations,
+              ...data.retrograde_periods,
+              ...data.major_transits,
+              ...data.periods,
+            ].length === 0 ? (
+            <EmptyState titleKey="emptyYearOverview" />
           ) : (
-            <>
-              {calendarRows(
-                [
-                  ...data.eclipses,
-                  ...data.lunations,
-                  ...data.retrograde_periods,
-                  ...data.major_transits,
-                  ...data.periods,
-                ],
-                id,
-                lang,
-              )}
-            </>
+            calendarRows(
+              [
+                ...data.eclipses,
+                ...data.lunations,
+                ...data.retrograde_periods,
+                ...data.major_transits,
+                ...data.periods,
+              ],
+              id,
+              lang,
+            )
           )}
         </>
       )}

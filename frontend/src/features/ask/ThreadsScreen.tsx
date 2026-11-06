@@ -14,6 +14,7 @@ import {
   Button,
   Skeleton,
   ErrorNotice,
+  EmptyState,
 } from "../../design/components";
 import { usePages } from "../../api/pages";
 import { request } from "../../api/client";
@@ -73,6 +74,10 @@ export default function ThreadsScreen() {
         }}
       />
       {query.isPending && <Skeleton />}
+      {!query.isPending &&
+        !query.error &&
+        query.items.filter((thread) => !hidden[`thread:${thread.thread_id}`])
+          .length === 0 && <EmptyState titleKey="emptyThreads" />}
       {query.items
         .filter((thread) => !hidden[`thread:${thread.thread_id}`])
         .map((thread) => (

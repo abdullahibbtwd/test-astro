@@ -24,6 +24,7 @@ import {
   Chip,
   ErrorNotice,
   Skeleton,
+  StandardErrorState,
 } from "../../design/components";
 import { useTheme } from "../../design/theme";
 import { useApi } from "../../api/resource";
@@ -303,7 +304,9 @@ export default function ChatScreen() {
             </Choices>
           )}
           {readOnly && <Txt>{t("deletedSubject")}</Txt>}
-          {network.isConnected === false && <Txt>{t("offline")}</Txt>}
+          <StandardErrorState
+            cachedOffline={network.isConnected === false}
+          />
           {left <= 5 && (
             <Txt kind="caption">
               {left

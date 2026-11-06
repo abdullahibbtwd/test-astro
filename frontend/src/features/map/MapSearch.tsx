@@ -7,7 +7,7 @@ import { IconButton } from "../../design/components/IconButton";
 import { useTheme } from "../../design/theme";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Txt, Row, ErrorNotice, Skeleton } from "../../design/components";
+import { Txt, Row, ErrorNotice, Skeleton, EmptyState } from "../../design/components";
 import { useApi } from "../../api/resource";
 import type { PlaceCandidate } from "../../../contracts/spec-types";
 export function MapSearch({
@@ -133,7 +133,7 @@ export function MapSearch({
               {section.loading && <Skeleton variant="lines" lines={2} />}
               <ErrorNotice error={section.error} />
               {!section.loading && !section.data.length && (
-                <Txt muted>{t("noResults")}</Txt>
+                <EmptyState titleKey="noResults" />
               )}
             </>
           )}
