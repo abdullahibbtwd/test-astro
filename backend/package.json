@@ -4,17 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "mock": "tsx mock/server.ts",
-    "local-api": "tsx api/server.ts",
-    "local-api:dev": "bash -lc 'set -a; [ -f ../.env ] && . ../.env; set +a; exec env DATABASE_URL=${DATABASE_URL:-postgres://astrology:astrology@127.0.0.1:5432/astrology} ASTRO_DEMO_AUTH=${ASTRO_DEMO_AUTH:-0} HOST=${HOST:-0.0.0.0} PORT=${PORT:-4020} ASTRO_PA_ROOT=${ASTRO_PA_ROOT:-./engine} DATA_DIR=${DATA_DIR:-./.local-data} PYTHON=${PYTHON:-../.venv/bin/python} tsx api/server.ts'",
-    "config:check": "tsx api/config-check-cli.ts",
-    "test": "bash -lc 'set -a; [ -f ../.env ] && . ../.env; set +a; exec env DATABASE_URL=${DATABASE_URL:-postgres://astrology:astrology@127.0.0.1:5432/astrology_test} ASTRO_DEMO_AUTH=1 ASTRO_RATE_LIMIT_DISABLED=1 PYTHON=${PYTHON:-../.venv/bin/python} tsx --test --test-concurrency=1 tests/*.test.ts'",
+    "mock": "node --import tsx mock/server.ts",
+    "local-api": "node --import tsx api/server.ts",
+    "local-api:dev": "bash -lc 'set -a; [ -f ../.env ] && . ../.env; set +a; cd \"${PWD}\" && exec env DATABASE_URL=${DATABASE_URL:-postgres://astrology:astrology@127.0.0.1:5432/astrology} ASTRO_DEMO_AUTH=${ASTRO_DEMO_AUTH:-0} HOST=${HOST:-0.0.0.0} PORT=${PORT:-4020} ASTRO_PA_ROOT=${ASTRO_PA_ROOT:-./engine} DATA_DIR=${DATA_DIR:-./.local-data} PYTHON=${PYTHON:-../.venv/bin/python} node --import tsx api/server.ts'",
+    "config:check": "node --import tsx api/config-check-cli.ts",
+    "test": "bash -lc 'set -a; [ -f ../.env ] && . ../.env; set +a; cd \"${PWD}\" && exec env DATABASE_URL=${DATABASE_URL:-postgres://astrology:astrology@127.0.0.1:5432/astrology_test} ASTRO_DEMO_AUTH=1 ASTRO_RATE_LIMIT_DISABLED=1 PYTHON=${PYTHON:-../.venv/bin/python} node --import tsx --test --test-concurrency=1 tests/*.test.ts'",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate deploy",
-    "prisma:smoke": "tsx scripts/prisma-smoke.ts",
+    "prisma:smoke": "node --import tsx scripts/prisma-smoke.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test:budget": "python3 -X utf8 tests/budget_test.py",
-    "fixtures:build": "tsx mock/scripts/build-fixtures.ts"
+    "fixtures:build": "node --import tsx mock/scripts/build-fixtures.ts"
   },
   "dependencies": {
     "@date-fns/tz": "1.5.0",
