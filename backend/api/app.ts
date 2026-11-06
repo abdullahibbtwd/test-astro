@@ -25,12 +25,16 @@ import Fastify from "fastify";
 import { randomBytes, randomUUID, createHash } from "node:crypto";
 import { ReadingJobs } from "./reading-jobs";
 import { toApiJob } from "./job-api";
-import { prisma } from "./db";
 import { Store, SYSTEM_TENANT } from "./store";
 import { bridge, computeBirthChart as defaultBirthChart } from "./engine";
 import { dataDir } from "./data-dir";
 import { defaults } from "./defaults";
 import { applyMapStyleEnv } from "./map-style-config";
+import {
+  buildSolarReturn,
+  type SolarReturnMathInput,
+  type SolarReturnMathOutput,
+} from "./solar-return";
 import { endpoints } from "../../frontend/scripts/endpoints";
 import { validate, schemas } from "../../frontend/src/api/zod";
 import type { BirthProfile, Me } from "../../frontend/contracts/spec-types";
@@ -46,6 +50,7 @@ export async function buildLocalApp({
   generateForecast,
   calculateCalendar = computeCalendar,
   generateCompatibility,
+  generateSolarReturn,
   computeBirthChart = defaultBirthChart,
   auth,
   jwt,
@@ -68,6 +73,10 @@ export async function buildLocalApp({
   calculateCalendar?: typeof computeCalendar;
   generateForecast?: (data: any) => Promise<any>;
   generateCompatibility?: (data: unknown) => Promise<any>;
+  /** Test hook: replace the Python solar-return math bridge. */
+  generateSolarReturn?: (
+    input: SolarReturnMathInput,
+  ) => Promise<SolarReturnMathOutput>;
   computeBirthChart?: typeof defaultBirthChart;
 }) {
   const demoAuth = process.env.ASTRO_DEMO_AUTH === "1";
@@ -968,6 +977,28 @@ export async function buildLocalApp({
             case "get /profiles/{id}/chart":
               result = await store.get("chart:" + p.id);
               break;
+            case "get /profiles/{id}/solar-return": {
+              const yearRaw = q.year?.trim();
+              let year: number;
+              if (!yearRaw) year = new Date().getUTCFullYear();
+              else if (!/^\d{4}$/.test(yearRaw)) throw issue(400);
+              else year = Number(yearRaw);
+              if (year < 1900 || year > 2100) throw issue(400);
+              const returnPlace = q.place_id
+                ? await place(q.place_id, lang)
+                : (profile!.current_place ?? profile!.birth.place);
+              const raw = await store.get("raw:" + profile!.profile_id);
+              if (!raw) throw issue(503);
+              result = await buildSolarReturn({
+                profile: profile!,
+                raw,
+                year,
+                place: returnPlace,
+                lang: lang as "en" | "tr",
+                generate: generateSolarReturn,
+              });
+              break;
+            }
             case "get /home": {
               const me = (await store.get<Me>("me"))!;
               const self = await store.get<BirthProfile>(
