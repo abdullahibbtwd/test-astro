@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "status": "AWAITING_ASTROLOGER",
+    "note": "Do not invent interpretation rules. Empty arrays/objects mean 'use safe math-only defaults'. Fill sections when the astrologer delivers copy and selection rules."
+  },
+  "reading_sequence": {
+    "_todo": "Ordered steps for composing the solar return reading.",
+    "steps": []
+  },
+  "placement_hierarchy": {
+    "_todo": "Priority order for placements emphasized in the return chart.",
+    "order": []
+  },
+  "return_to_natal_aspects": {
+    "_todo": "Which return→natal aspects to include, with orbs/weights.",
+    "aspects": []
+  },
+  "inclusions": {
+    "_todo": "Bodies, angles, or themes that must appear when present.",
+    "items": []
+  },
+  "exclusions": {
+    "_todo": "Bodies, angles, or themes never mentioned.",
+    "items": []
+  },
+  "house_focus": {
+    "_todo": "Houses to prioritize in the return reading.",
+    "houses": []
+  },
+  "reading_framework": {
+    "_todo": "Section keys/titles/structure for the written return.",
+    "sections": []
+  },
+  "excluded_themes": {
+    "_todo": "Topics the reading must never cover.",
+    "themes": []
+  }
+}

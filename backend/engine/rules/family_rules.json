@@ -1,0 +1,53 @@
+{
+  "_meta": {
+    "status": "AWAITING_ASTROLOGER",
+    "note": "Do not invent interpretation or weighting rules. Empty structures keep today's safe math defaults: romantic = full modern synastry set; parent_child/sibling = empty selection until rules arrive."
+  },
+  "reading_sequence": {
+    "_todo": "Ordered steps for composing a family compatibility reading.",
+    "steps": []
+  },
+  "placement_hierarchy": {
+    "_todo": "Priority order for synastry placements in prose.",
+    "order": []
+  },
+  "return_to_natal_aspects": {
+    "_todo": "Not used for family synastry; reserved for shared schema parity with solar return.",
+    "aspects": []
+  },
+  "inclusions": {
+    "_todo": "Aspect or planet pairs that must be kept when present.",
+    "items": []
+  },
+  "exclusions": {
+    "_todo": "Aspect or planet pairs never returned.",
+    "items": []
+  },
+  "relationship_type_aspect_weights": {
+    "_todo": "Per-relationship membership/weights. Empty list = no membership filter yet (parent_child/sibling return []). Omit filter key or use null for romantic full set.",
+    "romantic": {
+      "selection": null,
+      "weights": {}
+    },
+    "parent_child": {
+      "selection": [],
+      "weights": {}
+    },
+    "sibling": {
+      "selection": [],
+      "weights": {}
+    }
+  },
+  "house_focus": {
+    "_todo": "Houses emphasized for family readings.",
+    "houses": []
+  },
+  "reading_framework": {
+    "_todo": "Section keys/titles/structure for family prose.",
+    "sections": []
+  },
+  "excluded_themes": {
+    "_todo": "Topics the reading must never cover.",
+    "themes": []
+  }
+}

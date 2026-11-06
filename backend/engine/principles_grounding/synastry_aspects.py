@@ -20,12 +20,14 @@ from typing import Iterable, Literal, Optional
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _DLAYER = os.path.normpath(os.path.join(_HERE, "..", "d_layer"))
-for _p in (_HERE, _DLAYER):
+_RULES = os.path.normpath(os.path.join(_HERE, "..", "rules"))
+for _p in (_HERE, _DLAYER, _RULES):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
 from compute_chart import _orb_now_and_later  # noqa: E402
 from ground_relationship import MODERN_ASPECTS, aspect_holds  # noqa: E402
+from load_rules import family_aspect_selection, load_family_rules  # noqa: E402
 
 RelationshipType = Literal["romantic", "parent_child", "sibling"]
 RELATIONSHIP_TYPES: tuple[str, ...] = ("romantic", "parent_child", "sibling")
@@ -35,15 +37,6 @@ SYN_PLANETS: tuple[str, ...] = (
     "Sun", "Moon", "Mercury", "Venus", "Mars",
     "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto",
 )
-
-# Aspect-selection gates by relationship type. ``None`` = keep every modern
-# hit (romantic / Match). An empty frozenset = no rules yet → return [].
-# Weighting is out of scope here; only membership is filtered.
-_ASPECT_SELECTION: dict[str, Optional[frozenset[tuple[str, str, str]]]] = {
-    "romantic": None,
-    "parent_child": frozenset(),
-    "sibling": frozenset(),
-}
 
 
 def _planet_index(chart: dict) -> dict[str, dict]:
@@ -126,7 +119,8 @@ def compute_synastry_aspects(
             f"got {relationship_type!r}"
         )
     rows = list(iter_match_synastry_aspects(chart_a, chart_b))
-    selection = _ASPECT_SELECTION[relationship_type]
+    # Data-driven selection from family_rules.json (empty → safe defaults).
+    selection = family_aspect_selection(relationship_type, load_family_rules())
     if selection is None:
         return rows
     if not selection:
