@@ -24,7 +24,7 @@ import { useCatalogue } from "../../api/hooks";
 import { useApp } from "../../lib/state";
 import { useFlags } from "../../lib/flags";
 import { Generated } from "../shared/Blocks";
-import { ReadingSection } from "../profiles/ReadingScreen";
+import { CompatibilityReadingBody } from "./CompatibilityReadingBody";
 import type { Compatibility, CompatType } from "../../../contracts/spec-types";
 export default function MatchReportScreen() {
   const { id } = useLocalSearchParams<{ id: string }>(),
@@ -122,19 +122,11 @@ export default function MatchReportScreen() {
           >
             {(reading) => (
               <>
-                {reading.sections.map((section, index) => (
-                  <View key={section.key} style={{ gap: dsSpace[4] }}>
-                    <ReadingSection
-                      section={section}
-                      initialExpanded={index === 0}
-                    />
-                    {index === 0 && flags.compatibilityScore && data.score && (
-                      <Txt>
-                        {data.score.value} / 100 · {data.score.label}
-                      </Txt>
-                    )}
-                  </View>
-                ))}
+                <CompatibilityReadingBody
+                  reading={reading}
+                  score={data.score}
+                  scoreEnabled={!!flags.compatibilityScore}
+                />
                 <Button
                   secondary
                   label={t("downloadPdf")}
