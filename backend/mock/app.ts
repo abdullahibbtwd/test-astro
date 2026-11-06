@@ -700,10 +700,7 @@ export function buildApp(options: { now?: () => number; jobMs?: number } = {}) {
             case "get /geo/countries.geojson":
               result = fixture("geo-countries-simple");
               break;
-            case "get /geo/regions/{iso2}.geojson":
-              result = fixture(`geo-regions.${p.iso2}`);
-              if (!result) return fail(reply, "not_found", 404, lang);
-              break;
+            // /geo/regions/{iso2}.geojson intentionally not served (launch).
             case "get /profiles/{id}/acg/lines/{body}/{angle}/places":
               if (!originalSelf) return fixtureOnly();
               result = fixture(`line-places.${p.body}.${p.angle}.${lang}`);

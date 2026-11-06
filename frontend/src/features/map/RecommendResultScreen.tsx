@@ -80,8 +80,14 @@ export default function RecommendResultScreen() {
         <BandChip band={a.band} label={a.band_label} />
         <Row
           label={a.name}
-          onPress={() =>
-            router.push(`/map/area/${a.id}?kind=${a.kind}&profile=${id}`)
+          // Region geometry (/geo/regions) is not shipped — only country reports.
+          onPress={
+            a.kind === "country"
+              ? () =>
+                  router.push(
+                    `/map/area/${a.id}?kind=country&profile=${id}`,
+                  )
+              : undefined
           }
         />
       </Card>
