@@ -10,17 +10,19 @@ import { useGenerated } from "../../src/api/jobs";
 import { useParentJobs } from "../../src/api/use-parent-jobs";
 import { ApiError, NetworkError } from "../../src/api/errors";
 import { request } from "../../src/api/client";
+import { Generated } from "../../src/features/shared/Blocks";
 import i18n from "../../src/i18n";
 let mockFocusCleanup: (() => void) | undefined;
+let mockFocusCallback: (() => (() => void) | void) | undefined;
 jest.mock("expo-router", () => ({
   Stack: { Screen: () => null },
   router: { back: jest.fn() },
   useFocusEffect: (callback: () => (() => void) | void) => {
+    mockFocusCallback = callback;
     require("react").useEffect(() => {
       // Keep the cleanup local so an earlier screen unmount cannot blur a later one.
       const cleanup = callback();
-      mockFocusCleanup =
-        typeof cleanup === "function" ? cleanup : undefined;
+      mockFocusCleanup = typeof cleanup === "function" ? cleanup : undefined;
       return () => {
         cleanup?.();
         if (mockFocusCleanup === cleanup) mockFocusCleanup = undefined;
@@ -29,6 +31,9 @@ jest.mock("expo-router", () => ({
   },
 }));
 jest.mock("../../src/api/client", () => ({ request: jest.fn() }));
+jest.mock("../../src/lib/flags", () => ({
+  useFlags: () => ({ dayScoreNumbers: false }),
+}));
 const job = {
   job_id: "old-job",
   kind: "natal_reading",
@@ -53,6 +58,8 @@ afterEach(() => {
 });
 beforeEach(async () => {
   jest.clearAllMocks();
+  mockFocusCallback = undefined;
+  mockFocusCleanup = undefined;
   jobWatcher.clear();
   jobWatcher.setActive(true);
   Object.defineProperty(AppState, "currentState", {
@@ -87,16 +94,71 @@ test("429 countdown disables retry until the deadline", async () => {
 });
 test("a thirty-minute pending job shows very slow and never Retry", async () => {
   await render(<JobProgress job={job as never} retry={jest.fn()} />);
+  expect(screen.getByText(i18n.t("running"))).toBeOnTheScreen();
   expect(screen.getByText(i18n.t("verySlow"))).toBeOnTheScreen();
+  expect(screen.queryByRole("button", { name: i18n.t("retry") })).toBeNull();
+});
+test("queued jobs identify their state", async () => {
+  await render(
+    <JobProgress
+      job={{ ...job, status: "queued" } as never}
+      retry={jest.fn()}
+    />,
+  );
+  expect(screen.getByText(i18n.t("queued"))).toBeOnTheScreen();
+});
+test("generated paused absence shows the paused notice without Retry", async () => {
+  await render(
+    <Generated
+      part={{
+        status: "absent",
+        absence: { reason: "generation_paused" },
+      }}
+      retry={jest.fn()}
+    >
+      {() => <Text>unexpected</Text>}
+    </Generated>,
+  );
+  expect(screen.getByText(i18n.t("generationPaused"))).toBeOnTheScreen();
   expect(screen.queryByRole("button", { name: i18n.t("retry") })).toBeNull();
 });
 function Reading() {
   const result = useGenerated<{ text: string }>(["test"], "/reading", "Object");
   return <Text>{result.state}</Text>;
 }
+function PausedReading() {
+  const result = useGenerated<{ text: string }>(
+    ["paused"],
+    "/paused-reading",
+    "Object",
+  );
+  return (
+    <>
+      <Text>{result.state}</Text>
+      <ErrorNotice error={result.error} retry={result.retry} />
+    </>
+  );
+}
 jest.mock("../../src/api/zod", () => ({
   validate: (_name: string, value: unknown) => value,
 }));
+test("standalone generated readings preserve generation_paused absence", async () => {
+  const q = client();
+  jest.mocked(request).mockResolvedValue({
+    status: "absent",
+    absence: { reason: "generation_paused" },
+  });
+  await render(
+    <QueryClientProvider client={q}>
+      <PausedReading />
+    </QueryClientProvider>,
+  );
+  await waitFor(() =>
+    expect(screen.getByText(i18n.t("generationPaused"))).toBeOnTheScreen(),
+  );
+  expect(screen.getByText("failed")).toBeOnTheScreen();
+  expect(screen.queryByRole("button", { name: i18n.t("retry") })).toBeNull();
+});
 test.each(["succeeded", "missing"])(
   "hydrated old job reconciles %s once using a normal parent GET",
   async (outcome) => {
@@ -135,6 +197,46 @@ function Waiting({ refresh }: { refresh: () => void }) {
   );
   return null;
 }
+function WaitingOnOwnJob({ refresh }: { refresh: () => void }) {
+  useParentJobs(
+    { status: "pending", job },
+    null,
+    JSON.stringify(["resource", "en", "own-job"]),
+    true,
+    refresh,
+  );
+  return null;
+}
+test("leaving and returning refreshes a job that completed while away", async () => {
+  const q = client(),
+    refresh = jest.fn();
+  let finish!: (value: unknown) => void;
+  jest.mocked(request).mockImplementation(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const view = await render(
+    <QueryClientProvider client={q}>
+      <WaitingOnOwnJob refresh={refresh} />
+    </QueryClientProvider>,
+  );
+  await waitFor(() => expect(request).toHaveBeenCalled());
+  await act(async () => {
+    mockFocusCleanup?.();
+  });
+  await act(async () => {
+    finish({ ...job, status: "succeeded" });
+  });
+  expect(refresh).not.toHaveBeenCalled();
+  await act(async () => {
+    const cleanup = mockFocusCallback?.();
+    mockFocusCleanup = typeof cleanup === "function" ? cleanup : undefined;
+  });
+  await waitFor(() => expect(refresh).toHaveBeenCalledTimes(1));
+  await view.unmount();
+});
 test.each([true, false])(
   "blocker completion resumes B only if it remains focused: %s",
   async (focused) => {

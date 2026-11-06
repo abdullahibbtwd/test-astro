@@ -107,6 +107,7 @@ export function JobProgress({
           ? t("preparingPlaceNamed", { place })
           : t(job ? `preparing_${job.kind}` : "preparing")}
       </Txt>
+      {job && <Txt muted>{t(job.status)}</Txt>}
       <Txt muted>
         {seconds < 60
           ? t("usuallySeconds", { seconds })
@@ -125,7 +126,10 @@ export function JobProgress({
       {job &&
         job.stages.length > 1 &&
         job.stages.map((stage) => (
-          <View key={stage.name} style={{ flexDirection: "row", gap: dsSpace[3] }}>
+          <View
+            key={stage.name}
+            style={{ flexDirection: "row", gap: dsSpace[3] }}
+          >
             <Txt>
               {stage.status === "ok" || stage.status === "skipped"
                 ? "✓"
