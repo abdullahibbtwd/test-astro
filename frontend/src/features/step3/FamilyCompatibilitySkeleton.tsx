@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 import {
   Screen,
   Txt,
@@ -43,15 +44,21 @@ export function FamilyCompatibilitySkeleton({
   onCompute: () => void;
   onRetry?: () => void;
 }) {
+  const { t } = useTranslation();
   const types: FamilyRelationshipType[] = [
     "romantic",
     "parent_child",
     "sibling",
   ];
+  const typeLabels: Record<FamilyRelationshipType, string> = {
+    romantic: t("romantic"),
+    parent_child: t("parentChild"),
+    sibling: t("sibling"),
+  };
   return (
-    <Screen back title="Family Compatibility">
+    <Screen back title={t("familyCompatibility")}>
       <PendingAstrologerBanner detail={FAMILY_COMPATIBILITY_PLACEHOLDER} />
-      <Txt kind="caption">Person A</Txt>
+      <Txt kind="caption">{t("personA")}</Txt>
       <Choices>
         {profiles.map((p) => (
           <Chip
@@ -62,7 +69,7 @@ export function FamilyCompatibilitySkeleton({
           />
         ))}
       </Choices>
-      <Txt kind="caption">Person B</Txt>
+      <Txt kind="caption">{t("personB")}</Txt>
       <Choices>
         {profiles.map((p) => (
           <Chip
@@ -73,19 +80,19 @@ export function FamilyCompatibilitySkeleton({
           />
         ))}
       </Choices>
-      <Txt kind="caption">Relationship type</Txt>
+      <Txt kind="caption">{t("relationshipType")}</Txt>
       <Choices>
         {types.map((value) => (
           <Chip
             key={value}
-            label={value}
+            label={typeLabels[value]}
             selected={relationshipType === value}
             onPress={() => onRelationshipType(value)}
           />
         ))}
       </Choices>
       <Button
-        label="Compute aspects"
+        label={t("computeAspects")}
         disabled={!profileA || !profileB || profileA === profileB}
         loading={status === "loading"}
         onPress={onCompute}
@@ -98,12 +105,13 @@ export function FamilyCompatibilitySkeleton({
       {status === "ready" && model && (
         <View testID="family-compatibility-ready" style={{ gap: 10 }}>
           <Txt kind="caption">
-            Math: {model.math.aspects} · {model.relationship_type} ·{" "}
+            {t("math")}: {model.math.aspects} ·{" "}
+            {typeLabels[model.relationship_type]} ·{" "}
             {model.profile_a_label} × {model.profile_b_label}
           </Txt>
-          <Txt kind="title">Aspects</Txt>
+          <Txt kind="title">{t("aspects")}</Txt>
           {model.aspects.length === 0 ? (
-            <Txt muted>No aspects in selection (family rules pending).</Txt>
+            <Txt muted>{t("noFamilyAspects")}</Txt>
           ) : (
             model.aspects.map((row) => (
               <View
@@ -111,14 +119,14 @@ export function FamilyCompatibilitySkeleton({
                 testID={`aspect-${row.a_point}-${row.b_point}`}
               >
                 <Txt>
-                  {row.a_point} {row.type} {row.b_point} · orb{" "}
+                  {row.a_point} {row.type} {row.b_point} · {t("orb")}{" "}
                   {row.orb.toFixed(3)}° ·{" "}
-                  {row.applying ? "applying" : "separating"}
+                  {row.applying ? t("applying") : t("separating")}
                 </Txt>
               </View>
             ))
           )}
-          <Txt kind="title">Interpretation</Txt>
+          <Txt kind="title">{t("interpretation")}</Txt>
           <View testID="family-compatibility-placeholder">
             <Txt kind="reading">{model.interpretation}</Txt>
           </View>

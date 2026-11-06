@@ -123,7 +123,7 @@ export default function RootLayout() {
   if (error)
     return (
       <View style={{ flex: 1, justifyContent: "center", padding: 24 }}>
-        <AppText>Secure storage could not be opened. Restart the app.</AppText>
+        <AppText>{i18n.t("secureStorageError")}</AppText>
       </View>
     );
   if (!ready || (!loaded && !fontError)) return null;
