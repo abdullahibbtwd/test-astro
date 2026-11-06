@@ -146,6 +146,7 @@ export default function AuthScreen() {
             <Txt muted>{t("codeHint")}</Txt>
             <Pressable
               onPress={() => input.current?.focus()}
+              accessibilityRole="button"
               accessibilityLabel={t("code")}
             >
               <View style={{ flexDirection: "row", gap: dsSpace[2] }}>
@@ -176,6 +177,7 @@ export default function AuthScreen() {
               autoComplete="sms-otp"
               maxLength={6}
               editable={online}
+              maxFontSizeMultiplier={1.5}
               style={{ position: "absolute", width: 1, height: 1, opacity: 0 }}
               onChangeText={(value) => {
                 const digits = value.replace(/\D/g, "").slice(0, 6);

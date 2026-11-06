@@ -66,6 +66,7 @@ export function MapSearch({
           cursorColor={c.accent}
           value={input}
           onChangeText={setInput}
+          maxFontSizeMultiplier={1.5}
           style={{
             flex: 1,
             minHeight: 44,

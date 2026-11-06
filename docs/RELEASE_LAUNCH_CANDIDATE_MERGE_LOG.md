@@ -60,3 +60,7 @@ frontend/src/features/ask/ChatScreen.tsx
 STOP_FOR_MANUAL:ux/05-offline
   - Conflicts in `frontend/src/design/components/index.tsx` and `frontend/src/features/ask/ChatScreen.tsx`.
   - Resolution: kept `StandardErrorState` from ux/02; adopted `useOnline` + disable-retry-when-offline + `offlineDisabled` caption from ux/05; Chat shows both cached-offline banner and `offlineDisabled` copy.
+- `ux/06-i18n-lint`: merged cleanly. Conflicts: none.
+- `ux/07-accessibility`: CONFLICT
+frontend/src/features/account/AuthScreen.tsx
+  - Conflicts in AuthScreen.tsx: kept both `editable={online}` (ux/05) and `maxFontSizeMultiplier={1.5}` (ux/07).

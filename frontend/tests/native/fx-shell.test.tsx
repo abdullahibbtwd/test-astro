@@ -43,7 +43,8 @@ test("four Turkish segments stay equal width, nowrap, accessible and selectable 
   for (const tab of tabs)
     expect(StyleSheet.flatten(tab.props.style).flex).toBe(1);
   expect(tabs[0]).toBeSelected();
-  expect(screen.getByText("Takvim").props.maxFontSizeMultiplier).toBeUndefined();
+  // AppText body cap (1.5) applies so large fonts cannot blow tab layout.
+  expect(screen.getByText("Takvim").props.maxFontSizeMultiplier).toBe(1.5);
   expect(screen.getByText("Takvim").props.numberOfLines).toBe(1);
   await fireEvent.press(tabs[3]);
   expect(change).toHaveBeenCalledWith("3");
