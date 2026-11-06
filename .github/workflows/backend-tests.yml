@@ -1,0 +1,93 @@
+name: Backend and engine tests
+on:
+  push:
+    paths:
+      - "backend/**"
+      - "requirements-handoff.txt"
+      - ".github/workflows/backend-tests.yml"
+      - "Dockerfile"
+  pull_request:
+    paths:
+      - "backend/**"
+      - "requirements-handoff.txt"
+      - ".github/workflows/backend-tests.yml"
+      - "Dockerfile"
+permissions:
+  contents: read
+jobs:
+  backend-engine:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: astrology
+          POSTGRES_PASSWORD: astrology
+          POSTGRES_DB: astrology
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U astrology -d astrology"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://astrology:astrology@127.0.0.1:5432/astrology_test
+      ASTRO_DEMO_AUTH: "1"
+      ASTRO_ALLOW_PAID: "0"
+      ASTRO_ASK_ENABLED: "0"
+      ASTRO_GUEST_ONBOARDING: "0"
+      ASTRO_PROGRESSIVE_READING: "0"
+      PYTHON: python
+      # Never load a developer .env with paid keys in CI.
+      CI: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-handoff.txt
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Create astrology_test database
+        run: |
+          PGPASSWORD=astrology psql -h 127.0.0.1 -U astrology -d astrology \
+            -c "CREATE DATABASE astrology_test;"
+
+      - name: Install Python deps (engine + bridges)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-handoff.txt
+
+      - name: Install backend npm deps and Prisma client
+        working-directory: backend
+        run: |
+          npm ci
+          npx prisma generate
+          npx prisma migrate deploy
+
+      - name: Backend Node test suite
+        working-directory: backend
+        run: npm test
+
+      - name: Engine unit tests (pytest)
+        run: |
+          python -m pytest -q \
+            backend/engine/d_layer \
+            backend/engine/principles_grounding \
+            backend/engine/Astrocartography/test_acg_affinity.py \
+            backend/tests/budget_test.py \
+            -x
+        # Paid / live model suites stay out of default CI (ASTRO_ALLOW_PAID=0).
+        # ACG_LIVE recommend tests are skipped unless ACG_LIVE=1.
