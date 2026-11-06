@@ -71,6 +71,7 @@ function ChartWorkspace({ profile }: { profile: BirthProfile }) {
           <Pressable
             key={key}
             accessibilityRole="button"
+            accessibilityLabel={`${t(key === "ascendant" ? "rising" : key)}, ${c.signs[profile.big_three[key]]}`}
             onPress={() =>
               select(
                 key === "ascendant"

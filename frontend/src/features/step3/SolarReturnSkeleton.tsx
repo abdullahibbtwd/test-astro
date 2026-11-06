@@ -57,6 +57,7 @@ export function SolarReturnSkeleton({
         keyboardType="number-pad"
         value={draft}
         onChangeText={setDraft}
+        maxFontSizeMultiplier={1.5}
         onEndEditing={() => {
           const next = Number.parseInt(draft, 10);
           if (Number.isFinite(next) && next >= 1900 && next <= 2100)

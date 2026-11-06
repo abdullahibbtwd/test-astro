@@ -52,7 +52,7 @@ export function Segmented<T extends string>({
               backgroundColor: value === item.value ? c.surface : "transparent",
             }}
           >
-            <AppText variant="label" maxFontSizeMultiplier={undefined}
+            <AppText variant="label"
               numberOfLines={1}
               adjustsFontSizeToFit
               minimumFontScale={13 / 16}

@@ -274,7 +274,7 @@ export function Row({
   const c = useTheme();
   return (
     <Pressable
-      accessibilityRole={onPress ? "button" : undefined}
+      accessibilityRole={onPress || onLongPress ? "button" : undefined}
       accessibilityLabel={[label, detail].filter(Boolean).join(", ")}
       disabled={!onPress && !onLongPress}
       onPress={onPress}

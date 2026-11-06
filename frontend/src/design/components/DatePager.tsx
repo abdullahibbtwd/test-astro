@@ -56,6 +56,7 @@ export function DatePager({
       {onToday && (
         <Pressable
           accessibilityRole="button"
+          accessibilityLabel={t("today")}
           onPress={onToday}
           style={{
             minHeight: 44,
