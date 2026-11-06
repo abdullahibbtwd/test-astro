@@ -54,11 +54,13 @@ export function WelcomeFooter() {
         paddingHorizontal: padding,
         paddingVertical: space[2],
         flexDirection: "row",
+        flexWrap: "wrap",
+        gap: space[1],
         alignItems: "center",
         justifyContent: "space-between",
       }}
     >
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", flexShrink: 1 }}>
         {(["en", "tr"] as const).map((language) => (
           <Pressable
             key={language}
@@ -82,7 +84,7 @@ export function WelcomeFooter() {
           </Pressable>
         ))}
       </View>
-      <View style={{ flexDirection: "row" }}>
+      <View style={{ flexDirection: "row", flexShrink: 1 }}>
         {(["terms", "privacy"] as const).map((key) => (
           <Pressable
             key={key}

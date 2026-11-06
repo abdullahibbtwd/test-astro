@@ -23,7 +23,7 @@ afterEach(() => {
   dismissSnackbar("timeout");
   jest.useRealTimers();
 });
-test("four Turkish segments stay equal width, nowrap, accessible and selectable at large fonts", async () => {
+test("four Turkish segments stay equal width, wrap text, and remain selectable at large fonts", async () => {
   const change = jest.fn();
   await render(
     <Segmented
@@ -42,9 +42,10 @@ test("four Turkish segments stay equal width, nowrap, accessible and selectable 
   expect(tabs).toHaveLength(4);
   for (const tab of tabs)
     expect(StyleSheet.flatten(tab.props.style).flex).toBe(1);
+  expect(StyleSheet.flatten(tabs[0].props.style).minHeight).toBe(52);
   expect(tabs[0]).toBeSelected();
   expect(screen.getByText("Takvim").props.maxFontSizeMultiplier).toBeUndefined();
-  expect(screen.getByText("Takvim").props.numberOfLines).toBe(1);
+  expect(screen.getByText("Takvim").props.numberOfLines).toBe(2);
   await fireEvent.press(tabs[3]);
   expect(change).toHaveBeenCalledWith("3");
 });

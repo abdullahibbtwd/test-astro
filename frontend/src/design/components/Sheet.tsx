@@ -91,7 +91,9 @@ export function Sheet({
             borderColor: c.hair,
           }}
         >
-          <Txt kind="title" style={{ flex: 1 }}>{title}</Txt>
+          <Txt kind="title" style={{ flex: 1, minWidth: 0, flexShrink: 1 }}>
+            {title}
+          </Txt>
           {onExpand && (
             <IconButton
               accessibilityLabel={t("expand")}

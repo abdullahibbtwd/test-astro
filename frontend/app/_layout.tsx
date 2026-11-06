@@ -154,7 +154,17 @@ export default function RootLayout() {
                 headerStyle: { backgroundColor: c.bg },
                 headerTintColor: c.accent,
                 headerTitleStyle: { ...dsType.displaySection, color: c.accent },
-                headerTitle: ({ children }) => <AppText variant="displaySection" color="accent" numberOfLines={1}>{children}</AppText>,
+                headerTitle: ({ children }) => (
+                  <AppText
+                    variant="displaySection"
+                    color="accent"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.8}
+                  >
+                    {children}
+                  </AppText>
+                ),
                 headerShadowVisible: false,
                 headerBackButtonDisplayMode: "minimal",
                 contentStyle: { backgroundColor: c.bg },

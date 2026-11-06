@@ -37,7 +37,7 @@ export function Segmented<T extends string>({
           style={{
             flex: 1,
             minWidth: 0,
-            minHeight: 44,
+            minHeight: 52,
             paddingVertical: dsSpace[1],
             paddingHorizontal: 2,
           }}
@@ -52,14 +52,14 @@ export function Segmented<T extends string>({
               backgroundColor: value === item.value ? c.surface : "transparent",
             }}
           >
-            <AppText variant="label" maxFontSizeMultiplier={undefined}
-              numberOfLines={1}
-              adjustsFontSizeToFit
-              minimumFontScale={13 / 16}
-
+            <AppText
+              variant="label"
+              maxFontSizeMultiplier={undefined}
+              numberOfLines={2}
               style={{
                 color: value === item.value ? c.accent : c.ink2,
                 textAlign: "center",
+                flexShrink: 1,
               }}
             >
               {item.label}
