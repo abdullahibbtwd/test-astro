@@ -11,6 +11,7 @@ import { Store } from "./store";
 import { validate } from "../../frontend/src/api/zod";
 import { askBackendReady, runAskBridge, type AskRunner } from "./ask-bridge";
 import { ASK_DAILY_LIMIT } from "./limits";
+import { guardAskMessage } from "./ask-guards";
 const problem = (status: number, code: string) => ({
   type: "about:blank",
   title: "Conversation unavailable",
@@ -141,8 +142,9 @@ export class AskService {
       const thread = await this.get(id);
       if (this.active.has(id)) throw issue(409, "busy");
       if (!this.enabled()) throw issue(503, "upstream_unavailable");
-      if (!input.text.trim() || input.text.length > 1000)
-        throw issue(400, "validation_error");
+      const guarded = guardAskMessage(input.text);
+      if (!guarded.ok) throw issue(400, guarded.code);
+      input = { ...input, text: guarded.text };
       const profile = await this.store.get<BirthProfile>(
         "profile:" + thread.profile_id,
       );

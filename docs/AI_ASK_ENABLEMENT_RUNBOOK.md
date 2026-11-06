@@ -73,15 +73,35 @@ ASTRO_PROGRESSIVE_READING=1
 
 Guest path still requires paid. Re-test claim flow on a throwaway account.
 
-### Stage 3 — Ask Astrology
+### Stage 3 — Ask Astrology (staged rollout; do NOT enable live until stages pass)
+
+Ask uses the **same** org `$` ledger (`ASTRO_BUDGET_LIMIT`) via `budget.install_guard`
+and a **separate** daily ASK counter (`ASTRO_DAILY_ASK_LIMIT`, default 20). Messages
+are capped at 1000 chars; prompt-injection / role-break attempts return 400
+`abuse_rejected`. When Ask is off: create/send → **503** `upstream_unavailable`.
+
+#### 3a — Owner only
 
 ```text
+ASTRO_ALLOW_PAID=1
 ASTRO_ASK_ENABLED=1
-# optional: ASTRO_ASK_MODEL=...
-ASTRO_DAILY_ASK_LIMIT=5      # tighten for first day
+ASTRO_DAILY_ASK_LIMIT=5
+ASTRO_BUDGET_LIMIT=<owner C ≤ 20>
 ```
 
-Smoke: create thread, one short question, confirm quota decrements, stop generation works.
+Smoke as the owner account only: create thread, one short in-scope question,
+confirm streaming + quota footer, Stop mid-stream, Retry after error. Confirm
+input never stuck loading.
+
+#### 3b — Five testers
+
+Keep Ask on; invite five known accounts. Watch `ASTRO_BUDGET_LOG` and Sentry
+`budget_alert:*`. Lower `ASTRO_DAILY_ASK_LIMIT=3` if spend climbs.
+
+#### 3c — Everyone
+
+Raise `ASTRO_DAILY_ASK_LIMIT` toward product default (≤20). Keep org cap `C`.
+Announce rollback path below before opening broadly.
 
 Existing paid Ask script (spends money — **do not run** without approval):
 
