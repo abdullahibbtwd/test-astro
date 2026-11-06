@@ -47,3 +47,4 @@ Do not push to main. Do not deploy.
   - post-merge tests: 5/5 pass (fail 0)
 - `payments/setup-docs`: merged cleanly. Conflicts: none.
   - setup-docs: docs-only tip; conflicts: none.
+  - re-ran enforcement tests (prior multi-file argv glitch): ℹ tests 11 ℹ pass 11 ℹ fail 0 
