@@ -117,6 +117,8 @@ export async function deleteAccount(
       data: { userId: "shared" },
     });
     await tx.budgetSettings.deleteMany({ where: { userId } });
+    // Guest sessions may still hold birth JSON until expiry; drop claimed ones now.
+    await tx.guestSession.deleteMany({ where: { claimedById: userId } });
     await tx.user.delete({ where: { id: userId } });
   });
 

@@ -137,6 +137,20 @@ export class AskService {
     for (const running of this.active.values()) running.abort.abort();
     await Promise.all([...this.active.values()].map((r) => r.finished));
   }
+
+  /** Abort Ask streams for threads owned by the current store tenant only. */
+  async closeTenant() {
+    const mine = new Set(
+      (await this.store.list<Thread>("ask-thread:")).map((t) => t.thread_id),
+    );
+    const finishing: Promise<void>[] = [];
+    for (const [id, running] of this.active) {
+      if (!mine.has(id)) continue;
+      running.abort.abort();
+      finishing.push(running.finished);
+    }
+    await Promise.all(finishing);
+  }
   /** Called under the API's short mutation lock; stream runs after releasing it. */
   start(
     id: string,

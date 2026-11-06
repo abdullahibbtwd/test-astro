@@ -316,10 +316,21 @@ export async function buildLocalApp({
       };
     });
   };
-  const resolveTenant = async (token: string) => {
+  const resolveTenant = async (
+    token: string,
+    opts?: { allowTombstone?: boolean },
+  ) => {
     if (jwt) {
       const claims = await jwt.verify(token);
       await bindOwner(claims.sub);
+      const tombstoned = await prisma().deletedUser.findUnique({
+        where: { id: claims.sub },
+      });
+      if (tombstoned) {
+        // Allow DELETE /me to retry IdP removal after a local wipe already tombstoned.
+        if (!opts?.allowTombstone) throw issue(403, "Account deleted");
+        return claims.sub;
+      }
       await store.runAsAsync(claims.sub, () =>
         ensureAccount(claims.sub, claims.email),
       );
@@ -518,7 +529,9 @@ export async function buildLocalApp({
               "",
             );
             // Auth first, then per-user limits keyed on verified owner (never raw Authorization).
-            tenantId = await resolveTenant(token);
+            const allowTombstone =
+              endpoint.method === "delete" && endpoint.path === "/me";
+            tenantId = await resolveTenant(token, { allowTombstone });
             if (
               rateLimiter?.enforceUserRateLimit(request, reply, tenantId)
             ) {
@@ -676,9 +689,18 @@ export async function buildLocalApp({
                 dossiers: await progressive.exportDossiers(),
               };
               break;
-            case "delete /me":
-              await ask.close();
-              progressive.assertIdle();
+            case "delete /me": {
+              if (!tenantId) throw issue(401);
+              const alreadyGone = await prisma().deletedUser.findUnique({
+                where: { id: tenantId },
+              });
+              if (alreadyGone) {
+                // Local wipe already done; retry IdP delete only.
+                if (admin) await admin.deleteUser(tenantId);
+                return reply.code(202).send();
+              }
+              // Tenant-scoped: do not abort other users' Ask streams or block on their readings.
+              await ask.closeTenant();
               // Transitional: jobs may still live in Record until Job model is wired.
               if (
                 (await store.list<any>("job:")).some((j) => {
@@ -693,7 +715,6 @@ export async function buildLocalApp({
                 throw issue(409);
               for (const target of await store.list<BirthProfile>("profile:"))
                 await progressive.releaseProfile(target);
-              if (!tenantId) throw issue(401);
               await deleteAccount(prisma(), tenantId, dataRoot, {
                 deleteAuthUser: admin
                   ? (id) => admin.deleteUser(id)
@@ -704,6 +725,7 @@ export async function buildLocalApp({
                   await store.put("auth-mode", authScope);
                 });
               return reply.code(202).send();
+            }
             case "get /me":
               result = await withComputedEntitlements(prisma(), {
                 ...me,
