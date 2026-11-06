@@ -115,6 +115,11 @@ backend/engine/principles_grounding/acg_goal_tagging_report.json
 backend/engine/principles_grounding/transit_goal_tagging_report.json
 backend/engine/principles_grounding/validation_report.merged.json
 
+# Android signing material (never commit; EAS stores release keystores)
+*.jks
+*.keystore
+**/credentials.json
+
 # Local Android preview tooling
 .tooling/
 

@@ -9,5 +9,10 @@
     "privacy": "",
     "terms": "",
     "support": ""
-  }
+  },
+  "mapStyleUrls": {
+    "light": "",
+    "dark": ""
+  },
+  "notes": "Owner must replace scheme, androidPackage, iosBundleIdentifier, links, consentVersion, and mapStyleUrls with final production values. mapStyleUrls are attestation only — the API serves ASTRO_MAP_STYLE_* to clients via /meta/config; do not put tile keys in the app binary."
 }

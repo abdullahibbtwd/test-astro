@@ -78,7 +78,11 @@ if (!(Test-Path -LiteralPath $apk)) { throw 'Run scripts/Build-Android-Preview.p
 & $adb install -r $apk
 $deadline = (Get-Date).AddSeconds(60)
 while (!(Is-MetroReady)) { if ((Get-Date) -gt $deadline) { throw 'Metro did not start. See .tooling/metro-error.log.' }; Start-Sleep -Seconds 1 }
-& $adb shell am start -a android.intent.action.VIEW -d "astrology-dev://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A$metroPort" com.example.astrology.dev
+$identity = Get-Content -Raw -LiteralPath (Join-Path $frontend 'config/identity.json') | ConvertFrom-Json
+$scheme = [string]$identity.scheme
+$androidPackage = [string]$identity.androidPackage
+if (!$scheme -or !$androidPackage) { throw 'config/identity.json must define scheme and androidPackage.' }
+& $adb shell am start -a android.intent.action.VIEW -d "${scheme}://expo-development-client/?url=http%3A%2F%2F127.0.0.1%3A$metroPort" $androidPackage
 if ($realAuth) { Write-Host 'Preview ready. Sign in with your configured owner email.' } else { Write-Host 'Preview ready. Sign in with demo@example.com and code 000000.' }
 
 Write-Host 'To change live reading generation, use -RestartApi; add -EnableReadings to enable it. Never restart during an active reading.'
