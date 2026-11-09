@@ -80,19 +80,26 @@ test("REFUSE: production-like with ASTRO_RATE_LIMIT_DISABLED=1", () => {
   assert.ok(bad.some((f) => f.names.includes("ASTRO_RATE_LIMIT_DISABLED")));
 });
 
-test("REFUSE: production-like without ASTRO_PAYMENT_PROVIDER", () => {
-  const bad = refuses({
-    ...base(),
-    NODE_ENV: "production",
-    SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
-    DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",
-  });
-  assert.ok(bad.some((f) => f.names.includes("ASTRO_PAYMENT_PROVIDER")));
+test("production-like without payments enabled does not require webhook secret", () => {
+  const result = checkConfig(
+    {
+      ...base(),
+      AUTH_ENABLED: "1",
+      NODE_ENV: "production",
+      SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
+      SUPABASE_SECRET_KEY: "sb_secret_test",
+      DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",
+      // ASTRO_PAYMENT_PROVIDER unset → payments off
+    },
+    os.tmpdir(),
+  );
+  assert.equal(result.findings.filter((f) => f.level === "refuse").length, 0);
 });
 
-test("REFUSE: production-like fake provider without webhook secret", () => {
+test("REFUSE: payments enabled with fake provider without webhook secret", () => {
   const bad = refuses({
     ...base(),
+    AUTH_ENABLED: "1",
     NODE_ENV: "production",
     SUPABASE_URL: "https://abcdefghijklmnopqrst.supabase.co",
     DATABASE_URL: "postgres://prod:secret@db.internal:5432/astrology",

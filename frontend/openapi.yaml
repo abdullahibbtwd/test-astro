@@ -5474,10 +5474,10 @@ components:
           items:
             $ref: "#/components/schemas/TransitEpisode"
         reading:
-          $ref: "#/components/schemas/GeneratedPart_33b7efeee4a8"
+          $ref: "#/components/schemas/GeneratedPart_d3a1e542656b"
         day_note:
           anyOf:
-            - $ref: "#/components/schemas/GeneratedPart_813f0b5ec437"
+            - $ref: "#/components/schemas/GeneratedPart_2fa86e1ff919"
             - type: "null"
         best_activities:
           type: array
@@ -5685,7 +5685,7 @@ components:
         - phase
         - phase_label
         - has_text
-    GeneratedPart_33b7efeee4a8:
+    GeneratedPart_d3a1e542656b:
       anyOf:
         - type: object
           properties:
@@ -5727,7 +5727,7 @@ components:
           required:
             - status
             - absence
-    GeneratedPart_813f0b5ec437:
+    GeneratedPart_2fa86e1ff919:
       anyOf:
         - type: object
           properties:
@@ -5805,7 +5805,7 @@ components:
         moon:
           $ref: "#/components/schemas/MoonInfo"
         today:
-          $ref: "#/components/schemas/GeneratedPart_e62cc37a78c9"
+          $ref: "#/components/schemas/GeneratedPart_c76e54b49fed"
         next_up:
           type: array
           items:
@@ -5821,7 +5821,7 @@ components:
         - moon
         - today
         - next_up
-    GeneratedPart_e62cc37a78c9:
+    GeneratedPart_c76e54b49fed:
       anyOf:
         - type: object
           properties:
@@ -5920,7 +5920,7 @@ components:
             - mid
             - late
         reading:
-          $ref: "#/components/schemas/GeneratedPart_c159ab7fbe72"
+          $ref: "#/components/schemas/GeneratedPart_bdc36e64db1d"
         highlights:
           type: object
           properties:
@@ -6001,7 +6001,7 @@ components:
       required:
         - from
         - to
-    GeneratedPart_c159ab7fbe72:
+    GeneratedPart_bdc36e64db1d:
       anyOf:
         - type: object
           properties:
@@ -6151,7 +6151,7 @@ components:
               - from
               - to
         reading:
-          $ref: "#/components/schemas/GeneratedPart_9c1228a5bd09"
+          $ref: "#/components/schemas/GeneratedPart_5e8750b01b2c"
         highlights:
           type: object
           properties:
@@ -6223,7 +6223,7 @@ components:
         - reading
         - highlights
         - months
-    GeneratedPart_9c1228a5bd09:
+    GeneratedPart_5e8750b01b2c:
       anyOf:
         - type: object
           properties:
@@ -6294,7 +6294,7 @@ components:
         chart:
           $ref: "#/components/schemas/ChartData"
         reading:
-          $ref: "#/components/schemas/GeneratedPart_49eafed10b60"
+          $ref: "#/components/schemas/GeneratedPart_566670ebcd0b"
       required:
         - profile_id
         - year
@@ -6302,7 +6302,7 @@ components:
         - place
         - chart
         - reading
-    GeneratedPart_49eafed10b60:
+    GeneratedPart_566670ebcd0b:
       anyOf:
         - type: object
           properties:
@@ -6378,7 +6378,7 @@ components:
         created_at:
           $ref: "#/components/schemas/ISODateTime"
         reading:
-          $ref: "#/components/schemas/GeneratedPart_05beaea7c260"
+          $ref: "#/components/schemas/GeneratedPart_688190e0d5a2"
         score:
           anyOf:
             - type: "null"
@@ -6420,7 +6420,7 @@ components:
         - profile_id
         - label
         - big_three
-    GeneratedPart_05beaea7c260:
+    GeneratedPart_688190e0d5a2:
       anyOf:
         - type: object
           properties:
@@ -6517,14 +6517,14 @@ components:
         chart_key:
           type: string
         lines:
-          $ref: "#/components/schemas/FeatureCollection_614d7ad1d8f6"
+          $ref: "#/components/schemas/FeatureCollection_ff8fb6dac8fe"
         parans:
-          $ref: "#/components/schemas/FeatureCollection_6e2322dcfcf2"
+          $ref: "#/components/schemas/FeatureCollection_83765b2e4eb4"
       required:
         - chart_key
         - lines
         - parans
-    FeatureCollection_614d7ad1d8f6:
+    FeatureCollection_ff8fb6dac8fe:
       type: object
       properties:
         type:
@@ -6543,7 +6543,7 @@ components:
         features:
           type: array
           items:
-            $ref: "#/components/schemas/Feature_d57ec3a82383"
+            $ref: "#/components/schemas/Feature_17c3a61904d8"
       required:
         - features
         - type
@@ -6562,7 +6562,7 @@ components:
           minItems: 6
           maxItems: 6
       description: Bounding box https://tools.ietf.org/html/rfc7946#section-5
-    Feature_d57ec3a82383:
+    Feature_17c3a61904d8:
       type: object
       properties:
         type:
@@ -6649,7 +6649,7 @@ components:
         -  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/71441 Dec 2024 } 
 
         One can use a  {@link  https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates user-defined type guard that returns a type predicate }  to determine if a position is a 2D or 3D position.
-    FeatureCollection_6e2322dcfcf2:
+    FeatureCollection_83765b2e4eb4:
       type: object
       properties:
         type:
@@ -6668,13 +6668,13 @@ components:
         features:
           type: array
           items:
-            $ref: "#/components/schemas/Feature_8b91791cfb86"
+            $ref: "#/components/schemas/Feature_5334ecb9fbd7"
       required:
         - features
         - type
       description: A collection of feature
         objects.  https://tools.ietf.org/html/rfc7946#section-3.3
-    Feature_8b91791cfb86:
+    Feature_5334ecb9fbd7:
       type: object
       properties:
         type:
@@ -6891,13 +6891,13 @@ components:
           items:
             $ref: "#/components/schemas/ParanDisplay"
         goal_scores:
-          $ref: "#/components/schemas/Record_9531230c10a1"
+          $ref: "#/components/schemas/Record_5e8e666f6549"
         cards:
           type: array
           items:
             $ref: "#/components/schemas/SuitabilityCard"
         reading:
-          $ref: "#/components/schemas/GeneratedPart_8bcfb01e2635"
+          $ref: "#/components/schemas/GeneratedPart_fec287102c48"
         footer:
           type: string
       required:
@@ -6978,7 +6978,7 @@ components:
         - north_south
         - distance_km_rounded
         - label
-    Record_9531230c10a1:
+    Record_5e8e666f6549:
       type: object
       properties:
         love: &a12
@@ -7045,7 +7045,7 @@ components:
         - band
         - band_label
         - text
-    GeneratedPart_8bcfb01e2635:
+    GeneratedPart_fec287102c48:
       anyOf:
         - type: object
           properties:
@@ -7139,7 +7139,7 @@ components:
         absence:
           $ref: "#/components/schemas/Absence"
         bands:
-          $ref: "#/components/schemas/Record_fb0bec6385f1"
+          $ref: "#/components/schemas/Record_be98bc64e914"
         lines_crossing:
           type: array
           items:
@@ -7159,7 +7159,7 @@ components:
               - planet_label
               - angle_label
         best_cities:
-          $ref: "#/components/schemas/Record_62bfe7922c25"
+          $ref: "#/components/schemas/Record_81436daca0c4"
         varies_by_region:
           type: boolean
         regions:
@@ -7175,7 +7175,7 @@ components:
               - admin1_id
               - name
         overview:
-          $ref: "#/components/schemas/GeneratedPart_1bbb8379e39c"
+          $ref: "#/components/schemas/GeneratedPart_7e436ceb0228"
         footer:
           type: string
       required:
@@ -7187,7 +7187,7 @@ components:
         - varies_by_region
         - overview
         - footer
-    Record_fb0bec6385f1:
+    Record_be98bc64e914:
       type: object
       properties:
         love: &a13
@@ -7222,7 +7222,7 @@ components:
         - rest
         - travel
         - relocation
-    Record_62bfe7922c25:
+    Record_81436daca0c4:
       type: object
       properties:
         love: &a14
@@ -7265,7 +7265,7 @@ components:
         - rest
         - travel
         - relocation
-    GeneratedPart_1bbb8379e39c:
+    GeneratedPart_7e436ceb0228:
       anyOf:
         - type: object
           properties:
@@ -7549,7 +7549,7 @@ components:
           items:
             $ref: "#/components/schemas/AreaRef"
         explanations:
-          $ref: "#/components/schemas/GeneratedPart_58f6a25e1646"
+          $ref: "#/components/schemas/GeneratedPart_cb35f6859359"
         footer:
           type: string
       required:
@@ -7652,7 +7652,7 @@ components:
         - name
         - band
         - band_label
-    GeneratedPart_58f6a25e1646:
+    GeneratedPart_cb35f6859359:
       anyOf:
         - type: object
           properties:
@@ -7865,7 +7865,7 @@ components:
           $ref: "#/components/schemas/Record_7e571529d2c5"
         day_note:
           anyOf:
-            - $ref: "#/components/schemas/GeneratedPart_224993331679"
+            - $ref: "#/components/schemas/GeneratedPart_e9ec6415bc0c"
             - type: "null"
         transits:
           type: array
@@ -7901,7 +7901,7 @@ components:
         - tone
         - tone_label
         - transits
-    GeneratedPart_224993331679:
+    GeneratedPart_e9ec6415bc0c:
       anyOf:
         - type: object
           properties:
@@ -8003,7 +8003,7 @@ components:
           $ref: "#/components/schemas/Body"
         text:
           anyOf:
-            - $ref: "#/components/schemas/GeneratedPart_3253e4bcbc02"
+            - $ref: "#/components/schemas/GeneratedPart_ce362c435b11"
             - type: "null"
       required:
         - id
@@ -8011,7 +8011,7 @@ components:
         - label
         - importance
         - text
-    GeneratedPart_3253e4bcbc02:
+    GeneratedPart_ce362c435b11:
       anyOf:
         - type: object
           properties:
@@ -8173,7 +8173,7 @@ components:
             - negative
         text:
           anyOf:
-            - $ref: "#/components/schemas/GeneratedPart_f43b63c62c27"
+            - $ref: "#/components/schemas/GeneratedPart_7f2a0fc4073f"
             - type: "null"
       required:
         - activity
@@ -8183,7 +8183,7 @@ components:
         - grade_label
         - reasons
         - text
-    GeneratedPart_f43b63c62c27:
+    GeneratedPart_7f2a0fc4073f:
       anyOf:
         - type: object
           properties:
@@ -8307,13 +8307,13 @@ components:
         bodies:
           $ref: "#/components/schemas/Record_59346cab62ba"
         angles:
-          $ref: "#/components/schemas/Record_ba64e68963fe"
+          $ref: "#/components/schemas/Record_badd16cf1775"
         signs:
           $ref: "#/components/schemas/Record_f2cc4e6e0113"
         aspects:
           $ref: "#/components/schemas/Record_c475ac0fd7db"
         houses:
-          $ref: "#/components/schemas/Record_bad3622c96f1"
+          $ref: "#/components/schemas/Record_c55b8da5857d"
         goals:
           $ref: "#/components/schemas/Record_0172c8cfe496"
         place_bands:
@@ -8440,7 +8440,7 @@ components:
         - pluto
         - north_node
         - south_node
-    Record_ba64e68963fe:
+    Record_badd16cf1775:
       type: object
       properties:
         ASC: &a17
@@ -8508,7 +8508,7 @@ components:
         - square
         - trine
         - opposition
-    Record_bad3622c96f1:
+    Record_c55b8da5857d:
       type: object
       additionalProperties:
         type: object
@@ -9506,8 +9506,8 @@ components:
         - status
         - absence
     CountryGeometry:
-      $ref: "#/components/schemas/FeatureCollection_db229932d393"
-    FeatureCollection_db229932d393:
+      $ref: "#/components/schemas/FeatureCollection_685fb350b62a"
+    FeatureCollection_685fb350b62a:
       type: object
       properties:
         type:
@@ -9526,13 +9526,13 @@ components:
         features:
           type: array
           items:
-            $ref: "#/components/schemas/Feature_e0df00ff5685"
+            $ref: "#/components/schemas/Feature_97a66f5a13d6"
       required:
         - features
         - type
       description: A collection of feature
         objects.  https://tools.ietf.org/html/rfc7946#section-3.3
-    Feature_e0df00ff5685:
+    Feature_97a66f5a13d6:
       type: object
       properties:
         type:

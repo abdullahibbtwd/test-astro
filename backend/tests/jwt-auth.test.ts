@@ -70,6 +70,17 @@ test("JWT bearer: first login creates user; tenants are isolated; tombstone refu
     "postgres://astrology:astrology@127.0.0.1:5432/astrology_test";
   process.env.ASTRO_DEMO_AUTH = "0";
   await prisma().systemConfig.deleteMany({ where: { key: "auth-mode" } });
+  // Shared test DB: wipe prior runs so a leftover tombstone cannot 403 first login.
+  await prisma().record.deleteMany({
+    where: { tenantId: { in: [SUB_A, SUB_B] } },
+  });
+  await prisma().session.deleteMany({
+    where: { userId: { in: [SUB_A, SUB_B] } },
+  });
+  await prisma().user.deleteMany({ where: { id: { in: [SUB_A, SUB_B] } } });
+  await prisma().deletedUser.deleteMany({
+    where: { id: { in: [SUB_A, SUB_B] } },
+  });
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), "astro-jwt-"));
   const { jwt, sign } = await testKeys();
   const app = await buildLocalApp({

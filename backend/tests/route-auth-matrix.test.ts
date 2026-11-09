@@ -21,6 +21,11 @@ import {
   concretePath,
   EXPECTED_AUTH_RESULTS,
 } from "../api/route-auth-matrix";
+import {
+  listRegisteredRouteKeys,
+  routeKey,
+  type RegisteredRoute,
+} from "../api/registered-routes";
 import { FakeProvider } from "../api/payments";
 import { clearAuthMode, tempDataDir } from "./helpers";
 
@@ -127,6 +132,50 @@ test("ROUTE_AUTH_MATRIX has no admin routes and covers user+public+webhook", () 
   assert.ok(ROUTE_AUTH_MATRIX.some((r) => r.auth === "public"));
   assert.ok(ROUTE_AUTH_MATRIX.some((r) => r.auth === "user"));
   assert.ok(ROUTE_AUTH_MATRIX.some((r) => r.auth === "webhook"));
+  assert.ok(
+    ROUTE_AUTH_MATRIX.some(
+      (r) => r.path === "/v1/billing/status" && r.auth === "user",
+    ),
+  );
+  assert.ok(
+    ROUTE_AUTH_MATRIX.some(
+      (r) => r.path === "/v1/webhooks/payments" && r.auth === "webhook",
+    ),
+  );
+});
+
+test("every registered Fastify route appears in ROUTE_AUTH_MATRIX", async () => {
+  process.env.ASTRO_DEMO_AUTH = "0";
+  process.env.ASTRO_GUEST_ONBOARDING = "1";
+  process.env.ASTRO_PAYMENT_PROVIDER = "fake";
+  await clearAuthMode();
+  const folder = tempDataDir("astro-matrix-cov-");
+  const { jwt } = await jwtFixture();
+  const app = await buildLocalApp({
+    dbPath: path.join(folder, "app.sqlite"),
+    jwt,
+    guestOnboarding: true,
+  });
+  try {
+    const registered = listRegisteredRouteKeys(
+      (app as unknown as { astroRegisteredRoutes: RegisteredRoute[] })
+        .astroRegisteredRoutes,
+    );
+    const matrix = new Set(
+      ROUTE_AUTH_MATRIX.map((r) => routeKey(r.method, r.path)),
+    );
+    const missing = registered.filter((k) => !matrix.has(k));
+    assert.deepEqual(
+      missing,
+      [],
+      `Registered routes missing from matrix:\n${missing.join("\n")}`,
+    );
+  } finally {
+    await app.close();
+    fs.rmSync(folder, { recursive: true, force: true });
+    await clearAuthMode();
+    process.env.ASTRO_GUEST_ONBOARDING = "0";
+  }
 });
 
 test("every user route: no/malformed/expired/wrong-aud/wrong-iss → 401; valid → not 401", async () => {

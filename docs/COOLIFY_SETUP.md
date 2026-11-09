@@ -19,6 +19,52 @@ If you change `POSTGRES_PASSWORD` (or the password embedded in `DATABASE_URL`) a
 
 ---
 
+## Production-like fail-closed
+
+`config:check` / startup treats the process as **production-like** when:
+
+- `NODE_ENV=production` (Dockerfile / Coolify compose), **or**
+- `ASTRO_PRODUCTION_LIKE=1` (staging that must fail closed the same way)
+
+In production-like config the API **refuses to start** if any of these hold (variable **names** only):
+
+| Condition | Vars |
+| --- | --- |
+| Demo auth on | `ASTRO_DEMO_AUTH=1` |
+| Auth off | `AUTH_ENABLED=0` |
+| No JWT issuer/JWKS source | `SUPABASE_URL` missing |
+| Rate limits fully disabled | `ASTRO_RATE_LIMIT_DISABLED=1` |
+| Default or loopback DB | `DATABASE_URL` with `astrology`/`astrology` or host `127.0.0.1`/`localhost` |
+| Payments enabled + fake provider without a non-default webhook secret | `ASTRO_PAYMENT_PROVIDER=fake` and missing/`fake-webhook-secret` for `ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET` |
+
+**Payments enabled** means `ASTRO_PAYMENT_PROVIDER` is set to a concrete id (not empty / `unset`). When payments are **off**, no webhook secret is required.
+
+**Emergency rate-limit loosening (do not disable):** raise caps instead of `ASTRO_RATE_LIMIT_DISABLED`:
+
+- `ASTRO_RATE_LIMIT_IP_MAX` (default 300)
+- `ASTRO_RATE_LIMIT_MAX` (default 120)
+- `ASTRO_RATE_LIMIT_EXPENSIVE_MAX` (default 40)
+- `ASTRO_RATE_LIMIT_JOB_MAX` (default 180)
+
+See [RATE_LIMIT.md](./RATE_LIMIT.md). Verified by `backend/tests/production-env-startup.test.ts`.
+
+### Required production env (minimal, payments off)
+
+These names are the **minimum** set for `config:check` to pass in production-like mode with payments disabled. Compose also injects `HOST`/`PORT`/`PYTHON`/`DATA_DIR`.
+
+| Name | Kind | Notes |
+| --- | --- | --- |
+| `NODE_ENV` | public | `production` |
+| `DATABASE_URL` | **secret** | Remote host; no default credentials / loopback |
+| `AUTH_ENABLED` | public | `1` (or unset) |
+| `SUPABASE_URL` | public | `https://YOUR_PROJECT_REF.supabase.co` |
+| `SUPABASE_SECRET_KEY` | **secret** | Account deletion IdP; warn-only if missing but required for complete delete |
+| `ASTRO_DEMO_AUTH` | public | `0` |
+
+Source of truth for the name list: `REQUIRED_PRODUCTION_ENV_NAMES` in `backend/api/config-check.ts`.
+
+---
+
 ## Variables to SET
 
 Marking **secret** vs **public**. Use placeholders; supply real values in Coolify.
@@ -108,10 +154,18 @@ These are **not secrets**, but any provider API key embedded in the style URL is
 | --- | --- |
 | `OPENAI_BASE_URL` | Paid guard + `config:check` refuse non-default / any set value — leave unset for the public OpenAI endpoint |
 | `GOOGLE_GENAI_USE_VERTEXAI` | Paid guard + `config:check` refuse Vertex pricing path |
-| `ASTRO_DEMO_AUTH=1` | Process refuses to start when `NODE_ENV=production` |
+| `ASTRO_DEMO_AUTH=1` | Process refuses to start when production-like |
+| `ASTRO_RATE_LIMIT_DISABLED=1` | Refused in production-like — raise `ASTRO_RATE_LIMIT_*_MAX` instead |
 | `MOCK_HOST` / `MOCK_JOB_SECONDS` | Mock API only — not the production API |
 | `ACG_LIVE` | Engine test harness only |
 | `CI` | Frontend CI bundle behavior — not the API container |
+
+### Payments (optional)
+
+| Name | Kind | Notes |
+| --- | --- | --- |
+| `ASTRO_PAYMENT_PROVIDER` | public | Leave **unset** until payments launch. Set `revenuecat` / `native` / `fake` to enable. |
+| `ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET` | **secret** | Required only when provider is `fake` in production-like config; must not be the built-in default string. |
 
 Do **not** put `SUPABASE_SECRET_KEY`, `GEMINI_API_KEY`, `POSTGRES_PASSWORD`, or `SENTRY_DSN` in the mobile app or EAS public env. (The app uses `EXPO_PUBLIC_SENTRY_DSN` separately if client reporting is enabled.)
 

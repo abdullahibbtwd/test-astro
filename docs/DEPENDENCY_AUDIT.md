@@ -2,31 +2,25 @@
 
 ## npm (backend)
 
-| Severity | Package | Action |
+| Severity | Package | Recommendation |
 | --- | --- | --- |
-| high | `zod` &lt;4.6.6 (DoS on oversized constrained collections) | **Deferred** — upgrade is zod@4 (breaking). Mitigated by `bodyLimit: 65536` and Ask/label caps. |
-| moderate | `@sentry/node` → glob/minimatch | **Deferred** — `npm audit fix --force` jumps outside stated range; schedule Sentry bump separately. |
-| high→fixed | `fastify` header validation | **Upgraded** to `5.12.8`. |
-
-Safe `npm audit fix` applied; remaining force upgrades not taken.
+| high | `zod` &lt;4.6.6 (DoS on oversized constrained collections) | **Defer / accept risk** until zod@4 migration. Mitigated by `bodyLimit: 65536` + Ask/label caps. Schedule zod 4 as a dedicated PR. |
+| moderate | `@sentry/node` → glob/minimatch | **Defer** — force bump is outside stated range; upgrade Sentry on next telemetry pass. |
+| high→fixed | `fastify` header validation | **Fixed** — upgraded to `5.12.8`. |
 
 ## npm (frontend)
 
-After safe `npm audit fix`:
-
-| Severity | Package | Action |
+| Severity | Package | Recommendation |
 | --- | --- | --- |
-| high | `zod` | **Deferred** (zod 4 breaking; same as backend) |
-| high | `expo-router` | **Deferred** — tied to Expo SDK; needs coordinated upgrade |
-| high | `d3-color`, `decode-uri-component`, `query-string` | **Deferred** — transitive via map/router; force may break Expo |
-| high | `mapshaper` | **Deferred** — map tooling; evaluate separately |
+| high | `zod` | **Defer / accept** (same as backend; shared validators) |
+| high | `expo-router` | **Defer** — requires Expo SDK coordinated upgrade; fix with next SDK bump |
+| high | `d3-color`, `decode-uri-component`, `query-string` | **Defer** — transitive via map/router; do not force without Expo QA |
+| high | `mapshaper` | **Defer / accept** for now — offline map tooling path; revisit when touching map pipeline |
 
-Reduced from 10 → 6 high via non-breaking lockfile refresh.
+Safe `npm audit fix` applied on lockfiles; remaining highs need coordinated upgrades.
 
 ## pip (`requirements-handoff.txt`)
 
-| Package | Finding | Action |
+| Package | Finding | Recommendation |
 | --- | --- | --- |
-| `pillow==12.3.0` | 39 advisories; fix `13.0.0` | **Upgraded** to `pillow==13.0.0` |
-
-No other high/critical packages reported by `pip-audit` on this file.
+| `pillow==12.3.0` → many advisories | Fix `13.0.0` | **Fixed** — bumped to `pillow==13.0.0`. Re-run engine + Chart_wheel tests after upgrade. |

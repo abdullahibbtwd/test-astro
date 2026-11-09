@@ -43,12 +43,16 @@ Exempt from all buckets: `GET /v1/meta/config` (health / mobile bootstrap).
 | Variable | Default | Role |
 | --- | --- | --- |
 | `ASTRO_TRUST_PROXY_HOPS` | `0` | Fastify `trustProxy` hop count |
-| `ASTRO_RATE_LIMIT_DISABLED` | unset | `1` disables all limits (CI) |
+| `ASTRO_RATE_LIMIT_DISABLED` | unset | `1` disables all limits (**CI/local only** — refused in production-like) |
 | `ASTRO_RATE_LIMIT_WINDOW_MS` | `60000` | Window length |
 | `ASTRO_RATE_LIMIT_IP_MAX` | `300` | Pre-auth per IP (separate from user limits) |
 | `ASTRO_RATE_LIMIT_MAX` | `120` | Per-user general |
 | `ASTRO_RATE_LIMIT_EXPENSIVE_MAX` | `40` | Per-user expensive routes |
 | `ASTRO_RATE_LIMIT_JOB_MAX` | `180` | Per-user `GET /jobs/{id}` |
+
+### Emergency loosening (production)
+
+Do **not** set `ASTRO_RATE_LIMIT_DISABLED=1` in production — startup refuses it. Raise the `*_MAX` values instead (e.g. temporarily double IP/general/expensive/job caps in Coolify), then revert once the incident ends.
 
 ## Mobile job polls — worst-case RPM
 

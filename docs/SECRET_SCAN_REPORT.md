@@ -22,3 +22,8 @@ See `docs/EXPO_PUBLIC_ENV.md` — none are backend secrets.
 - Tool: gitleaks detect (redacted)
 - Commits scanned: 212
 - **Findings: 0**
+
+## Layer 9 follow-up
+
+- CI `secret-scan` uses `fetch-depth: 0` (full history / all reachable commits).
+- Workflow includes a planted-secret smoke step that **must fail** when a known fake AWS key is present.

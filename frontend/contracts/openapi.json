@@ -8800,12 +8800,12 @@
             }
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_33b7efeee4a8"
+            "$ref": "#/components/schemas/GeneratedPart_d3a1e542656b"
           },
           "day_note": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_813f0b5ec437"
+                "$ref": "#/components/schemas/GeneratedPart_2fa86e1ff919"
               },
               {
                 "type": "null"
@@ -9114,7 +9114,7 @@
           "has_text"
         ]
       },
-      "GeneratedPart_33b7efeee4a8": {
+      "GeneratedPart_d3a1e542656b": {
         "anyOf": [
           {
             "type": "object",
@@ -9182,7 +9182,7 @@
           }
         ]
       },
-      "GeneratedPart_813f0b5ec437": {
+      "GeneratedPart_2fa86e1ff919": {
         "anyOf": [
           {
             "type": "object",
@@ -9309,7 +9309,7 @@
             "$ref": "#/components/schemas/MoonInfo"
           },
           "today": {
-            "$ref": "#/components/schemas/GeneratedPart_e62cc37a78c9"
+            "$ref": "#/components/schemas/GeneratedPart_c76e54b49fed"
           },
           "next_up": {
             "type": "array",
@@ -9331,7 +9331,7 @@
           "next_up"
         ]
       },
-      "GeneratedPart_e62cc37a78c9": {
+      "GeneratedPart_c76e54b49fed": {
         "anyOf": [
           {
             "type": "object",
@@ -9482,7 +9482,7 @@
             ]
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_c159ab7fbe72"
+            "$ref": "#/components/schemas/GeneratedPart_bdc36e64db1d"
           },
           "highlights": {
             "type": "object",
@@ -9597,7 +9597,7 @@
           "to"
         ]
       },
-      "GeneratedPart_c159ab7fbe72": {
+      "GeneratedPart_bdc36e64db1d": {
         "anyOf": [
           {
             "type": "object",
@@ -9818,7 +9818,7 @@
             }
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_9c1228a5bd09"
+            "$ref": "#/components/schemas/GeneratedPart_5e8750b01b2c"
           },
           "highlights": {
             "type": "object",
@@ -9919,7 +9919,7 @@
           "months"
         ]
       },
-      "GeneratedPart_9c1228a5bd09": {
+      "GeneratedPart_5e8750b01b2c": {
         "anyOf": [
           {
             "type": "object",
@@ -10030,7 +10030,7 @@
             "$ref": "#/components/schemas/ChartData"
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_49eafed10b60"
+            "$ref": "#/components/schemas/GeneratedPart_566670ebcd0b"
           }
         },
         "required": [
@@ -10042,7 +10042,7 @@
           "reading"
         ]
       },
-      "GeneratedPart_49eafed10b60": {
+      "GeneratedPart_566670ebcd0b": {
         "anyOf": [
           {
             "type": "object",
@@ -10167,7 +10167,7 @@
             "$ref": "#/components/schemas/ISODateTime"
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_05beaea7c260"
+            "$ref": "#/components/schemas/GeneratedPart_688190e0d5a2"
           },
           "score": {
             "anyOf": [
@@ -10237,7 +10237,7 @@
           "big_three"
         ]
       },
-      "GeneratedPart_05beaea7c260": {
+      "GeneratedPart_688190e0d5a2": {
         "anyOf": [
           {
             "type": "object",
@@ -10386,10 +10386,10 @@
             "type": "string"
           },
           "lines": {
-            "$ref": "#/components/schemas/FeatureCollection_614d7ad1d8f6"
+            "$ref": "#/components/schemas/FeatureCollection_ff8fb6dac8fe"
           },
           "parans": {
-            "$ref": "#/components/schemas/FeatureCollection_6e2322dcfcf2"
+            "$ref": "#/components/schemas/FeatureCollection_83765b2e4eb4"
           }
         },
         "required": [
@@ -10398,7 +10398,7 @@
           "parans"
         ]
       },
-      "FeatureCollection_614d7ad1d8f6": {
+      "FeatureCollection_ff8fb6dac8fe": {
         "type": "object",
         "properties": {
           "type": {
@@ -10413,7 +10413,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_d57ec3a82383"
+              "$ref": "#/components/schemas/Feature_17c3a61904d8"
             }
           }
         },
@@ -10444,7 +10444,7 @@
         ],
         "description": "Bounding box https://tools.ietf.org/html/rfc7946#section-5"
       },
-      "Feature_d57ec3a82383": {
+      "Feature_17c3a61904d8": {
         "type": "object",
         "properties": {
           "type": {
@@ -10530,7 +10530,7 @@
         },
         "description": "A Position is an array of coordinates. https://tools.ietf.org/html/rfc7946#section-3.1.1 Array should contain between two and three elements. The previous GeoJSON specification allowed more elements (e.g., which could be used to represent M values), but the current specification only allows X, Y, and (optionally) Z to be defined.\n\nNote: the type will not be narrowed down to `[number, number] | [number, number, number]` due to marginal benefits and the large impact of breaking change.\n\nSee previous discussions on the type narrowing:\n-  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/pull/21590 Nov 2017 } \n-  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/67773 Dec 2023 } \n-  {@link  https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/71441 Dec 2024 } \n\nOne can use a  {@link  https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates user-defined type guard that returns a type predicate }  to determine if a position is a 2D or 3D position."
       },
-      "FeatureCollection_6e2322dcfcf2": {
+      "FeatureCollection_83765b2e4eb4": {
         "type": "object",
         "properties": {
           "type": {
@@ -10545,7 +10545,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_8b91791cfb86"
+              "$ref": "#/components/schemas/Feature_5334ecb9fbd7"
             }
           }
         },
@@ -10555,7 +10555,7 @@
         ],
         "description": "A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3"
       },
-      "Feature_8b91791cfb86": {
+      "Feature_5334ecb9fbd7": {
         "type": "object",
         "properties": {
           "type": {
@@ -10850,7 +10850,7 @@
             }
           },
           "goal_scores": {
-            "$ref": "#/components/schemas/Record_9531230c10a1"
+            "$ref": "#/components/schemas/Record_5e8e666f6549"
           },
           "cards": {
             "type": "array",
@@ -10859,7 +10859,7 @@
             }
           },
           "reading": {
-            "$ref": "#/components/schemas/GeneratedPart_8bcfb01e2635"
+            "$ref": "#/components/schemas/GeneratedPart_fec287102c48"
           },
           "footer": {
             "type": "string"
@@ -10978,7 +10978,7 @@
           "label"
         ]
       },
-      "Record_9531230c10a1": {
+      "Record_5e8e666f6549": {
         "type": "object",
         "properties": {
           "love": {
@@ -11204,7 +11204,7 @@
           "text"
         ]
       },
-      "GeneratedPart_8bcfb01e2635": {
+      "GeneratedPart_fec287102c48": {
         "anyOf": [
           {
             "type": "object",
@@ -11350,7 +11350,7 @@
             "$ref": "#/components/schemas/Absence"
           },
           "bands": {
-            "$ref": "#/components/schemas/Record_fb0bec6385f1"
+            "$ref": "#/components/schemas/Record_be98bc64e914"
           },
           "lines_crossing": {
             "type": "array",
@@ -11379,7 +11379,7 @@
             }
           },
           "best_cities": {
-            "$ref": "#/components/schemas/Record_62bfe7922c25"
+            "$ref": "#/components/schemas/Record_81436daca0c4"
           },
           "varies_by_region": {
             "type": "boolean"
@@ -11403,7 +11403,7 @@
             }
           },
           "overview": {
-            "$ref": "#/components/schemas/GeneratedPart_1bbb8379e39c"
+            "$ref": "#/components/schemas/GeneratedPart_7e436ceb0228"
           },
           "footer": {
             "type": "string"
@@ -11420,7 +11420,7 @@
           "footer"
         ]
       },
-      "Record_fb0bec6385f1": {
+      "Record_be98bc64e914": {
         "type": "object",
         "properties": {
           "love": {
@@ -11603,7 +11603,7 @@
           "relocation"
         ]
       },
-      "Record_62bfe7922c25": {
+      "Record_81436daca0c4": {
         "type": "object",
         "properties": {
           "love": {
@@ -11907,7 +11907,7 @@
           "relocation"
         ]
       },
-      "GeneratedPart_1bbb8379e39c": {
+      "GeneratedPart_7e436ceb0228": {
         "anyOf": [
           {
             "type": "object",
@@ -12342,7 +12342,7 @@
             }
           },
           "explanations": {
-            "$ref": "#/components/schemas/GeneratedPart_58f6a25e1646"
+            "$ref": "#/components/schemas/GeneratedPart_cb35f6859359"
           },
           "footer": {
             "type": "string"
@@ -12492,7 +12492,7 @@
           "band_label"
         ]
       },
-      "GeneratedPart_58f6a25e1646": {
+      "GeneratedPart_cb35f6859359": {
         "anyOf": [
           {
             "type": "object",
@@ -12820,7 +12820,7 @@
           "day_note": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_224993331679"
+                "$ref": "#/components/schemas/GeneratedPart_e9ec6415bc0c"
               },
               {
                 "type": "null"
@@ -12874,7 +12874,7 @@
           "transits"
         ]
       },
-      "GeneratedPart_224993331679": {
+      "GeneratedPart_e9ec6415bc0c": {
         "anyOf": [
           {
             "type": "object",
@@ -13037,7 +13037,7 @@
           "text": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_3253e4bcbc02"
+                "$ref": "#/components/schemas/GeneratedPart_ce362c435b11"
               },
               {
                 "type": "null"
@@ -13053,7 +13053,7 @@
           "text"
         ]
       },
-      "GeneratedPart_3253e4bcbc02": {
+      "GeneratedPart_ce362c435b11": {
         "anyOf": [
           {
             "type": "object",
@@ -13299,7 +13299,7 @@
           "text": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/GeneratedPart_f43b63c62c27"
+                "$ref": "#/components/schemas/GeneratedPart_7f2a0fc4073f"
               },
               {
                 "type": "null"
@@ -13317,7 +13317,7 @@
           "text"
         ]
       },
-      "GeneratedPart_f43b63c62c27": {
+      "GeneratedPart_7f2a0fc4073f": {
         "anyOf": [
           {
             "type": "object",
@@ -13500,7 +13500,7 @@
             "$ref": "#/components/schemas/Record_59346cab62ba"
           },
           "angles": {
-            "$ref": "#/components/schemas/Record_ba64e68963fe"
+            "$ref": "#/components/schemas/Record_badd16cf1775"
           },
           "signs": {
             "$ref": "#/components/schemas/Record_f2cc4e6e0113"
@@ -13509,7 +13509,7 @@
             "$ref": "#/components/schemas/Record_c475ac0fd7db"
           },
           "houses": {
-            "$ref": "#/components/schemas/Record_bad3622c96f1"
+            "$ref": "#/components/schemas/Record_c55b8da5857d"
           },
           "goals": {
             "$ref": "#/components/schemas/Record_0172c8cfe496"
@@ -13697,7 +13697,7 @@
           "south_node"
         ]
       },
-      "Record_ba64e68963fe": {
+      "Record_badd16cf1775": {
         "type": "object",
         "properties": {
           "ASC": {
@@ -13866,7 +13866,7 @@
           "opposition"
         ]
       },
-      "Record_bad3622c96f1": {
+      "Record_c55b8da5857d": {
         "type": "object",
         "additionalProperties": {
           "type": "object",
@@ -15424,9 +15424,9 @@
         ]
       },
       "CountryGeometry": {
-        "$ref": "#/components/schemas/FeatureCollection_db229932d393"
+        "$ref": "#/components/schemas/FeatureCollection_685fb350b62a"
       },
-      "FeatureCollection_db229932d393": {
+      "FeatureCollection_685fb350b62a": {
         "type": "object",
         "properties": {
           "type": {
@@ -15441,7 +15441,7 @@
           "features": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Feature_e0df00ff5685"
+              "$ref": "#/components/schemas/Feature_97a66f5a13d6"
             }
           }
         },
@@ -15451,7 +15451,7 @@
         ],
         "description": "A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3"
       },
-      "Feature_e0df00ff5685": {
+      "Feature_97a66f5a13d6": {
         "type": "object",
         "properties": {
           "type": {

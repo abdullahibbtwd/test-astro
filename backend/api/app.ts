@@ -44,6 +44,7 @@ import {
 import { endpoints } from "../../frontend/scripts/endpoints";
 import { validate, schemas } from "../../frontend/src/api/zod";
 import { sanitizeLabel } from "./safe-text";
+import { attachRouteCollector } from "./registered-routes";
 import type { BirthProfile, Me } from "../../frontend/contracts/spec-types";
 const digest = (s: string) => createHash("sha256").update(s).digest("hex");
 const issue = (status: number, message = "Request unavailable") =>
@@ -98,6 +99,8 @@ export async function buildLocalApp({
     bodyLimit: 65536,
     trustProxy: trustProxyHops > 0 ? trustProxyHops : false,
   });
+  const registeredRoutes = attachRouteCollector(app);
+  app.decorate("astroRegisteredRoutes", registeredRoutes);
   // Empty application/json bodies (common on DELETE) must not 400 before auth.
   app.addContentTypeParser(
     "application/json",

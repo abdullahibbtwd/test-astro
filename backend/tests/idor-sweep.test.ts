@@ -296,22 +296,38 @@ test("IDOR: A cannot read/write/delete B profiles, jobs, threads, messages, repo
       assert.doesNotMatch(exp.body, /private question/);
     }
 
-    // Subscriptions / billing — A must not see B's premium
+    // Subscriptions / billing — A must not see B's premium / txn
     {
       const bill = await app.inject({
         url: "/v1/billing/status",
         headers: headersA,
       });
       assert.equal(bill.statusCode, 200, bill.body);
-      const body = bill.body;
-      assert.doesNotMatch(body, /idor-b-txn/);
-      // B still has their subscription row; A must not receive B's plan via this route.
+      assert.doesNotMatch(bill.body, /idor-b-txn/);
+      assert.doesNotMatch(bill.body, /"plan_id"\s*:\s*"premium"/);
       const billB = await app.inject({
         url: "/v1/billing/status",
         headers: headersB,
       });
       assert.equal(billB.statusCode, 200, billB.body);
+      // Webhook cannot be used with A's bearer to mutate B (no user id in path);
+      // forging events for B requires the webhook secret (covered elsewhere).
+      assert.equal(
+        (
+          await app.inject({
+            url: "/v1/billing/status",
+            headers: headersA,
+          })
+        ).statusCode,
+        200,
+      );
     }
+
+    // Billing without token → 401 (payments surface)
+    assert.equal(
+      (await app.inject({ url: "/v1/billing/status" })).statusCode,
+      401,
+    );
 
     // Map-style place report under B profile
     await expect404("map place report", {

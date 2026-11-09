@@ -38,6 +38,28 @@ export function isProductionLike(env: NodeJS.ProcessEnv = process.env): boolean 
   return env.NODE_ENV === "production" || env.ASTRO_PRODUCTION_LIKE === "1";
 }
 
+/**
+ * Payments are enabled when ASTRO_PAYMENT_PROVIDER is set to a concrete
+ * provider id (not empty / "unset"). Webhook secret rules apply only then.
+ */
+export function paymentsEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  const provider = (env.ASTRO_PAYMENT_PROVIDER ?? "").trim().toLowerCase();
+  return provider !== "" && provider !== "unset";
+}
+
+/**
+ * Minimal production-like env var NAMES required for config:check to pass
+ * (payments off). Values are never recorded here — see docs/COOLIFY_SETUP.md.
+ */
+export const REQUIRED_PRODUCTION_ENV_NAMES = [
+  "NODE_ENV",
+  "DATABASE_URL",
+  "AUTH_ENABLED",
+  "SUPABASE_URL",
+  "SUPABASE_SECRET_KEY",
+  "ASTRO_DEMO_AUTH",
+] as const;
+
 /** Whether a Gemini key is available via env or ~/.gemini_key (existence only). */
 export function geminiKeyPresent(
   env: NodeJS.ProcessEnv = process.env,
@@ -134,19 +156,19 @@ export function checkConfig(
     );
   }
 
-  if (productionLike) {
+  // Webhook / provider secrets only when payments are explicitly enabled.
+  if (productionLike && paymentsEnabled(env)) {
     const provider = (env.ASTRO_PAYMENT_PROVIDER ?? "").trim().toLowerCase();
     const webhookSecret = env.ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET?.trim();
-    if (!provider || provider === "unset") {
-      refuse(
-        ["NODE_ENV", "ASTRO_PAYMENT_PROVIDER"],
-        "ASTRO_PAYMENT_PROVIDER must be set explicitly in production-like config (not fake/unset)",
-      );
-    } else if (provider === "fake") {
+    if (provider === "fake") {
       if (!webhookSecret) {
         refuse(
-          ["NODE_ENV", "ASTRO_PAYMENT_PROVIDER", "ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET"],
-          "Fake payment provider in production-like config requires ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET",
+          [
+            "NODE_ENV",
+            "ASTRO_PAYMENT_PROVIDER",
+            "ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET",
+          ],
+          "Payments enabled with fake provider requires ASTRO_FAKE_PAYMENT_WEBHOOK_SECRET",
         );
       } else if (webhookSecret === "fake-webhook-secret") {
         refuse(

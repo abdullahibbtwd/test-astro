@@ -8,9 +8,13 @@
  */
 import {
   withAppBuildGradle,
+  withAndroidManifest,
+  withDangerousMod,
   AndroidConfig,
   createRunOncePlugin,
 } from "expo/config-plugins";
+import fs from "node:fs";
+import path from "node:path";
 
 const BLOCKED_PERMISSIONS = [
   // From React Native debug overlay templates / accidental main merge — not needed in store builds.
@@ -56,8 +60,9 @@ function withReleaseSigning(config) {
   });
 }
 
-function withBackupAndCleartext(config) {
-  return AndroidConfig.Manifest.withAndroidManifest(config, (cfg) => {
+function withBackupPolicy(config) {
+  // withAndroidManifest is a top-level export — not under AndroidConfig.Manifest.
+  return withAndroidManifest(config, (cfg) => {
     const app = AndroidConfig.Manifest.getMainApplicationOrThrow(
       cfg.modResults,
     );
@@ -65,11 +70,43 @@ function withBackupAndCleartext(config) {
     // disable cloud/device backup for the application.
     app.$["android:allowBackup"] = "false";
     app.$["android:fullBackupContent"] = "false";
-    app.$["android:dataExtractionRules"] = "@xml/secure_store_data_extraction_rules";
-    // Release must not allow cleartext; debug manifests may still enable it.
-    app.$["android:usesCleartextTraffic"] = "false";
+    app.$["android:dataExtractionRules"] =
+      "@xml/secure_store_data_extraction_rules";
+    // Do not force cleartext here — debug/preview keep Expo's cleartext=true;
+    // release-only override is written under src/release/ below.
     return cfg;
   });
+}
+
+/**
+ * Cleartext disabled only for EAS production (store) builds.
+ * Development + preview keep Expo debug/cleartext so local http:// APIs work.
+ */
+function withReleaseCleartextDisabled(config) {
+  return withDangerousMod(config, [
+    "android",
+    async (cfg) => {
+      const profile = process.env.EAS_BUILD_PROFILE ?? "";
+      if (profile !== "production") return cfg;
+      const dir = path.join(
+        cfg.modRequest.platformProjectRoot,
+        "app/src/release",
+      );
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(
+        path.join(dir, "AndroidManifest.xml"),
+        `<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools">
+  <application
+    android:usesCleartextTraffic="false"
+    tools:replace="android:usesCleartextTraffic" />
+</manifest>
+`,
+      );
+      return cfg;
+    },
+  ]);
 }
 
 function withAndroidReleaseHardening(config) {
@@ -78,12 +115,13 @@ function withAndroidReleaseHardening(config) {
     BLOCKED_PERMISSIONS,
   );
   config = withReleaseSigning(config);
-  config = withBackupAndCleartext(config);
+  config = withBackupPolicy(config);
+  config = withReleaseCleartextDisabled(config);
   return config;
 }
 
 export default createRunOncePlugin(
   withAndroidReleaseHardening,
   "with-android-release-hardening",
-  "1.1.0",
+  "1.2.0",
 );

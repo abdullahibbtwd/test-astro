@@ -1199,8 +1199,8 @@ export interface components {
             retrograde: components["schemas"]["Body"][];
             events: components["schemas"]["CalendarEventRef"][];
             transits: components["schemas"]["TransitEpisode"][];
-            reading: components["schemas"]["GeneratedPart_33b7efeee4a8"];
-            day_note: components["schemas"]["GeneratedPart_813f0b5ec437"] | null;
+            reading: components["schemas"]["GeneratedPart_d3a1e542656b"];
+            day_note: components["schemas"]["GeneratedPart_2fa86e1ff919"] | null;
             best_activities: {
                 activity: components["schemas"]["Activity"];
                 label: string;
@@ -1267,7 +1267,7 @@ export interface components {
             phase_label: string;
             has_text: boolean;
         };
-        GeneratedPart_33b7efeee4a8: {
+        GeneratedPart_d3a1e542656b: {
             text: string;
             /** @constant */
             status: "ready";
@@ -1284,7 +1284,7 @@ export interface components {
             status: "absent";
             absence: components["schemas"]["Absence"];
         };
-        GeneratedPart_813f0b5ec437: {
+        GeneratedPart_2fa86e1ff919: {
             text: string;
             /** @constant */
             status: "ready";
@@ -1315,10 +1315,10 @@ export interface components {
                 score_10: number;
             }[];
             moon: components["schemas"]["MoonInfo"];
-            today: components["schemas"]["GeneratedPart_e62cc37a78c9"];
+            today: components["schemas"]["GeneratedPart_c76e54b49fed"];
             next_up: components["schemas"]["UpcomingItem"][];
         };
-        GeneratedPart_e62cc37a78c9: {
+        GeneratedPart_c76e54b49fed: {
             text: string;
             /** @constant */
             status: "ready";
@@ -1356,7 +1356,7 @@ export interface components {
                 mid: components["schemas"]["DateRange"];
                 late: components["schemas"]["DateRange"];
             };
-            reading: components["schemas"]["GeneratedPart_c159ab7fbe72"];
+            reading: components["schemas"]["GeneratedPart_bdc36e64db1d"];
             highlights: {
                 favorable_days: components["schemas"]["ISODate"][];
                 challenging_days: components["schemas"]["ISODate"][];
@@ -1377,7 +1377,7 @@ export interface components {
             from: components["schemas"]["ISODate"];
             to: components["schemas"]["ISODate"];
         };
-        GeneratedPart_c159ab7fbe72: {
+        GeneratedPart_bdc36e64db1d: {
             overview: string;
             early: string;
             mid: string;
@@ -1433,7 +1433,7 @@ export interface components {
                 from: components["schemas"]["ISODate"];
                 to: components["schemas"]["ISODate"];
             }[];
-            reading: components["schemas"]["GeneratedPart_9c1228a5bd09"];
+            reading: components["schemas"]["GeneratedPart_5e8750b01b2c"];
             highlights: {
                 strongest_periods: components["schemas"]["PeriodRef"][];
                 challenging_periods: components["schemas"]["PeriodRef"][];
@@ -1451,7 +1451,7 @@ export interface components {
                 text: string;
             }[];
         };
-        GeneratedPart_9c1228a5bd09: {
+        GeneratedPart_5e8750b01b2c: {
             overview: string;
             q1: string;
             q2: string;
@@ -1480,9 +1480,9 @@ export interface components {
             return_utc: components["schemas"]["ISODateTime"];
             place: components["schemas"]["Place"];
             chart: components["schemas"]["ChartData"];
-            reading: components["schemas"]["GeneratedPart_49eafed10b60"];
+            reading: components["schemas"]["GeneratedPart_566670ebcd0b"];
         };
-        GeneratedPart_49eafed10b60: {
+        GeneratedPart_566670ebcd0b: {
             sections: {
                 key: string;
                 title: string;
@@ -1512,7 +1512,7 @@ export interface components {
                 b: components["schemas"]["PersonRef"];
             };
             created_at: components["schemas"]["ISODateTime"];
-            reading: components["schemas"]["GeneratedPart_05beaea7c260"];
+            reading: components["schemas"]["GeneratedPart_688190e0d5a2"];
             score: null | {
                 value: number;
                 label: string;
@@ -1527,7 +1527,7 @@ export interface components {
                 ascendant: components["schemas"]["Sign"];
             };
         };
-        GeneratedPart_05beaea7c260: {
+        GeneratedPart_688190e0d5a2: {
             title: string;
             sections: components["schemas"]["CompatSection"][];
             /** @constant */
@@ -1564,11 +1564,11 @@ export interface components {
         };
         AcgLines: {
             chart_key: string;
-            lines: components["schemas"]["FeatureCollection_614d7ad1d8f6"];
-            parans: components["schemas"]["FeatureCollection_6e2322dcfcf2"];
+            lines: components["schemas"]["FeatureCollection_ff8fb6dac8fe"];
+            parans: components["schemas"]["FeatureCollection_83765b2e4eb4"];
         };
         /** @description A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3 */
-        FeatureCollection_614d7ad1d8f6: {
+        FeatureCollection_ff8fb6dac8fe: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -1576,12 +1576,12 @@ export interface components {
             type: "FeatureCollection";
             /** @description Bounding box of the coordinate range of the object's Geometries, Features, or Feature Collections. The value of the bbox member is an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries. https://tools.ietf.org/html/rfc7946#section-5 */
             bbox?: components["schemas"]["BBox"];
-            features: components["schemas"]["Feature_d57ec3a82383"][];
+            features: components["schemas"]["Feature_17c3a61904d8"][];
         };
         /** @description Bounding box https://tools.ietf.org/html/rfc7946#section-5 */
         BBox: number[] | number[];
         /** @description A feature object which contains a geometry and associated properties. https://tools.ietf.org/html/rfc7946#section-3.2 */
-        Feature_d57ec3a82383: {
+        Feature_17c3a61904d8: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -1625,7 +1625,7 @@ export interface components {
          */
         Position: number[];
         /** @description A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3 */
-        FeatureCollection_6e2322dcfcf2: {
+        FeatureCollection_83765b2e4eb4: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -1633,10 +1633,10 @@ export interface components {
             type: "FeatureCollection";
             /** @description Bounding box of the coordinate range of the object's Geometries, Features, or Feature Collections. The value of the bbox member is an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries. https://tools.ietf.org/html/rfc7946#section-5 */
             bbox?: components["schemas"]["BBox"];
-            features: components["schemas"]["Feature_8b91791cfb86"][];
+            features: components["schemas"]["Feature_5334ecb9fbd7"][];
         };
         /** @description A feature object which contains a geometry and associated properties. https://tools.ietf.org/html/rfc7946#section-3.2 */
-        Feature_8b91791cfb86: {
+        Feature_5334ecb9fbd7: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -1711,9 +1711,9 @@ export interface components {
             focus_goal: components["schemas"]["Goal"] | null;
             lines_display: components["schemas"]["LineDisplay"][];
             parans_display: components["schemas"]["ParanDisplay"][];
-            goal_scores: components["schemas"]["Record_9531230c10a1"];
+            goal_scores: components["schemas"]["Record_5e8e666f6549"];
             cards: components["schemas"]["SuitabilityCard"][];
-            reading: components["schemas"]["GeneratedPart_8bcfb01e2635"];
+            reading: components["schemas"]["GeneratedPart_fec287102c48"];
             footer: string;
         };
         LineDisplay: {
@@ -1735,7 +1735,7 @@ export interface components {
             distance_km_rounded: number | "<10";
             label: string;
         };
-        Record_9531230c10a1: {
+        Record_5e8e666f6549: {
             love: {
                 band: components["schemas"]["PlaceBand"];
                 label: string;
@@ -1790,7 +1790,7 @@ export interface components {
             band_label: string;
             text: string | null;
         };
-        GeneratedPart_8bcfb01e2635: {
+        GeneratedPart_fec287102c48: {
             sections: components["schemas"]["PlaceSection"][];
             /** @constant */
             status: "ready";
@@ -1826,23 +1826,23 @@ export interface components {
             /** @enum {string} */
             status: "ok" | "absent";
             absence?: components["schemas"]["Absence"];
-            bands: components["schemas"]["Record_fb0bec6385f1"];
+            bands: components["schemas"]["Record_be98bc64e914"];
             lines_crossing: {
                 body: components["schemas"]["Body"];
                 angle: components["schemas"]["Angle"];
                 planet_label: string;
                 angle_label: string;
             }[];
-            best_cities: components["schemas"]["Record_62bfe7922c25"];
+            best_cities: components["schemas"]["Record_81436daca0c4"];
             varies_by_region: boolean;
             regions?: {
                 admin1_id: string;
                 name: string;
             }[];
-            overview: components["schemas"]["GeneratedPart_1bbb8379e39c"];
+            overview: components["schemas"]["GeneratedPart_7e436ceb0228"];
             footer: string;
         };
-        Record_fb0bec6385f1: {
+        Record_be98bc64e914: {
             love: {
                 band: components["schemas"]["PlaceBand"];
                 label: string;
@@ -1888,7 +1888,7 @@ export interface components {
                 label: string;
             };
         };
-        Record_62bfe7922c25: {
+        Record_81436daca0c4: {
             love: {
                 place_id: string;
                 name: string;
@@ -1956,7 +1956,7 @@ export interface components {
                 band_label: string;
             }[];
         };
-        GeneratedPart_1bbb8379e39c: {
+        GeneratedPart_7e436ceb0228: {
             text: string;
             /** @constant */
             status: "ready";
@@ -2035,7 +2035,7 @@ export interface components {
             };
             countries: components["schemas"]["AreaRef"][];
             regions: components["schemas"]["AreaRef"][];
-            explanations: components["schemas"]["GeneratedPart_58f6a25e1646"];
+            explanations: components["schemas"]["GeneratedPart_cb35f6859359"];
             footer: string;
         };
         Destination: {
@@ -2065,7 +2065,7 @@ export interface components {
             band: components["schemas"]["PlaceBand"];
             band_label: string;
         };
-        GeneratedPart_58f6a25e1646: {
+        GeneratedPart_cb35f6859359: {
             intro: string;
             turkey_intro: string | null;
             groups: components["schemas"]["Record_14902eed9d8e"];
@@ -2141,7 +2141,7 @@ export interface components {
                 kind: "favorable" | "challenging";
             }[];
             goals: components["schemas"]["Record_7e571529d2c5"];
-            day_note: components["schemas"]["GeneratedPart_224993331679"] | null;
+            day_note: components["schemas"]["GeneratedPart_e9ec6415bc0c"] | null;
             transits: components["schemas"]["TransitEpisode"][];
             best_activities: {
                 activity: components["schemas"]["Activity"];
@@ -2150,7 +2150,7 @@ export interface components {
                 grade: "excellent" | "good";
             }[];
         };
-        GeneratedPart_224993331679: {
+        GeneratedPart_e9ec6415bc0c: {
             text: string;
             /** @constant */
             status: "ready";
@@ -2193,9 +2193,9 @@ export interface components {
             /** @enum {string} */
             eclipse_kind?: "solar" | "lunar";
             body?: components["schemas"]["Body"];
-            text: components["schemas"]["GeneratedPart_3253e4bcbc02"] | null;
+            text: components["schemas"]["GeneratedPart_ce362c435b11"] | null;
         };
-        GeneratedPart_3253e4bcbc02: {
+        GeneratedPart_ce362c435b11: {
             text: string;
             /** @constant */
             status: "ready";
@@ -2249,9 +2249,9 @@ export interface components {
                 positive: string[];
                 negative: string[];
             };
-            text: components["schemas"]["GeneratedPart_f43b63c62c27"] | null;
+            text: components["schemas"]["GeneratedPart_7f2a0fc4073f"] | null;
         };
-        GeneratedPart_f43b63c62c27: {
+        GeneratedPart_7f2a0fc4073f: {
             text: string;
             /** @constant */
             status: "ready";
@@ -2296,10 +2296,10 @@ export interface components {
             version: string;
             lang: components["schemas"]["Lang"];
             bodies: components["schemas"]["Record_59346cab62ba"];
-            angles: components["schemas"]["Record_ba64e68963fe"];
+            angles: components["schemas"]["Record_badd16cf1775"];
             signs: components["schemas"]["Record_f2cc4e6e0113"];
             aspects: components["schemas"]["Record_c475ac0fd7db"];
-            houses: components["schemas"]["Record_bad3622c96f1"];
+            houses: components["schemas"]["Record_c55b8da5857d"];
             goals: components["schemas"]["Record_0172c8cfe496"];
             place_bands: components["schemas"]["Record_a8c29b72061b"];
             day_bands: components["schemas"]["Record_0f124b5e2117"];
@@ -2345,7 +2345,7 @@ export interface components {
             north_node: string;
             south_node: string;
         };
-        Record_ba64e68963fe: {
+        Record_badd16cf1775: {
             ASC: {
                 short: string;
                 name: string;
@@ -2388,7 +2388,7 @@ export interface components {
             trine: string;
             opposition: string;
         };
-        Record_bad3622c96f1: {
+        Record_c55b8da5857d: {
             [key: string]: {
                 ordinal: string;
                 name: string;
@@ -2772,9 +2772,9 @@ export interface components {
             status: "absent";
             absence: components["schemas"]["Absence"];
         };
-        CountryGeometry: components["schemas"]["FeatureCollection_db229932d393"];
+        CountryGeometry: components["schemas"]["FeatureCollection_685fb350b62a"];
         /** @description A collection of feature objects.  https://tools.ietf.org/html/rfc7946#section-3.3 */
-        FeatureCollection_db229932d393: {
+        FeatureCollection_685fb350b62a: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
@@ -2782,10 +2782,10 @@ export interface components {
             type: "FeatureCollection";
             /** @description Bounding box of the coordinate range of the object's Geometries, Features, or Feature Collections. The value of the bbox member is an array of length 2*n where n is the number of dimensions represented in the contained geometries, with all axes of the most southwesterly point followed by all axes of the more northeasterly point. The axes order of a bbox follows the axes order of geometries. https://tools.ietf.org/html/rfc7946#section-5 */
             bbox?: components["schemas"]["BBox"];
-            features: components["schemas"]["Feature_e0df00ff5685"][];
+            features: components["schemas"]["Feature_97a66f5a13d6"][];
         };
         /** @description A feature object which contains a geometry and associated properties. https://tools.ietf.org/html/rfc7946#section-3.2 */
-        Feature_e0df00ff5685: {
+        Feature_97a66f5a13d6: {
             /**
              * @description Specifies the type of GeoJSON object.
              * @constant
