@@ -4,11 +4,12 @@ title = "astrology-app"
 [extend]
 useDefault = true
 
-# CI planted-secret probe (workflow writes this marker under /tmp only).
+# CI planted-secret probe (workflow assembles marker under /tmp only;
+# full match string must never appear contiguously in the repo).
 [[rules]]
 id = "ci-planted-secret"
 description = "CI planted secret marker — must never appear in the repo"
-regex = '''PLANTED_SECRET_VALUE_FOR_CI_ONLY_[A-Z0-9]{16,}'''
+regex = '''CI_PLANTED_PROBE_MARKER_[A-Z0-9]{16,}'''
 
 [allowlist]
 description = "Checked-in examples and public placeholders"
